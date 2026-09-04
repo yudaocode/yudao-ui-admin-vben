@@ -6,7 +6,20 @@ import { markRaw } from 'vue';
 
 import { AreaCascader } from '#/components/area';
 import InsuranceSchemeSelect from '#/views/hrm/insurance/scheme/components/insurance-scheme-select.vue';
-import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
+import {
+  formatHrmDate,
+  formatHrmInsuranceProjectName,
+  formatHrmMoney,
+  formatHrmRate,
+} from '#/views/hrm/utils/format';
+
+type InsuranceSchemeChange = (
+  scheme?: import('#/api/hrm/insurance/scheme').HrmInsuranceSchemeApi.InsuranceScheme,
+) => Promise<void> | void;
+
+type ProjectRow = HrmInsuranceMonthEmployeeRecordApi.Project & {
+  totalAmount?: number;
+};
 
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -89,5 +102,197 @@ export function useGridColumns(
       align: 'right',
       formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
+  ];
+}
+
+/** 单个员工参保方案表单 */
+export function useEmployeeRecordFormSchema(
+  onSchemeChange: InsuranceSchemeChange,
+): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'employeeDisplay',
+      label: '员工',
+      component: 'Input',
+      componentProps: { disabled: true },
+    },
+    {
+      fieldName: 'schemeId',
+      label: '社保方案',
+      component: markRaw(InsuranceSchemeSelect),
+      componentProps: { onChange: onSchemeChange },
+      rules: 'required',
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'DictSelect',
+      componentProps: { dictType: 'hrm_insurance_emp_status', disabled: true },
+    },
+  ];
+}
+
+/** 批量调整参保方案表单 */
+export function useBatchEmployeeRecordFormSchema(
+  onSchemeChange: InsuranceSchemeChange,
+): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'employeeCount',
+      label: '已选员工',
+      component: 'Input',
+      componentProps: { disabled: true },
+    },
+    {
+      fieldName: 'schemeId',
+      label: '社保方案',
+      component: markRaw(InsuranceSchemeSelect),
+      componentProps: { onChange: onSchemeChange },
+      rules: 'required',
+    },
+  ];
+}
+
+/** 可编辑缴费项目字段 */
+export function useEditableProjectGridColumns(
+  showProportion: boolean,
+): VxeTableGridOptions<ProjectRow>['columns'] {
+  return [
+    { field: 'type', title: '类型', width: 130, slots: { default: 'type' } },
+    { field: 'name', title: '项目名称', minWidth: 180 },
+    ...(showProportion
+      ? [
+          {
+            field: 'baseAmount',
+            title: '缴纳基数',
+            width: 150,
+            slots: { default: 'baseAmount' },
+          },
+          {
+            field: 'corporateRate',
+            title: '公司比例',
+            width: 120,
+            align: 'right' as const,
+            formatter: ({ cellValue }: { cellValue: unknown }) =>
+              formatHrmRate(Number(cellValue || 0)),
+          },
+          {
+            field: 'personalRate',
+            title: '个人比例',
+            width: 120,
+            align: 'right' as const,
+            formatter: ({ cellValue }: { cellValue: unknown }) =>
+              formatHrmRate(Number(cellValue || 0)),
+          },
+        ]
+      : [
+          {
+            field: 'corporateAmount',
+            title: '公司金额',
+            width: 150,
+            slots: { default: 'corporateAmount' },
+          },
+          {
+            field: 'personalAmount',
+            title: '个人金额',
+            width: 150,
+            slots: { default: 'personalAmount' },
+          },
+        ]),
+  ];
+}
+
+/** 缴费项目详情字段 */
+export function useProjectDetailGridColumns(
+  showProportion: boolean,
+): VxeTableGridOptions<ProjectRow>['columns'] {
+  return [
+    {
+      field: 'name',
+      title: '缴纳项目',
+      minWidth: 180,
+      formatter: ({ row }) => formatHrmInsuranceProjectName(row),
+    },
+    {
+      field: 'baseAmount',
+      title: '缴纳基数',
+      width: 130,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+    ...(showProportion
+      ? [
+          {
+            field: 'corporateRate',
+            title: '企业比例',
+            width: 110,
+            align: 'right' as const,
+            formatter: ({ cellValue }: { cellValue: unknown }) =>
+              formatHrmRate(Number(cellValue || 0)),
+          },
+          {
+            field: 'personalRate',
+            title: '个人比例',
+            width: 110,
+            align: 'right' as const,
+            formatter: ({ cellValue }: { cellValue: unknown }) =>
+              formatHrmRate(Number(cellValue || 0)),
+          },
+        ]
+      : []),
+    ...[
+      ['personalAmount', '个人缴纳'],
+      ['corporateAmount', '企业缴纳'],
+    ].map(([field, title]) => ({
+      field,
+      title,
+      width: 130,
+      align: 'right' as const,
+      formatter: ({ cellValue }: { cellValue: unknown }) =>
+        formatHrmMoney(Number(cellValue || 0)),
+    })),
+    {
+      field: 'totalAmount',
+      title: '合计缴费',
+      width: 130,
+      align: 'right',
+      formatter: ({ row }) =>
+        formatHrmMoney(
+          Number(row.personalAmount || 0) + Number(row.corporateAmount || 0),
+        ),
+    },
+  ];
+}
+
+/** 缴费项目合计行 */
+export function buildProjectFooterMethod() {
+  return ({
+    columns,
+    data,
+  }: {
+    columns: Array<{ field?: string }>;
+    data: ProjectRow[];
+  }) => [
+    columns.map((column, index) => {
+      if (index === 0) return '缴费总价';
+      if (
+        column.field !== 'personalAmount' &&
+        column.field !== 'corporateAmount' &&
+        column.field !== 'totalAmount'
+      )
+        return '';
+      let total = 0;
+      for (const project of data) {
+        total +=
+          column.field === 'totalAmount'
+            ? Number(project.personalAmount || 0) +
+              Number(project.corporateAmount || 0)
+            : Number(
+                project[column.field as 'corporateAmount' | 'personalAmount'] ||
+                  0,
+              );
+      }
+      return formatHrmMoney(total);
+    }),
   ];
 }

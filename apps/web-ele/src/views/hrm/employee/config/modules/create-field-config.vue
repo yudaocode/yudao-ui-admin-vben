@@ -1,31 +1,37 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
-import type { HrmEmployeeConfigApi } from '#/api/hrm/employee/config';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElSwitch } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getEmployeeCreateFieldConfigList,
   saveEmployeeCreateFieldConfig,
 } from '#/api/hrm/employee/config';
 import { HrmEmployeeEntryStatus } from '#/views/hrm/utils/constants';
 
+import { useCreateFieldGridColumns } from '../data';
+
 defineOptions({ name: 'HrmEmployeeCreateFieldConfig' });
 
-type FieldRow = HrmEmployeeConfigApi.FieldConfig & {
-  activeVisible: boolean;
-  activeVisibleLocked: boolean;
-  pendingEntryVisible: boolean;
-  pendingEntryVisibleLocked: boolean;
-};
+const list = ref<any[]>([]);
 
-const loading = ref(false);
-const list = ref<FieldRow[]>([]);
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useCreateFieldGridColumns(),
+    data: [],
+    minHeight: 240,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
 
 async function getList() {
-  loading.value = true;
+  gridApi.setLoading(true);
   try {
     const [activeFields, pendingEntryFields] = await Promise.all([
       getEmployeeCreateFieldConfigList(HrmEmployeeEntryStatus.ACTIVE),
@@ -44,8 +50,9 @@ async function getList() {
         pendingEntryVisibleLocked: pending.visibleLocked,
       };
     });
+    await gridApi.grid.reloadData(list.value);
   } finally {
-    loading.value = false;
+    gridApi.setLoading(false);
   }
 }
 
@@ -72,24 +79,18 @@ defineExpose({ submitForm });
 </script>
 
 <template>
-  <ElTable v-loading="loading" border :data="list">
-    <ElTableColumn label="字段分组" prop="groupName" width="180" />
-    <ElTableColumn label="字段名称" prop="title" />
-    <ElTableColumn align="center" label="新建在职员工" width="180">
-      <template #default="{ row }">
-        <ElSwitch
-          v-model="row.activeVisible"
-          :disabled="row.activeVisibleLocked"
-        />
-      </template>
-    </ElTableColumn>
-    <ElTableColumn align="center" label="新建待入职员工" width="180">
-      <template #default="{ row }">
-        <ElSwitch
-          v-model="row.pendingEntryVisible"
-          :disabled="row.pendingEntryVisibleLocked"
-        />
-      </template>
-    </ElTableColumn>
-  </ElTable>
+  <Grid class="w-full">
+    <template #activeVisible="{ row }">
+      <ElSwitch
+        v-model="row.activeVisible"
+        :disabled="row.activeVisibleLocked"
+      />
+    </template>
+    <template #pendingEntryVisible="{ row }">
+      <ElSwitch
+        v-model="row.pendingEntryVisible"
+        :disabled="row.pendingEntryVisibleLocked"
+      />
+    </template>
+  </Grid>
 </template>

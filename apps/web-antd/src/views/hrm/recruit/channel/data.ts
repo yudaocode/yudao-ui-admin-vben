@@ -4,12 +4,12 @@ import type { HrmRecruitChannelApi } from '#/api/hrm/recruit/channel';
 
 import { markRaw } from 'vue';
 
-import { z } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { z } from '#/adapter/form';
+
 import ChannelSelect from './components/channel-select.vue';
-// TODO @AI（glm5.3 flash）：z 改从 #/adapter/form 引入（对齐 system/user/data.ts），不要从 @vben/common-ui 导入。
 
 /** 列表搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

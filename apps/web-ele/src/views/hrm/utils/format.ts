@@ -144,15 +144,17 @@ export function formatHrmDays(value?: null | number): string {
 }
 
 /** 格式化 HRM 日期时间 */
-export function formatHrmDateTime(value?: null | number): string {
-  if (value === undefined || value === null) {
+export function formatHrmDateTime(
+  value?: Date | null | number | string,
+): string {
+  if (value === undefined || value === null || value === '') {
     return '-';
   }
   return String(formatDateTime(value));
 }
 
 /** 格式化 HRM 日期 */
-export function formatHrmDate(value?: null | number): string {
+export function formatHrmDate(value?: Date | null | number | string): string {
   return formatHrmDateTime(value);
 }
 

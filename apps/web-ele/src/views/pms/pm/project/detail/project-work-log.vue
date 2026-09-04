@@ -15,11 +15,9 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProjectWorkItemWorkLogReport } from '#/api/pms/pm/workitem/worklog';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
-import { useGridColumns, useSearchFormSchema } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectWorkLog' });
-
-// TODO @AI：搜索 schema 命名改 useGridFormSchema。已用 VXE 的话补 toolbarConfig。
 
 const props = defineProps<{
   editable: boolean;
@@ -51,7 +49,7 @@ const tableRows = computed<ReportRow[]>(() =>
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(handleCreateTimeChange),
+    schema: useGridFormSchema(handleCreateTimeChange),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -84,7 +82,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'rowKey',
       isHover: true,
     },
-    toolbarConfig: { enabled: false },
+    toolbarConfig: { refresh: true, search: true },
     treeConfig: {
       childrenField: 'children',
       expandAll: true,

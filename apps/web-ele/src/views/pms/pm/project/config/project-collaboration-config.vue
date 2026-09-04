@@ -9,9 +9,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
-import { ElButton } from 'element-plus';
-
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { PmsWorkItemConfigurationOptions } from '#/views/pms/pm/utils/constants';
 import WorkItemStatusList from '#/views/pms/pm/workitem/status/status-list.vue';
 
@@ -19,7 +17,6 @@ import { useCollaborationConfigColumns } from './data';
 
 defineOptions({ name: 'PmsProjectCollaborationConfig' });
 
-// TODO @AI：操作列用 TableAction，不要手写 Button。connectedComponent 补 destroyOnClose。
 const props = defineProps<{ projectId: number; projectType: number }>();
 
 const configurationList = computed(() =>
@@ -84,14 +81,18 @@ function openStatusList(row: PmsWorkItemConfiguration) {
     <!-- 协作配置列表 -->
     <Grid>
       <template #action="{ row }">
-        <ElButton
-          v-access:code="['pms:pm:work-item:update']"
-          link
-          type="primary"
-          @click="openStatusList(row)"
-        >
-          状态设置
-        </ElButton>
+        <TableAction
+          :actions="[
+            {
+              label: '状态设置',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['pms:pm:work-item:update'],
+              onClick: () => openStatusList(row),
+            },
+          ]"
+        />
       </template>
     </Grid>
 

@@ -65,11 +65,19 @@ export function formatDateWithWeekday(date: string) {
   return `${dayjs(date).format('MM-DD')}/周${'日一二三四五六'[dayjs(date).day()]}`;
 }
 
+/** 格式化 PMS 日期，空值统一显示为短横线 */
+export function formatPmsDate(
+  date?: Date | number | string,
+  format = 'YYYY-MM-DD',
+) {
+  return date ? dayjs(date).format(format) : '-';
+}
+
 /** 移除 HTML 标签并合并空白字符 */
 export function stripHtmlTags(content: string) {
   return content
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replaceAll(/<[^>]+>/g, ' ')
+    .replaceAll(/\s+/g, ' ')
     .trim();
 }
 

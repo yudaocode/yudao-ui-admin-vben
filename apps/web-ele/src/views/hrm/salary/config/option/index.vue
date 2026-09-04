@@ -1,15 +1,27 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
+import type { SalaryOptionTab } from './data';
+
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { handleTree } from '@vben/utils';
 
-import { ElMessage } from 'element-plus';
+import {
+  ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElMessage,
+  ElSwitch,
+  ElTabPane,
+  ElTabs,
+  ElTag,
+} from 'element-plus';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteSalaryOption,
   getSalaryOptionList,
@@ -21,84 +33,42 @@ import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 import { HrmSalaryOptionType } from '#/views/hrm/utils/constants';
 
+import {
+  filterSalaryOptions,
+  getInactiveSalaryStandardOptions,
+  isEnterpriseSalaryOption,
+  isOptionalSalaryCategory,
+  isSalaryOptionCategory,
+  isSystemStandardSalaryOption,
+  useGridColumns,
+} from './data';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'HrmSalaryOption' });
 
-const loading = ref(false);
-const activeTab = ref('enterprise');
-const list = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
+const activeTab = ref<SalaryOptionTab>('enterprise');
+const sourceOptions = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
 
-const enterpriseOptionList = computed(() =>
-  list.value
-    .filter((item) => !item.systemFlag)
-    .map((item) => ({
-      ...item,
-      children: item.enabled
-        ? (item.children || []).filter((child) => child.enabled)
-        : [],
-    })),
-);
-
-const systemOptionList = computed(() =>
-  list.value.filter((item) => item.systemFlag),
-);
-
-const activeList = computed(() =>
-  activeTab.value === 'enterprise'
-    ? enterpriseOptionList.value
-    : systemOptionList.value,
-);
-
-function isCategory(option: HrmSalaryOptionApi.SalaryOption) {
-  return !option.parentCode;
-}
-
-function isOptionalCategory(option: HrmSalaryOptionApi.SalaryOption) {
-  return isCategory(option) && !!option.templateId && !option.systemFlag;
-}
-
-function isEnterpriseOption(option: HrmSalaryOptionApi.SalaryOption) {
-  return !isCategory(option) && !option.systemFlag;
-}
-
-function isSystemStandardOption(option: HrmSalaryOptionApi.SalaryOption) {
-  return !isCategory(option) && !!option.templateId && option.systemFlag;
+async function queryOptions() {
+  sourceOptions.value = await getSalaryOptionList();
+  return filterSalaryOptions(sourceOptions.value, activeTab.value);
 }
 
 function getInactiveStandardOptions(category: HrmSalaryOptionApi.SalaryOption) {
-  const source = list.value.find((item) => item.id === category.id);
-  return (source?.children || []).filter(
-    (item) => item.templateId && !item.enabled,
-  );
-}
-
-async function getList() {
-  loading.value = true;
-  try {
-    const data = await getSalaryOptionList();
-    list.value = handleTree(
-      data,
-      'code',
-      'parentCode',
-    ) as HrmSalaryOptionApi.SalaryOption[];
-  } finally {
-    loading.value = false;
-  }
+  return getInactiveSalaryStandardOptions(sourceOptions.value, category);
 }
 
 async function handleUpdateEnabled(option: HrmSalaryOptionApi.SalaryOption) {
   try {
     await updateSalaryOptionEnabled(option.id, option.enabled);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    await getList();
-  } catch {
-    await getList();
+  } finally {
+    await gridApi.query();
   }
 }
 
@@ -106,16 +76,15 @@ async function handleUpdateVisible(option: HrmSalaryOptionApi.SalaryOption) {
   try {
     await updateSalaryOptionVisible(option.id, option.visible);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    await getList();
-  } catch {
-    await getList();
+  } finally {
+    await gridApi.query();
   }
 }
 
 async function handleSync() {
   await syncSalaryOption();
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  await getList();
+  await gridApi.query();
 }
 
 async function handleAddOption(
@@ -132,19 +101,39 @@ async function handleAddOption(
   if (!option) return;
   await updateSalaryOptionEnabled(option.id, true);
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  await getList();
+  await gridApi.query();
 }
 
 async function handleDelete(option: HrmSalaryOptionApi.SalaryOption) {
-  await confirm('确认删除该工资项吗？');
   await (option.templateId
     ? updateSalaryOptionEnabled(option.id, false)
     : deleteSalaryOption(option.id));
   ElMessage.success($t('ui.actionMessage.operationSuccess'));
-  await getList();
+  await gridApi.query();
 }
 
-getList();
+async function handleTabChange() {
+  gridApi.setGridOptions({ columns: useGridColumns(activeTab.value) });
+  await gridApi.query();
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(activeTab.value),
+    height: 'auto',
+    pagerConfig: { enabled: false },
+    proxyConfig: { ajax: { query: queryOptions } },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { refresh: true },
+    treeConfig: {
+      parentField: 'parentCode',
+      rowField: 'code',
+      transform: true,
+      expandAll: true,
+      reserve: true,
+    },
+  } as VxeTableGridOptions<HrmSalaryOptionApi.SalaryOption>,
+});
 </script>
 
 <template>
@@ -155,123 +144,110 @@ getList();
         url="https://doc.iocoder.cn/hrm/salary/config/"
       />
     </template>
-    <FormModal @success="getList" />
-    <ElCard>
-      <div class="mb-4 flex items-start justify-between">
-        <ElTabs v-model="activeTab" class="flex-1">
+    <FormModal @success="gridApi.query" />
+    <Grid table-title="工资项列表">
+      <template #toolbar-actions>
+        <ElTabs v-model="activeTab" class="w-full" @change="handleTabChange">
           <ElTabPane label="企业可选项" name="enterprise" />
           <ElTabPane label="系统默认项" name="system" />
         </ElTabs>
-        <ElButton
-          v-access:code="['hrm:salary:option:update']"
-          class="ml-4"
-          @click="handleSync"
+      </template>
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: '同步标准薪资项',
+              type: 'primary',
+              auth: ['hrm:salary:option:update'],
+              onClick: handleSync,
+            },
+          ]"
+        />
+      </template>
+      <template #type="{ row }">
+        <ElTag v-if="isSalaryOptionCategory(row)" type="info">分类</ElTag>
+        <ElTag v-else-if="row.templateId" type="warning">标准项</ElTag>
+        <ElTag v-else>自定义项</ElTag>
+      </template>
+      <template #optionType="{ row }">
+        <DictTag
+          v-if="
+            !isSalaryOptionCategory(row) &&
+            row.type !== HrmSalaryOptionType.CALCULATED
+          "
+          :type="DICT_TYPE.HRM_SALARY_OPTION_TYPE"
+          :value="row.type"
+        />
+        <span v-else>-</span>
+      </template>
+      <template #tax="{ row }">
+        <DictTag
+          v-if="!isSalaryOptionCategory(row)"
+          :type="DICT_TYPE.HRM_SALARY_YES_NO"
+          :value="row.taxEnabled ? 1 : 0"
+        />
+        <span v-else>-</span>
+      </template>
+      <template #status="{ row }">
+        <ElSwitch
+          v-if="activeTab === 'enterprise' && isOptionalSalaryCategory(row)"
+          v-model="row.enabled"
+          @change="handleUpdateEnabled(row)"
+        />
+        <ElSwitch
+          v-else-if="
+            activeTab === 'system' && isSystemStandardSalaryOption(row)
+          "
+          v-model="row.visible"
+          @change="handleUpdateVisible(row)"
+        />
+        <span v-else>-</span>
+      </template>
+      <template #actions="{ row }">
+        <ElDropdown
+          v-if="isOptionalSalaryCategory(row) && row.enabled"
+          trigger="click"
         >
-          同步标准薪资项
-        </ElButton>
-      </div>
-      <ElTable
-        v-loading="loading"
-        border
-        :data="activeList"
-        default-expand-all
-        row-key="id"
-      >
-        <ElTableColumn label="薪资项" prop="name" />
-        <ElTableColumn label="类型" width="100">
-          <template #default="{ row }">
-            <ElTag v-if="isCategory(row)" type="info">分类</ElTag>
-            <ElTag v-else-if="row.templateId" type="warning">标准项</ElTag>
-            <ElTag v-else>自定义项</ElTag>
+          <ElButton
+            v-access:code="['hrm:salary:option:create']"
+            link
+            type="primary"
+          >
+            添加薪资项
+          </ElButton>
+          <template #dropdown>
+            <ElDropdownMenu>
+              <ElDropdownItem
+                v-for="option in getInactiveStandardOptions(row)"
+                :key="option.code"
+                @click="handleAddOption(option.code, row)"
+              >
+                {{ option.name }}
+              </ElDropdownItem>
+              <ElDropdownItem divided @click="handleAddOption('custom', row)">
+                自定义薪资项
+              </ElDropdownItem>
+            </ElDropdownMenu>
           </template>
-        </ElTableColumn>
-        <ElTableColumn label="加减类型" width="100">
-          <template #default="{ row }">
-            <DictTag
-              v-if="
-                !isCategory(row) && row.type !== HrmSalaryOptionType.CALCULATED
-              "
-              :type="DICT_TYPE.HRM_SALARY_OPTION_TYPE"
-              :value="row.type"
-            />
-            <span v-else>-</span>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn label="计税" width="90">
-          <template #default="{ row }">
-            <DictTag
-              v-if="!isCategory(row)"
-              :type="DICT_TYPE.HRM_SALARY_YES_NO"
-              :value="row.taxEnabled ? 1 : 0"
-            />
-            <span v-else>-</span>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          :label="activeTab === 'enterprise' ? '分类状态' : '显示状态'"
-          width="100"
-        >
-          <template #default="{ row }">
-            <ElSwitch
-              v-if="activeTab === 'enterprise' && isOptionalCategory(row)"
-              v-model="row.enabled"
-              @change="handleUpdateEnabled(row)"
-            />
-            <ElSwitch
-              v-else-if="activeTab === 'system' && isSystemStandardOption(row)"
-              v-model="row.visible"
-              @change="handleUpdateVisible(row)"
-            />
-            <span v-else>-</span>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn label="备注" prop="remark" />
-        <ElTableColumn
-          v-if="activeTab === 'enterprise'"
-          label="操作"
-          width="150"
-        >
-          <template #default="{ row }">
-            <template v-if="isOptionalCategory(row)">
-              <ElDropdown v-if="row.enabled" trigger="click">
-                <ElButton
-                  v-access:code="['hrm:salary:option:create']"
-                  link
-                  type="primary"
-                >
-                  添加薪资项
-                </ElButton>
-                <template #dropdown>
-                  <ElDropdownMenu>
-                    <ElDropdownItem
-                      v-for="option in getInactiveStandardOptions(row)"
-                      :key="option.code"
-                      @click="handleAddOption(option.code, row)"
-                    >
-                      {{ option.name }}
-                    </ElDropdownItem>
-                    <ElDivider v-if="getInactiveStandardOptions(row).length" />
-                    <ElDropdownItem @click="handleAddOption('custom', row)">
-                      自定义薪资项
-                    </ElDropdownItem>
-                  </ElDropdownMenu>
-                </template>
-              </ElDropdown>
-              <span v-else>-</span>
-            </template>
-            <ElButton
-              v-else-if="isEnterpriseOption(row)"
-              v-access:code="['hrm:salary:option:delete']"
-              link
-              type="danger"
-              @click="handleDelete(row)"
-            >
-              删除
-            </ElButton>
-            <span v-else>-</span>
-          </template>
-        </ElTableColumn>
-      </ElTable>
-    </ElCard>
+        </ElDropdown>
+        <TableAction
+          v-else
+          :actions="[
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:salary:option:delete'],
+              ifShow: isEnterpriseSalaryOption(row),
+              popConfirm: {
+                title: `确认删除“${row.name}”吗？`,
+                confirm: () => handleDelete(row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：Grid 补 toolbarConfig: { refresh: true, search: true }，对齐 system/user，三端同步。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessment';
 
@@ -56,6 +55,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'employeeId', isHover: true },
     checkboxConfig: { highlight: true },
+    toolbarConfig: { refresh: true, search: true },
   } as VxeTableGridOptions<HrmPerformanceAssessmentApi.PerformanceArchiveEmployee>,
   gridEvents: {
     checkboxAll: ({

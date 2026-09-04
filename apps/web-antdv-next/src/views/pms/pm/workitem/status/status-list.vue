@@ -20,6 +20,7 @@ import {
 } from 'antdv-next';
 import draggable from 'vuedraggable';
 
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import {
   createWorkItemStatus,
   getWorkItemBoardConfig,
@@ -34,20 +35,16 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 
-import StatusDeleteForm from './status-delete-form.vue';
+import StatusDeleteForm from './modules/delete-form.vue';
 
 defineOptions({ name: 'PmsWorkItemStatusList' });
 
-// TODO @AI：拖拽看板可以保留自定义；新增状态字段能否抽 schema？操作对齐 TableAction。下面「定义 success 事件」注释删掉。
 const emit = defineEmits(['success']);
 
 interface WorkItemBoard extends PmsWorkItemStatusApi.WorkItemBoard {
   statuses: PmsWorkItemStatusApi.WorkItemStatus[];
 }
 
-// 定义 success 事件，用于操作成功后的回调
-
-const loading = ref(false); // 数据提交中
 const projectId = ref(0); // 项目编号
 const type = ref<number>(PmsWorkItemType.TASK); // 工作项类型
 const statusList = ref<PmsWorkItemStatusApi.WorkItemStatus[]>([]); // 状态列表
@@ -63,7 +60,7 @@ const [StatusDeleteFormModal, statusDeleteFormModalApi] = useVbenModal({
 
 /** 查询状态列表 */
 async function getStatusList() {
-  loading.value = true;
+  modalApi.lock();
   try {
     statusList.value = await getWorkItemStatusList(projectId.value, type.value);
     defaultStatusId.value = statusList.value.find(
@@ -71,7 +68,7 @@ async function getStatusList() {
     )?.id;
     await getBoardConfig();
   } finally {
-    loading.value = false;
+    modalApi.unlock();
   }
 }
 
@@ -172,7 +169,7 @@ async function submitForm() {
   }
 
   // 创建或更新状态配置
-  loading.value = true;
+  modalApi.lock();
   try {
     for (const status of statusList.value) {
       if (status.id < 0) {
@@ -220,7 +217,7 @@ async function submitForm() {
     // 发送操作成功的事件
     emit('success');
   } finally {
-    loading.value = false;
+    modalApi.unlock();
   }
 }
 
@@ -301,14 +298,18 @@ const [Modal, modalApi] = useVbenModal({
               >
                 初始
               </Radio>
-              <Button
-                :disabled="element.id === defaultStatusId"
-                danger
-                type="link"
-                @click="handleDelete(element)"
-              >
-                删除
-              </Button>
+              <TableAction
+                :actions="[
+                  {
+                    label: '删除',
+                    type: 'link',
+                    danger: true,
+                    icon: ACTION_ICON.DELETE,
+                    disabled: element.id === defaultStatusId,
+                    onClick: handleDelete.bind(null, element),
+                  },
+                ]"
+              />
             </div>
           </template>
         </draggable>
@@ -345,9 +346,17 @@ const [Modal, modalApi] = useVbenModal({
                   :maxlength="50"
                   placeholder="请输入看板列名称"
                 />
-                <Button danger type="link" @click="handleDeleteBoard(index)">
-                  删除列
-                </Button>
+                <TableAction
+                  :actions="[
+                    {
+                      label: '删除列',
+                      type: 'link',
+                      danger: true,
+                      icon: ACTION_ICON.DELETE,
+                      onClick: handleDeleteBoard.bind(null, index),
+                    },
+                  ]"
+                />
               </div>
               <draggable
                 v-model="element.statuses"

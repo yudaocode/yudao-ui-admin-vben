@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
+
+import { nextTick, watch } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
@@ -11,17 +13,51 @@ import {
   DescriptionsItem,
   Empty,
   Row,
-  Table,
 } from 'antdv-next';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { DictTag } from '#/components/dict-tag';
 import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
 
+import { useSalaryOptionGridColumns } from '../../data';
+
 defineOptions({ name: 'HrmSalaryEmployeeInfoDetails' });
 
-defineProps<{
+const props = defineProps<{
   salaryEmployee: HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo;
 }>();
+
+const gridOptions = {
+  border: true,
+  columns: useSalaryOptionGridColumns(),
+  data: [],
+  minHeight: 180,
+  pagerConfig: { enabled: false },
+  rowConfig: { keyField: 'code', isHover: true },
+  toolbarConfig: { enabled: false },
+} as VxeTableGridOptions<any>;
+
+const [RegularGrid, regularGridApi] = useVbenVxeGrid({ gridOptions });
+const [ProbationGrid, probationGridApi] = useVbenVxeGrid({
+  gridOptions: { ...gridOptions },
+});
+
+watch(
+  () => [
+    props.salaryEmployee.salaryOptions,
+    props.salaryEmployee.probationSalaryOptions,
+  ],
+  async () => {
+    await nextTick();
+    await Promise.all([
+      regularGridApi.grid.reloadData(props.salaryEmployee.salaryOptions || []),
+      probationGridApi.grid.reloadData(
+        props.salaryEmployee.probationSalaryOptions || [],
+      ),
+    ]);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -62,58 +98,12 @@ defineProps<{
     <Row :gutter="16">
       <Col :span="12">
         <Card class="mb-4" title="正式工资明细">
-          <Table
-            bordered
-            size="small"
-            :columns="[
-              { title: '薪资项', dataIndex: 'name', key: 'name' },
-              {
-                title: '编码',
-                dataIndex: 'code',
-                key: 'code',
-                align: 'center',
-                width: 100,
-              },
-              { title: '金额', key: 'value', align: 'right', width: 120 },
-            ]"
-            :data-source="salaryEmployee.salaryOptions || []"
-            :pagination="false"
-            :row-key="(row) => row.code ?? 0"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'value'">
-                {{ formatHrmMoney(record.value) }}
-              </template>
-            </template>
-          </Table>
+          <RegularGrid class="w-full" />
         </Card>
       </Col>
       <Col :span="12">
         <Card class="mb-4" title="试用期工资明细">
-          <Table
-            bordered
-            size="small"
-            :columns="[
-              { title: '薪资项', dataIndex: 'name', key: 'name' },
-              {
-                title: '编码',
-                dataIndex: 'code',
-                key: 'code',
-                align: 'center',
-                width: 100,
-              },
-              { title: '金额', key: 'value', align: 'right', width: 120 },
-            ]"
-            :data-source="salaryEmployee.probationSalaryOptions || []"
-            :pagination="false"
-            :row-key="(row) => row.code ?? 0"
-          >
-            <template #bodyCell="{ column, record }">
-              <template v-if="column.key === 'value'">
-                {{ formatHrmMoney(record.value) }}
-              </template>
-            </template>
-          </Table>
+          <ProbationGrid class="w-full" />
         </Card>
       </Col>
     </Row>

@@ -38,9 +38,9 @@ import {
 } from '#/views/pms/pm/utils/constants';
 
 import WorkItemDetail from '../detail/work-item-detail.vue';
-import WorkItemForm from '../form/work-item-form.vue';
 import WorkItemLabelSelect from '../label/work-item-label-select.vue';
 import { useGridColumns } from './data';
+import WorkItemForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsWorkItemAllList' });
 

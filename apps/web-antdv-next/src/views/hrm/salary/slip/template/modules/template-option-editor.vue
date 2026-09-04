@@ -1,16 +1,19 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipTemplateApi } from '#/api/hrm/salary/slip/template';
 
-import { computed } from 'vue';
+import { computed, nextTick, watch } from 'vue';
 
-import { Button, Input, Select, Switch, Table, Tag } from 'antdv-next';
+import { Input, Select, Switch, Tag } from 'antdv-next';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   HrmSalaryOptionCategoryCode,
   HrmSalaryOptionCode,
   HrmSalarySlipTemplateOptionType,
 } from '#/views/hrm/utils/constants';
+
+import { useTemplateOptionGridColumns } from '../data';
 
 defineOptions({ name: 'HrmSalarySlipTemplateOptionEditor' });
 
@@ -19,12 +22,8 @@ const props = withDefaults(
     maxHeight?: number;
     modelValue?: HrmSalarySlipTemplateApi.TemplateOption[];
   }>(),
-  {
-    maxHeight: 420,
-    modelValue: () => [],
-  },
+  { maxHeight: 420, modelValue: () => [] },
 );
-
 const emit = defineEmits<{
   remove: [option: HrmSalarySlipTemplateApi.TemplateOption];
   'update:modelValue': [options: HrmSalarySlipTemplateApi.TemplateOption[]];
@@ -65,6 +64,28 @@ const displayOptions = computed(() => {
   return result;
 });
 
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useTemplateOptionGridColumns(),
+    data: [],
+    maxHeight: props.maxHeight,
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmSalarySlipTemplateApi.TemplateOption>,
+});
+
+watch(
+  displayOptions,
+  async (options) => {
+    await nextTick();
+    await gridApi.grid.reloadData(options);
+  },
+  { immediate: true },
+);
+
 function compareOption(
   first: HrmSalarySlipTemplateApi.TemplateOption,
   second: HrmSalarySlipTemplateApi.TemplateOption,
@@ -82,11 +103,10 @@ function addCategory() {
   const codes = (props.modelValue || [])
     .map((item) => item.code)
     .filter((code): code is number => code !== undefined);
-  const code = Math.min(-1, ...codes.filter((item) => item < 0)) - 1;
   emit('update:modelValue', [
     ...(props.modelValue || []),
     {
-      code,
+      code: Math.min(-1, ...codes.filter((item) => item < 0)) - 1,
       hidden: false,
       name: '新分类',
       sort: getNextSort(),
@@ -96,15 +116,17 @@ function addCategory() {
 }
 
 function removeOption(option: HrmSalarySlipTemplateApi.TemplateOption) {
-  const options = (props.modelValue || [])
-    .filter((item) => item !== option)
-    .map((item) =>
-      option.type === HrmSalarySlipTemplateOptionType.CATEGORY &&
-      item.parentCode === option.code
-        ? { ...item, parentCode: undefined }
-        : item,
-    );
-  emit('update:modelValue', options);
+  emit(
+    'update:modelValue',
+    (props.modelValue || [])
+      .filter((item) => item !== option)
+      .map((item) =>
+        option.type === HrmSalarySlipTemplateOptionType.CATEGORY &&
+        item.parentCode === option.code
+          ? { ...item, parentCode: undefined }
+          : item,
+      ),
+  );
   emit('remove', option);
 }
 
@@ -121,11 +143,8 @@ function moveOption(
   offset: number,
 ) {
   const siblings = getSiblingOptions(option);
-  const index = siblings.indexOf(option);
-  const target = siblings[index + offset];
-  if (!target) {
-    return;
-  }
+  const target = siblings[siblings.indexOf(option) + offset];
+  if (!target) return;
   const sort = option.sort;
   option.sort = target.sort;
   target.sort = sort;
@@ -193,104 +212,98 @@ defineExpose({ getNormalizedOptions, validate });
 <template>
   <div class="w-full">
     <div class="mb-3 flex items-center gap-3">
-      <Button type="primary" @click="addCategory">新增分类</Button>
+      <TableAction
+        :actions="[
+          {
+            label: '新增分类',
+            type: 'primary',
+            icon: ACTION_ICON.ADD,
+            onClick: addCategory,
+          },
+        ]"
+      />
       <slot name="actions"></slot>
     </div>
-    <Table
-      :columns="[
-        { dataIndex: 'type', title: '类型', width: 80 },
-        { dataIndex: 'name', title: '名称', width: 160 },
-        { dataIndex: 'parentCode', title: '所属分类', width: 150 },
-        { dataIndex: 'hidden', title: '显示', width: 80 },
-        { dataIndex: 'remark', title: '备注', width: 190 },
-        { dataIndex: 'action', title: '操作', width: 138 },
-      ]"
-      :data-source="displayOptions"
-      :pagination="false"
-      :scroll="{ y: maxHeight }"
-      bordered
-      row-key="code"
-      size="small"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.dataIndex === 'type'">
-          <Tag
-            :color="
-              record.type === HrmSalarySlipTemplateOptionType.CATEGORY
-                ? 'blue'
-                : 'default'
-            "
-          >
-            {{
-              record.type === HrmSalarySlipTemplateOptionType.CATEGORY
-                ? '分类'
-                : '工资项'
-            }}
-          </Tag>
-        </template>
-        <template v-else-if="column.dataIndex === 'name'">
-          <Input
-            v-model:value="record.name"
-            :maxlength="64"
-            placeholder="请输入名称"
-          />
-        </template>
-        <template v-else-if="column.dataIndex === 'parentCode'">
-          <Select
-            v-if="record.type === HrmSalarySlipTemplateOptionType.ITEM"
-            v-model:value="record.parentCode"
-            :options="
-              categoryOptions.map((category) => ({
-                label: category.name,
-                value: category.code,
-              }))
-            "
-            allow-clear
-            class="w-full"
-            placeholder="不分类"
-          />
-          <span v-else>-</span>
-        </template>
-        <template v-else-if="column.dataIndex === 'hidden'">
-          <Switch
-            :checked="!record.hidden"
-            :disabled="record.code === HrmSalaryOptionCode.REAL_PAY"
-            @change="(checked) => handleVisibleChange(record, Boolean(checked))"
-          />
-        </template>
-        <template v-else-if="column.dataIndex === 'remark'">
-          <Input
-            v-model:value="record.remark"
-            allow-clear
-            :maxlength="255"
-            placeholder="展示在工资条提示中"
-          />
-        </template>
-        <template v-else-if="column.dataIndex === 'action'">
-          <Button
-            :disabled="isFirstOption(record)"
-            type="link"
-            @click="moveOption(record, -1)"
-          >
-            上移
-          </Button>
-          <Button
-            :disabled="isLastOption(record)"
-            type="link"
-            @click="moveOption(record, 1)"
-          >
-            下移
-          </Button>
-          <Button
-            :disabled="record.code === HrmSalaryOptionCode.REAL_PAY"
-            danger
-            type="link"
-            @click="removeOption(record)"
-          >
-            删除
-          </Button>
-        </template>
+    <Grid class="w-full">
+      <template #type="{ row }">
+        <Tag
+          :color="
+            row.type === HrmSalarySlipTemplateOptionType.CATEGORY
+              ? 'blue'
+              : 'default'
+          "
+        >
+          {{
+            row.type === HrmSalarySlipTemplateOptionType.CATEGORY
+              ? '分类'
+              : '工资项'
+          }}
+        </Tag>
       </template>
-    </Table>
+      <template #name="{ row }">
+        <Input
+          v-model:value="row.name"
+          :maxlength="64"
+          placeholder="请输入名称"
+        />
+      </template>
+      <template #parentCode="{ row }">
+        <Select
+          v-if="row.type === HrmSalarySlipTemplateOptionType.ITEM"
+          v-model:value="row.parentCode"
+          :options="
+            categoryOptions.map((category) => ({
+              label: category.name,
+              value: category.code,
+            }))
+          "
+          allow-clear
+          class="w-full"
+          placeholder="不分类"
+        />
+        <span v-else>-</span>
+      </template>
+      <template #hidden="{ row }">
+        <Switch
+          :checked="!row.hidden"
+          :disabled="row.code === HrmSalaryOptionCode.REAL_PAY"
+          @change="(checked) => handleVisibleChange(row, Boolean(checked))"
+        />
+      </template>
+      <template #remark="{ row }">
+        <Input
+          v-model:value="row.remark"
+          allow-clear
+          :maxlength="255"
+          placeholder="展示在工资条提示中"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '上移',
+              type: 'link',
+              disabled: isFirstOption(row),
+              onClick: moveOption.bind(null, row, -1),
+            },
+            {
+              label: '下移',
+              type: 'link',
+              disabled: isLastOption(row),
+              onClick: moveOption.bind(null, row, 1),
+            },
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              disabled: row.code === HrmSalaryOptionCode.REAL_PAY,
+              onClick: removeOption.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </div>
 </template>

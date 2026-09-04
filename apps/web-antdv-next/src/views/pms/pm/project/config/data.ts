@@ -21,7 +21,7 @@ export function useAnnouncementColumns(
       align: 'left',
       field: 'content',
       title: '公告内容',
-      width: 360,
+      minWidth: 360,
       slots: { default: 'content' },
     },
     {
@@ -34,7 +34,7 @@ export function useAnnouncementColumns(
       align: 'left',
       field: 'creatorUserName',
       title: '发布人',
-      width: 140,
+      minWidth: 140,
     },
     {
       align: 'left',
@@ -121,12 +121,12 @@ export function useCollaborationConfigColumns(): VxeTableGridOptions<PmsWorkItem
     {
       field: 'projectTypeName',
       title: '适用项目',
-      width: 220,
+      minWidth: 220,
     },
     {
       field: 'description',
       title: '说明',
-      minWidth: 240,
+      minWidth: 360,
     },
     {
       align: 'center',
@@ -201,13 +201,13 @@ export function useProjectMemberGridColumns(
     {
       field: 'nickname',
       title: '成员',
-      width: 200,
+      minWidth: 200,
       slots: { default: 'nickname' },
     },
     {
       field: 'level',
       title: '项目级别',
-      width: 160,
+      minWidth: 160,
       cellRender: {
         name: 'CellDict',
         props: { type: DICT_TYPE.PMS_PROJECT_MEMBER_LEVEL },

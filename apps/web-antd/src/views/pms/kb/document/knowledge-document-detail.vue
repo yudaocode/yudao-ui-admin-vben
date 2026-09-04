@@ -40,8 +40,6 @@ import KnowledgeDocumentComment from './knowledge-document-comment.vue';
 
 defineOptions({ name: 'PmsKnowledgeDocumentDetail' });
 
-// TODO @AI：详情可以保留自定义；三端模板差一截，对齐操作区和附件展示。
-
 const props = defineProps<{
   document: PmsKnowledgeDocumentApi.KnowledgeDocument;
   labels: PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[];
@@ -94,8 +92,7 @@ async function handleDelete() {
     message.success('删除成功');
     // 通知父组件刷新目录树
     emit('delete');
-  } catch {
-  }
+  } catch {}
 }
 </script>
 
@@ -109,10 +106,17 @@ async function handleDelete() {
         {{ document.title }}
       </div>
       <div class="mt-2 flex items-center gap-2.5 text-xs text-muted-foreground">
-        <span v-if="document.creatorUserName">{{ document.creatorUserName }} 创建于</span>
+        <span v-if="document.creatorUserName">
+          {{ document.creatorUserName }} 创建于
+        </span>
         <span>{{ formatDateTime(document.createTime) }}</span>
         <Tag :color="getKnowledgeDocumentStatusTagType(document.status)">
-          {{ getDictLabel(DICT_TYPE.PMS_KNOWLEDGE_DOCUMENT_STATUS, document.status) || '-' }}
+          {{
+            getDictLabel(
+              DICT_TYPE.PMS_KNOWLEDGE_DOCUMENT_STATUS,
+              document.status,
+            ) || '-'
+          }}
         </Tag>
       </div>
       <div
@@ -224,7 +228,9 @@ async function handleDelete() {
         >
           下载文件
         </a>
-        <span v-else class="text-xs text-muted-foreground">当前角色仅可在线预览</span>
+        <span v-else class="text-xs text-muted-foreground">
+          当前角色仅可在线预览
+        </span>
       </div>
       <FilePreview
         :downloadable="document.downloadStatus"

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
 import type { HrmEmployeeContactApi } from '#/api/hrm/employee/contact';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -30,8 +29,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-const title = computed(() => (editingId.value ? '修改联系人' : '新增联系人'));
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -45,7 +42,10 @@ const [Modal, modalApi] = useVbenModal({
             id: editingId.value,
             employeeId: employeeId.value,
           })
-        : createEmployeeContact({ ...data, employeeId: employeeId.value }));
+        : createEmployeeContact({
+            ...data,
+            employeeId: employeeId.value,
+          }));
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -53,22 +53,27 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { employeeId: currentEmployeeId, row } = modalApi.getData() as {
+      employeeId: number;
+      row?: HrmEmployeeContactApi.EmployeeContact;
+    };
+    employeeId.value = currentEmployeeId;
+    editingId.value = row?.id;
+    modalApi.setState({ title: editingId.value ? '修改联系人' : '新增联系人' });
+    await formApi.reset();
+    await formApi.setValues({
+      sort: 1,
+      ...row,
+      employeeId: currentEmployeeId,
+    });
+  },
 });
-
-function open(empId: number, row?: HrmEmployeeContactApi.EmployeeContact) {
-  employeeId.value = empId;
-  editingId.value = row?.id;
-  modalApi.setState({ title: title.value });
-  formApi.reset();
-  formApi.setValues({ sort: 1, ...row, employeeId: empId });
-  modalApi.open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>
-  <Modal :title="title" class="w-[680px]">
+  <Modal class="w-[680px]">
     <Form class="mx-4" />
   </Modal>
 </template>

@@ -1,133 +1,119 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：子列表手写 Table 改 useVbenVxeGrid（或至少三端结构一致），操作列走 TableAction popConfirm，对齐 employee 主列表。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeEducationExperienceApi } from '#/api/hrm/employee/education-experience';
 
-import { onMounted, ref } from 'vue';
-
-import { useAccess } from '@vben/access';
-import { confirm } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
-import { ElButton, ElMessage, ElTable, ElTableColumn } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteEmployeeEducationExperience,
   getEmployeeEducationExperienceList,
 } from '#/api/hrm/employee/education-experience';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
-import {
-  formatHrmDateTime,
-  formatHrmEmployeeTeachingMethod,
-} from '#/views/hrm/utils/format';
 
+import { useEducationGridColumns } from '../data';
 import Form from './education-form.vue';
 
 defineOptions({ name: 'HrmEmployeeEducationList' });
 
 const props = defineProps<{ employeeId: number }>();
-const { hasAccessByCodes } = useAccess();
 
-const loading = ref(false);
-const list = ref<
-  HrmEmployeeEducationExperienceApi.EmployeeEducationExperience[]
->([]);
-const formRef = ref<InstanceType<typeof Form>>();
-
-async function getList() {
-  loading.value = true;
-  try {
-    list.value = await getEmployeeEducationExperienceList(props.employeeId);
-  } finally {
-    loading.value = false;
-  }
-}
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
 
 function openForm(
   row?: HrmEmployeeEducationExperienceApi.EmployeeEducationExperience,
 ) {
-  formRef.value?.open(props.employeeId, row);
+  formModalApi.setData({ employeeId: props.employeeId, row }).open();
 }
 
-async function handleDelete(id?: number) {
-  if (!id) return;
-  try {
-    await confirm($t('ui.actionMessage.deleteConfirm'));
-    await deleteEmployeeEducationExperience(id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    await getList();
-  } catch {}
+async function handleDelete(
+  row: HrmEmployeeEducationExperienceApi.EmployeeEducationExperience,
+) {
+  if (!row.id) return;
+  await deleteEmployeeEducationExperience(row.id);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  await gridApi.query();
 }
 
-onMounted(() => getList());
-defineExpose({ getList });
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useEducationGridColumns(),
+    minHeight: 200,
+    pagerConfig: { enabled: false },
+    proxyConfig: {
+      ajax: {
+        query: () => getEmployeeEducationExperienceList(props.employeeId),
+      },
+    },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true },
+  } as VxeTableGridOptions<HrmEmployeeEducationExperienceApi.EmployeeEducationExperience>,
+});
 </script>
 
 <template>
-  <div>
-    <div
-      v-if="hasAccessByCodes(['hrm:employee:update'])"
-      class="mb-3 flex justify-end"
-    >
-      <ElButton type="primary" @click="openForm()">新增</ElButton>
-    </div>
-    <ElTable v-loading="loading" :data="list" border row-key="id" size="small">
-      <ElTableColumn label="学历" min-width="100">
-        <template #default="{ row }">
-          <DictTag
-            v-if="row.education !== null"
-            :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
-            :value="row.education"
-          />
-          <span v-else>-</span>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="毕业院校" min-width="150" prop="graduateSchool" />
-      <ElTableColumn label="专业" min-width="120" prop="major" />
-      <ElTableColumn label="入学日期" min-width="120">
-        <template #default="{ row }">
-          {{ formatHrmDateTime(row.admissionTime) }}
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="毕业日期" min-width="120">
-        <template #default="{ row }">
-          {{ formatHrmDateTime(row.graduationTime) }}
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="教学方式" min-width="110">
-        <template #default="{ row }">
-          {{ formatHrmEmployeeTeachingMethod(row.teachingMethods) }}
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="第一学历" min-width="100">
-        <template #default="{ row }">
-          <DictTag
-            :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
-            :value="row.firstDegree"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn align="center" fixed="right" label="操作" width="140">
-        <template #default="{ row }">
-          <ElButton
-            v-if="hasAccessByCodes(['hrm:employee:update'])"
-            link
-            type="primary"
-            @click="openForm(row)"
-          >
-            编辑
-          </ElButton>
-          <ElButton
-            v-if="hasAccessByCodes(['hrm:employee:delete'])"
-            link
-            type="danger"
-            @click="handleDelete(row.id)"
-          >
-            删除
-          </ElButton>
-        </template>
-      </ElTableColumn>
-    </ElTable>
-    <Form ref="formRef" @success="getList" />
+  <div class="w-full">
+    <Grid table-title="教育经历列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: '新增',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['hrm:employee:update'],
+              onClick: () => openForm(),
+            },
+          ]"
+        />
+      </template>
+      <template #education="{ row }">
+        <DictTag
+          v-if="row.education !== null"
+          :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
+          :value="row.education"
+        />
+        <span v-else>-</span>
+      </template>
+      <template #firstDegree="{ row }">
+        <DictTag
+          :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
+          :value="row.firstDegree"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['hrm:employee:update'],
+              onClick: () => openForm(row),
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:employee:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm'),
+                confirm: () => handleDelete(row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+    <FormModal @success="gridApi.query" />
   </div>
 </template>

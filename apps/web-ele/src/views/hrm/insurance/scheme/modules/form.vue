@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { TableColumnCtx } from 'element-plus';
 
 import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
@@ -22,14 +21,11 @@ import {
   ElInput,
   ElInputNumber,
   ElMessage,
-  ElOption,
-  ElRadioButton,
-  ElRadioGroup,
-  ElSelect,
   ElTable,
   ElTableColumn,
 } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createInsuranceScheme,
   getInsuranceScheme,
@@ -39,7 +35,6 @@ import {
   getInsuranceStandardProjectList,
   getInsuranceStandardTypeList,
 } from '#/api/hrm/insurance/standard';
-import { AreaCascader } from '#/components/area';
 import { $t } from '#/locales';
 import {
   HrmInsuranceProjectType,
@@ -49,6 +44,8 @@ import {
   formatHrmInsuranceProjectName,
   formatHrmMoney,
 } from '#/views/hrm/utils/format';
+
+import { useInsuranceBaseFormSchema } from '../data';
 
 defineOptions({ name: 'HrmInsuranceSchemeForm' });
 
@@ -75,6 +72,38 @@ const insuranceTypeList = ref<{ code: string; label: string; value: string }[]>(
 const formData = ref<HrmInsuranceSchemeApi.InsuranceScheme>(
   createDefaultFormData(),
 );
+let syncingBaseForm = false;
+
+const [BaseForm, baseFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    labelWidth: 118,
+  },
+  async handleValuesChange(values, changedFields) {
+    if (syncingBaseForm) return;
+    if (changedFields.includes('name')) formData.value.name = values.name;
+    if (changedFields.includes('type')) formData.value.type = values.type;
+    if (changedFields.includes('areaId')) {
+      formData.value.areaId = values.areaId;
+      await handleAreaChange(values.areaId);
+      await baseFormApi.updateSchema([
+        {
+          componentProps: { options: insuranceTypeList.value },
+          fieldName: 'householdType',
+        },
+      ]);
+      await baseFormApi.setFieldValue('householdType', '');
+    }
+    if (changedFields.includes('householdType')) {
+      formData.value.householdType = values.householdType || '';
+      await handleHouseTypeChange();
+    }
+  },
+  layout: 'horizontal',
+  schema: useInsuranceBaseFormSchema(),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-3',
+});
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -83,9 +112,6 @@ const dialogTitle = computed(() =>
 );
 
 const formRules = reactive({
-  name: [{ required: true, message: '方案名称不能为空', trigger: 'blur' }],
-  areaId: [{ required: true, message: '参保城市不能为空', trigger: 'change' }],
-  type: [{ required: true, message: '方案类型不能为空', trigger: 'change' }],
   projectList: [{ validator: validateProjectList, trigger: 'change' }],
 });
 
@@ -325,6 +351,8 @@ function getProjectSummaries(param: {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
+    const { valid } = await baseFormApi.validate();
+    if (!valid) return;
     await formRef.value?.validate();
     modalApi.lock();
     try {
@@ -345,6 +373,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       formData.value = createDefaultFormData();
       insuranceTypeList.value = [];
+      await baseFormApi.resetForm();
       return;
     }
     const data = modalApi.getData() as {
@@ -359,6 +388,20 @@ const [Modal, modalApi] = useVbenModal({
     } else {
       formData.value = createDefaultFormData();
     }
+    await baseFormApi.setState({
+      schema: useInsuranceBaseFormSchema(insuranceTypeList.value),
+    });
+    syncingBaseForm = true;
+    try {
+      await baseFormApi.setValues({
+        areaId: formData.value.areaId,
+        householdType: formData.value.householdType,
+        name: formData.value.name,
+        type: formData.value.type,
+      });
+    } finally {
+      syncingBaseForm = false;
+    }
   },
 });
 </script>
@@ -372,54 +415,7 @@ const [Modal, modalApi] = useVbenModal({
       class="mx-4"
       label-width="118px"
     >
-      <div class="grid grid-cols-3 gap-4">
-        <ElFormItem label="方案名称" prop="name">
-          <ElInput
-            v-model="formData.name"
-            maxlength="64"
-            placeholder="请输入方案名称"
-          />
-        </ElFormItem>
-        <ElFormItem label="参保城市" prop="areaId">
-          <AreaCascader
-            v-model="formData.areaId"
-            check-strictly
-            clearable
-            class="w-full"
-            placeholder="请选择参保城市"
-            :selectable-levels="[2, 3]"
-            @update:model-value="handleAreaChange"
-          />
-        </ElFormItem>
-        <ElFormItem label="可选参保方案" prop="householdType">
-          <ElSelect
-            v-model="formData.householdType"
-            clearable
-            class="w-full"
-            filterable
-            :loading="standardLoading"
-            placeholder="请选择参保方案"
-            @change="handleHouseTypeChange"
-          >
-            <ElOption
-              v-for="item in insuranceTypeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </ElSelect>
-        </ElFormItem>
-      </div>
-      <ElFormItem label="方案类型" prop="type">
-        <ElRadioGroup v-model="formData.type">
-          <ElRadioButton :value="HrmInsuranceSchemeType.PROPORTION">
-            设置参保基数和比例
-          </ElRadioButton>
-          <ElRadioButton :value="HrmInsuranceSchemeType.AMOUNT">
-            仅设置参保金额
-          </ElRadioButton>
-        </ElRadioGroup>
-      </ElFormItem>
+      <BaseForm />
       <ElAlert
         :closable="false"
         class="mb-4"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EChartsOption } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsIterationApi } from '#/api/pms/pm/iteration';
@@ -10,13 +10,12 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, Spinner, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { formatDateTime } from '@vben/utils';
-import { getAllPageItems } from '@vben/utils';
+import { formatDateTime, getAllPageItems } from '@vben/utils';
 
 import {
   Button,
@@ -27,7 +26,6 @@ import {
   Dropdown,
   Empty,
   Menu,
-  MenuItem,
   message,
   Progress,
   Row,
@@ -36,7 +34,6 @@ import {
   Timeline,
   TimelineItem,
 } from 'antdv-next';
-import dayjs from 'dayjs';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -47,8 +44,8 @@ import {
 } from '#/api/pms/pm/iteration';
 import { getProject } from '#/api/pms/pm/project';
 import { getWorkItemPage } from '#/api/pms/pm/workitem';
-import IterationForm from '#/views/pms/pm/iteration/components/iteration-form.vue';
-import IterationStartForm from '#/views/pms/pm/iteration/components/iteration-start-form.vue';
+import IterationForm from '#/views/pms/pm/iteration/list/modules/form.vue';
+import IterationStartForm from '#/views/pms/pm/iteration/list/modules/start-form.vue';
 import {
   PmsIterationOverviewCardOptions,
   PmsIterationStatus,
@@ -58,6 +55,7 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   getIterationStatusTagType,
 } from '#/views/pms/pm/utils/format';
 import WorkItemAllList from '#/views/pms/pm/workitem/list/work-item-all-list.vue';
@@ -70,8 +68,6 @@ import {
 } from './data';
 
 defineOptions({ name: 'PmsIterationDetail' });
-
-// TODO @AI：antd/antdv-next 不要用 v-loading。工作项列表已用 VXE 的话，补 toolbarConfig；日期不要页面里 dayjs.format。
 
 const { hasAccessByCodes } = useAccess();
 const { push } = useRouter(); // 路由操作
@@ -114,10 +110,12 @@ const typeDistribution = computed(() =>
     count: overview.value.typeCountMap[option.value] || 0,
   })),
 ); // 事项类型分布
-const distributionChartRef = ref<any>(); // 事项分布图
-const statusTrendChartRef = ref<any>(); // 事项状态趋势图
-const { renderEcharts: renderDistributionChart } = useEcharts(distributionChartRef);
-const { renderEcharts: renderStatusTrendChart } = useEcharts(statusTrendChartRef);
+const distributionChartRef = ref<EchartsUIType>(); // 事项分布图
+const statusTrendChartRef = ref<EchartsUIType>(); // 事项状态趋势图
+const { renderEcharts: renderDistributionChart } =
+  useEcharts(distributionChartRef);
+const { renderEcharts: renderStatusTrendChart } =
+  useEcharts(statusTrendChartRef);
 
 const statusTrendChartOptions = computed<EChartsOption>(() =>
   getStatusTrendChartOptions(overview.value),
@@ -133,12 +131,12 @@ const statusDistribution = computed(() => {
   };
   return getDictOptions(DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE, 'number').map(
     (option) => ({
-    name: option.label,
-    count: statusCountMap[option.value] ?? 0,
-    progressStatus:
-      option.value === PmsWorkItemStatusType.COMPLETED
-        ? ('success' as const)
-        : undefined,
+      name: option.label,
+      count: statusCountMap[option.value] ?? 0,
+      progressStatus:
+        option.value === PmsWorkItemStatusType.COMPLETED
+          ? ('success' as const)
+          : undefined,
     }),
   );
 }); // 当前状态分布
@@ -148,7 +146,7 @@ const teamNames = computed(() => {
     if (item.assigneeUserName) names.add(item.assigneeUserName);
     item.memberUserNames?.forEach((name) => names.add(name));
   });
-  return Array.from(names);
+  return [...names];
 }); // 迭代参与成员
 
 type BurnDown = PmsIterationApi.IterationOverview['burnDowns'][number];
@@ -249,8 +247,7 @@ async function handleComplete() {
     await completeIteration(iteration.value.id!);
     message.success('迭代已完成');
     await handleIterationChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 删除迭代 */
@@ -263,8 +260,7 @@ async function handleDelete() {
     await deleteIteration(iteration.value.id!);
     message.success('删除成功');
     close();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 刷新迭代详情和概览 */
@@ -312,7 +308,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <div v-loading="loading" class="p-4">
+    <Spinner :spinning="loading" class="p-4">
       <!-- 迭代详情标题 -->
       <div class="mb-4 flex items-center justify-between gap-4">
         <div class="flex min-w-0 items-center gap-3">
@@ -328,7 +324,12 @@ onMounted(async () => {
                 v-if="iteration"
                 :color="getIterationStatusTagType(iteration.status)"
               >
-                {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+                {{
+                  getDictLabel(
+                    DICT_TYPE.PMS_ITERATION_STATUS,
+                    iteration.status,
+                  ) || '-'
+                }}
               </Tag>
             </div>
             <div class="mt-1 text-[13px] text-muted-foreground">
@@ -366,21 +367,21 @@ onMounted(async () => {
             </Button>
             <template #popupRender>
               <Menu @click="({ key }: any) => handleIterationCommand(key)">
-                <MenuItem
+                <Menu.Item
                   v-if="hasAccessByCodes(['pms:pm:iteration:update'])"
                   key="edit"
                 >
                   编辑迭代
-                </MenuItem>
+                </Menu.Item>
                 <Menu.Divider
                   v-if="hasAccessByCodes(['pms:pm:iteration:delete'])"
                 />
-                <MenuItem
+                <Menu.Item
                   v-if="hasAccessByCodes(['pms:pm:iteration:delete'])"
                   key="delete"
                 >
                   删除迭代
-                </MenuItem>
+                </Menu.Item>
               </Menu>
             </template>
           </Dropdown>
@@ -408,7 +409,7 @@ onMounted(async () => {
               <div class="mb-2 flex justify-between">
                 <span>迭代进度</span><span>{{ overview.progress }}%</span>
               </div>
-              <Progress :percent="overview.progress" :size="['100%', 12]" />
+              <Progress :percent="overview.progress" :stroke-width="12" />
             </div>
             <!-- 迭代信息与事项类型分布 -->
             <Row :gutter="16">
@@ -416,7 +417,12 @@ onMounted(async () => {
                 <Card title="迭代信息">
                   <Descriptions :column="2" bordered size="small">
                     <DescriptionsItem label="状态">
-                      {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration?.status) || '-' }}
+                      {{
+                        getDictLabel(
+                          DICT_TYPE.PMS_ITERATION_STATUS,
+                          iteration?.status,
+                        ) || '-'
+                      }}
                     </DescriptionsItem>
                     <DescriptionsItem label="负责人">
                       {{ iteration?.ownerUserName || '未设置' }}
@@ -424,14 +430,14 @@ onMounted(async () => {
                     <DescriptionsItem label="开始时间">
                       {{
                         iteration?.startTime
-                          ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                          ? formatPmsDate(iteration.startTime)
                           : '--'
                       }}
                     </DescriptionsItem>
                     <DescriptionsItem label="结束时间">
                       {{
                         iteration?.endTime
-                          ? dayjs(iteration.endTime).format('YYYY-MM-DD')
+                          ? formatPmsDate(iteration.endTime)
                           : '--'
                       }}
                     </DescriptionsItem>
@@ -480,7 +486,7 @@ onMounted(async () => {
                       class="flex-1"
                       :percent="getTypePercentage(item.count)"
                       :status="item.progressStatus"
-                      :size="['100%', 12]"
+                      :stroke-width="12"
                     />
                     <strong class="w-7 text-right">{{ item.count }}</strong>
                   </div>
@@ -526,7 +532,7 @@ onMounted(async () => {
                   @changed="loadData"
                 />
               </Tabs.TabPane>
-              <Tabs.TabPane key="requirement" tab="需求">
+              <Tabs.TabPane key="requirement" tab="需求" lazy>
                 <WorkItemList
                   default-view-mode="board"
                   :editable="editable"
@@ -537,7 +543,7 @@ onMounted(async () => {
                   @changed="loadData"
                 />
               </Tabs.TabPane>
-              <Tabs.TabPane key="task" tab="任务">
+              <Tabs.TabPane key="task" tab="任务" lazy>
                 <WorkItemList
                   default-view-mode="board"
                   :editable="editable"
@@ -548,7 +554,7 @@ onMounted(async () => {
                   @changed="loadData"
                 />
               </Tabs.TabPane>
-              <Tabs.TabPane key="defect" tab="缺陷">
+              <Tabs.TabPane key="defect" tab="缺陷" lazy>
                 <WorkItemList
                   default-view-mode="board"
                   :editable="editable"
@@ -563,7 +569,7 @@ onMounted(async () => {
           </Tabs.TabPane>
         </Tabs>
       </div>
-    </div>
+    </Spinner>
     <!-- 迭代编辑和开始弹窗 -->
     <IterationFormModal @success="handleIterationChanged" />
     <IterationStartFormModal @success="handleIterationChanged" />

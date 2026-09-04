@@ -6,7 +6,7 @@ import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
 import { Button, message, Spin, TabPane, Tabs } from 'antdv-next';
@@ -31,7 +31,10 @@ const activeTab = ref('salaryEmployee');
 const employee = ref({} as HrmEmployeeApi.Employee);
 const salaryEmployee = ref<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>({});
 const changeRecordListRef = ref<InstanceType<typeof ChangeRecordList>>();
-const employeeInfoFormRef = ref<InstanceType<typeof Form>>();
+const [EmployeeInfoModal, employeeInfoModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
 
 function close() {
   tabs.closeCurrentTab();
@@ -58,7 +61,7 @@ async function getData() {
 }
 
 function openSetSalary(record?: HrmSalaryChangeRecordApi.SalaryChangeRecord) {
-  employeeInfoFormRef.value?.open(employeeId, record?.id);
+  employeeInfoModalApi.setData({ employeeId, recordId: record?.id }).open();
 }
 
 async function handleSalaryUpdated() {
@@ -82,7 +85,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <Form ref="employeeInfoFormRef" @success="handleSalaryUpdated" />
+    <EmployeeInfoModal @success="handleSalaryUpdated" />
 
     <div class="mb-4 flex items-center justify-between">
       <Button type="link" @click="close">返回薪资档案</Button>

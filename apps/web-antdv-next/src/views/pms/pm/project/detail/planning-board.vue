@@ -18,13 +18,11 @@ import {
   Empty,
   Input,
   Menu,
-  MenuItem,
   message,
   Select,
   Spin,
   Tag,
 } from 'antdv-next';
-import dayjs from 'dayjs';
 import draggable from 'vuedraggable';
 
 import {
@@ -40,8 +38,8 @@ import {
   updateWorkItemIteration,
   updateWorkItemPlanningSort,
 } from '#/api/pms/pm/workitem';
-import IterationForm from '#/views/pms/pm/iteration/components/iteration-form.vue';
-import IterationStartForm from '#/views/pms/pm/iteration/components/iteration-start-form.vue';
+import IterationForm from '#/views/pms/pm/iteration/list/modules/form.vue';
+import IterationStartForm from '#/views/pms/pm/iteration/list/modules/start-form.vue';
 import {
   PmsIterationStatus,
   PmsWorkItemDefectType,
@@ -49,17 +47,15 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   getIterationStatusTagType,
   getPriorityColor,
   getWorkItemStatusTagType,
 } from '#/views/pms/pm/utils/format';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
-import WorkItemForm from '#/views/pms/pm/workitem/form/work-item-form.vue';
+import WorkItemForm from '#/views/pms/pm/workitem/list/modules/form.vue';
 
 defineOptions({ name: 'PmsPlanningBoard' });
-
-// TODO @AI：看板可以保留自定义拖拽；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts，不要页面里 dayjs.format。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样按迭代逐项查询；按用户要求本轮不调整 N+1 请求行为。
 
 const props = defineProps<{
   editable: boolean;
@@ -477,7 +473,9 @@ onMounted(() => {
       <!-- Backlog 区域：展示尚未规划到迭代的工作项 -->
       <Card>
         <template #title>
-          <span class="font-semibold">Backlog 共 {{ unplannedWorkItems.length }} 个事项</span>
+          <div class="font-semibold">
+            Backlog 共 {{ unplannedWorkItems.length }} 个事项
+          </div>
         </template>
         <draggable
           v-model="unplannedWorkItems"
@@ -529,8 +527,8 @@ onMounted(() => {
                           ({ key }: any) => handleWorkItemCommand(key, element)
                         "
                       >
-                        <MenuItem key="edit">编辑事项</MenuItem>
-                        <MenuItem key="recycle">移入回收站</MenuItem>
+                        <Menu.Item key="edit">编辑事项</Menu.Item>
+                        <Menu.Item key="recycle">移入回收站</Menu.Item>
                       </Menu>
                     </template>
                   </Dropdown>
@@ -615,32 +613,32 @@ onMounted(() => {
                         ({ key }: any) => handleIterationCommand(key, iteration)
                       "
                     >
-                      <MenuItem
+                      <Menu.Item
                         v-if="iteration.status === PmsIterationStatus.PLANNED"
                         v-access:code="['pms:pm:iteration:update']"
                         key="start"
                       >
                         开始迭代
-                      </MenuItem>
-                      <MenuItem
+                      </Menu.Item>
+                      <Menu.Item
                         v-if="iteration.status === PmsIterationStatus.ACTIVE"
                         v-access:code="['pms:pm:iteration:update']"
                         key="complete"
                       >
                         完成迭代
-                      </MenuItem>
-                      <MenuItem
+                      </Menu.Item>
+                      <Menu.Item
                         v-access:code="['pms:pm:iteration:update']"
                         key="edit"
                       >
                         编辑迭代
-                      </MenuItem>
-                      <MenuItem
+                      </Menu.Item>
+                      <Menu.Item
                         v-access:code="['pms:pm:iteration:delete']"
                         key="delete"
                       >
                         删除迭代
-                      </MenuItem>
+                      </Menu.Item>
                     </Menu>
                   </template>
                 </Dropdown>
@@ -649,14 +647,12 @@ onMounted(() => {
                 <span class="text-xs text-muted-foreground">
                   {{
                     iteration.startTime
-                      ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                      ? formatPmsDate(iteration.startTime)
                       : '--'
                   }}
                   至
                   {{
-                    iteration.endTime
-                      ? dayjs(iteration.endTime).format('YYYY-MM-DD')
-                      : '--'
+                    iteration.endTime ? formatPmsDate(iteration.endTime) : '--'
                   }}
                 </span>
                 <Tag :color="getIterationStatusTagType(iteration.status)">
@@ -722,8 +718,8 @@ onMounted(() => {
                               handleWorkItemCommand(key, element)
                           "
                         >
-                          <MenuItem key="edit">编辑事项</MenuItem>
-                          <MenuItem key="recycle">移入回收站</MenuItem>
+                          <Menu.Item key="edit">编辑事项</Menu.Item>
+                          <Menu.Item key="recycle">移入回收站</Menu.Item>
                         </Menu>
                       </template>
                     </Dropdown>

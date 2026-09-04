@@ -15,8 +15,8 @@ import {
 import { HrmHomeCalendarItemType } from '#/views/hrm/utils/constants';
 
 import HrmHomeCalendar from '../components/calendar.vue';
-import HrmTeamOverview from './components/team-overview.vue';
-import HrmTeamSurvey from './components/team-survey.vue';
+import HrmTeamOverview from './modules/team-overview.vue';
+import HrmTeamSurvey from './modules/team-survey.vue';
 
 defineOptions({ name: 'HrmTeamHome' });
 

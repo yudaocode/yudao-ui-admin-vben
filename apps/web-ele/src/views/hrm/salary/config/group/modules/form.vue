@@ -1,83 +1,43 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { HrmSalaryGroupApi } from '#/api/hrm/salary/config/group';
-import type { SystemDeptApi } from '#/api/system/dept';
-
-import { computed, reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createSalaryGroup,
   getSalaryGroup,
   updateSalaryGroup,
 } from '#/api/hrm/salary/config/group';
-import { getSimpleDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
-import HrmEmployeeMultiSelect from '#/views/hrm/employee/components/employee-multi-select.vue';
 
-import TaxRuleSelect from '../../tax-rule/components/tax-rule-select.vue';
+import { useFormSchema } from '../data';
 
 defineOptions({ name: 'HrmSalaryGroupForm' });
 
 const emit = defineEmits(['success']);
-
 const formType = ref<'create' | 'update'>('create');
-const formLoading = ref(false);
-const formRef = ref();
-const deptTree = ref<SystemDeptApi.Dept[]>([]);
-const formData = ref<HrmSalaryGroupApi.SalaryGroup>(createDefault());
 
-const dialogTitle = computed(() =>
-  formType.value === 'create'
-    ? $t('ui.actionTitle.create', ['薪资组'])
-    : $t('ui.actionTitle.edit', ['薪资组']),
-);
-
-const formRules = reactive({
-  name: [{ required: true, message: '薪资组名称不能为空', trigger: 'blur' }],
-  taxRuleId: [
-    { required: true, message: '计税规则不能为空', trigger: 'change' },
-  ],
-  employeeIds: [
-    {
-      validator: async () => {
-        if (
-          formData.value.deptIds?.length ||
-          formData.value.employeeIds?.length
-        )
-          return;
-        throw new Error('适用部门和适用员工不能同时为空');
-      },
-      trigger: 'change',
-    },
-  ],
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 104 },
+  layout: 'horizontal',
+  schema: useFormSchema(),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-1 md:grid-cols-2',
 });
-
-function createDefault(): HrmSalaryGroupApi.SalaryGroup {
-  return {
-    name: '',
-    taxRuleId: undefined,
-    deptIds: [],
-    employeeIds: [],
-  };
-}
-
-async function loadDeptTree() {
-  deptTree.value = handleTree(await getSimpleDeptList());
-}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const { valid } = await formApi.validate();
+    if (!valid) return;
     modalApi.lock();
     try {
+      const values = await formApi.getValues();
       await (formType.value === 'create'
-        ? createSalaryGroup(formData.value)
-        : updateSalaryGroup(formData.value));
+        ? createSalaryGroup(values as any)
+        : updateSalaryGroup(values as any));
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -85,95 +45,40 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      formData.value = createDefault();
-      return;
-    }
-    const data = modalApi.getData() as {
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { id, type = 'create' } = modalApi.getData() as {
       id?: number;
-      type: 'create' | 'update';
+      type?: 'create' | 'update';
     };
-    formType.value = data?.type || 'create';
-    await loadDeptTree();
-    if (data?.id) {
-      formLoading.value = true;
-      try {
-        formData.value = await getSalaryGroup(data.id);
-      } finally {
-        formLoading.value = false;
-      }
-    } else {
-      formData.value = createDefault();
-    }
+    formType.value = type;
+    modalApi.setState({
+      title: $t(
+        type === 'create' ? 'ui.actionTitle.create' : 'ui.actionTitle.edit',
+        ['薪资组'],
+      ),
+    });
+    await formApi.reset();
+    await formApi.setValues(
+      id
+        ? await getSalaryGroup(id)
+        : { deptIds: [], employeeIds: [], name: '', taxRuleId: undefined },
+    );
   },
 });
 </script>
 
 <template>
-  <Modal :title="dialogTitle" class="w-[860px]">
-    <ElForm
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="104px"
-    >
-      <ElRow :gutter="20">
-        <ElCol :span="12">
-          <ElFormItem label="薪资组" name="name">
-            <ElInput
-              v-model="formData.name"
-              maxlength="64"
-              placeholder="请输入薪资组名称"
-            />
-          </ElFormItem>
-        </ElCol>
-        <ElCol :span="12">
-          <ElFormItem label="计税规则" name="taxRuleId">
-            <TaxRuleSelect v-model="formData.taxRuleId" />
-          </ElFormItem>
-        </ElCol>
-      </ElRow>
-      <ElRow :gutter="20">
-        <ElCol :span="12">
-          <ElFormItem label="计薪标准">
-            <span>21.75 天 / 月</span>
-          </ElFormItem>
-        </ElCol>
-        <ElCol :span="12">
-          <ElFormItem label="调薪规则">
-            <span>按转正、调薪生效日前后的工资混合计算</span>
-          </ElFormItem>
-        </ElCol>
-      </ElRow>
-      <ElRow :gutter="20">
-        <ElCol :span="12">
-          <ElFormItem label="部门范围" name="deptIds">
-            <ElTreeSelect
-              v-model="formData.deptIds"
-              :data="deptTree"
-              :props="{ label: 'name', children: 'children' }"
-              check-strictly
-              clearable
-              class="w-full"
-              default-expand-all
-              multiple
-              node-key="id"
-              placeholder="请选择部门"
-            />
-          </ElFormItem>
-        </ElCol>
-        <ElCol :span="12">
-          <ElFormItem label="员工范围" name="employeeIds">
-            <HrmEmployeeMultiSelect
-              v-model="formData.employeeIds"
-              placeholder="请选择员工"
-              title="选择薪资组员工"
-            />
-          </ElFormItem>
-        </ElCol>
-      </ElRow>
-    </ElForm>
+  <Modal class="w-[860px]">
+    <Form class="mx-4" />
+    <div class="mx-4 grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
+      <div>
+        <span class="text-muted-foreground">计薪标准：</span>21.75 天 / 月
+      </div>
+      <div>
+        <span class="text-muted-foreground">调薪规则：</span>
+        按转正、调薪生效日前后的工资混合计算
+      </div>
+    </div>
   </Modal>
 </template>

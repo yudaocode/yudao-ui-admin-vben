@@ -1,14 +1,19 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceResultTemplateApi } from '#/api/hrm/performance/config/result-template';
 
-import { Button, Input, InputNumber, message, Table } from 'antdv-next';
+import { nextTick, watch } from 'vue';
 
+import { Button, Input, InputNumber, message } from 'antdv-next';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   isSameNumber,
   isValidPerformanceCoefficient,
   isValidPerformanceScore,
 } from '#/views/hrm/utils/performance';
+
+import { useLevelGridColumns } from '../data';
 
 defineOptions({ name: 'HrmPerformanceResultLevelForm' });
 
@@ -20,18 +25,26 @@ const modelValue = defineModel<HrmPerformanceResultTemplateApi.ResultLevel[]>({
   required: true,
 });
 
-const columns = [
-  { title: '等级', dataIndex: 'name', key: 'name', width: 140 },
-  { title: '最低分数', dataIndex: 'minScore', key: 'minScore', width: 150 },
-  { title: '最高分数', dataIndex: 'maxScore', key: 'maxScore', width: 150 },
-  {
-    title: '绩效系数',
-    dataIndex: 'coefficient',
-    key: 'coefficient',
-    width: 150,
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useLevelGridColumns(),
+    data: [],
+    minHeight: 220,
+    pagerConfig: { enabled: false },
+    rowConfig: { isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmPerformanceResultTemplateApi.ResultLevel>,
+});
+
+watch(
+  modelValue,
+  async (levels) => {
+    await nextTick();
+    await gridApi.grid.reloadData(levels);
   },
-  { title: '操作', key: 'action', width: 72, align: 'center' as const },
-];
+  { immediate: true },
+);
 
 function validate() {
   if (modelValue.value.length === 0) {
@@ -102,8 +115,8 @@ function addLevel() {
   ];
 }
 
-function removeLevel(index: number) {
-  modelValue.value = modelValue.value.filter((_, i) => i !== index);
+function removeLevel(row: HrmPerformanceResultTemplateApi.ResultLevel) {
+  modelValue.value = modelValue.value.filter((item) => item !== row);
 }
 
 defineExpose({ validate });
@@ -118,68 +131,64 @@ defineExpose({ validate });
       </span>
       <Button :disabled="props.disabled" @click="addLevel">新增结果等级</Button>
     </div>
-    <Table
-      :columns="columns"
-      :data-source="modelValue"
-      :pagination="false"
-      bordered
-      size="small"
-    >
-      <template #bodyCell="{ column, record, index }">
-        <template v-if="column.key === 'name'">
-          <Input
-            v-model:value="record.name"
-            :disabled="props.disabled"
-            :maxlength="255"
-            placeholder="请输入等级"
-          />
-        </template>
-        <template v-else-if="column.key === 'minScore'">
-          <InputNumber
-            v-model:value="record.minScore"
-            :controls="false"
-            :disabled="props.disabled"
-            :max="100"
-            :min="0"
-            :precision="2"
-            class="w-full"
-            placeholder="0~100"
-          />
-        </template>
-        <template v-else-if="column.key === 'maxScore'">
-          <InputNumber
-            v-model:value="record.maxScore"
-            :controls="false"
-            :disabled="props.disabled"
-            :max="100"
-            :min="0"
-            :precision="2"
-            class="w-full"
-            placeholder="0~100"
-          />
-        </template>
-        <template v-else-if="column.key === 'coefficient'">
-          <InputNumber
-            v-model:value="record.coefficient"
-            :controls="false"
-            :disabled="props.disabled"
-            :min="0"
-            :precision="2"
-            class="w-full"
-            placeholder="请输入系数"
-          />
-        </template>
-        <template v-else-if="column.key === 'action'">
-          <Button
-            :disabled="props.disabled"
-            danger
-            type="link"
-            @click="removeLevel(index)"
-          >
-            删除
-          </Button>
-        </template>
+    <Grid class="w-full">
+      <template #name="{ row }">
+        <Input
+          v-model:value="row.name"
+          :disabled="props.disabled"
+          :maxlength="255"
+          placeholder="请输入等级"
+        />
       </template>
-    </Table>
+      <template #minScore="{ row }">
+        <InputNumber
+          v-model:value="row.minScore"
+          :controls="false"
+          :disabled="props.disabled"
+          :max="100"
+          :min="0"
+          :precision="2"
+          class="w-full"
+          placeholder="0~100"
+        />
+      </template>
+      <template #maxScore="{ row }">
+        <InputNumber
+          v-model:value="row.maxScore"
+          :controls="false"
+          :disabled="props.disabled"
+          :max="100"
+          :min="0"
+          :precision="2"
+          class="w-full"
+          placeholder="0~100"
+        />
+      </template>
+      <template #coefficient="{ row }">
+        <InputNumber
+          v-model:value="row.coefficient"
+          :controls="false"
+          :disabled="props.disabled"
+          :min="0"
+          :precision="2"
+          class="w-full"
+          placeholder="请输入系数"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              disabled: props.disabled,
+              onClick: () => removeLevel(row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </div>
 </template>

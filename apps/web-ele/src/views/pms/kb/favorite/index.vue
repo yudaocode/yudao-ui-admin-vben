@@ -41,18 +41,16 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
     return;
   }
   if (item.documentId) {
-    router.push(
-      {
-        path: `/pms/kb/library/${item.libraryId}`,
-        query: { documentId: String(item.documentId) },
-      },
-    );
+    router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { documentId: String(item.documentId) },
+    });
     return;
   }
   router.push({
-      path: `/pms/kb/library/${item.libraryId}`,
-      query: { folderId: String(item.folderId) },
-    });
+    path: `/pms/kb/library/${item.libraryId}`,
+    query: { folderId: String(item.folderId) },
+  });
 }
 
 /** 取消关注 */
@@ -67,8 +65,7 @@ async function handleCancelFavorite(
     ElMessage.success('已取消关注');
     // 刷新列表
     await gridApi.reload();
-  } catch {
-  }
+  } catch {}
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -90,6 +87,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
     },
   } as VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>,
 });

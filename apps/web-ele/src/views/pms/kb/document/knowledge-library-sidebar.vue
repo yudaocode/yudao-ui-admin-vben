@@ -52,7 +52,7 @@ const defaultExpandedNodeKeys = computed(() =>
 /** 同步目录树的当前节点，并自动展开其全部父级目录 */
 async function setCurrentNode() {
   await nextTick();
-  treeRef.value?.setCurrentKey(props.currentNodeKey as any, true);
+  treeRef.value?.setCurrentKey(props.currentNodeKey, true);
 }
 
 watch([() => props.currentNodeKey, () => props.treeData], () => {

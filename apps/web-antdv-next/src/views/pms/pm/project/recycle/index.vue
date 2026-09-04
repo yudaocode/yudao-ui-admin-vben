@@ -18,7 +18,7 @@ import {
   PmsProjectStatus,
 } from '#/views/pms/pm/utils/constants';
 
-import { useGridColumns, useSearchFormSchema } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'PmsProjectRecycle' });
 
@@ -43,7 +43,7 @@ async function handleDelete(project: PmsProjectApi.Project) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(),
+    schema: useGridFormSchema(),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -67,6 +67,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
   } as VxeTableGridOptions<PmsProjectApi.Project>,
 });
 </script>
@@ -74,7 +78,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【PMS】项目中心、工作台与项目管理" url="https://doc.iocoder.cn/pms/pm/project/" />
+      <DocAlert
+        title="【PMS】项目中心、工作台与项目管理"
+        url="https://doc.iocoder.cn/pms/pm/project/"
+      />
     </template>
     <!-- 回收站项目列表 -->
     <Grid>

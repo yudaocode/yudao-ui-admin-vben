@@ -96,8 +96,7 @@ async function handleDelete() {
     ElMessage.success('删除成功');
     // 通知父组件刷新目录树
     emit('delete');
-  } catch {
-  }
+  } catch {}
 }
 </script>
 
@@ -113,13 +112,20 @@ async function handleDelete() {
       <div
         class="mt-2 flex items-center gap-2.5 text-xs text-[var(--el-text-color-secondary)]"
       >
-        <span v-if="document.creatorUserName">{{ document.creatorUserName }} 创建于</span>
+        <template v-if="document.creatorUserName">
+          <span>{{ document.creatorUserName }} 创建于</span>
+        </template>
         <span>{{ formatDateTime(document.createTime) }}</span>
         <ElTag
           size="small"
           :type="getKnowledgeDocumentStatusTagType(document.status)"
         >
-          {{ getDictLabel(DICT_TYPE.PMS_KNOWLEDGE_DOCUMENT_STATUS, document.status) || '-' }}
+          {{
+            getDictLabel(
+              DICT_TYPE.PMS_KNOWLEDGE_DOCUMENT_STATUS,
+              document.status,
+            ) || '-'
+          }}
         </ElTag>
       </div>
       <div

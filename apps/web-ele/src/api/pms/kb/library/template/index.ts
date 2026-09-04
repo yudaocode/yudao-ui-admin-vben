@@ -22,8 +22,10 @@ export namespace PmsKnowledgeLibraryTemplateApi {
   }
 
   /** PMS 知识库模板保存 */
-  export interface KnowledgeLibraryTemplateSaveReq
-    extends Omit<KnowledgeLibraryTemplate, 'documents'> {
+  export interface KnowledgeLibraryTemplateSaveReq extends Omit<
+    KnowledgeLibraryTemplate,
+    'documents'
+  > {
     documents: KnowledgeLibraryTemplateDocument[]; // 模板文档列表
   }
 }

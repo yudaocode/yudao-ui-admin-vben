@@ -4,8 +4,12 @@ import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types'
 import { DICT_TYPE } from '@vben/constants';
 
 /** 列表的字段 */
-// TODO @AI：三端列定义不一致：antd 用 CellDict，antdv-next/ele 用 getDictLabel formatter。统一成 CellDict，对齐其它 PMS 列表。
-export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
+export function useGridColumns(
+  onFavoriteChange: (
+    newStatus: boolean,
+    row: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+  ) => Promise<boolean>,
+): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
   return [
     {
       field: 'name',
@@ -19,12 +23,15 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       title: '类型',
       width: 100,
       align: 'left',
-      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE } },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE },
+      },
     },
     {
       field: 'libraryName',
       title: '所属知识库',
-      width: 180,
+      minWidth: 180,
       align: 'left',
     },
     {
@@ -40,10 +47,18 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       formatter: 'formatDateTime',
     },
     {
+      field: 'favoriteStatus',
       title: '是否关注',
       width: 100,
       fixed: 'right',
-      slots: { default: 'favorite' },
+      cellRender: {
+        attrs: { beforeChange: onFavoriteChange },
+        name: 'CellSwitch',
+        props: {
+          checkedValue: true,
+          unCheckedValue: false,
+        },
+      },
     },
   ];
 }

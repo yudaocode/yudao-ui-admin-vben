@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
-import { ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 import { formatDateTime } from '@vben/utils';
 
@@ -11,10 +11,9 @@ import {
   ElCollapseItem,
   ElDescriptions,
   ElDescriptionsItem,
-  ElTable,
-  ElTableColumn,
 } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { formatHrmDate } from '#/views/hrm/utils/format';
 import {
   formatHrmPerformanceAppealTimeout,
@@ -23,13 +22,36 @@ import {
   formatHrmPerformanceRaterType,
 } from '#/views/hrm/utils/format-performance';
 
+import { useReviewStageGridColumns } from '../../data';
+
 defineOptions({ name: 'HrmPerformancePlanDetailsInfo' });
 
-defineProps<{
+const props = defineProps<{
   plan: HrmPerformancePlanApi.PerformancePlan;
 }>();
 
 const activeNames = ref(['basicInfo', 'reviewStages']);
+
+const [ReviewGrid, reviewGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useReviewStageGridColumns(),
+    data: [],
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
+
+watch(
+  () => props.plan.reviewStages,
+  async (rows) => {
+    await nextTick();
+    await reviewGridApi.grid.reloadData(rows || []);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -91,30 +113,12 @@ const activeNames = ref(['basicInfo', 'reviewStages']);
       </ElDescriptions>
     </ElCollapseItem>
     <ElCollapseItem name="reviewStages" title="评分流程">
-      <ElTable :data="plan.reviewStages || []" border>
-        <ElTableColumn align="center" label="顺序" width="70">
-          <template #default="{ $index }">{{ $index + 1 }}</template>
-        </ElTableColumn>
-        <ElTableColumn label="评分阶段" min-width="150" prop="name" />
-        <ElTableColumn label="评分人类型" min-width="130">
-          <template #default="{ row }">
-            {{ formatHrmPerformanceRaterType(row.rater?.type) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn align="center" label="权重" width="90">
-          <template #default="{ row }">{{ row.weight || 0 }}%</template>
-        </ElTableColumn>
-        <ElTableColumn align="center" label="评语必填" width="100">
-          <template #default="{ row }">
-            {{ row.requiredSetting ? '是' : '否' }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn align="center" label="允许驳回" width="100">
-          <template #default="{ row }">
-            {{ row.rejectAuthority ? '是' : '否' }}
-          </template>
-        </ElTableColumn>
-      </ElTable>
+      <ReviewGrid class="w-full">
+        <template #raterType="{ row }">
+          {{ formatHrmPerformanceRaterType(row.rater?.type) }}
+        </template>
+        <template #weight="{ row }">{{ row.weight || 0 }}%</template>
+      </ReviewGrid>
     </ElCollapseItem>
   </ElCollapse>
 </template>

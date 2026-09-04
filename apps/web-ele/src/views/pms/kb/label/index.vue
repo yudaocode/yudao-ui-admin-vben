@@ -6,7 +6,7 @@ import type { PmsKnowledgeDocumentLabelApi } from '#/api/pms/kb/content/document
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, Spinner, useVbenModal } from '@vben/common-ui';
 
 import {
   ElButton,
@@ -25,11 +25,10 @@ import {
 } from '#/api/pms/kb/content/document/label';
 
 import { useGridColumns } from './data';
-import KnowledgeLabelManageDialog from './knowledge-label-manage-dialog.vue';
+import KnowledgeLabelManageDialog from './modules/manage.vue';
 
 defineOptions({ name: 'PmsKnowledgeDocumentLabel' });
 
-// TODO @AI：左侧标签列表也能用 VXE；antd/antdv-next 不要用 v-loading。文档列表补 toolbarConfig。updateTime 走 formatter。
 const router = useRouter(); // 路由
 const labelLoading = ref(true); // 标签列表加载中
 const labelList = ref<PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[]>(
@@ -50,7 +49,7 @@ const selectedLabel = computed(() =>
 
 const [KnowledgeLabelManageDialogModal, knowledgeLabelManageDialogModalApi] =
   useVbenModal({
-  destroyOnClose: true,
+    destroyOnClose: true,
     connectedComponent: KnowledgeLabelManageDialog,
   });
 
@@ -80,6 +79,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
     },
   } as VxeTableGridOptions<PmsKnowledgeDocumentApi.KnowledgeDocument>,
 });
@@ -140,7 +142,10 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【PMS】文档与协作" url="https://doc.iocoder.cn/pms/kb/document/" />
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
     </template>
     <ElRow :gutter="20" class="h-full">
       <!-- 左侧标签列表 -->
@@ -164,7 +169,7 @@ onMounted(() => {
             placeholder="请输入标签名称"
             prefix-icon="ep:search"
           />
-          <div v-loading="labelLoading" class="min-h-[120px]">
+          <Spinner :spinning="labelLoading" class="min-h-[120px]">
             <ElScrollbar
               v-if="filteredLabelList.length"
               max-height="calc(100vh - 300px)"
@@ -187,7 +192,7 @@ onMounted(() => {
               </div>
             </ElScrollbar>
             <ElEmpty v-else :image-size="70" description="暂无标签" />
-          </div>
+          </Spinner>
         </div>
       </ElCol>
 

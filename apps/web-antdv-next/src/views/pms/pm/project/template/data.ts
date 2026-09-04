@@ -67,7 +67,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsProjectTemplateApi.Proj
     {
       field: 'itemTypes',
       title: '事项类型',
-      width: 180,
+      minWidth: 180,
       align: 'center',
       slots: { default: 'itemTypes' },
     },

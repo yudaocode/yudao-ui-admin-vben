@@ -7,9 +7,8 @@ import {
   getSalaryOptionValue,
 } from '#/views/hrm/salary/utils/option';
 import { formatHrmMoney } from '#/views/hrm/utils/format';
-// TODO @AI（glm5.3 flash）：命名对齐 system user 改 useGridFormSchema（hrm 里 recruit/post、employee 等已用该名），三端统一。
 
-export { buildFooterMethod, useSearchFormSchema } from '../data';
+export { buildFooterMethod, useGridFormSchema } from '../data';
 
 /** 构建详情员工明细列 */
 export function buildDetailGridColumns(

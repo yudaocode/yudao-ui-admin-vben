@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { HrmPerformanceAssessmentTemplateApi } from '#/api/hrm/performance/config/assessment-template';
 
 import { ref } from 'vue';
@@ -94,12 +92,6 @@ function createDefault(): HrmPerformanceAssessmentTemplateApi.PerformanceAssessm
     dimensions: [],
   };
 }
-
-function open(type: 'create' | 'update', id?: number) {
-  modalApi.setData({ type, id }).open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>

@@ -19,7 +19,6 @@ import {
   Dropdown,
   Empty,
   Menu,
-  MenuItem,
   message,
   Progress,
   Spin,
@@ -58,20 +57,12 @@ import {
   formatProjectWorkItemCounts,
 } from '#/views/pms/pm/utils/format';
 
-import ProjectForm from '../components/project-form.vue';
 import FavoriteTrendChart from './components/favorite-trend-chart.vue';
 import ProjectGroupList from './components/group/project-group-list.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import ProjectForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsProjectList' });
-// TODO @AI：对齐 system/user，项目表单从 components 改引 ./modules/form.vue。
-
-// TODO DONE @AI：antdv-next 星标区已改用 Spin，弹窗已启用 destroyOnClose，Grid 已补 refresh/search。
-// TODO @AI：项目操作包含分组子菜单，后续需要在保留交互能力的前提下对齐 TableAction。
-/** 星标项目趋势小图（v-for 内逐卡片渲染） */
-// TODO DONE @AI：星标趋势图已拆为子组件，在组件 setup 生命周期内持有 EchartsUIType ref。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样逐项目查询概况；按用户要求本轮不调整 N+1 请求行为。
-// TODO DONE @AI：项目截止日期已统一通过 PMS format.ts 格式化并处理空值。
 
 const { hasAccessByCodes } = useAccess();
 const { push, replace } = useRouter(); // 路由
@@ -91,13 +82,6 @@ const groupList = ref<PmsProjectGroupApi.ProjectGroup[]>([]); // 当前用户的
 const isParticipatedScene = computed(
   () => sceneType.value === PmsProjectSceneType.PARTICIPATED,
 ); // 是否“我参与的项目”场景
-// antdv-next Tabs 的 activeKey 为字符串，业务状态仍使用数值场景类型
-const sceneTypeKey = computed({
-  get: () => String(sceneType.value),
-  set: (key: string) => {
-    sceneType.value = Number(key);
-  },
-});
 const movableGroupList = computed(() =>
   groupList.value.filter((group) => group.type !== PmsProjectGroupType.ALL),
 ); // 可以移动到的个人分组
@@ -440,7 +424,7 @@ watch(
                 class="mt-2.5"
                 :percent="formatProjectCompletionRate(project)"
                 :show-info="false"
-                :size="['100%', 5]"
+                :stroke-width="5"
               />
               <div v-if="project.completedTrends" class="pr-10">
                 <FavoriteTrendChart
@@ -474,39 +458,39 @@ watch(
                       ({ key }: any) => handleProjectCommand(key, project)
                     "
                   >
-                    <MenuItem
+                    <Menu.Item
                       v-if="project.adminStatus"
                       v-access:code="['pms:pm:project:update']"
                       key="config"
                     >
                       项目设置
-                    </MenuItem>
+                    </Menu.Item>
                     <template v-if="project.memberStatus">
-                      <MenuItem disabled>移动到分组</MenuItem>
-                      <MenuItem
+                      <Menu.Item disabled>移动到分组</Menu.Item>
+                      <Menu.Item
                         v-for="group in movableGroupList"
                         :key="`group:${group.id}`"
                       >
                         {{ group.name }}
-                      </MenuItem>
+                      </Menu.Item>
                     </template>
                     <Menu.Divider v-if="project.exitStatus" />
-                    <MenuItem
+                    <Menu.Item
                       v-if="project.exitStatus"
                       v-access:code="['pms:pm:project-member:query']"
                       key="exit"
                     >
                       退出项目
-                    </MenuItem>
+                    </Menu.Item>
                     <template
                       v-if="hasAccessByCodes(['pms:pm:project:update'])"
                     >
-                      <MenuItem v-if="project.adminStatus" key="archive">
+                      <Menu.Item v-if="project.adminStatus" key="archive">
                         归档项目
-                      </MenuItem>
-                      <MenuItem v-if="project.adminStatus" key="recycle">
+                      </Menu.Item>
+                      <Menu.Item v-if="project.adminStatus" key="recycle">
                         移入回收站
-                      </MenuItem>
+                      </Menu.Item>
                     </template>
                   </Menu>
                 </template>
@@ -523,17 +507,14 @@ watch(
       <template #toolbar-actions>
         <!-- 项目范围 -->
         <Tabs
-          v-model:active-key="sceneTypeKey"
           class="w-full"
+          :active-key="String(sceneType)"
           @change="handleSceneChange"
         >
-          <Tabs.TabPane :key="String(PmsProjectSceneType.ALL)" tab="全部项目" />
+          <Tabs.TabPane :key="PmsProjectSceneType.ALL" tab="全部项目" />
+          <Tabs.TabPane :key="PmsProjectSceneType.MANAGED" tab="我负责的" />
           <Tabs.TabPane
-            :key="String(PmsProjectSceneType.MANAGED)"
-            tab="我负责的"
-          />
-          <Tabs.TabPane
-            :key="String(PmsProjectSceneType.PARTICIPATED)"
+            :key="PmsProjectSceneType.PARTICIPATED"
             tab="我参与的"
           />
         </Tabs>
@@ -604,37 +585,37 @@ watch(
           <Button type="link">更多</Button>
           <template #popupRender>
             <Menu @click="({ key }: any) => handleProjectCommand(key, row)">
-              <MenuItem
+              <Menu.Item
                 v-if="row.adminStatus"
                 v-access:code="['pms:pm:project:update']"
                 key="config"
               >
                 项目设置
-              </MenuItem>
+              </Menu.Item>
               <template v-if="isParticipatedScene && row.memberStatus">
-                <MenuItem disabled>移动到分组</MenuItem>
-                <MenuItem
+                <Menu.Item disabled>移动到分组</Menu.Item>
+                <Menu.Item
                   v-for="group in movableGroupList"
                   :key="`group:${group.id}`"
                 >
                   {{ group.name }}
-                </MenuItem>
+                </Menu.Item>
               </template>
               <Menu.Divider v-if="row.exitStatus" />
-              <MenuItem
+              <Menu.Item
                 v-if="row.exitStatus"
                 v-access:code="['pms:pm:project-member:query']"
                 key="exit"
               >
                 退出项目
-              </MenuItem>
+              </Menu.Item>
               <template v-if="hasAccessByCodes(['pms:pm:project:update'])">
-                <MenuItem v-if="row.adminStatus" key="archive">
+                <Menu.Item v-if="row.adminStatus" key="archive">
                   归档项目
-                </MenuItem>
-                <MenuItem v-if="row.adminStatus" key="recycle">
+                </Menu.Item>
+                <Menu.Item v-if="row.adminStatus" key="recycle">
                   移入回收站
-                </MenuItem>
+                </Menu.Item>
               </template>
             </Menu>
           </template>

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：分步表单每步手写字段尽量抽 useVbenForm schema（放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
-import { computed } from 'vue';
+import { computed, nextTick, watch } from 'vue';
 
 import {
   ElButton,
@@ -16,10 +15,9 @@ import {
   ElRow,
   ElSelect,
   ElSwitch,
-  ElTable,
-  ElTableColumn,
 } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import RaterLevelSelect from '#/views/hrm/performance/components/rater-level-select.vue';
 import {
@@ -31,6 +29,7 @@ import {
   HrmPerformanceReviewVisibleContent,
 } from '#/views/hrm/utils/constants';
 
+import { useReviewEditGridColumns } from '../../data';
 import HandlerStageForm from './handler-stage-form.vue';
 
 defineOptions({ name: 'HrmPerformancePlanProcessForm' });
@@ -93,6 +92,18 @@ const resultConfirmation = computed({
   },
 });
 
+const [ReviewGrid, reviewGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useReviewEditGridColumns(),
+    data: [],
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
+
 function createDefaultHandlerStage(): HrmPerformancePlanApi.PerformanceHandlerStage {
   return {
     type: HrmPerformanceRaterType.DEPT_LEADER,
@@ -134,27 +145,30 @@ function clearTargetConfirmation() {
 }
 
 function addReviewStage(raterType: number) {
-  const reviewStages = model.value.reviewStages || [];
-  reviewStages.push({
-    rater: {
-      type: raterType,
-      level:
-        raterType === HrmPerformanceRaterType.SUPERIOR ||
-        raterType === HrmPerformanceRaterType.DEPT_LEADER
-          ? 1
-          : undefined,
+  model.value.reviewStages = [
+    ...(model.value.reviewStages || []),
+    {
+      rater: {
+        type: raterType,
+        level:
+          raterType === HrmPerformanceRaterType.SUPERIOR ||
+          raterType === HrmPerformanceRaterType.DEPT_LEADER
+            ? 1
+            : undefined,
+      },
+      weight: 0,
+      scoringType: HrmPerformanceReviewScoringType.QUOTA,
+      visibleContent: HrmPerformanceReviewVisibleContent.ALL,
+      requiredSetting: false,
+      rejectAuthority: raterType !== HrmPerformanceRaterType.SELF,
     },
-    weight: 0,
-    scoringType: HrmPerformanceReviewScoringType.QUOTA,
-    visibleContent: HrmPerformanceReviewVisibleContent.ALL,
-    requiredSetting: false,
-    rejectAuthority: raterType !== HrmPerformanceRaterType.SELF,
-  });
-  model.value.reviewStages = reviewStages;
+  ];
 }
 
 function removeReviewStage(index: number) {
-  model.value.reviewStages?.splice(index, 1);
+  model.value.reviewStages = (model.value.reviewStages || []).filter(
+    (_, stageIndex) => stageIndex !== index,
+  );
 }
 
 function handleRaterTypeChange(
@@ -171,6 +185,15 @@ function handleRaterTypeChange(
     stage.rejectAuthority = false;
   }
 }
+
+watch(
+  () => model.value.reviewStages,
+  async (rows) => {
+    await nextTick();
+    await reviewGridApi.grid.reloadData(rows || []);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -282,131 +305,117 @@ function handleRaterTypeChange(
             </ElButton>
           </div>
         </div>
-        <ElTable :data="model.reviewStages || []" border>
-          <ElTableColumn label="评分人" min-width="145">
-            <template #default="{ row }">
-              <ElSelect
-                v-model="row.rater.type"
-                :disabled="disabled"
-                class="w-full"
-                @change="handleRaterTypeChange(row)"
-              >
-                <ElOption
-                  label="被考核人"
-                  :value="HrmPerformanceRaterType.SELF"
-                />
-                <ElOption
-                  label="上级"
-                  :value="HrmPerformanceRaterType.SUPERIOR"
-                />
-                <ElOption
-                  label="部门负责人"
-                  :value="HrmPerformanceRaterType.DEPT_LEADER"
-                />
-                <ElOption
-                  label="指定评分人"
-                  :value="HrmPerformanceRaterType.SPECIFIED"
-                />
-              </ElSelect>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="评分人范围" min-width="190">
-            <template #default="{ row }">
-              <RaterLevelSelect
-                v-if="
-                  row.rater.type === HrmPerformanceRaterType.SUPERIOR ||
-                  row.rater.type === HrmPerformanceRaterType.DEPT_LEADER
-                "
-                v-model="row.rater.level"
-                :disabled="disabled"
-                :rater-type="row.rater.type"
+        <ReviewGrid class="w-full">
+          <template #raterType="{ row }">
+            <ElSelect
+              v-model="row.rater.type"
+              :disabled="disabled"
+              class="w-full"
+              @change="handleRaterTypeChange(row)"
+            >
+              <ElOption
+                label="被考核人"
+                :value="HrmPerformanceRaterType.SELF"
               />
-              <EmployeeSelect
-                v-else-if="row.rater.type === HrmPerformanceRaterType.SPECIFIED"
-                v-model="row.rater.employeeId"
-                :disabled="disabled"
-                placeholder="请选择评分人"
+              <ElOption
+                label="上级"
+                :value="HrmPerformanceRaterType.SUPERIOR"
               />
-              <span v-else class="text-gray-500">当前被考核员工</span>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="评分权重" width="125">
-            <template #default="{ row }">
-              <div class="flex items-center gap-1">
-                <ElInputNumber
-                  v-model="row.weight"
-                  :controls="false"
-                  :disabled="disabled"
-                  :max="100"
-                  :min="0.01"
-                  :precision="2"
-                  class="w-full"
-                />
-                <span class="text-gray-500">%</span>
-              </div>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="评分方式" min-width="160">
-            <template #default="{ row }">
-              <ElSelect
-                v-model="row.scoringType"
-                :disabled="disabled"
-                class="w-full"
-              >
-                <ElOption
-                  label="按指标评分"
-                  :value="HrmPerformanceReviewScoringType.QUOTA"
-                />
-              </ElSelect>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="可见内容" min-width="145">
-            <template #default="{ row }">
-              <ElSelect
-                v-model="row.visibleContent"
-                :disabled="disabled"
-                class="w-full"
-              >
-                <ElOption
-                  label="全部评分"
-                  :value="HrmPerformanceReviewVisibleContent.ALL"
-                />
-                <ElOption
-                  label="仅自己"
-                  :value="HrmPerformanceReviewVisibleContent.SELF"
-                />
-              </ElSelect>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn align="center" label="评语必填" width="95">
-            <template #default="{ row }">
-              <ElSwitch v-model="row.requiredSetting" :disabled="disabled" />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn align="center" label="允许驳回" width="95">
-            <template #default="{ row }">
-              <ElSwitch
-                v-model="row.rejectAuthority"
-                :disabled="
-                  disabled || row.rater.type === HrmPerformanceRaterType.SELF
-                "
+              <ElOption
+                label="部门负责人"
+                :value="HrmPerformanceRaterType.DEPT_LEADER"
               />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn align="center" label="操作" width="72">
-            <template #default="{ $index }">
-              <ElButton
+              <ElOption
+                label="指定评分人"
+                :value="HrmPerformanceRaterType.SPECIFIED"
+              />
+            </ElSelect>
+          </template>
+          <template #raterScope="{ row }">
+            <RaterLevelSelect
+              v-if="
+                row.rater.type === HrmPerformanceRaterType.SUPERIOR ||
+                row.rater.type === HrmPerformanceRaterType.DEPT_LEADER
+              "
+              v-model="row.rater.level"
+              :disabled="disabled"
+              :rater-type="row.rater.type"
+            />
+            <EmployeeSelect
+              v-else-if="row.rater.type === HrmPerformanceRaterType.SPECIFIED"
+              v-model="row.rater.employeeId"
+              :disabled="disabled"
+              placeholder="请选择评分人"
+            />
+            <span v-else class="text-gray-500">当前被考核员工</span>
+          </template>
+          <template #weight="{ row }">
+            <div class="flex items-center gap-1">
+              <ElInputNumber
+                v-model="row.weight"
+                :controls="false"
                 :disabled="disabled"
-                link
-                title="删除评分阶段"
-                type="danger"
-                @click="removeReviewStage($index)"
-              >
-                删除
-              </ElButton>
-            </template>
-          </ElTableColumn>
-        </ElTable>
+                :max="100"
+                :min="0.01"
+                :precision="2"
+                class="w-full"
+              />
+              <span class="text-gray-500">%</span>
+            </div>
+          </template>
+          <template #scoringType="{ row }">
+            <ElSelect
+              v-model="row.scoringType"
+              :disabled="disabled"
+              class="w-full"
+            >
+              <ElOption
+                label="按指标评分"
+                :value="HrmPerformanceReviewScoringType.QUOTA"
+              />
+            </ElSelect>
+          </template>
+          <template #visibleContent="{ row }">
+            <ElSelect
+              v-model="row.visibleContent"
+              :disabled="disabled"
+              class="w-full"
+            >
+              <ElOption
+                label="全部评分"
+                :value="HrmPerformanceReviewVisibleContent.ALL"
+              />
+              <ElOption
+                label="仅自己"
+                :value="HrmPerformanceReviewVisibleContent.SELF"
+              />
+            </ElSelect>
+          </template>
+          <template #requiredSetting="{ row }">
+            <ElSwitch v-model="row.requiredSetting" :disabled="disabled" />
+          </template>
+          <template #rejectAuthority="{ row }">
+            <ElSwitch
+              v-model="row.rejectAuthority"
+              :disabled="
+                disabled || row.rater.type === HrmPerformanceRaterType.SELF
+              "
+            />
+          </template>
+          <template #actions="{ row }">
+            <ElButton
+              :disabled="disabled"
+              link
+              title="删除评分阶段"
+              type="danger"
+              @click="
+                removeReviewStage((model.reviewStages || []).indexOf(row))
+              "
+            >
+              删除
+            </ElButton>
+          </template>
+        </ReviewGrid>
       </div>
     </ElFormItem>
 

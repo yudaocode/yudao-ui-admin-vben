@@ -1,26 +1,32 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
 import type { HrmInsuranceEmployeeInfoApi } from '#/api/hrm/insurance/employee-info';
 
 import { ref } from 'vue';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import { saveInsuranceEmployeeInfo } from '#/api/hrm/insurance/employee-info';
 import { $t } from '#/locales';
 
 import { useInsuranceInfoFormSchema } from '../../data';
+
 const emit = defineEmits(['success']);
 const employeeId = ref<number>();
+
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 140, componentProps: { class: 'w-full' } },
+  commonConfig: {
+    labelWidth: 140,
+    componentProps: { class: 'w-full' },
+  },
   layout: 'horizontal',
   schema: useInsuranceInfoFormSchema(),
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
 });
+
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -38,19 +44,21 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { employeeId: currentEmployeeId, row } = modalApi.getData() as {
+      employeeId: number;
+      row?: HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo;
+    };
+    employeeId.value = currentEmployeeId;
+    await formApi.reset();
+    await formApi.setValues({ ...row, employeeId: currentEmployeeId });
+  },
 });
-function open(
-  empId: number,
-  row?: HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo,
-) {
-  employeeId.value = empId;
-  formApi.reset();
-  formApi.setValues({ ...row, employeeId: empId });
-  modalApi.setState({ title: '编辑社保资料' });
-  modalApi.open();
-}
-defineExpose({ open });
 </script>
+
 <template>
-  <Modal class="w-[720px]"><Form class="mx-4" /></Modal>
+  <Modal title="编辑社保资料" class="w-[720px]">
+    <Form class="mx-4" />
+  </Modal>
 </template>

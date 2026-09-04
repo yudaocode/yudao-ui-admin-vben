@@ -1,129 +1,91 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { HrmAttendanceClockApi } from '#/api/hrm/attendance/clock';
 import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
-import { computed, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
 import { formatDate } from '@vben/utils';
 
-import {
-  ElButton,
-  ElDescriptions,
-  ElDescriptionsItem,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAttendanceDailyDetail } from '#/api/hrm/attendance/statistics';
-import { DictTag } from '#/components/dict-tag';
-import { formatHrmDateTime } from '#/views/hrm/utils/format';
+
+import { useDailyDetailGridColumns } from '../data';
 
 defineOptions({ name: 'HrmAttendanceClockDailyDetail' });
 
-const loading = ref(false);
 const detailData = ref<HrmAttendanceStatisticsApi.DailyDetail>();
 
-const dialogTitle = computed(() => {
-  if (!detailData.value) {
-    return '每日考勤详情';
-  }
-  return `${detailData.value.employeeName || ''} ${formatDate(
-    detailData.value.attendanceTime,
-    'YYYY-MM-DD',
-  )}`;
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useDailyDetailGridColumns(),
+    data: [],
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmAttendanceClockApi.AttendanceClock>,
 });
 
 const [Modal, modalApi] = useVbenModal({
-  onOpenChange(isOpen: boolean) {
+  footer: false,
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       detailData.value = undefined;
+      return;
+    }
+    const { attendanceDate, employeeId } = modalApi.getData() as {
+      attendanceDate: string;
+      employeeId: number;
+    };
+    modalApi.setState({ title: '每日考勤详情' });
+    modalApi.lock();
+    try {
+      detailData.value = await getAttendanceDailyDetail({
+        employeeId,
+        attendanceTime: formatDate(attendanceDate, 'YYYY-MM-DD HH:mm:ss'),
+      });
+      modalApi.setState({
+        title: `${detailData.value.employeeName || ''} ${formatDate(
+          detailData.value.attendanceTime,
+          'YYYY-MM-DD',
+        )}`,
+      });
+      await nextTick();
+      await gridApi.grid.reloadData(detailData.value.clockList || []);
+    } finally {
+      modalApi.unlock();
     }
   },
 });
-
-async function open(employeeId: number, attendanceDate: string) {
-  modalApi.setState({ title: '每日考勤详情' });
-  modalApi.open();
-  loading.value = true;
-  detailData.value = undefined;
-  try {
-    detailData.value = await getAttendanceDailyDetail({
-      employeeId,
-      attendanceTime: formatDate(attendanceDate, 'YYYY-MM-DD HH:mm:ss'),
-    });
-    modalApi.setState({ title: dialogTitle.value });
-  } finally {
-    loading.value = false;
-  }
-}
-
-defineExpose({ open });
 </script>
 
 <template>
-  <Modal :title="dialogTitle" class="w-[820px]">
-    <div v-loading="loading">
-      <ElDescriptions v-if="detailData" :column="2" border size="small">
-        <ElDescriptionsItem label="班次">
-          {{ detailData.shiftName || '-' }}
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="考勤结果">
-          {{ detailData.attendanceResult || '-' }}
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="应打卡次数">
-          {{ detailData.requiredClockCount || 0 }}
-        </ElDescriptionsItem>
-        <ElDescriptionsItem label="实际打卡次数">
-          {{ detailData.clockList?.length || 0 }}
-        </ElDescriptionsItem>
-      </ElDescriptions>
-
-      <ElTable
-        :data="detailData?.clockList || []"
-        :row-key="(row) => String(row.id || `${row.type}-${row.clockTime}`)"
-        class="mt-4"
-        size="small"
-      >
-        <ElTableColumn label="打卡类型" prop="type" width="110">
-          <template #default="{ row }">
-            <DictTag
-              :type="DICT_TYPE.HRM_ATTENDANCE_CLOCK_TYPE"
-              :value="row.type"
-            />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn label="应打卡时间" prop="attendanceTime" width="170">
-          <template #default="{ row }">
-            {{ formatHrmDateTime(row.attendanceTime) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn label="打卡时间" prop="clockTime" width="170">
-          <template #default="{ row }">
-            {{ formatHrmDateTime(row.clockTime) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn label="状态" prop="status" width="90">
-          <template #default="{ row }">
-            <DictTag
-              :type="DICT_TYPE.HRM_ATTENDANCE_CLOCK_STATUS"
-              :value="row.status"
-            />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          label="地点"
-          min-width="140"
-          prop="address"
-          show-overflow-tooltip
-        />
-      </ElTable>
-    </div>
-
-    <template #footer>
-      <ElButton @click="modalApi.close()">关闭</ElButton>
-    </template>
+  <Modal class="w-[820px]">
+    <ElDescriptions
+      v-if="detailData"
+      :column="2"
+      border
+      class="mb-4"
+      size="small"
+    >
+      <ElDescriptionsItem label="班次">
+        {{ detailData.shiftName || '-' }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="考勤结果">
+        {{ detailData.attendanceResult || '-' }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="应打卡次数">
+        {{ detailData.requiredClockCount || 0 }}
+      </ElDescriptionsItem>
+      <ElDescriptionsItem label="实际打卡次数">
+        {{ detailData.clockList?.length || 0 }}
+      </ElDescriptionsItem>
+    </ElDescriptions>
+    <Grid class="w-full" />
   </Modal>
 </template>

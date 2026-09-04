@@ -44,13 +44,12 @@ import {
 } from '#/views/pms/kb/utils/constants';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import KnowledgeGroupForm from './knowledge-group-form.vue';
-import KnowledgeGroupManageDialog from './knowledge-group-manage-dialog.vue';
-import KnowledgeLibraryForm from './knowledge-library-form.vue';
+import KnowledgeLibraryForm from './modules/form.vue';
+import KnowledgeGroupForm from './modules/group-form.vue';
+import KnowledgeGroupManageDialog from './modules/group-manage.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibrary' });
 
-// TODO @AI：删除改 TableAction popConfirm，不要 confirm + empty catch。补 toolbarConfig。antd/antdv-next 的 useAccess() 空调用一并删掉。
 const router = useRouter(); // 路由
 const currentUserId = useUserStore().userInfo?.id; // 当前登录用户，用于判断创建人级操作
 const groupList = ref<PmsKnowledgeGroupApi.KnowledgeGroup[]>([]); // 知识库分组列表
@@ -69,7 +68,7 @@ const [KnowledgeGroupFormModal, knowledgeGroupFormModalApi] = useVbenModal({
 });
 const [KnowledgeGroupManageDialogModal, knowledgeGroupManageDialogModalApi] =
   useVbenModal({
-  destroyOnClose: true,
+    destroyOnClose: true,
     connectedComponent: KnowledgeGroupManageDialog,
   });
 
@@ -98,6 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: { refresh: true, search: true },
   } as VxeTableGridOptions<PmsKnowledgeLibraryApi.KnowledgeLibrary>,
 });
 
@@ -124,16 +124,9 @@ function openDetail(id: number) {
 
 /** 删除按钮操作 */
 async function handleDelete(library: PmsKnowledgeLibraryApi.KnowledgeLibrary) {
-  try {
-    // 删除的二次确认
-    await confirm(`确认删除知识库“${library.name}”吗？`);
-    // 发起删除
-    await deleteKnowledgeLibrary(library.id);
-    ElMessage.success('删除成功');
-    // 刷新列表
-    handleRefresh();
-  } catch {
-  }
+  await deleteKnowledgeLibrary(library.id);
+  ElMessage.success('删除成功');
+  handleRefresh();
 }
 
 /** 退出按钮操作 */
@@ -149,8 +142,7 @@ async function handleExit(library: PmsKnowledgeLibraryApi.KnowledgeLibrary) {
     // 刷新分组和列表
     await getGroupList();
     handleRefresh();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 修改知识库关注状态 */
@@ -162,17 +154,12 @@ async function handleFavoriteStatusChange(
     const text = library.favoriteStatus ? '关注' : '取消关注';
     await confirm(`确认${text}知识库“${library.name}”吗？`);
     // 发起修改关注状态
-    if (library.favoriteStatus) {
-      await createKnowledgeFavorite({
-        type: PmsKnowledgeObjectType.LIBRARY,
-        entityId: library.id!,
-      });
-    } else {
-      await deleteKnowledgeFavorite(
-        PmsKnowledgeObjectType.LIBRARY,
-        library.id!,
-      );
-    }
+    await (library.favoriteStatus
+      ? createKnowledgeFavorite({
+          type: PmsKnowledgeObjectType.LIBRARY,
+          entityId: library.id!,
+        })
+      : deleteKnowledgeFavorite(PmsKnowledgeObjectType.LIBRARY, library.id!));
     // 刷新列表
     handleRefresh();
   } catch {
@@ -330,16 +317,21 @@ onMounted(async () => {
           >
             编辑
           </ElButton>
-          <ElButton
+          <TableAction
             v-if="row.creatorUserId === currentUserId"
-            v-access:code="['pms:kb:library:delete']"
-            class="!m-0"
-            link
-            type="danger"
-            @click="handleDelete(row)"
-          >
-            删除
-          </ElButton>
+            :actions="[
+              {
+                label: '删除',
+                type: 'danger',
+                link: true,
+                auth: ['pms:kb:library:delete'],
+                popConfirm: {
+                  title: `确认删除知识库“${row.name}”吗？`,
+                  confirm: handleDelete.bind(null, row),
+                },
+              },
+            ]"
+          />
           <ElButton
             v-if="row.exitStatus"
             class="!m-0"

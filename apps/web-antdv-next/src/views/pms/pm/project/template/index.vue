@@ -63,6 +63,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
   } as VxeTableGridOptions<PmsProjectTemplateApi.ProjectTemplate>,
 });
 </script>

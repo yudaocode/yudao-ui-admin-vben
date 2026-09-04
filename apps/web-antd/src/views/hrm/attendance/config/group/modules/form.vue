@@ -1,16 +1,12 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：基础字段（名称/部门/员工/规则类型）改 useVbenForm schema，对齐 system/user；班次、特殊日期等内嵌编辑可保留自定义，三端同步。
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
-import type { SystemDeptApi } from '#/api/system/dept';
 
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { formatDate, handleTree } from '@vben/utils';
+import { formatDate } from '@vben/utils';
 
 import {
   Alert,
@@ -18,23 +14,20 @@ import {
   Checkbox,
   Col,
   Form,
-  Input,
   InputNumber,
   message,
-  Radio,
   Row,
   Select,
   Table,
-  TreeSelect,
 } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createAttendanceGroup,
   getAttendanceGroup,
   updateAttendanceGroup,
 } from '#/api/hrm/attendance/group';
 import { $t } from '#/locales';
-import HrmEmployeeMultiSelect from '#/views/hrm/employee/components/employee-multi-select.vue';
 import {
   HRM_ATTENDANCE_POINT_RADIUS_OPTIONS,
   HrmAttendanceAbsenteeismDeductMethod,
@@ -47,6 +40,7 @@ import {
   formatHrmAttendanceWeeks,
 } from '#/views/hrm/utils/format';
 
+import { useGroupBaseFormSchema } from '../data';
 import PointForm from './point-form.vue';
 import ShiftForm from './shift-form.vue';
 import SpecialDateForm from './special-date-form.vue';
@@ -59,13 +53,44 @@ const emit = defineEmits(['success']);
 const macPattern = /^((([0-9a-f]{2}:){5})|(([0-9a-f]{2}-){5}))[0-9a-f]{2}$/i;
 
 const formType = ref<'create' | 'update'>('create');
-const formRef = ref();
-const shiftFormRef = ref<InstanceType<typeof ShiftForm>>();
-const specialDateFormRef = ref<InstanceType<typeof SpecialDateForm>>();
-const pointFormRef = ref<InstanceType<typeof PointForm>>();
-const wifiFormRef = ref<InstanceType<typeof WifiForm>>();
-const deptTree = ref<SystemDeptApi.Dept[]>([]);
 const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
+
+const [BaseForm, baseFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    labelWidth: 120,
+  },
+  handleValuesChange(values, changedFields) {
+    if (changedFields.includes('name')) formData.value.name = values.name;
+    if (changedFields.includes('deptIds')) {
+      formData.value.deptIds = values.deptIds || [];
+    }
+    if (changedFields.includes('employeeIds')) {
+      formData.value.employeeIds = values.employeeIds || [];
+    }
+  },
+  layout: 'horizontal',
+  schema: useGroupBaseFormSchema(),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
+});
+
+const [ShiftModal, shiftModalApi] = useVbenModal({
+  connectedComponent: ShiftForm,
+  destroyOnClose: true,
+});
+const [SpecialDateModal, specialDateModalApi] = useVbenModal({
+  connectedComponent: SpecialDateForm,
+  destroyOnClose: true,
+});
+const [PointModal, pointModalApi] = useVbenModal({
+  connectedComponent: PointForm,
+  destroyOnClose: true,
+});
+const [WifiModal, wifiModalApi] = useVbenModal({
+  connectedComponent: WifiForm,
+  destroyOnClose: true,
+});
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -85,12 +110,6 @@ const misscardDeductMethodOptions = getDictOptions(
   DICT_TYPE.HRM_ATTENDANCE_MISSCARD_DEDUCT_METHOD,
   'number',
 );
-
-const formRules = reactive<Record<string, Rule[]>>({
-  name: [{ required: true, message: '考勤组名称不能为空', trigger: 'blur' }],
-  deptIds: [{ validator: validateScope, trigger: 'change' }],
-  employeeIds: [{ validator: validateScope, trigger: 'change' }],
-});
 
 function deductUnitText(method?: number) {
   return method === undefined ? '' : `元/${formatDeductUnit(method)}`;
@@ -138,13 +157,6 @@ function createDefault(): HrmAttendanceGroupApi.AttendanceGroup {
   };
 }
 
-function validateScope() {
-  if (formData.value.deptIds?.length || formData.value.employeeIds?.length) {
-    return Promise.resolve();
-  }
-  return Promise.reject(new Error('至少选择一个适用部门或员工'));
-}
-
 function formatPointCoordinate(point: HrmAttendanceGroupApi.Point) {
   if (point.longitude === undefined || point.latitude === undefined) {
     return '-';
@@ -153,10 +165,12 @@ function formatPointCoordinate(point: HrmAttendanceGroupApi.Point) {
 }
 
 function openShiftForm(index?: number) {
-  shiftFormRef.value?.open(
-    index === undefined ? undefined : formData.value.shifts?.[index],
-    index,
-  );
+  shiftModalApi
+    .setData({
+      index,
+      shift: index === undefined ? undefined : formData.value.shifts?.[index],
+    })
+    .open();
 }
 
 function handleShiftConfirm(
@@ -185,10 +199,13 @@ function removeShift(index: number) {
 }
 
 function openSpecialDateForm(index?: number) {
-  specialDateFormRef.value?.open(
-    index === undefined ? undefined : formData.value.specialDates?.[index],
-    index,
-  );
+  specialDateModalApi
+    .setData({
+      index,
+      specialDate:
+        index === undefined ? undefined : formData.value.specialDates?.[index],
+    })
+    .open();
 }
 
 function handleSpecialDateConfirm(
@@ -216,10 +233,12 @@ function removeSpecialDate(index: number) {
 }
 
 function openPointForm(index?: number) {
-  pointFormRef.value?.open(
-    index === undefined ? undefined : formData.value.points?.[index],
-    index,
-  );
+  pointModalApi
+    .setData({
+      index,
+      point: index === undefined ? undefined : formData.value.points?.[index],
+    })
+    .open();
 }
 
 function handlePointConfirm(
@@ -239,10 +258,12 @@ function removePoint(index: number) {
 }
 
 function openWifiForm(index?: number) {
-  wifiFormRef.value?.open(
-    index === undefined ? undefined : formData.value.wifis?.[index],
-    index,
-  );
+  wifiModalApi
+    .setData({
+      index,
+      wifi: index === undefined ? undefined : formData.value.wifis?.[index],
+    })
+    .open();
 }
 
 function handleWifiConfirm(wifi: HrmAttendanceGroupApi.Wifi, index?: number) {
@@ -320,7 +341,15 @@ watch(
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const { valid } = await baseFormApi.validate();
+    if (!valid) return;
+    if (
+      !formData.value.deptIds?.length &&
+      !formData.value.employeeIds?.length
+    ) {
+      message.warning('至少选择一个适用部门或员工');
+      return;
+    }
     if (!formData.value.shifts?.length) {
       message.warning('请至少新增一个班次');
       return;
@@ -346,6 +375,7 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = createDefault();
+      await baseFormApi.resetForm();
       return;
     }
     const data = modalApi.getData() as {
@@ -353,66 +383,26 @@ const [Modal, modalApi] = useVbenModal({
       type: 'create' | 'update';
     };
     formType.value = data?.type || 'create';
-    const deptApi = await import('#/api/system/dept');
-    deptTree.value = handleTree(await deptApi.getSimpleDeptList());
     formData.value = data?.id
       ? { ...createDefault(), ...(await getAttendanceGroup(data.id)) }
       : createDefault();
+    await baseFormApi.setValues({
+      deptIds: formData.value.deptIds,
+      employeeIds: formData.value.employeeIds,
+      name: formData.value.name,
+      ruleType: 1,
+    });
   },
 });
 </script>
 
 <template>
   <Modal :title="dialogTitle" class="w-[1120px]">
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="120px"
-    >
+    <Form :model="formData" class="mx-4" label-width="120px">
       <div class="section-title">基本信息</div>
-      <Form.Item label="考勤组名称" name="name">
-        <Input
-          v-model:value="formData.name"
-          :maxlength="50"
-          placeholder="请输入考勤组名称"
-        />
-      </Form.Item>
-      <Row :gutter="20">
-        <Col :span="12">
-          <Form.Item label="适用部门" name="deptIds">
-            <TreeSelect
-              v-model:value="formData.deptIds"
-              :field-names="{
-                label: 'name',
-                value: 'id',
-                children: 'children',
-              }"
-              :tree-data="deptTree"
-              allow-clear
-              class="w-full"
-              multiple
-              placeholder="请选择部门"
-              tree-checkable
-              tree-default-expand-all
-            />
-          </Form.Item>
-        </Col>
-        <Col :span="12">
-          <Form.Item label="适用员工" name="employeeIds">
-            <HrmEmployeeMultiSelect
-              v-model="formData.employeeIds"
-              title="选择考勤组员工"
-            />
-          </Form.Item>
-        </Col>
-      </Row>
+      <BaseForm />
 
       <div class="section-title">考勤规则</div>
-      <Form.Item label="规则类型">
-        <Radio :checked="true">早晚打卡</Radio>
-      </Form.Item>
       <Form.Item label="班次">
         <div class="w-full">
           <div class="mb-3 text-right">
@@ -736,13 +726,10 @@ const [Modal, modalApi] = useVbenModal({
         </Col>
       </Row>
     </Form>
-    <ShiftForm ref="shiftFormRef" @confirm="handleShiftConfirm" />
-    <SpecialDateForm
-      ref="specialDateFormRef"
-      @confirm="handleSpecialDateConfirm"
-    />
-    <PointForm ref="pointFormRef" @confirm="handlePointConfirm" />
-    <WifiForm ref="wifiFormRef" @confirm="handleWifiConfirm" />
+    <ShiftModal @confirm="handleShiftConfirm" />
+    <SpecialDateModal @confirm="handleSpecialDateConfirm" />
+    <PointModal @confirm="handlePointConfirm" />
+    <WifiModal @confirm="handleWifiConfirm" />
   </Modal>
 </template>
 

@@ -58,6 +58,8 @@ export function deleteProjectGroup(id: number) {
 }
 
 /** 移动项目到个人分组 */
-export function moveProjectToGroup(data: PmsProjectGroupApi.ProjectGroupMoveReq) {
+export function moveProjectToGroup(
+  data: PmsProjectGroupApi.ProjectGroupMoveReq,
+) {
   return requestClient.put<boolean>('/pms/pm/project-group/move-project', data);
 }

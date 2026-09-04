@@ -17,7 +17,6 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 defineOptions({ name: 'PmsKnowledgeSearch' });
 
-// TODO @AI：Grid 补 table-title、toolbarConfig.refresh/search，对齐 system user。
 const route = useRoute(); // 当前路由
 const router = useRouter(); // 路由对象
 const keyword = ref(String(route.query.keyword || '')); // 当前搜索关键字
@@ -62,6 +61,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
   } as VxeTableGridOptions<PmsKnowledgeDocumentApi.KnowledgeDocument>,
 });
 
@@ -81,8 +84,11 @@ function highlightSummary(summary: string) {
   if (!value) {
     return summary;
   }
-  const escapedKeyword = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return summary.replace(
+  const escapedKeyword = value.replaceAll(
+    /[.*+?^${}()|[\]\\]/g,
+    String.raw`\$&`,
+  );
+  return summary.replaceAll(
     new RegExp(`(${escapedKeyword})`, 'gi'),
     '<mark>$1</mark>',
   );
@@ -107,7 +113,7 @@ watch(
       />
     </template>
     <!-- 文档列表 -->
-    <Grid>
+    <Grid table-title="文档列表">
       <template #title="{ row }">
         <ElLink type="primary" @click="openDocumentDetail(row)">
           {{ row.title }}

@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：表单主体字段改 useVbenForm schema（放 data.ts），对齐 system/user；内嵌调薪明细表评估 VXE Grid（可编辑用 edit-render），三端同步。
 import type { Rule } from 'ant-design-vue/es/form';
 import type { Dayjs } from 'dayjs';
 
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-template';
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 
-import { computed, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -26,10 +25,10 @@ import {
   Radio,
   Row,
   Select,
-  Table,
 } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSalaryChangeRecord } from '#/api/hrm/salary/change-record';
 import { getSalaryChangeTemplateList } from '#/api/hrm/salary/config/change-template';
 import { getSalaryOptionSimpleList } from '#/api/hrm/salary/config/option';
@@ -47,6 +46,7 @@ import {
 } from '#/views/hrm/utils/constants';
 
 import ChangeTemplateSelect from '../components/change-template-select.vue';
+import { useSalaryEditOptionGridColumns } from '../data';
 
 defineOptions({ name: 'HrmSalaryEmployeeInfoForm' });
 
@@ -110,6 +110,19 @@ const salaryOptionRows = computed(() => {
 const showChangeFields = computed(
   () => formData.value.recordType === HrmSalaryRecordType.CHANGE,
 );
+
+const [OptionGrid, optionGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useSalaryEditOptionGridColumns(),
+    data: [],
+    maxHeight: 360,
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
 
 function isPendingChange() {
   return (
@@ -295,59 +308,66 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       resetForm();
+      return;
+    }
+    const { employeeId, recordId } = (modalApi.getData() || {}) as any;
+    dialogTitle.value = '定薪/调薪';
+    resetForm();
+    modalApi.setState({ title: dialogTitle.value });
+    formLoading.value = true;
+    optionGridApi.setLoading(true);
+    try {
+      await loadSimpleData();
+      if (recordId) {
+        dialogTitle.value = '编辑定薪调薪记录';
+        modalApi.setState({ title: dialogTitle.value });
+        employeeDisabled.value = true;
+        selectedTemplateId.value = undefined;
+        const record = await getSalaryChangeRecord(recordId);
+        beforeTotal.value = record.beforeTotal || 0;
+        probationBeforeTotal.value = record.probationBeforeTotal || 0;
+        formData.value = {
+          id: record.id,
+          employeeId: record.employeeId || employeeId,
+          recordType: record.recordType,
+          changeReason: record.changeReason,
+          effectTime: record.effectTime,
+          remark: record.remark,
+          salaryOptions: (record.salaryOptions || []).map((item) => ({
+            ...item,
+          })),
+          probationSalaryOptions: (record.probationSalaryOptions || []).map(
+            (item) => ({ ...item }),
+          ),
+        };
+        resetDraftMaps(record.salaryOptions, record.probationSalaryOptions);
+      } else if (employeeId) {
+        employeeDisabled.value = true;
+        formData.value.employeeId = employeeId;
+        await loadSalaryEmployee();
+      } else {
+        selectDefaultTemplate();
+        resetDraftMaps(buildDefaultOptionValues(), buildDefaultOptionValues());
+        applySelectedTemplate(false);
+      }
+    } finally {
+      formLoading.value = false;
+      optionGridApi.setLoading(false);
     }
   },
 });
 
-async function open(employeeId?: number, recordId?: number) {
-  dialogTitle.value = '定薪/调薪';
-  resetForm();
-  modalApi.setState({ title: dialogTitle.value });
-  modalApi.open();
-  formLoading.value = true;
-  try {
-    await loadSimpleData();
-    if (recordId) {
-      dialogTitle.value = '编辑定薪调薪记录';
-      modalApi.setState({ title: dialogTitle.value });
-      employeeDisabled.value = true;
-      selectedTemplateId.value = undefined;
-      const record = await getSalaryChangeRecord(recordId);
-      beforeTotal.value = record.beforeTotal || 0;
-      probationBeforeTotal.value = record.probationBeforeTotal || 0;
-      formData.value = {
-        id: record.id,
-        employeeId: record.employeeId || employeeId,
-        recordType: record.recordType,
-        changeReason: record.changeReason,
-        effectTime: record.effectTime,
-        remark: record.remark,
-        salaryOptions: (record.salaryOptions || []).map((item) => ({
-          ...item,
-        })),
-        probationSalaryOptions: (record.probationSalaryOptions || []).map(
-          (item) => ({ ...item }),
-        ),
-      };
-      resetDraftMaps(record.salaryOptions, record.probationSalaryOptions);
-    } else if (employeeId) {
-      employeeDisabled.value = true;
-      formData.value.employeeId = employeeId;
-      await loadSalaryEmployee();
-    } else {
-      selectDefaultTemplate();
-      resetDraftMaps(buildDefaultOptionValues(), buildDefaultOptionValues());
-      applySelectedTemplate(false);
-    }
-  } finally {
-    formLoading.value = false;
-  }
-}
-
-defineExpose({ open });
+watch(
+  salaryOptionRows,
+  async (rows) => {
+    await nextTick();
+    await optionGridApi.grid.reloadData(rows);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -448,50 +468,24 @@ defineExpose({ open });
       />
 
       <div class="mb-2 font-medium">薪资明细</div>
-      <Table
-        bordered
-        size="small"
-        :data-source="salaryOptionRows"
-        :loading="formLoading"
-        :pagination="false"
-        :row-key="(row) => row.code"
-        :columns="[
-          { title: '薪资项', dataIndex: 'name', key: 'name' },
-          {
-            title: '编码',
-            dataIndex: 'code',
-            key: 'code',
-            align: 'center',
-            width: 100,
-          },
-          {
-            title: '试用期工资',
-            key: 'probation',
-            align: 'center',
-            width: 220,
-          },
-          { title: '转正后工资', key: 'regular', align: 'center', width: 220 },
-        ]"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'probation'">
-            <InputNumber
-              v-model:value="record.probationOption.value"
-              :min="0"
-              :precision="2"
-              class="w-full"
-            />
-          </template>
-          <template v-else-if="column.key === 'regular'">
-            <InputNumber
-              v-model:value="record.regularOption.value"
-              :min="0"
-              :precision="2"
-              class="w-full"
-            />
-          </template>
+      <OptionGrid class="w-full">
+        <template #probation="{ row }">
+          <InputNumber
+            v-model:value="row.probationOption.value"
+            :min="0"
+            :precision="2"
+            class="w-full"
+          />
         </template>
-      </Table>
+        <template #regular="{ row }">
+          <InputNumber
+            v-model:value="row.regularOption.value"
+            :min="0"
+            :precision="2"
+            class="w-full"
+          />
+        </template>
+      </OptionGrid>
 
       <Form.Item class="mt-4" label="备注" name="remark">
         <Input.TextArea

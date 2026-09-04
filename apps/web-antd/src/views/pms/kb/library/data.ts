@@ -100,7 +100,7 @@ export function useMemberGridColumns(): VxeTableGridOptions<PmsKnowledgeLibraryM
     },
     {
       title: '成员',
-      width: 260,
+      minWidth: 260,
       slots: { default: 'member' },
     },
     {
@@ -283,6 +283,22 @@ export function useLibraryFormSchema(currentUserId?: number): VbenFormSchema[] {
       description: '可参与内容协作，具体能力受文档权限控制',
       fieldName: 'memberUserIds',
       label: '普通成员',
+    },
+  ];
+}
+
+/** 新增/修改知识库分组的表单 */
+export function useGroupFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      componentProps: {
+        maxlength: 100,
+        placeholder: '请输入分组名称',
+      },
+      fieldName: 'name',
+      label: '分组名称',
+      rules: 'required',
     },
   ];
 }

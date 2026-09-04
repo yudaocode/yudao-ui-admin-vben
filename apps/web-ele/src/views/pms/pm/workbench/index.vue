@@ -44,14 +44,17 @@ import {
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
 import {
+  useGridFormSchema,
   useIterationColumns,
-  useSearchFormSchema,
   useWorkItemColumns,
 } from './data';
 
 defineOptions({ name: 'PmsWorkbench' });
 
 type WorkbenchTab = (typeof PmsWorkbenchTab)[keyof typeof PmsWorkbenchTab];
+type WorkbenchGridRow =
+  | PmsWorkbenchApi.WorkbenchIteration
+  | PmsWorkbenchApi.WorkbenchWorkItem;
 type QuickUpdateField = 'assigneeUserId' | 'endTime' | 'priority';
 type QuickEditField = 'statusId' | QuickUpdateField;
 
@@ -168,7 +171,7 @@ const iterationColumns = useIterationColumns(); // 迭代表格列
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(handleProjectChange),
+    schema: useGridFormSchema(handleProjectChange),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -190,7 +193,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
-  } as VxeTableGridOptions<PmsWorkbenchApi.WorkbenchWorkItem>,
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<WorkbenchGridRow>,
 });
 
 /** 获得工作项选项缓存键 */
@@ -402,10 +409,14 @@ onBeforeUnmount(() => {
           link
           @click="startQuickEdit(row, 'priority')"
         >
-          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+          {{
+            getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-'
+          }}
         </ElButton>
         <span v-else>
-          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+          {{
+            getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-'
+          }}
         </span>
       </template>
       <template #statusId="{ row }">

@@ -1,20 +1,20 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceClockApi } from '#/api/hrm/attendance/clock';
+import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
 import { markRaw } from 'vue';
 
-import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDate, handleTree } from '@vben/utils';
 
 import dayjs from 'dayjs';
 
+import { z } from '#/adapter/form';
 import { getSimpleDeptList } from '#/api/system/dept';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import { HrmAttendanceClockType } from '#/views/hrm/utils/constants';
-// TODO @AI（glm5.3 flash）：z 改从 #/adapter/form 引入（对齐 system/user/data.ts），不要从 @vben/common-ui 导入。
 
 /** 部门多选 ApiTreeSelect 配置 */
 export function useDeptTreeSelectProps() {
@@ -181,6 +181,95 @@ export function useRecordGridColumns(): VxeTableGridOptions<HrmAttendanceClockAp
       fixed: 'right',
       slots: { default: 'actions' },
     },
+  ];
+}
+
+/** 每日考勤详情打卡记录字段 */
+export function useDailyDetailGridColumns(): VxeTableGridOptions<HrmAttendanceClockApi.AttendanceClock>['columns'] {
+  return [
+    {
+      field: 'type',
+      title: '打卡类型',
+      width: 110,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.HRM_ATTENDANCE_CLOCK_TYPE },
+      },
+    },
+    {
+      field: 'attendanceTime',
+      title: '应打卡时间',
+      width: 170,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'clockTime',
+      title: '打卡时间',
+      width: 170,
+      formatter: 'formatDateTime',
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 90,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.HRM_ATTENDANCE_CLOCK_STATUS },
+      },
+    },
+    {
+      field: 'address',
+      title: '地点',
+      minWidth: 180,
+      showOverflow: true,
+    },
+  ];
+}
+
+/** 月度每日考勤概况字段 */
+export function buildOverviewGridColumns(
+  queryMonth: string,
+): VxeTableGridOptions<HrmAttendanceStatisticsApi.MonthDailyOverview>['columns'] {
+  const month = dayjs(queryMonth);
+  return [
+    {
+      field: 'employeeName',
+      fixed: 'left',
+      title: '员工',
+      width: 120,
+      showOverflow: true,
+    },
+    {
+      field: 'jobNumber',
+      fixed: 'left',
+      title: '工号',
+      width: 120,
+      showOverflow: true,
+    },
+    {
+      field: 'deptName',
+      fixed: 'left',
+      title: '部门',
+      width: 140,
+      showOverflow: true,
+    },
+    {
+      field: 'postName',
+      fixed: 'left',
+      title: '岗位',
+      width: 140,
+      showOverflow: true,
+    },
+    ...Array.from({ length: month.daysInMonth() }, (_, index) => {
+      const date = month.date(index + 1);
+      return {
+        align: 'center' as const,
+        field: formatDate(date, 'YYYY-MM-DD'),
+        minWidth: 168,
+        slots: { default: 'dailyOverview' },
+        title: `${formatDate(date, 'DD')} 周${'日一二三四五六'[date.day()]}`,
+      };
+    }),
   ];
 }
 

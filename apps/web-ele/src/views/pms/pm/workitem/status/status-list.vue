@@ -36,7 +36,7 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 
-import StatusDeleteForm from './status-delete-form.vue';
+import StatusDeleteForm from './modules/delete-form.vue';
 
 defineOptions({ name: 'PmsWorkItemStatusList' });
 
@@ -329,10 +329,8 @@ const [Modal, modalApi] = useVbenModal({
           >
             <template #item="{ element }">
               <ElTag class="cursor-move" effect="plain">
-{{
-                element.name
-              }}
-</ElTag>
+                {{ element.name }}
+              </ElTag>
             </template>
           </draggable>
         </div>
@@ -367,10 +365,8 @@ const [Modal, modalApi] = useVbenModal({
               >
                 <template #item="{ element: status }">
                   <ElTag class="cursor-move" effect="plain">
-{{
-                    status.name
-                  }}
-</ElTag>
+                    {{ status.name }}
+                  </ElTag>
                 </template>
               </draggable>
             </div>

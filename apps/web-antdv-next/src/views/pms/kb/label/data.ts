@@ -45,7 +45,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
     {
       field: 'libraryName',
       title: '知识库',
-      width: 180,
+      minWidth: 180,
     },
     {
       field: 'creatorUserName',

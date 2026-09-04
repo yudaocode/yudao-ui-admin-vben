@@ -15,7 +15,7 @@ import {
 } from '#/api/pms/pm/project/announcement';
 
 import { useAnnouncementColumns } from './data';
-import ProjectAnnouncementForm from './project-announcement-form.vue';
+import ProjectAnnouncementForm from './modules/announcement-form.vue';
 
 defineOptions({ name: 'PmsProjectAnnouncementList' });
 
@@ -25,7 +25,7 @@ const total = ref(0); // 公告总数
 
 const [ProjectAnnouncementFormModal, projectAnnouncementFormModalApi] =
   useVbenModal({
-  destroyOnClose: true,
+    destroyOnClose: true,
     connectedComponent: ProjectAnnouncementForm,
   });
 

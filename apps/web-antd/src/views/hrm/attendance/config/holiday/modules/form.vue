@@ -1,48 +1,42 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { Rule } from 'ant-design-vue/es/form';
-
-import type { HrmAttendanceHolidayApi } from '#/api/hrm/attendance/holiday';
-
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-import { fromTimestampPickerValue, toTimestampPickerValue } from '@vben/utils';
 
-import { DatePicker, Form, message, Select } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createAttendanceHoliday,
   getAttendanceHoliday,
   updateAttendanceHoliday,
 } from '#/api/hrm/attendance/holiday';
 import { $t } from '#/locales';
-import { HrmAttendanceHolidayType } from '#/views/hrm/utils/constants';
+
+import { useFormSchema } from '../data';
 
 defineOptions({ name: 'HrmAttendanceHolidayForm' });
 
 const emit = defineEmits(['success']);
-
 const formType = ref<'create' | 'update'>('create');
-const formRef = ref();
-const formData = ref<HrmAttendanceHolidayApi.AttendanceHoliday>({
-  type: HrmAttendanceHolidayType.REST,
-});
-const formRules = reactive<Record<string, Rule[]>>({
-  date: [{ required: true, message: '日期不能为空', trigger: 'change' }],
-  type: [{ required: true, message: '日期类型不能为空', trigger: 'change' }],
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 88 },
+  layout: 'horizontal',
+  schema: useFormSchema(),
+  showDefaultActions: false,
 });
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const { valid } = await formApi.validate();
+    if (!valid) return;
     modalApi.lock();
     try {
+      const values = await formApi.getValues();
       await (formType.value === 'create'
-        ? createAttendanceHoliday(formData.value)
-        : updateAttendanceHoliday(formData.value));
+        ? createAttendanceHoliday(values as any)
+        : updateAttendanceHoliday(values as any));
       message.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -50,50 +44,24 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen) {
     if (!isOpen) return;
-    const data = modalApi.getData() as {
+    const { id, type = 'create' } = modalApi.getData() as {
       id?: number;
-      type: 'create' | 'update';
+      type?: 'create' | 'update';
     };
-    formType.value = data?.type || 'create';
-    formData.value = data?.id
-      ? await getAttendanceHoliday(data.id)
-      : { type: HrmAttendanceHolidayType.REST };
+    formType.value = type;
+    modalApi.setState({
+      title: type === 'create' ? '新增节假日' : '编辑节假日',
+    });
+    await formApi.reset();
+    if (id) await formApi.setValues(await getAttendanceHoliday(id));
   },
 });
 </script>
 
 <template>
-  <Modal
-    :title="formType === 'create' ? '新增节假日' : '编辑节假日'"
-    class="w-[520px]"
-  >
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="88px"
-    >
-      <Form.Item label="日期" name="date">
-        <DatePicker
-          :value="toTimestampPickerValue(formData.date)"
-          class="w-full"
-          value-format="x"
-          @update:value="formData.date = fromTimestampPickerValue($event)"
-        />
-      </Form.Item>
-      <Form.Item label="日期类型" name="type">
-        <Select
-          v-model:value="formData.type"
-          :options="
-            getDictOptions(DICT_TYPE.HRM_ATTENDANCE_HOLIDAY_TYPE, 'number')
-          "
-          class="w-full"
-          placeholder="请选择日期类型"
-        />
-      </Form.Item>
-    </Form>
+  <Modal class="w-[520px]">
+    <Form class="mx-4" />
   </Modal>
 </template>

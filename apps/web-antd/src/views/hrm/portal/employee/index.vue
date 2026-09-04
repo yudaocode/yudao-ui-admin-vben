@@ -5,7 +5,7 @@ import type { HrmPortalEmployeeApi } from '#/api/hrm/portal/employee';
 import { onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, Spin, Tabs } from 'ant-design-vue';
@@ -14,9 +14,9 @@ import { getEmployee } from '#/api/hrm/portal/employee';
 import { getEmployeeFieldConfigList } from '#/api/hrm/portal/employee/field-config';
 import { checkHrmPortalAccess } from '#/views/hrm/utils/employee';
 
-import EmployeeBaseInfo from './EmployeeBaseInfo.vue';
-import EmployeeForm from './EmployeeForm.vue';
-import EmployeePostInfo from './EmployeePostInfo.vue';
+import EmployeeBaseInfo from './modules/employee-base-info.vue';
+import EmployeeForm from './modules/employee-form.vue';
+import EmployeePostInfo from './modules/employee-post-info.vue';
 
 defineOptions({ name: 'HrmPortalEmployee' });
 
@@ -30,7 +30,10 @@ const employee = ref<HrmPortalEmployeeApi.PortalEmployee>(
 const fieldConfigList = ref<HrmEmployeeConfigApi.FieldConfig[]>([]);
 const baseInfoRef = ref<InstanceType<typeof EmployeeBaseInfo>>();
 const postInfoRef = ref<InstanceType<typeof EmployeePostInfo>>();
-const employeeFormRef = ref<InstanceType<typeof EmployeeForm>>();
+const [EmployeeFormModal, employeeFormModalApi] = useVbenModal({
+  connectedComponent: EmployeeForm,
+  destroyOnClose: true,
+});
 
 /** 获得当前员工档案和字段配置 */
 async function loadEmployee() {
@@ -57,7 +60,9 @@ async function refreshEmployee() {
 
 /** 打开员工档案编辑表单 */
 function openEmployeeForm() {
-  employeeFormRef.value?.open(employee.value, fieldConfigList.value);
+  employeeFormModalApi
+    .setData({ employee: employee.value, fields: fieldConfigList.value })
+    .open();
 }
 
 /** 页面激活时刷新员工档案 */
@@ -98,6 +103,6 @@ onActivated(async () => {
       </Tabs>
     </Spin>
 
-    <EmployeeForm ref="employeeFormRef" @success="loadEmployee" />
+    <EmployeeFormModal @success="loadEmployee" />
   </Page>
 </template>

@@ -28,13 +28,9 @@ import {
 } from '#/views/pms/kb/utils/permission';
 
 import { useFolderContentGridColumns } from './data';
-import {
-  getKnowledgeTreeNodeIcon,
-} from './types';
+import { getKnowledgeTreeNodeIcon } from './types';
 
 defineOptions({ name: 'PmsKnowledgeFolderDetail' });
-
-// TODO @AI：内容列表已用 VXE 的话操作列走 TableAction。antd/antdv-next 不要用 v-loading。
 
 const props = defineProps<{
   children: KnowledgeTreeNode[];
@@ -111,8 +107,7 @@ async function handleDelete() {
     ElMessage.success('删除成功');
     // 通知父组件刷新目录树
     emit('delete');
-  } catch {
-  }
+  } catch {}
 }
 </script>
 

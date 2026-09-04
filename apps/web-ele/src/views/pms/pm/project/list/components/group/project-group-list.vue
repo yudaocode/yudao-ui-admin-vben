@@ -24,7 +24,6 @@ import ProjectGroupForm from './project-group-form.vue';
 
 defineOptions({ name: 'PmsProjectGroupList' });
 
-
 const emit = defineEmits(['success']); // 定义 success 事件，用于项目分组发生变化后的回调
 
 const { hasAccessByCodes } = useAccess();
@@ -197,14 +196,15 @@ onBeforeUnmount(() => destroySortable());
             :actions="[
               {
                 label: '编辑',
-                type: 'link',
+                type: 'primary',
+                link: true,
                 auth: ['pms:pm:project-group:update'],
                 onClick: () => openForm(row),
               },
               {
                 label: '删除',
-                type: 'link',
-                danger: true,
+                type: 'danger',
+                link: true,
                 auth: ['pms:pm:project-group:delete'],
                 popConfirm: {
                   title: '是否确认删除该分组？',

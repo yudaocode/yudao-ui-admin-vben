@@ -52,7 +52,7 @@ const loading = ref(false); // 加载中
 const items = ref<PmsWorkItemApi.WorkItem[]>([]); // 工作项列表
 const iterationList = ref<PmsIterationApi.Iteration[]>([]); // 项目迭代列表
 const keyword = ref(''); // 搜索关键词
-const dateRange = ref<[any, any]>(); // 时间轴日期范围
+const dateRange = ref<[Date, Date]>(); // 时间轴日期范围
 const viewMode = ref<ViewMode>('Day'); // 时间轴视图模式
 const viewModeOptions = [
   { label: '日视图', value: 'Day' },
@@ -199,16 +199,16 @@ function buildRows() {
     const iterationEndTime = iteration.endTime
       ? Number(iteration.endTime)
       : Math.max(...iterationItems.map((item) => Number(item.endTime)));
-    result.push({
-      key: `iteration-${iteration.id}`,
-      name: iteration.name,
-      startTime: iterationStartTime,
-      endTime: iterationEndTime,
-      progress: 0,
-      depth: 0,
-      group: true,
-    });
     result.push(
+      {
+        key: `iteration-${iteration.id}`,
+        name: iteration.name,
+        startTime: iterationStartTime,
+        endTime: iterationEndTime,
+        progress: 0,
+        depth: 0,
+        group: true,
+      },
       ...buildItemRows(iterationItems, 1, `iteration-${iteration.id}`),
     );
   });
@@ -217,19 +217,23 @@ function buildRows() {
       !item.iterationId &&
       (!searchKeyword || item.name.includes(searchKeyword)),
   );
-  if (unplannedItems.length) {
-    result.push({
-      key: 'iteration-unplanned',
-      name: '未规划事项',
-      startTime: Math.min(
-        ...unplannedItems.map((item) => Number(item.startTime)),
-      ),
-      endTime: Math.max(...unplannedItems.map((item) => Number(item.endTime))),
-      progress: 0,
-      depth: 0,
-      group: true,
-    });
-    result.push(...buildItemRows(unplannedItems, 1, 'iteration-unplanned'));
+  if (unplannedItems.length > 0) {
+    result.push(
+      {
+        key: 'iteration-unplanned',
+        name: '未规划事项',
+        startTime: Math.min(
+          ...unplannedItems.map((item) => Number(item.startTime)),
+        ),
+        endTime: Math.max(
+          ...unplannedItems.map((item) => Number(item.endTime)),
+        ),
+        progress: 0,
+        depth: 0,
+        group: true,
+      },
+      ...buildItemRows(unplannedItems, 1, 'iteration-unplanned'),
+    );
   }
   return result;
 }
@@ -293,10 +297,12 @@ function resetRange() {
     return;
   }
   dateRange.value = [
-    dayjs(
+    new Date(
       Math.min(...allDatedItems.value.map((item) => Number(item.startTime))),
     ),
-    dayjs(Math.max(...allDatedItems.value.map((item) => Number(item.endTime)))),
+    new Date(
+      Math.max(...allDatedItems.value.map((item) => Number(item.endTime))),
+    ),
   ];
 }
 

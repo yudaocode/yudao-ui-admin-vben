@@ -2,10 +2,8 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types';
 
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
 
 /** 列表的字段 */
-// TODO @AI：三端列定义不一致：antd 用 CellDict，antdv-next/ele 用 getDictLabel formatter。统一成 CellDict。
 export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
   return [
     {
@@ -18,8 +16,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       field: 'type',
       title: '类型',
       width: 100,
-      formatter: ({ cellValue }) =>
-        getDictLabel(DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE, cellValue),
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE },
+      },
     },
     {
       field: 'libraryName',

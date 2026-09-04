@@ -1,36 +1,42 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
-import type { TableColumnsType } from 'antdv-next';
-
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeConfigApi } from '#/api/hrm/employee/config';
 
 import { onMounted, ref } from 'vue';
 
-import { message, Switch, Table } from 'antdv-next';
+import { message, Switch } from 'antdv-next';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getEmployeeArchiveFieldConfigList,
   saveEmployeeArchiveFieldConfig,
 } from '#/api/hrm/employee/config';
 
+import { useArchiveFieldGridColumns } from '../data';
+
 defineOptions({ name: 'HrmEmployeeArchiveFieldConfig' });
 
-const loading = ref(false);
 const list = ref<HrmEmployeeConfigApi.FieldConfig[]>([]);
 
-const columns: TableColumnsType<HrmEmployeeConfigApi.FieldConfig> = [
-  { title: '字段分组', dataIndex: 'groupName', key: 'groupName', width: 180 },
-  { title: '字段名称', dataIndex: 'title', key: 'title' },
-  { title: '员工是否可见', key: 'visible', align: 'center', width: 160 },
-  { title: '员工是否可编辑', key: 'editable', align: 'center', width: 160 },
-];
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useArchiveFieldGridColumns(),
+    data: [],
+    minHeight: 240,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmEmployeeConfigApi.FieldConfig>,
+});
 
 async function getList() {
-  loading.value = true;
+  gridApi.setLoading(true);
   try {
     list.value = await getEmployeeArchiveFieldConfigList();
+    await gridApi.grid.reloadData(list.value);
   } finally {
-    loading.value = false;
+    gridApi.setLoading(false);
   }
 }
 
@@ -59,26 +65,20 @@ defineExpose({ submitForm });
 </script>
 
 <template>
-  <Table
-    :columns="columns"
-    :data-source="list"
-    :loading="loading"
-    :pagination="false"
-    bordered
-  >
-    <template #bodyCell="{ column, record }">
+  <Grid class="w-full">
+    <template #visible="{ row }">
       <Switch
-        v-if="column.key === 'visible'"
-        v-model:checked="record.visible"
-        :disabled="record.visibleLocked"
-        @change="handleVisibleChange(record)"
-      />
-      <Switch
-        v-else-if="column.key === 'editable'"
-        v-model:checked="record.editable"
-        :disabled="!record.visible || record.editableLocked"
-        @change="handleEditableChange(record)"
+        v-model:checked="row.visible"
+        :disabled="row.visibleLocked"
+        @change="handleVisibleChange(row)"
       />
     </template>
-  </Table>
+    <template #editable="{ row }">
+      <Switch
+        v-model:checked="row.editable"
+        :disabled="!row.visible || row.editableLocked"
+        @change="handleEditableChange(row)"
+      />
+    </template>
+  </Grid>
 </template>

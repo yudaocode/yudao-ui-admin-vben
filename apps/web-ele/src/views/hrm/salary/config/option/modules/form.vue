@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
-
-import { computed, ref } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createSalaryOption,
   getSalaryOptionList,
@@ -15,40 +11,26 @@ import {
 import { $t } from '#/locales';
 import { HrmSalaryOptionCategoryCode } from '#/views/hrm/utils/constants';
 
+import { useFormSchema } from '../data';
+
 defineOptions({ name: 'HrmSalaryOptionForm' });
 
 const emit = defineEmits(['success']);
 
-const formRef = ref();
-const optionList = ref<HrmSalaryOptionApi.SalaryOption[]>([]);
-const formData = ref<HrmSalaryOptionApi.SaveReq>({
-  parentCode: undefined,
-  name: '',
-  remark: '',
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 96 },
+  layout: 'horizontal',
+  schema: useFormSchema(),
+  showDefaultActions: false,
 });
-
-const categoryList = computed(() =>
-  optionList.value.filter(
-    (item) =>
-      item.parentCode === HrmSalaryOptionCategoryCode.ROOT &&
-      !item.systemFlag &&
-      item.enabled,
-  ),
-);
-
-const formRules = {
-  parentCode: [
-    { required: true, message: '工资项分类不能为空', trigger: 'change' },
-  ],
-  name: [{ required: true, message: '工资项名称不能为空', trigger: 'blur' }],
-};
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const { valid } = await formApi.validate();
+    if (!valid) return;
     modalApi.lock();
     try {
-      await createSalaryOption(formData.value);
+      await createSalaryOption((await formApi.getValues()) as any);
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -56,52 +38,37 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen) {
     if (!isOpen) return;
-    const parentCode = (modalApi.getData() as { parentCode: number })
-      .parentCode;
-    optionList.value = await getSalaryOptionList();
-    formData.value = { parentCode, name: '', remark: '' };
+    const { parentCode } = modalApi.getData() as { parentCode?: number };
+    const options = await getSalaryOptionList();
+    const categories = options.filter(
+      (item) =>
+        item.parentCode === HrmSalaryOptionCategoryCode.ROOT &&
+        !item.systemFlag &&
+        item.enabled,
+    );
+    formApi.updateSchema([
+      {
+        fieldName: 'parentCode',
+        componentProps: {
+          disabled: true,
+          options: categories.map((item) => ({
+            label: item.name,
+            value: item.code,
+          })),
+          placeholder: '请选择工资项分类',
+        },
+      },
+    ]);
+    await formApi.reset();
+    await formApi.setValues({ name: '', parentCode, remark: '' });
   },
 });
 </script>
 
 <template>
   <Modal :title="$t('ui.actionTitle.create', ['工资项'])" class="w-[560px]">
-    <ElForm
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="96px"
-    >
-      <ElFormItem label="工资项分类" name="parentCode">
-        <ElSelect
-          v-model="formData.parentCode"
-          :options="
-            categoryList.map((item) => ({ label: item.name, value: item.code }))
-          "
-          disabled
-          class="w-full"
-          placeholder="请选择工资项分类"
-        />
-      </ElFormItem>
-      <ElFormItem label="工资项名称" name="name">
-        <ElInput
-          v-model="formData.name"
-          maxlength="64"
-          placeholder="请输入工资项名称"
-        />
-      </ElFormItem>
-      <ElFormItem label="备注" name="remark">
-        <ElInput
-          v-model="formData.remark"
-          :rows="3"
-          maxlength="255"
-          placeholder="请输入备注"
-          type="textarea"
-        />
-      </ElFormItem>
-    </ElForm>
+    <Form class="mx-4" />
   </Modal>
 </template>

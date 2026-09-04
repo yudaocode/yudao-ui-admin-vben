@@ -24,9 +24,9 @@ export function getKnowledgeDocumentLabel(id: number) {
 
 /** 查询文档标签列表 */
 export function getKnowledgeDocumentLabelList() {
-  return requestClient.get<PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[]>(
-    '/pms/kb/document-label/list',
-  );
+  return requestClient.get<
+    PmsKnowledgeDocumentLabelApi.KnowledgeDocumentLabel[]
+  >('/pms/kb/document-label/list');
 }
 
 /** 新增文档标签 */
@@ -52,8 +52,7 @@ export function deleteKnowledgeDocumentLabel(id: number) {
 
 /** 查询标签下的文档分页 */
 export function getKnowledgeDocumentPageByLabel(params: PageParam) {
-  return requestClient.get<PageResult<PmsKnowledgeDocumentApi.KnowledgeDocument>>(
-    '/pms/kb/document-label/document-page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<PmsKnowledgeDocumentApi.KnowledgeDocument>
+  >('/pms/kb/document-label/document-page', { params });
 }

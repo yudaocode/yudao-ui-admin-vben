@@ -1,100 +1,55 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：考勤组内嵌编辑弹窗可保留，但打开契约对齐 system/user 的 useVbenModal（connectedComponent + setData/open），三端一致。
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElDatePicker,
-  ElForm,
-  ElFormItem,
-  ElOption,
-  ElSelect,
-} from 'element-plus';
+import { useVbenForm } from '#/adapter/form';
 
-import { HrmAttendanceHolidayType } from '#/views/hrm/utils/constants';
+import { useSpecialDateFormSchema } from '../data';
 
 defineOptions({ name: 'HrmAttendanceGroupSpecialDateForm' });
 
 const emit = defineEmits<{
   confirm: [specialDate: HrmAttendanceGroupApi.SpecialDate, index?: number];
 }>();
-
 const editIndex = ref<number>();
-const formRef = ref();
-const formData = ref<HrmAttendanceGroupApi.SpecialDate>(createDefault());
 
-const formRules = reactive({
-  type: [
-    { required: true, message: '特殊日期类型不能为空', trigger: 'change' },
-  ],
-  date: [{ required: true, message: '日期不能为空', trigger: 'change' }],
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 104 },
+  layout: 'horizontal',
+  schema: useSpecialDateFormSchema(),
+  showDefaultActions: false,
 });
-
-function createDefault(): HrmAttendanceGroupApi.SpecialDate {
-  return { type: HrmAttendanceHolidayType.WORK, date: undefined };
-}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
-    emit('confirm', { ...formData.value }, editIndex.value);
+    const { valid } = await formApi.validate();
+    if (!valid) return;
+    const values = await formApi.getValues();
+    emit(
+      'confirm',
+      { ...values, date: Number(values.date) } as any,
+      editIndex.value,
+    );
     await modalApi.close();
   },
-  onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen) {
     if (!isOpen) return;
-    const payload = modalApi.getData() as {
-      index?: number;
-      specialDate?: HrmAttendanceGroupApi.SpecialDate;
-    };
-    editIndex.value = payload?.index;
-    formData.value = payload?.specialDate
-      ? { ...payload.specialDate }
-      : createDefault();
-  },
-});
-
-defineExpose({
-  open(specialDate?: HrmAttendanceGroupApi.SpecialDate, index?: number) {
-    modalApi.setData({ specialDate, index }).open();
+    const { index, specialDate } = modalApi.getData() as any;
+    editIndex.value = index;
+    modalApi.setState({
+      title: index === undefined ? '新增特殊日期' : '编辑特殊日期',
+    });
+    await formApi.reset();
+    if (specialDate) await formApi.setValues(specialDate);
   },
 });
 </script>
 
 <template>
-  <Modal
-    :title="editIndex === undefined ? '新增特殊日期' : '编辑特殊日期'"
-    class="w-[560px]"
-  >
-    <ElForm
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="120px"
-    >
-      <ElFormItem label="特殊日期类型" prop="type">
-        <ElSelect
-          v-model="formData.type"
-          class="w-full"
-          placeholder="请选择特殊日期类型"
-        >
-          <ElOption :value="HrmAttendanceHolidayType.WORK" label="上班" />
-          <ElOption :value="HrmAttendanceHolidayType.REST" label="休息" />
-        </ElSelect>
-      </ElFormItem>
-      <ElFormItem label="日期" prop="date">
-        <ElDatePicker
-          v-model="formData.date"
-          class="!w-full"
-          placeholder="请选择日期"
-          type="date"
-          value-format="x"
-        />
-      </ElFormItem>
-    </ElForm>
+  <Modal class="w-[560px]">
+    <Form class="mx-4" />
   </Modal>
 </template>

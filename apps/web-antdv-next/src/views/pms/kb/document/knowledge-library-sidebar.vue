@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { MenuProps, TreeProps } from 'antdv-next';
+
 import type { KnowledgeContentView, KnowledgeTreeNode } from './types';
 
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Dropdown, Empty, Menu, MenuItem, Tree } from 'antdv-next';
+import { Button, Dropdown, Empty, Menu, Tree } from 'antdv-next';
 
 import {
   canDeleteKnowledgeContent,
@@ -16,8 +18,6 @@ import {
 import { getKnowledgeTreeNodeIcon } from './types';
 
 defineOptions({ name: 'PmsKnowledgeLibrarySidebar' });
-
-// TODO @AI：树可以保留自定义；三端节点菜单和拖拽行为对齐。
 
 const props = defineProps<{
   activeView: KnowledgeContentView;
@@ -36,13 +36,20 @@ const emit = defineEmits([
   'recycle',
 ]); // 组件事件
 
-const treeRef = ref<any>(); // 目录树 Ref
+interface AntKnowledgeTreeNode {
+  children: AntKnowledgeTreeNode[];
+  key: string;
+  node: KnowledgeTreeNode;
+  title: string;
+}
+
+type MenuClickEvent = Parameters<NonNullable<MenuProps['onClick']>>[0];
 
 const defaultExpandedNodeKeys = computed(() =>
   props.currentNodeKey ? [props.currentNodeKey] : [],
 ); // 默认展开当前内容的目录链路
 const antTreeData = computed(() =>
-  props.treeData.map(function mapNode(node): any {
+  props.treeData.map(function mapNode(node): AntKnowledgeTreeNode {
     return {
       key: node.key,
       title: node.label,
@@ -52,15 +59,21 @@ const antTreeData = computed(() =>
   }),
 ); // antd Tree 数据
 
-/** 同步目录树的当前节点，并自动展开其全部父级目录 */
-async function setCurrentNode() {
-  await nextTick();
-  treeRef.value?.setCurrentKey?.(props.currentNodeKey, true);
+/** 处理新增内容菜单 */
+function handleCreateMenu({ key }: MenuClickEvent) {
+  emit('create', String(key));
 }
 
-watch([() => props.currentNodeKey, () => props.treeData], () => {
-  setCurrentNode();
-});
+/** 处理目录节点选择 */
+const handleNodeSelect: NonNullable<TreeProps['onSelect']> = (_keys, info) => {
+  emit('nodeClick', (info.node as unknown as AntKnowledgeTreeNode).node);
+};
+
+/** 处理目录节点操作 */
+function handleNodeAction(node: KnowledgeTreeNode, event: MenuClickEvent) {
+  event.domEvent.stopPropagation();
+  emit('nodeAction', node, String(event.key));
+}
 </script>
 
 <template>
@@ -90,16 +103,16 @@ watch([() => props.currentNodeKey, () => props.treeData], () => {
             <IconifyIcon icon="lucide:plus" />
           </Button>
           <template #popupRender>
-            <Menu @click="({ key }: any) => emit('create', key)">
-              <MenuItem v-if="canCreateDocument" key="document">
+            <Menu @click="handleCreateMenu">
+              <Menu.Item v-if="canCreateDocument" key="document">
                 创建文档
-              </MenuItem>
-              <MenuItem v-if="canCreateFolder" key="folder">
+              </Menu.Item>
+              <Menu.Item v-if="canCreateFolder" key="folder">
                 创建文件夹
-              </MenuItem>
-              <MenuItem v-if="canCreateDocument" key="upload">
+              </Menu.Item>
+              <Menu.Item v-if="canCreateDocument" key="upload">
                 上传文件
-              </MenuItem>
+              </Menu.Item>
             </Menu>
           </template>
         </Dropdown>
@@ -107,21 +120,15 @@ watch([() => props.currentNodeKey, () => props.treeData], () => {
     </div>
     <Tree
       v-if="treeData.length"
-      ref="treeRef"
       :default-expanded-keys="defaultExpandedNodeKeys"
       :selected-keys="currentNodeKey ? [currentNodeKey] : []"
       :tree-data="antTreeData"
       class="knowledge-sidebar-tree"
-      @select="
-        (_keys: any, info: any) =>
-          info.node?.node && emit('nodeClick', info.node.node)
-      "
+      @select="handleNodeSelect"
     >
-      <template #titleRender="node">
+      <template #titleRender="{ node }">
         <div class="group flex min-w-0 items-center gap-1.5">
-          <IconifyIcon
-            :icon="getKnowledgeTreeNodeIcon(node as KnowledgeTreeNode)"
-          />
+          <IconifyIcon :icon="getKnowledgeTreeNodeIcon(node)" />
           <span class="min-w-0 flex-1 truncate">{{ node.label }}</span>
           <Dropdown
             v-if="
@@ -138,15 +145,8 @@ watch([() => props.currentNodeKey, () => props.treeData], () => {
               <IconifyIcon icon="lucide:ellipsis" />
             </Button>
             <template #popupRender>
-              <Menu
-                @click="
-                  ({ key, domEvent }: any) => {
-                    domEvent.stopPropagation();
-                    emit('nodeAction', node, key);
-                  }
-                "
-              >
-                <MenuItem
+              <Menu @click="handleNodeAction.bind(null, node)">
+                <Menu.Item
                   v-if="
                     node.kind === 'folder' &&
                     canEditKnowledgeContent(node.currentUserLevel)
@@ -155,8 +155,8 @@ watch([() => props.currentNodeKey, () => props.treeData], () => {
                   key="create-document"
                 >
                   新建文档
-                </MenuItem>
-                <MenuItem
+                </Menu.Item>
+                <Menu.Item
                   v-if="
                     node.kind === 'folder' &&
                     canEditKnowledgeContent(node.currentUserLevel)
@@ -165,8 +165,8 @@ watch([() => props.currentNodeKey, () => props.treeData], () => {
                   key="create-folder"
                 >
                   新建文件夹
-                </MenuItem>
-                <MenuItem
+                </Menu.Item>
+                <Menu.Item
                   v-if="
                     node.kind === 'folder' &&
                     canEditKnowledgeContent(node.currentUserLevel)
@@ -175,28 +175,28 @@ watch([() => props.currentNodeKey, () => props.treeData], () => {
                   key="upload"
                 >
                   上传文件
-                </MenuItem>
-                <MenuItem
+                </Menu.Item>
+                <Menu.Item
                   v-if="canEditKnowledgeContent(node.currentUserLevel)"
                   v-access:code="['pms:kb:library:update']"
                   key="rename"
                 >
                   重命名
-                </MenuItem>
-                <MenuItem
+                </Menu.Item>
+                <Menu.Item
                   v-if="canManageKnowledgeContent(node.currentUserLevel)"
                   v-access:code="['pms:kb:library:update']"
                   key="move"
                 >
                   移动
-                </MenuItem>
-                <MenuItem
+                </Menu.Item>
+                <Menu.Item
                   v-if="canDeleteKnowledgeContent(node.currentUserLevel)"
                   v-access:code="['pms:kb:library:delete']"
                   key="delete"
                 >
                   删除
-                </MenuItem>
+                </Menu.Item>
               </Menu>
             </template>
           </Dropdown>

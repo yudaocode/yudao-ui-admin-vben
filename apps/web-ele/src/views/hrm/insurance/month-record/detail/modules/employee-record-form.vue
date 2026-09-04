@@ -1,36 +1,32 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
 import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/month-record/employee';
 import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
 
 import { computed, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
 
-import { ElInputNumber, ElMessage, ElTable, ElTableColumn } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 import {
   getInsuranceMonthEmployeeRecord,
   updateInsuranceMonthEmployeeRecord,
 } from '#/api/hrm/insurance/month-record/employee';
 import { getInsuranceScheme } from '#/api/hrm/insurance/scheme';
-import { DictTag } from '#/components/dict-tag';
-import InsuranceSchemeSelect from '#/views/hrm/insurance/scheme/components/insurance-scheme-select.vue';
 import { HrmInsuranceSchemeType } from '#/views/hrm/utils/constants';
-import { formatHrmRate } from '#/views/hrm/utils/format';
+
+import { useEmployeeRecordFormSchema } from '../data';
+import ProjectGrid from './project-grid.vue';
 
 defineOptions({ name: 'HrmInsuranceEmployeeRecordForm' });
 
 const emit = defineEmits(['success']);
-
 const formData =
   ref<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>({
     socialSecurityProjectList: [],
     providentFundProjectList: [],
   });
 const projectList = ref<HrmInsuranceMonthEmployeeRecordApi.Project[]>([]);
-
 const isProportionScheme = computed(
   () => formData.value.schemeType === HrmInsuranceSchemeType.PROPORTION,
 );
@@ -41,25 +37,7 @@ const [Form, formApi] = useVbenForm({
     componentProps: { class: 'w-full' },
   },
   layout: 'horizontal',
-  schema: [
-    {
-      fieldName: 'employeeDisplay',
-      label: '员工',
-      component: 'Input',
-      componentProps: { disabled: true },
-    },
-    {
-      fieldName: 'schemeId',
-      label: '社保方案',
-      component: 'Input',
-      rules: 'required',
-    },
-    {
-      fieldName: 'status',
-      label: '状态',
-      component: 'Input',
-    },
-  ],
+  schema: useEmployeeRecordFormSchema(handleSchemeChange),
   showDefaultActions: false,
 });
 
@@ -95,9 +73,7 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
     const values = await formApi.getValues();
-    if (!valid || !formData.value.id || !values.schemeId) {
-      return;
-    }
+    if (!valid || !formData.value.id || !values.schemeId) return;
     modalApi.lock();
     try {
       await updateInsuranceMonthEmployeeRecord({
@@ -112,15 +88,11 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      return;
-    }
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
     const row =
       modalApi.getData() as HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord;
-    if (!row?.id) {
-      return;
-    }
+    if (!row?.id) return;
     modalApi.lock();
     try {
       const detail = await getInsuranceMonthEmployeeRecord(row.id);
@@ -141,91 +113,15 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-defineExpose({
-  open: (
-    row: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord,
-  ) => {
-    modalApi.setData(row).open();
-  },
-});
 </script>
 
 <template>
   <Modal class="w-[960px]">
-    <Form class="mx-4">
-      <template #schemeId="{ model, field }">
-        <InsuranceSchemeSelect
-          v-model:model-value="model[field]"
-          @change="handleSchemeChange"
-        />
-      </template>
-      <template #status="{ model, field }">
-        <DictTag
-          :type="DICT_TYPE.HRM_INSURANCE_EMP_STATUS"
-          :value="model[field] ?? ''"
-        />
-      </template>
-    </Form>
-    <ElTable
-      :data="projectList"
-      border
+    <Form class="mx-4" />
+    <ProjectGrid
       class="mx-4 mb-4"
-      row-key="schemeProjectId"
-      size="small"
-    >
-      <ElTableColumn label="类型" width="130">
-        <template #default="{ row }">
-          <DictTag
-            :type="DICT_TYPE.HRM_INSURANCE_PROJECT_TYPE"
-            :value="row.type"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="项目名称" min-width="150" prop="name" />
-      <ElTableColumn v-if="isProportionScheme" label="缴纳基数" width="150">
-        <template #default="{ row }">
-          <ElInputNumber
-            v-model="row.baseAmount"
-            :controls="false"
-            :min="0"
-            :precision="2"
-            class="!w-full"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn v-if="isProportionScheme" label="公司比例" width="120">
-        <template #default="{ row }">
-          {{ formatHrmRate(row.corporateRate) }}
-        </template>
-      </ElTableColumn>
-      <ElTableColumn v-if="isProportionScheme" label="个人比例" width="120">
-        <template #default="{ row }">
-          {{ formatHrmRate(row.personalRate) }}
-        </template>
-      </ElTableColumn>
-      <ElTableColumn v-if="!isProportionScheme" label="公司金额" width="150">
-        <template #default="{ row }">
-          <ElInputNumber
-            v-model="row.corporateAmount"
-            :controls="false"
-            :min="0"
-            :precision="2"
-            class="!w-full"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn v-if="!isProportionScheme" label="个人金额" width="150">
-        <template #default="{ row }">
-          <ElInputNumber
-            v-model="row.personalAmount"
-            :controls="false"
-            :min="0"
-            :precision="2"
-            class="!w-full"
-          />
-        </template>
-      </ElTableColumn>
-    </ElTable>
+      :rows="projectList"
+      :scheme-type="formData.schemeType"
+    />
   </Modal>
 </template>

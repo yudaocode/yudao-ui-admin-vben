@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -10,17 +10,10 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDate } from '@vben/utils';
 
-import {
-  Card,
-  Descriptions,
-  Radio,
-  Select,
-  Spin,
-  Table,
-  Tag,
-} from 'ant-design-vue';
+import { Card, Descriptions, Radio, Select, Spin, Tag } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAttendanceMonthDetail } from '#/api/hrm/attendance/statistics';
 import { DictTag } from '#/components/dict-tag';
 import { HRM_WEEK_OPTIONS } from '#/views/hrm/utils/constants';
@@ -35,6 +28,7 @@ import {
   dailyStatusOptions,
   getAttendanceResultTagColor,
   isDailyDetailVisible,
+  useLeaveGridColumns,
 } from './data';
 
 defineOptions({ name: 'HrmAttendanceMonthDetail' });
@@ -66,13 +60,17 @@ const filteredLeaveList = computed(() =>
   ),
 );
 
-const leaveColumns = [
-  { title: '类型', dataIndex: 'type', width: 120 },
-  { title: '开始时间', dataIndex: 'startTime', width: 180 },
-  { title: '结束时间', dataIndex: 'endTime', width: 180 },
-  { title: '时长', dataIndex: 'day', width: 100 },
-  { title: '事由', dataIndex: 'reason', ellipsis: true },
-];
+const [LeaveGrid, leaveGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useLeaveGridColumns(),
+    data: [],
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
 
 async function getDetail() {
   if (!employeeId.value || !dayjs(`${yearMonth.value}-01`).isValid()) {
@@ -92,6 +90,14 @@ async function getDetail() {
 
 onMounted(getDetail);
 watch([employeeId, year, month], getDetail);
+watch(
+  filteredLeaveList,
+  async (rows) => {
+    await nextTick();
+    await leaveGridApi.grid.reloadData(rows);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -265,31 +271,21 @@ watch([employeeId, year, month], getDetail);
             :options="leaveTypeOptions"
           />
         </div>
-        <Table
-          :columns="leaveColumns"
-          :data-source="filteredLeaveList"
-          :pagination="false"
-          row-key="id"
-          size="small"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.dataIndex === 'type'">
-              <DictTag
-                :type="DICT_TYPE.HRM_ATTENDANCE_LEAVE_TYPE"
-                :value="record.type"
-              />
-            </template>
-            <template v-else-if="column.dataIndex === 'startTime'">
-              {{ formatHrmDateTime(record.startTime) }}
-            </template>
-            <template v-else-if="column.dataIndex === 'endTime'">
-              {{ formatHrmDateTime(record.endTime) }}
-            </template>
-            <template v-else-if="column.dataIndex === 'day'">
-              {{ formatHrmDays(record.day) }} 天
-            </template>
+        <LeaveGrid class="w-full">
+          <template #type="{ row }">
+            <DictTag
+              :type="DICT_TYPE.HRM_ATTENDANCE_LEAVE_TYPE"
+              :value="row.type"
+            />
           </template>
-        </Table>
+          <template #startTime="{ row }">
+            {{ formatHrmDateTime(row.startTime) }}
+          </template>
+          <template #endTime="{ row }">
+            {{ formatHrmDateTime(row.endTime) }}
+          </template>
+          <template #day="{ row }"> {{ formatHrmDays(row.day) }} 天 </template>
+        </LeaveGrid>
       </Card>
     </Spin>
   </Page>

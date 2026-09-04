@@ -14,8 +14,7 @@ import { PmsWorkItemStatusType } from '#/views/pms/pm/utils/constants';
 import ProjectSelect from './components/project-select.vue';
 
 /** 列表的搜索表单 */
-// TODO @AI：命名对齐 system user，改成 useGridFormSchema。
-export function useSearchFormSchema(
+export function useGridFormSchema(
   onProjectChange: () => void,
 ): VbenFormSchema[] {
   return [
@@ -58,8 +57,8 @@ export function useSearchFormSchema(
         allowClear: true,
         options: getDictOptions(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, 'number').map(
           (item) => ({
-          label: item.label,
-          value: item.value,
+            label: item.label,
+            value: item.value,
           }),
         ),
         placeholder: '全部优先级',
@@ -149,7 +148,7 @@ export function useWorkItemColumns(): VxeTableGridOptions<PmsWorkbenchApi.Workbe
 }
 
 /** 迭代列表的字段 */
-export function useIterationColumns(): VxeTableGridOptions<PmsWorkbenchApi.WorkbenchWorkItem>['columns'] {
+export function useIterationColumns(): VxeTableGridOptions<PmsWorkbenchApi.WorkbenchIteration>['columns'] {
   return [
     {
       field: 'id',

@@ -25,7 +25,7 @@ import { $t } from '#/locales';
 import { HrmHomeCalendarItemType } from '#/views/hrm/utils/constants';
 import { getHrmLunarDateInfo } from '#/views/hrm/utils/format';
 
-import PersonalNoteForm from './personal-note-form.vue';
+import PersonalNoteForm from '../modules/personal-note-form.vue';
 
 import 'dayjs/locale/zh-cn';
 

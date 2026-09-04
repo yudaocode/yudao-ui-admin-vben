@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：v-loading 是 Element Plus 指令，当前组件库不生效；加载态对齐 system/user 用 Spin（或 modalApi.lock）。
 import type { HrmEmployeeFileApi } from '#/api/hrm/employee/file';
 
 import { onMounted, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
 
-import { Button, Card, Modal } from 'antdv-next';
+import { Button, Card, Modal, Spin } from 'antdv-next';
 
 import {
   getEmployeeFileList,
@@ -64,7 +63,7 @@ async function saveFiles() {
 onMounted(getFileListData);
 </script>
 <template>
-  <div v-loading="loading">
+  <Spin :spinning="loading">
     <Card
       v-for="group in HrmEmployeeFileGroups"
       :key="group.label"
@@ -103,5 +102,5 @@ onMounted(getFileListData);
         </Button>
       </template>
     </Modal>
-  </div>
+  </Spin>
 </template>

@@ -4,10 +4,10 @@ import type { HrmRecruitCandidateApi } from '#/api/hrm/recruit/candidate';
 
 import { markRaw } from 'vue';
 
-import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
+import { z } from '#/adapter/form';
 import { getRecruitChannelSimpleList } from '#/api/hrm/recruit/channel';
 import { getRecruitEliminateReasonList } from '#/api/hrm/recruit/config';
 import { getRecruitPostSimpleList } from '#/api/hrm/recruit/post';
@@ -15,7 +15,6 @@ import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
 import {
-// TODO @AI（glm5.3 flash）：z 改从 #/adapter/form 引入（对齐 system/user/data.ts），不要从 @vben/common-ui 导入。
   HrmEmployeeEntryStatus,
   HrmRecruitCandidateStatus,
   HrmRecruitInterviewResult,

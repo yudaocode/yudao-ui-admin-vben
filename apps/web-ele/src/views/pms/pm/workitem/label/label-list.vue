@@ -15,7 +15,7 @@ import {
 } from '#/api/pms/pm/workitem/label';
 
 import { useLabelGridColumns } from './data';
-import LabelForm from './label-form.vue';
+import LabelForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsWorkItemLabelList' });
 

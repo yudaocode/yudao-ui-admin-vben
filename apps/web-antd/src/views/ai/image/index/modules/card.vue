@@ -74,8 +74,7 @@ onMounted(async () => {
           异常
         </Button>
       </div>
-      <div class="flex">
-        <!-- TODO @AI：居右对齐 -->
+      <div class="ml-auto flex">
         <Button
           class="m-0 p-2"
           type="text"

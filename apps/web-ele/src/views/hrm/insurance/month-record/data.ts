@@ -1,73 +1,86 @@
-import type { TableColumnCtx } from 'element-plus';
-
+import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
+
+import { formatDate } from '@vben/utils';
 
 import { formatHrmMoney } from '#/views/hrm/utils/format';
 
-type MonthRecord = HrmInsuranceMonthRecordApi.InsuranceMonthRecord;
-
-export type ListColumn = Partial<TableColumnCtx<MonthRecord>> & {
-  prop?: 'action' | keyof MonthRecord;
-  slot?: 'action' | 'title';
-};
-
-/** 月度社保表列表列（对齐 antd data.ts，仅保留组件库差异） */
-export function useListColumns(): ListColumn[] {
+/** 列表搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      label: '社保表',
-      prop: 'title',
+      fieldName: 'year',
+      label: '年份',
+      component: 'DatePicker',
+      defaultValue: formatDate(new Date(), 'YYYY'),
+      componentProps: {
+        allowClear: false,
+        class: 'w-full',
+        format: 'YYYY 年',
+        picker: 'year',
+        valueFormat: 'YYYY',
+      },
+    },
+  ];
+}
+
+/** 列表字段 */
+export function useGridColumns(): VxeTableGridOptions<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>['columns'] {
+  return [
+    {
+      field: 'title',
+      title: '社保表',
       fixed: 'left',
       minWidth: 190,
-      slot: 'title',
+      slots: { default: 'title' },
     },
     {
-      label: '参保人数',
-      prop: 'insuredEmployeeCount',
+      field: 'insuredEmployeeCount',
+      title: '参保人数',
       align: 'center',
       width: 100,
     },
     {
-      label: '停保人数',
-      prop: 'stoppedEmployeeCount',
+      field: 'stoppedEmployeeCount',
+      title: '停保人数',
       align: 'center',
       width: 100,
     },
     {
-      label: '个人社保',
-      prop: 'personalInsuranceAmount',
+      field: 'personalInsuranceAmount',
+      title: '个人社保',
       align: 'right',
       width: 120,
-      formatter: (row) => formatHrmMoney(row.personalInsuranceAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
-      label: '公司社保',
-      prop: 'corporateInsuranceAmount',
+      field: 'corporateInsuranceAmount',
+      title: '公司社保',
       align: 'right',
       width: 120,
-      formatter: (row) => formatHrmMoney(row.corporateInsuranceAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
-      label: '个人公积金',
-      prop: 'personalProvidentFundAmount',
+      field: 'personalProvidentFundAmount',
+      title: '个人公积金',
       align: 'right',
       width: 130,
-      formatter: (row) => formatHrmMoney(row.personalProvidentFundAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
-      label: '公司公积金',
-      prop: 'corporateProvidentFundAmount',
+      field: 'corporateProvidentFundAmount',
+      title: '公司公积金',
       align: 'right',
       width: 130,
-      formatter: (row) => formatHrmMoney(row.corporateProvidentFundAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
-      label: '操作',
-      prop: 'action',
+      title: '操作',
       align: 'center',
       fixed: 'right',
       width: 80,
-      slot: 'action',
+      slots: { default: 'actions' },
     },
   ];
 }

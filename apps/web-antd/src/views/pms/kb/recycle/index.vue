@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeRecycleApi } from '#/api/pms/kb/recycle';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Alert, message } from 'ant-design-vue';
 
@@ -17,7 +17,6 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsKnowledgeRecycle' });
 
-// TODO @AI：恢复/彻底删除改 TableAction popConfirm，不要 confirm + empty catch。补 toolbarConfig。
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
@@ -25,30 +24,18 @@ function handleRefresh() {
 
 /** 恢复回收站记录 */
 async function handleRestore(row: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
-  try {
-    // 恢复的二次确认
-    await confirm(`确认恢复“${row.name}”吗？`);
-    // 发起恢复
-    await restoreKnowledgeRecycle(row.id);
-    message.success('恢复成功');
-    // 刷新列表
-    handleRefresh();
-  } catch {}
+  await restoreKnowledgeRecycle(row.id);
+  message.success('恢复成功');
+  handleRefresh();
 }
 
 /** 彻底删除回收站记录 */
 async function handlePermanentDelete(
   row: PmsKnowledgeRecycleApi.KnowledgeRecycle,
 ) {
-  try {
-    // 删除的二次确认
-    await confirm(`彻底删除后不可恢复，确认删除“${row.name}”吗？`);
-    // 发起删除
-    await permanentDeleteKnowledgeRecycle(row.id);
-    message.success('彻底删除成功');
-    // 刷新列表
-    handleRefresh();
-  } catch {}
+  await permanentDeleteKnowledgeRecycle(row.id);
+  message.success('彻底删除成功');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -68,6 +55,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: { refresh: true },
   } as VxeTableGridOptions<PmsKnowledgeRecycleApi.KnowledgeRecycle>,
 });
 </script>
@@ -96,13 +84,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {
               label: '恢复',
               type: 'link',
-              onClick: handleRestore.bind(null, row),
+              popConfirm: {
+                title: `确认恢复“${row.name}”吗？`,
+                confirm: handleRestore.bind(null, row),
+              },
             },
             {
               label: '彻底删除',
               type: 'link',
               danger: true,
-              onClick: handlePermanentDelete.bind(null, row),
+              popConfirm: {
+                title: `彻底删除后不可恢复，确认删除“${row.name}”吗？`,
+                confirm: handlePermanentDelete.bind(null, row),
+              },
             },
           ]"
         />

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
 import type { HrmEmployeeContractApi } from '#/api/hrm/employee/contract';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createEmployeeContract,
   updateEmployeeContract,
@@ -19,10 +19,11 @@ import {
 } from '#/views/hrm/utils/constants';
 
 import { useContractFormSchema } from '../../data';
+
 const emit = defineEmits(['success']);
 const employeeId = ref<number>();
 const editingId = ref<number>();
-const title = computed(() => (editingId.value ? '修改合同' : '新增合同'));
+
 const [Form, formApi] = useVbenForm({
   commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
@@ -30,14 +31,15 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
   handleValuesChange(values, fieldsChanged) {
-    if (!fieldsChanged.includes('type')) {
-      return;
-    }
-    if (values.type === HrmEmployeeContractType.NON_FIXED_TERM_LABOR_CONTRACT) {
+    if (
+      fieldsChanged.includes('type') &&
+      values.type === HrmEmployeeContractType.NON_FIXED_TERM_LABOR_CONTRACT
+    ) {
       formApi.setFieldValue('term', undefined);
     }
   },
 });
+
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -51,7 +53,10 @@ const [Modal, modalApi] = useVbenModal({
             id: editingId.value,
             employeeId: employeeId.value,
           })
-        : createEmployeeContract({ ...data, employeeId: employeeId.value }));
+        : createEmployeeContract({
+            ...data,
+            employeeId: employeeId.value,
+          }));
       message.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -59,26 +64,32 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { employeeId: currentEmployeeId, row } = modalApi.getData() as {
+      employeeId: number;
+      row?: HrmEmployeeContractApi.EmployeeContract;
+    };
+    employeeId.value = currentEmployeeId;
+    editingId.value = row?.id;
+    modalApi.setState({ title: editingId.value ? '修改合同' : '新增合同' });
+    await formApi.reset();
+    await formApi.setValues({
+      sort: 1,
+      type: HrmEmployeeContractType.FIXED_TERM_LABOR_CONTRACT,
+      term: 1,
+      status: HrmEmployeeContractStatus.NOT_PERFORMED,
+      expireRemind: false,
+      ...row,
+      employeeId: currentEmployeeId,
+      fileUrls: row?.fileUrls ?? [],
+    });
+  },
 });
-function open(empId: number, row?: HrmEmployeeContractApi.EmployeeContract) {
-  employeeId.value = empId;
-  editingId.value = row?.id;
-  modalApi.setState({ title: title.value });
-  formApi.reset();
-  formApi.setValues({
-    sort: 1,
-    type: HrmEmployeeContractType.FIXED_TERM_LABOR_CONTRACT,
-    term: 1,
-    status: HrmEmployeeContractStatus.NOT_PERFORMED,
-    expireRemind: false,
-    ...row,
-    employeeId: empId,
-    fileUrls: row?.fileUrls ?? [],
-  });
-  modalApi.open();
-}
-defineExpose({ open });
 </script>
+
 <template>
-  <Modal :title="title" class="w-[760px]"><Form class="mx-4" /></Modal>
+  <Modal class="w-[760px]">
+    <Form class="mx-4" />
+  </Modal>
 </template>

@@ -16,11 +16,9 @@ import {
 } from '#/api/pms/pm/project/member';
 
 import { useProjectMemberGridColumns } from './data';
-import ProjectMemberForm from './project-member-form.vue';
+import ProjectMemberForm from './modules/member-form.vue';
 
 defineOptions({ name: 'PmsProjectMemberList' });
-
-// TODO @AI：删除改 TableAction popConfirm，不要 confirm + empty catch。补 destroyOnClose。
 
 const props = defineProps<{
   editable: boolean;

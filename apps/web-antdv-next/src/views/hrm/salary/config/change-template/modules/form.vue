@@ -1,56 +1,43 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { Rule } from 'antdv-next';
-
-import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-template';
-
-import { computed, nextTick, reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, FormItem, Input, message, Switch } from 'antdv-next';
+import { message } from 'antdv-next';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createSalaryChangeTemplate,
   getSalaryChangeTemplate,
   updateSalaryChangeTemplate,
 } from '#/api/hrm/salary/config/change-template';
+import { getSalaryOptionSimpleList } from '#/api/hrm/salary/config/option';
 import { $t } from '#/locales';
 
-import ChangeOptionSelect from '../../option/components/change-option-select.vue';
+import { useFormSchema } from '../data';
 
 defineOptions({ name: 'HrmSalaryChangeTemplateForm' });
 
 const emit = defineEmits(['success']);
-
 const formType = ref<'create' | 'update'>('create');
-const formRef = ref();
-const optionSelectRef = ref<InstanceType<typeof ChangeOptionSelect>>();
-const formData =
-  ref<HrmSalaryChangeTemplateApi.SalaryChangeTemplate>(createDefault());
 
-const dialogTitle = computed(() =>
-  formType.value === 'create'
-    ? $t('ui.actionTitle.create', ['调薪模板'])
-    : $t('ui.actionTitle.edit', ['调薪模板']),
-);
-
-const formRules = reactive<Record<string, Rule[]>>({
-  name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 96 },
+  layout: 'horizontal',
+  schema: useFormSchema(),
+  showDefaultActions: false,
 });
-
-function createDefault(): HrmSalaryChangeTemplateApi.SalaryChangeTemplate {
-  return { name: '', defaultStatus: false, options: [] };
-}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const { valid } = await formApi.validate();
+    if (!valid) return;
     modalApi.lock();
     try {
+      const values = await formApi.getValues();
       await (formType.value === 'create'
-        ? createSalaryChangeTemplate(formData.value)
-        : updateSalaryChangeTemplate(formData.value));
+        ? createSalaryChangeTemplate(values as any)
+        : updateSalaryChangeTemplate(values as any));
       message.success($t('ui.actionMessage.operationSuccess'));
       await modalApi.close();
       emit('success');
@@ -58,47 +45,35 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      formData.value = createDefault();
-      return;
-    }
-    const data = modalApi.getData() as {
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { id, type = 'create' } = modalApi.getData() as {
       id?: number;
-      type: 'create' | 'update';
+      type?: 'create' | 'update';
     };
-    formType.value = data?.type || 'create';
-    formData.value = data?.id
-      ? await getSalaryChangeTemplate(data.id)
-      : createDefault();
-    await nextTick();
-    await optionSelectRef.value?.init(formType.value === 'create');
+    formType.value = type;
+    modalApi.setState({
+      title: $t(
+        type === 'create' ? 'ui.actionTitle.create' : 'ui.actionTitle.edit',
+        ['调薪模板'],
+      ),
+    });
+    await formApi.reset();
+    await formApi.setValues(
+      id
+        ? await getSalaryChangeTemplate(id)
+        : {
+            defaultStatus: false,
+            name: '',
+            options: await getSalaryOptionSimpleList(true),
+          },
+    );
   },
 });
 </script>
 
 <template>
-  <Modal :title="dialogTitle" class="w-[720px]">
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="96px"
-    >
-      <FormItem label="模板名称" name="name">
-        <Input
-          v-model:value="formData.name"
-          :maxlength="64"
-          placeholder="请输入模板名称"
-        />
-      </FormItem>
-      <FormItem label="默认模板" name="defaultStatus">
-        <Switch v-model:checked="formData.defaultStatus" />
-      </FormItem>
-      <FormItem label="调薪项" name="options">
-        <ChangeOptionSelect ref="optionSelectRef" v-model="formData.options" />
-      </FormItem>
-    </Form>
+  <Modal class="w-[720px]">
+    <Form class="mx-4" />
   </Modal>
 </template>

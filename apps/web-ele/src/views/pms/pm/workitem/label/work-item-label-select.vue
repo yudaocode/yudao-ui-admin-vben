@@ -9,14 +9,19 @@ import { getWorkItemLabelList } from '#/api/pms/pm/workitem/label';
 
 defineOptions({ name: 'PmsWorkItemLabelSelect' });
 
-// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
-
 withDefaults(
   defineProps<{
+    allowClear?: boolean;
+    disabled?: boolean;
     modelValue?: number[];
     placeholder?: string;
   }>(),
-  { modelValue: undefined, placeholder: '请选择标签' },
+  {
+    allowClear: true,
+    disabled: false,
+    modelValue: undefined,
+    placeholder: '请选择标签',
+  },
 );
 
 const emit = defineEmits(['update:modelValue']);
@@ -41,11 +46,12 @@ onMounted(() => getLabelList());
 
 <template>
   <ElSelect
+    :clearable="allowClear"
+    :disabled="disabled"
     :model-value="modelValue"
     :loading="loading"
     :placeholder="placeholder"
     class="w-full"
-    clearable
     collapse-tags
     filterable
     multiple

@@ -22,7 +22,7 @@ import {
 } from '#/api/pms/pm/project/announcement';
 
 import { useAnnouncementColumns } from './data';
-import ProjectAnnouncementForm from './project-announcement-form.vue';
+import ProjectAnnouncementForm from './modules/announcement-form.vue';
 
 defineOptions({ name: 'PmsProjectAnnouncementList' });
 
@@ -32,7 +32,7 @@ const total = ref(0); // 公告总数
 
 const [ProjectAnnouncementFormModal, projectAnnouncementFormModalApi] =
   useVbenModal({
-  destroyOnClose: true,
+    destroyOnClose: true,
     connectedComponent: ProjectAnnouncementForm,
   });
 
@@ -120,14 +120,15 @@ async function handleDelete(id: number) {
           :actions="[
             {
               label: '编辑',
-              type: 'link',
+              type: 'primary',
+              link: true,
               auth: ['pms:pm:project:update'],
               onClick: () => openForm('update', row.id),
             },
             {
               label: '删除',
-              type: 'link',
-              danger: true,
+              type: 'danger',
+              link: true,
               auth: ['pms:pm:project:update'],
               popConfirm: {
                 title: '是否确认删除该公告？',

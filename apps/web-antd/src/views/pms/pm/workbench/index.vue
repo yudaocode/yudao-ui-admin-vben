@@ -4,7 +4,7 @@ import type { PmsProjectMemberApi } from '#/api/pms/pm/project/member';
 import type { PmsWorkbenchApi } from '#/api/pms/pm/workbench';
 import type { PmsWorkItemStatusApi } from '#/api/pms/pm/workitem/status';
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
@@ -42,14 +42,17 @@ import {
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
 import {
+  useGridFormSchema,
   useIterationColumns,
-  useSearchFormSchema,
   useWorkItemColumns,
 } from './data';
 
 defineOptions({ name: 'PmsWorkbench' });
 
 type WorkbenchTab = (typeof PmsWorkbenchTab)[keyof typeof PmsWorkbenchTab];
+type WorkbenchGridRow =
+  | PmsWorkbenchApi.WorkbenchIteration
+  | PmsWorkbenchApi.WorkbenchWorkItem;
 type QuickUpdateField = 'assigneeUserId' | 'endTime' | 'priority';
 type QuickEditField = 'statusId' | QuickUpdateField;
 
@@ -115,24 +118,6 @@ function cancelQuickEdit() {
   quickEditingKey.value = undefined;
 }
 
-/** 点击当前编辑器外部时退出行内编辑 */
-// TODO @AI：点外部关闭依赖 antd/ele 各自 class，三端容易漏改；抽公共判断，或改成组件自身 blur。DatePicker 的 as any 去掉。
-function handleDocumentPointerDown(event: PointerEvent) {
-  if (!quickEditingKey.value || !(event.target instanceof Element)) {
-    return;
-  }
-  const activeEditor = document.querySelector(
-    '.pms-workbench-table .ant-select, .pms-workbench-table .ant-picker',
-  );
-  const isEditorClick = activeEditor?.contains(event.target);
-  const isPopupClick = event.target.closest(
-    '.ant-select-dropdown, .ant-picker-dropdown',
-  );
-  if (!isEditorClick && !isPopupClick) {
-    cancelQuickEdit();
-  }
-}
-
 /** 查询工作台列表 */
 async function getWorkbenchItemList(
   formValues: Record<string, any>,
@@ -166,7 +151,7 @@ const iterationColumns = useIterationColumns(); // 迭代表格列
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(handleProjectChange),
+    schema: useGridFormSchema(handleProjectChange),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -188,7 +173,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
-  } as VxeTableGridOptions<PmsWorkbenchApi.WorkbenchWorkItem>,
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<WorkbenchGridRow>,
 });
 
 /** 获得工作项选项缓存键 */
@@ -324,16 +313,6 @@ function handleTabChange() {
 function refreshWorkbench() {
   gridApi.query();
 }
-
-/** 初始化 */
-onMounted(() => {
-  document.addEventListener('pointerdown', handleDocumentPointerDown, true);
-});
-
-/** 销毁页面事件 */
-onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handleDocumentPointerDown, true);
-});
 </script>
 
 <template>
@@ -399,10 +378,14 @@ onBeforeUnmount(() => {
           type="link"
           @click="startQuickEdit(row, 'priority')"
         >
-          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+          {{
+            getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-'
+          }}
         </Button>
         <span v-else>
-          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+          {{
+            getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-'
+          }}
         </span>
       </template>
       <template #statusId="{ row }">
@@ -459,12 +442,13 @@ onBeforeUnmount(() => {
       <template #endTime="{ row }">
         <DatePicker
           v-if="isQuickEditing(row, 'endTime')"
-          v-model:value="row.endTime as any"
+          :value="row.endTime ? String(row.endTime) : undefined"
           allow-clear
           class="!w-[170px]"
           placeholder="截止日期"
           show-time
           value-format="x"
+          @update:value="row.endTime = $event ? Number($event) : undefined"
           @blur="cancelQuickEdit"
           @change="handleQuickUpdate(row, 'endTime')"
           @keyup.esc.stop="cancelQuickEdit"

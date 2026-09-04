@@ -14,10 +14,9 @@ import {
   ElEmpty,
   ElInput,
   ElMessage,
-  ElPopconfirm,
 } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createWorkItem,
   getWorkItemPage,
@@ -34,8 +33,6 @@ import {
 import { useColumns } from './data';
 
 defineOptions({ name: 'PmsWorkItemSubtaskList' });
-
-// TODO @AI：已用 VXE 的话操作列走 TableAction，不要手写按钮。
 
 const props = withDefaults(
   defineProps<{
@@ -243,20 +240,29 @@ watch(
         <span v-else>{{ row.name }}</span>
       </template>
       <template #action="{ row }">
-        <ElButton link type="primary" @click="startRename(row)">
-          改名
-        </ElButton>
-        <ElPopconfirm
-          cancel-button-text="取消"
-          confirm-button-text="确定"
-          :title="`确认删除子工作项“${row.name}”吗？删除后可在回收站恢复。`"
-          width="280"
-          @confirm="handleRecycle(row)"
-        >
-          <template #reference>
-            <ElButton link type="danger">删除</ElButton>
-          </template>
-        </ElPopconfirm>
+        <TableAction
+          :actions="[
+            {
+              label: '改名',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              ifShow: editable,
+              onClick: () => startRename(row),
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              ifShow: editable,
+              popConfirm: {
+                title: `确认删除子工作项“${row.name}”吗？删除后可在回收站恢复。`,
+                confirm: () => handleRecycle(row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
     <ElEmpty

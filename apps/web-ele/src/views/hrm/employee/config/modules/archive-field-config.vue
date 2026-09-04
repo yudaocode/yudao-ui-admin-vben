@@ -1,27 +1,42 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeConfigApi } from '#/api/hrm/employee/config';
 
 import { onMounted, ref } from 'vue';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElSwitch } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getEmployeeArchiveFieldConfigList,
   saveEmployeeArchiveFieldConfig,
 } from '#/api/hrm/employee/config';
 
+import { useArchiveFieldGridColumns } from '../data';
+
 defineOptions({ name: 'HrmEmployeeArchiveFieldConfig' });
 
-const loading = ref(false);
 const list = ref<HrmEmployeeConfigApi.FieldConfig[]>([]);
 
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useArchiveFieldGridColumns(),
+    data: [],
+    minHeight: 240,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmEmployeeConfigApi.FieldConfig>,
+});
+
 async function getList() {
-  loading.value = true;
+  gridApi.setLoading(true);
   try {
     list.value = await getEmployeeArchiveFieldConfigList();
+    await gridApi.grid.reloadData(list.value);
   } finally {
-    loading.value = false;
+    gridApi.setLoading(false);
   }
 }
 
@@ -50,26 +65,20 @@ defineExpose({ submitForm });
 </script>
 
 <template>
-  <ElTable v-loading="loading" border :data="list">
-    <ElTableColumn label="字段分组" prop="groupName" width="180" />
-    <ElTableColumn label="字段名称" prop="title" />
-    <ElTableColumn align="center" label="员工是否可见" width="160">
-      <template #default="{ row }">
-        <ElSwitch
-          v-model="row.visible"
-          :disabled="row.visibleLocked"
-          @change="handleVisibleChange(row)"
-        />
-      </template>
-    </ElTableColumn>
-    <ElTableColumn align="center" label="员工是否可编辑" width="160">
-      <template #default="{ row }">
-        <ElSwitch
-          v-model="row.editable"
-          :disabled="!row.visible || row.editableLocked"
-          @change="handleEditableChange(row)"
-        />
-      </template>
-    </ElTableColumn>
-  </ElTable>
+  <Grid class="w-full">
+    <template #visible="{ row }">
+      <ElSwitch
+        v-model="row.visible"
+        :disabled="row.visibleLocked"
+        @change="handleVisibleChange(row)"
+      />
+    </template>
+    <template #editable="{ row }">
+      <ElSwitch
+        v-model="row.editable"
+        :disabled="!row.visible || row.editableLocked"
+        @change="handleEditableChange(row)"
+      />
+    </template>
+  </Grid>
 </template>

@@ -1,76 +1,53 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { Rule } from 'antdv-next';
-
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import {
-  Alert,
-  Button,
-  Col,
-  DatePicker,
-  Form,
-  FormItem,
-  InputNumber,
-  message,
-  Radio,
-  RadioGroup,
-  Row,
-} from 'antdv-next';
+import { Alert, Button, message } from 'antdv-next';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createSalaryConfig,
   getSalaryConfig,
   updateSalaryConfig,
 } from '#/api/hrm/salary/config/config';
 import { $t } from '#/locales';
-import {
-  HrmSalarySocialSecurityMonthType,
-  HrmSalarySocialSecurityMonthTypeOptions,
-} from '#/views/hrm/utils/constants';
+import { HrmSalarySocialSecurityMonthType } from '#/views/hrm/utils/constants';
+
+import { useFormSchema } from './data';
 
 defineOptions({ name: 'HrmSalaryConfigConfig' });
 
-interface FormModel {
-  cycleStartDay: number;
-  socialSecurityMonthType: number;
-  startYearMonth?: string;
-}
-
 const loading = ref(false);
 const initialized = ref(false);
-const formRef = ref();
-const formData = ref<FormModel>({
-  cycleStartDay: 1,
-  socialSecurityMonthType: HrmSalarySocialSecurityMonthType.PREVIOUS_MONTH,
-  startYearMonth: undefined,
-});
 
-const formRules = reactive<Record<string, Rule[]>>({
-  cycleStartDay: [
-    { required: true, message: '计薪周期开始日不能为空', trigger: 'blur' },
-  ],
-  socialSecurityMonthType: [
-    { required: true, message: '对应社保自然月不能为空', trigger: 'change' },
-  ],
-  startYearMonth: [
-    { required: true, message: '薪资启用月份不能为空', trigger: 'change' },
-  ],
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 132 },
+  layout: 'horizontal',
+  schema: useFormSchema(false),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-1 md:grid-cols-2',
+  handleValuesChange(values, fieldsChanged) {
+    if (fieldsChanged.includes('cycleStartDay')) {
+      formApi.setFieldValue(
+        'cycleEndDay',
+        values.cycleStartDay === 1 ? 31 : Number(values.cycleStartDay) - 1,
+      );
+    }
+  },
 });
-
-function getCycleEndDay(cycleStartDay: number) {
-  return cycleStartDay === 1 ? 31 : cycleStartDay - 1;
-}
 
 async function loadConfig() {
   loading.value = true;
   try {
     const data = await getSalaryConfig();
     initialized.value = Boolean(data?.startYear && data?.startMonth);
-    formData.value = {
-      cycleStartDay: data?.cycleStartDay ?? 1,
+    formApi.setState({ schema: useFormSchema(initialized.value) });
+    const cycleStartDay = data?.cycleStartDay ?? 1;
+    await formApi.reset();
+    await formApi.setValues({
+      cycleEndDay: cycleStartDay === 1 ? 31 : cycleStartDay - 1,
+      cycleStartDay,
       socialSecurityMonthType:
         data?.socialSecurityMonthType ??
         HrmSalarySocialSecurityMonthType.PREVIOUS_MONTH,
@@ -78,29 +55,29 @@ async function loadConfig() {
         data?.startYear && data?.startMonth
           ? `${data.startYear}-${String(data.startMonth).padStart(2, '0')}`
           : undefined,
-    };
+    });
   } finally {
     loading.value = false;
   }
 }
 
 async function submitForm() {
-  await (initialized.value
-    ? formRef.value?.validateFields(['socialSecurityMonthType'])
-    : formRef.value?.validate());
+  const { valid } = await formApi.validate();
+  if (!valid) return;
   loading.value = true;
   try {
+    const values = await formApi.getValues();
     if (initialized.value) {
       await updateSalaryConfig({
-        socialSecurityMonthType: formData.value.socialSecurityMonthType,
+        socialSecurityMonthType: values.socialSecurityMonthType,
       });
     } else {
-      const [startYear, startMonth] = (formData.value.startYearMonth || '-')
+      const [startYear, startMonth] = String(values.startYearMonth)
         .split('-')
         .map(Number);
       await createSalaryConfig({
-        cycleStartDay: formData.value.cycleStartDay,
-        socialSecurityMonthType: formData.value.socialSecurityMonthType,
+        cycleStartDay: values.cycleStartDay,
+        socialSecurityMonthType: values.socialSecurityMonthType,
         startYear: startYear!,
         startMonth: startMonth!,
       });
@@ -130,72 +107,17 @@ onMounted(loadConfig);
       show-icon
       type="info"
     />
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="max-w-[900px]"
-      label-width="132px"
-    >
-      <Row :gutter="20">
-        <Col :span="12">
-          <FormItem label="计薪周期开始日" name="cycleStartDay">
-            <InputNumber
-              v-model:value="formData.cycleStartDay"
-              :disabled="initialized"
-              :max="31"
-              :min="1"
-              class="w-full"
-            />
-          </FormItem>
-        </Col>
-        <Col :span="12">
-          <FormItem label="工资周期结束日">
-            <InputNumber
-              :disabled="true"
-              :max="31"
-              :min="1"
-              :value="getCycleEndDay(formData.cycleStartDay)"
-              class="w-full"
-            />
-          </FormItem>
-        </Col>
-      </Row>
-      <Row v-if="!initialized" :gutter="20">
-        <Col :span="12">
-          <FormItem label="薪资启用月份" name="startYearMonth">
-            <DatePicker
-              v-model:value="formData.startYearMonth"
-              :disabled="initialized"
-              class="w-full"
-              picker="month"
-              value-format="YYYY-MM"
-            />
-          </FormItem>
-        </Col>
-      </Row>
-      <FormItem label="对应社保自然月" name="socialSecurityMonthType">
-        <RadioGroup v-model:value="formData.socialSecurityMonthType">
-          <Radio
-            v-for="item in HrmSalarySocialSecurityMonthTypeOptions"
-            :key="item.value"
-            :value="item.value"
-          >
-            {{ item.label }}
-          </Radio>
-        </RadioGroup>
-      </FormItem>
-      <FormItem>
-        <Button
-          v-access:code="['hrm:salary:config:update']"
-          :loading="loading"
-          type="primary"
-          @click="submitForm"
-        >
-          保存
-        </Button>
-        <Button class="ml-2" @click="loadConfig">重置</Button>
-      </FormItem>
-    </Form>
+    <Form class="max-w-[900px]" />
+    <div class="mt-4">
+      <Button
+        v-access:code="['hrm:salary:config:update']"
+        :loading="loading"
+        type="primary"
+        @click="submitForm"
+      >
+        保存
+      </Button>
+      <Button class="ml-2" @click="loadConfig">重置</Button>
+    </div>
   </Page>
 </template>

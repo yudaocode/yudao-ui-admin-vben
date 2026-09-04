@@ -23,8 +23,6 @@ import KnowledgeRecycleDetail from './knowledge-recycle-detail.vue';
 
 defineOptions({ name: 'PmsKnowledgeRecyclePanel' });
 
-// TODO @AI：恢复/删除改 TableAction popConfirm。补 toolbarConfig 与 system user 对齐。
-
 const props = defineProps<{
   libraryId: number;
 }>(); // 组件参数
@@ -57,9 +55,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
-    toolbarConfig: {
-      enabled: false,
-    },
+    toolbarConfig: { refresh: true },
   } as VxeTableGridOptions<PmsKnowledgeRecycleApi.KnowledgeRecycle>,
 });
 
@@ -79,44 +75,51 @@ async function handleTypeChange() {
 }
 
 /** 恢复回收站记录 */
+async function restoreRecord(record: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
+  await restoreKnowledgeRecycle(record.id);
+  ElMessage.success('恢复成功');
+  handleRefresh();
+  emit('success');
+}
+
+/** 从详情恢复回收站记录 */
 async function handleRestore(record: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
   try {
-    // 恢复的二次确认
     await confirm(`确认恢复“${record.name}”吗？`);
-    // 发起恢复
-    await restoreKnowledgeRecycle(record.id);
-    ElMessage.success('恢复成功');
-    // 刷新列表和知识库内容
-    handleRefresh();
-    emit('success');
   } catch {
+    return;
   }
+  await restoreRecord(record);
 }
 
 /** 查看本次删除对象的级联内容 */
 async function handleDetail(record: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
   try {
     detail.value = await getKnowledgeContentRecycleDetail(record.id);
-  } catch {
-  }
+  } catch {}
 }
 
 /** 彻底删除回收站记录 */
+async function permanentDeleteRecord(
+  record: PmsKnowledgeRecycleApi.KnowledgeRecycle,
+) {
+  await permanentDeleteKnowledgeRecycle(record.id);
+  ElMessage.success('彻底删除成功');
+  detail.value = undefined;
+  handleRefresh();
+  emit('success');
+}
+
+/** 从详情彻底删除回收站记录 */
 async function handlePermanentDelete(
   record: PmsKnowledgeRecycleApi.KnowledgeRecycle,
 ) {
   try {
-    // 删除的二次确认
     await confirm(`彻底删除后不可恢复，确认删除“${record.name}”吗？`);
-    // 发起删除
-    await permanentDeleteKnowledgeRecycle(record.id);
-    ElMessage.success('彻底删除成功');
-    // 刷新列表和知识库内容
-    detail.value = undefined;
-    handleRefresh();
-    emit('success');
   } catch {
+    return;
   }
+  await permanentDeleteRecord(record);
 }
 
 function countByType(type: number) {
@@ -177,13 +180,19 @@ function countByType(type: number) {
                 label: '恢复',
                 type: 'primary',
                 link: true,
-                onClick: handleRestore.bind(null, row),
+                popConfirm: {
+                  title: `确认恢复“${row.name}”吗？`,
+                  confirm: restoreRecord.bind(null, row),
+                },
               },
               {
                 label: '彻底删除',
                 type: 'danger',
                 link: true,
-                onClick: handlePermanentDelete.bind(null, row),
+                popConfirm: {
+                  title: `彻底删除后不可恢复，确认删除“${row.name}”吗？`,
+                  confirm: permanentDeleteRecord.bind(null, row),
+                },
               },
             ]"
           />

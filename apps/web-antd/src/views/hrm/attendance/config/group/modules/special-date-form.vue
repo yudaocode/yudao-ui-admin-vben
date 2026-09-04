@@ -1,106 +1,55 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：考勤组内嵌编辑弹窗可保留，但打开契约对齐 system/user 的 useVbenModal（connectedComponent + setData/open），三端一致。
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { Rule } from 'ant-design-vue/es/form';
-
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { DatePicker, Form, Select } from 'ant-design-vue';
-import dayjs from 'dayjs';
+import { useVbenForm } from '#/adapter/form';
 
-import { HrmAttendanceHolidayType } from '#/views/hrm/utils/constants';
+import { useSpecialDateFormSchema } from '../data';
 
 defineOptions({ name: 'HrmAttendanceGroupSpecialDateForm' });
 
 const emit = defineEmits<{
   confirm: [specialDate: HrmAttendanceGroupApi.SpecialDate, index?: number];
 }>();
-
 const editIndex = ref<number>();
-const formRef = ref();
-const formData = ref<HrmAttendanceGroupApi.SpecialDate>(createDefault());
 
-const formRules = reactive<Record<string, Rule[]>>({
-  type: [
-    { required: true, message: '特殊日期类型不能为空', trigger: 'change' },
-  ],
-  date: [{ required: true, message: '日期不能为空', trigger: 'change' }],
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 104 },
+  layout: 'horizontal',
+  schema: useSpecialDateFormSchema(),
+  showDefaultActions: false,
 });
-
-function createDefault(): HrmAttendanceGroupApi.SpecialDate {
-  return {
-    type: HrmAttendanceHolidayType.WORK,
-    date: undefined,
-  };
-}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
-    emit('confirm', { ...formData.value }, editIndex.value);
+    const { valid } = await formApi.validate();
+    if (!valid) return;
+    const values = await formApi.getValues();
+    emit(
+      'confirm',
+      { ...values, date: Number(values.date) } as any,
+      editIndex.value,
+    );
     await modalApi.close();
   },
-  onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen) {
     if (!isOpen) return;
-    const payload = modalApi.getData() as {
-      index?: number;
-      specialDate?: HrmAttendanceGroupApi.SpecialDate;
-    };
-    editIndex.value = payload?.index;
-    formData.value = payload?.specialDate
-      ? { ...payload.specialDate }
-      : createDefault();
-  },
-});
-
-defineExpose({
-  open(specialDate?: HrmAttendanceGroupApi.SpecialDate, index?: number) {
-    modalApi.setData({ specialDate, index }).open();
+    const { index, specialDate } = modalApi.getData() as any;
+    editIndex.value = index;
+    modalApi.setState({
+      title: index === undefined ? '新增特殊日期' : '编辑特殊日期',
+    });
+    await formApi.reset();
+    if (specialDate) await formApi.setValues(specialDate);
   },
 });
 </script>
 
 <template>
-  <Modal
-    :title="editIndex === undefined ? '新增特殊日期' : '编辑特殊日期'"
-    class="w-[560px]"
-  >
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="120px"
-    >
-      <Form.Item label="特殊日期类型" name="type">
-        <Select
-          v-model:value="formData.type"
-          class="w-full"
-          placeholder="请选择特殊日期类型"
-        >
-          <Select.Option :value="HrmAttendanceHolidayType.WORK">
-            上班
-          </Select.Option>
-          <Select.Option :value="HrmAttendanceHolidayType.REST">
-            休息
-          </Select.Option>
-        </Select>
-      </Form.Item>
-      <Form.Item label="日期" name="date">
-        <DatePicker
-          :value="formData.date ? dayjs(formData.date) : undefined"
-          class="w-full"
-          placeholder="请选择日期"
-          value-format="x"
-          @update:value="
-            (value) => (formData.date = value ? Number(value) : undefined)
-          "
-        />
-      </Form.Item>
-    </Form>
+  <Modal class="w-[560px]">
+    <Form class="mx-4" />
   </Modal>
 </template>

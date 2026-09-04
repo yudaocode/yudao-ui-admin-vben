@@ -9,11 +9,20 @@ import { getKnowledgeDocumentLabelList } from '#/api/pms/kb/content/document/lab
 
 defineOptions({ name: 'PmsKnowledgeDocumentLabelSelect' });
 
-// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
-
-defineProps<{
-  modelValue: number[];
-}>();
+withDefaults(
+  defineProps<{
+    allowClear?: boolean;
+    disabled?: boolean;
+    modelValue?: number[];
+    placeholder?: string;
+  }>(),
+  {
+    allowClear: true,
+    disabled: false,
+    modelValue: () => [],
+    placeholder: '请选择标签',
+  },
+);
 
 const emit = defineEmits<{
   'update:modelValue': [value: number[]];
@@ -36,7 +45,8 @@ onMounted(async () => {
 
 <template>
   <Select
-    :allow-clear="true"
+    :allow-clear="allowClear"
+    :disabled="disabled"
     :loading="loading"
     :options="
       labelList.map((label) => ({ label: label.name, value: label.id }))
@@ -45,7 +55,7 @@ onMounted(async () => {
     class="w-full"
     max-tag-count="responsive"
     mode="multiple"
-    placeholder="请选择标签"
+    :placeholder="placeholder"
     @update:value="(value: any) => emit('update:modelValue', value)"
   />
 </template>

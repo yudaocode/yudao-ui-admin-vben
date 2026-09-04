@@ -18,7 +18,7 @@ import {
 
 import { archiveProject, recycleProject } from '#/api/pms/pm/project';
 
-import ProjectForm from '../components/project-form.vue';
+import ProjectForm from '../list/modules/form.vue';
 
 defineOptions({ name: 'PmsProjectBasicInfo' });
 
@@ -47,8 +47,7 @@ async function handleArchive() {
     // 提示结果并进入归档项目列表
     ElMessage.success('项目已归档');
     await push({ name: 'PmsProjectArchive' });
-  } catch {
-  }
+  } catch {}
 }
 
 /** 将项目移入回收站 */
@@ -61,8 +60,7 @@ async function handleRecycle() {
     // 提示结果并进入项目回收站
     ElMessage.success('项目已移入回收站');
     await push({ name: 'PmsProjectRecycle' });
-  } catch {
-  }
+  } catch {}
 }
 </script>
 
@@ -88,10 +86,8 @@ async function handleRecycle() {
     <!-- 项目基础字段 -->
     <ElDescriptions :column="2" border>
       <ElDescriptionsItem label="项目名称">
-{{
-        project.name
-      }}
-</ElDescriptionsItem>
+        {{ project.name }}
+      </ElDescriptionsItem>
       <ElDescriptionsItem label="项目类型">
         {{ getDictLabel(DICT_TYPE.PMS_PROJECT_TYPE, project.type) || '-' }}
       </ElDescriptionsItem>

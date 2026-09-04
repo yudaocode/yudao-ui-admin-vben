@@ -1,25 +1,19 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipTemplateApi } from '#/api/hrm/salary/slip/template';
 
-import { computed } from 'vue';
+import { computed, nextTick, watch } from 'vue';
 
-import {
-  ElButton,
-  ElInput,
-  ElOption,
-  ElSelect,
-  ElSwitch,
-  ElTable,
-  ElTableColumn,
-  ElTag,
-} from 'element-plus';
+import { ElInput, ElSelect, ElSwitch, ElTag } from 'element-plus';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   HrmSalaryOptionCategoryCode,
   HrmSalaryOptionCode,
   HrmSalarySlipTemplateOptionType,
 } from '#/views/hrm/utils/constants';
+
+import { useTemplateOptionGridColumns } from '../data';
 
 defineOptions({ name: 'HrmSalarySlipTemplateOptionEditor' });
 
@@ -28,12 +22,8 @@ const props = withDefaults(
     maxHeight?: number;
     modelValue?: HrmSalarySlipTemplateApi.TemplateOption[];
   }>(),
-  {
-    maxHeight: 420,
-    modelValue: () => [],
-  },
+  { maxHeight: 420, modelValue: () => [] },
 );
-
 const emit = defineEmits<{
   remove: [option: HrmSalarySlipTemplateApi.TemplateOption];
   'update:modelValue': [options: HrmSalarySlipTemplateApi.TemplateOption[]];
@@ -74,6 +64,28 @@ const displayOptions = computed(() => {
   return result;
 });
 
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useTemplateOptionGridColumns(),
+    data: [],
+    maxHeight: props.maxHeight,
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmSalarySlipTemplateApi.TemplateOption>,
+});
+
+watch(
+  displayOptions,
+  async (options) => {
+    await nextTick();
+    await gridApi.grid.reloadData(options);
+  },
+  { immediate: true },
+);
+
 function compareOption(
   first: HrmSalarySlipTemplateApi.TemplateOption,
   second: HrmSalarySlipTemplateApi.TemplateOption,
@@ -91,11 +103,10 @@ function addCategory() {
   const codes = (props.modelValue || [])
     .map((item) => item.code)
     .filter((code): code is number => code !== undefined);
-  const code = Math.min(-1, ...codes.filter((item) => item < 0)) - 1;
   emit('update:modelValue', [
     ...(props.modelValue || []),
     {
-      code,
+      code: Math.min(-1, ...codes.filter((item) => item < 0)) - 1,
       hidden: false,
       name: '新分类',
       sort: getNextSort(),
@@ -105,15 +116,17 @@ function addCategory() {
 }
 
 function removeOption(option: HrmSalarySlipTemplateApi.TemplateOption) {
-  const options = (props.modelValue || [])
-    .filter((item) => item !== option)
-    .map((item) =>
-      option.type === HrmSalarySlipTemplateOptionType.CATEGORY &&
-      item.parentCode === option.code
-        ? { ...item, parentCode: undefined }
-        : item,
-    );
-  emit('update:modelValue', options);
+  emit(
+    'update:modelValue',
+    (props.modelValue || [])
+      .filter((item) => item !== option)
+      .map((item) =>
+        option.type === HrmSalarySlipTemplateOptionType.CATEGORY &&
+        item.parentCode === option.code
+          ? { ...item, parentCode: undefined }
+          : item,
+      ),
+  );
   emit('remove', option);
 }
 
@@ -130,11 +143,8 @@ function moveOption(
   offset: number,
 ) {
   const siblings = getSiblingOptions(option);
-  const index = siblings.indexOf(option);
-  const target = siblings[index + offset];
-  if (!target) {
-    return;
-  }
+  const target = siblings[siblings.indexOf(option) + offset];
+  if (!target) return;
   const sort = option.sort;
   option.sort = target.sort;
   target.sort = sort;
@@ -202,102 +212,93 @@ defineExpose({ getNormalizedOptions, validate });
 <template>
   <div class="w-full">
     <div class="mb-3 flex items-center gap-3">
-      <ElButton type="primary" @click="addCategory">新增分类</ElButton>
+      <TableAction
+        :actions="[
+          {
+            label: '新增分类',
+            type: 'primary',
+            icon: ACTION_ICON.ADD,
+            onClick: addCategory,
+          },
+        ]"
+      />
       <slot name="actions"></slot>
     </div>
-    <ElTable
-      :data="displayOptions"
-      :max-height="maxHeight"
-      border
-      row-key="code"
-      size="small"
-    >
-      <ElTableColumn align="center" label="类型" width="80">
-        <template #default="{ row }">
-          <ElTag
-            :type="
-              row.type === HrmSalarySlipTemplateOptionType.CATEGORY
-                ? 'primary'
-                : 'info'
-            "
-          >
-            {{
-              row.type === HrmSalarySlipTemplateOptionType.CATEGORY
-                ? '分类'
-                : '工资项'
-            }}
-          </ElTag>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="名称" min-width="160">
-        <template #default="{ row }">
-          <ElInput v-model="row.name" maxlength="64" placeholder="请输入名称" />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="所属分类" min-width="150">
-        <template #default="{ row }">
-          <ElSelect
-            v-if="row.type === HrmSalarySlipTemplateOptionType.ITEM"
-            v-model="row.parentCode"
-            clearable
-            class="w-full"
-            placeholder="不分类"
-          >
-            <ElOption
-              v-for="category in categoryOptions"
-              :key="category.code"
-              :label="category.name"
-              :value="category.code!"
-            />
-          </ElSelect>
-          <span v-else>-</span>
-        </template>
-      </ElTableColumn>
-      <ElTableColumn align="center" label="显示" width="80">
-        <template #default="{ row }">
-          <ElSwitch
-            :disabled="row.code === HrmSalaryOptionCode.REAL_PAY"
-            :model-value="!row.hidden"
-            @change="(checked) => handleVisibleChange(row, Boolean(checked))"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="备注" min-width="190">
-        <template #default="{ row }">
-          <ElInput
-            v-model="row.remark"
-            clearable
-            maxlength="255"
-            placeholder="展示在工资条提示中"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn align="center" label="操作" width="138">
-        <template #default="{ row }">
-          <ElButton
-            :disabled="isFirstOption(row)"
-            link
-            @click="moveOption(row, -1)"
-          >
-            上移
-          </ElButton>
-          <ElButton
-            :disabled="isLastOption(row)"
-            link
-            @click="moveOption(row, 1)"
-          >
-            下移
-          </ElButton>
-          <ElButton
-            :disabled="row.code === HrmSalaryOptionCode.REAL_PAY"
-            link
-            type="danger"
-            @click="removeOption(row)"
-          >
-            删除
-          </ElButton>
-        </template>
-      </ElTableColumn>
-    </ElTable>
+    <Grid class="w-full">
+      <template #type="{ row }">
+        <ElTag
+          :type="
+            row.type === HrmSalarySlipTemplateOptionType.CATEGORY
+              ? 'primary'
+              : 'info'
+          "
+        >
+          {{
+            row.type === HrmSalarySlipTemplateOptionType.CATEGORY
+              ? '分类'
+              : '工资项'
+          }}
+        </ElTag>
+      </template>
+      <template #name="{ row }">
+        <ElInput v-model="row.name" :maxlength="64" placeholder="请输入名称" />
+      </template>
+      <template #parentCode="{ row }">
+        <ElSelect
+          v-if="row.type === HrmSalarySlipTemplateOptionType.ITEM"
+          v-model="row.parentCode"
+          :options="
+            categoryOptions.map((category) => ({
+              label: category.name,
+              value: category.code,
+            }))
+          "
+          clearable
+          class="w-full"
+          placeholder="不分类"
+        />
+        <span v-else>-</span>
+      </template>
+      <template #hidden="{ row }">
+        <ElSwitch
+          :model-value="!row.hidden"
+          :disabled="row.code === HrmSalaryOptionCode.REAL_PAY"
+          @update:model-value="
+            (checked) => handleVisibleChange(row, Boolean(checked))
+          "
+        />
+      </template>
+      <template #remark="{ row }">
+        <ElInput
+          v-model="row.remark"
+          clearable
+          :maxlength="255"
+          placeholder="展示在工资条提示中"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '上移',
+              disabled: isFirstOption(row),
+              onClick: moveOption.bind(null, row, -1),
+            },
+            {
+              label: '下移',
+              disabled: isLastOption(row),
+              onClick: moveOption.bind(null, row, 1),
+            },
+            {
+              label: '删除',
+              color: 'error',
+              icon: ACTION_ICON.DELETE,
+              disabled: row.code === HrmSalaryOptionCode.REAL_PAY,
+              onClick: removeOption.bind(null, row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </div>
 </template>

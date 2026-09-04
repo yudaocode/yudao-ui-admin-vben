@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, message, Switch, Tabs } from 'antdv-next';
+import { Button, message, Tabs } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -25,7 +25,6 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsKnowledgeFavorite' });
 
-// TODO @AI：取消关注改 TableAction popConfirm，不要 confirm + empty catch。关注列对齐 system user 的 CellSwitch，不要手写 Switch。
 const router = useRouter(); // 路由
 const activeType = ref('all'); // 当前对象类型
 
@@ -41,55 +40,67 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
     return;
   }
   if (item.documentId) {
-    router.push(
-      {
-        path: `/pms/kb/library/${item.libraryId}`,
-        query: { documentId: String(item.documentId) },
-      },
-    );
+    router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { documentId: String(item.documentId) },
+    });
     return;
   }
   router.push({
-      path: `/pms/kb/library/${item.libraryId}`,
-      query: { folderId: String(item.folderId) },
-    });
+    path: `/pms/kb/library/${item.libraryId}`,
+    query: { folderId: String(item.folderId) },
+  });
 }
 
 /** 取消关注 */
 async function handleCancelFavorite(
+  newStatus: boolean,
   item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
-) {
+): Promise<boolean> {
+  if (newStatus) {
+    return true;
+  }
   try {
     // 取消关注的二次确认
     await confirm(`确认取消关注“${item.name}”吗？`);
     // 发起取消关注
     await deleteKnowledgeFavorite(item.type, item.entityId);
     message.success('已取消关注');
-    // 刷新列表
-    await gridApi.reload();
+    return true;
   } catch {
+    return false;
   }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleCancelFavorite),
     height: 'auto',
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          return await getKnowledgeFavoritePage({
+          const data = await getKnowledgeFavoritePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             type:
               activeType.value === 'all' ? undefined : Number(activeType.value),
           });
+          return {
+            ...data,
+            list: data.list.map((item) => ({
+              ...item,
+              favoriteStatus: true,
+            })),
+          };
         },
       },
     },
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
     },
   } as VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>,
 });
@@ -140,9 +151,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {{ formatKnowledgeFileSize(row.fileSize) }}
           </span>
         </div>
-      </template>
-      <template #favorite="{ row }">
-        <Switch :checked="true" @change="handleCancelFavorite(row)" />
       </template>
     </Grid>
   </Page>

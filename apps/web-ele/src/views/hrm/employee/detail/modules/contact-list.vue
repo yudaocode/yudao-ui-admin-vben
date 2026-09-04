@@ -1,94 +1,99 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：子列表手写 Table 改 useVbenVxeGrid（或至少三端结构一致），操作列走 TableAction popConfirm，对齐 employee 主列表。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeContactApi } from '#/api/hrm/employee/contact';
 
-import { onMounted, ref } from 'vue';
+import { useVbenModal } from '@vben/common-ui';
 
-import { useAccess } from '@vben/access';
-import { confirm } from '@vben/common-ui';
+import { ElMessage } from 'element-plus';
 
-import { ElButton, ElMessage, ElTable, ElTableColumn } from 'element-plus';
-
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteEmployeeContact,
   getEmployeeContactList,
 } from '#/api/hrm/employee/contact';
 import { $t } from '#/locales';
 
+import { useContactGridColumns } from '../data';
 import Form from './contact-form.vue';
 
 defineOptions({ name: 'HrmEmployeeContactList' });
 
 const props = defineProps<{ employeeId: number }>();
-const { hasAccessByCodes } = useAccess();
 
-const loading = ref(false);
-const list = ref<HrmEmployeeContactApi.EmployeeContact[]>([]);
-const formRef = ref<InstanceType<typeof Form>>();
-
-async function getList() {
-  loading.value = true;
-  try {
-    list.value = await getEmployeeContactList(props.employeeId);
-  } finally {
-    loading.value = false;
-  }
-}
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
 
 function openForm(row?: HrmEmployeeContactApi.EmployeeContact) {
-  formRef.value?.open(props.employeeId, row);
+  formModalApi.setData({ employeeId: props.employeeId, row }).open();
 }
 
-async function handleDelete(id?: number) {
-  if (!id) return;
-  try {
-    await confirm($t('ui.actionMessage.deleteConfirm'));
-    await deleteEmployeeContact(id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    await getList();
-  } catch {}
+async function handleDelete(row: HrmEmployeeContactApi.EmployeeContact) {
+  if (!row.id) return;
+  await deleteEmployeeContact(row.id);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  await gridApi.query();
 }
 
-onMounted(() => getList());
-defineExpose({ getList });
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useContactGridColumns(),
+    minHeight: 200,
+    pagerConfig: { enabled: false },
+    proxyConfig: {
+      ajax: {
+        query: () => getEmployeeContactList(props.employeeId),
+      },
+    },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true },
+  } as VxeTableGridOptions<HrmEmployeeContactApi.EmployeeContact>,
+});
 </script>
 
 <template>
-  <div>
-    <div
-      v-if="hasAccessByCodes(['hrm:employee:update'])"
-      class="mb-3 flex justify-end"
-    >
-      <ElButton type="primary" @click="openForm()">新增</ElButton>
-    </div>
-    <ElTable v-loading="loading" :data="list" border row-key="id" size="small">
-      <ElTableColumn label="联系人" min-width="100" prop="name" />
-      <ElTableColumn label="关系" min-width="80" prop="relation" />
-      <ElTableColumn label="电话" min-width="120" prop="phone" />
-      <ElTableColumn label="工作单位" min-width="120" prop="workUnit" />
-      <ElTableColumn label="职务" min-width="100" prop="postName" />
-      <ElTableColumn label="地址" min-width="140" prop="address" />
-      <ElTableColumn align="center" label="操作" width="140">
-        <template #default="{ row }">
-          <ElButton
-            v-if="hasAccessByCodes(['hrm:employee:update'])"
-            link
-            type="primary"
-            @click="openForm(row)"
-          >
-            编辑
-          </ElButton>
-          <ElButton
-            v-if="hasAccessByCodes(['hrm:employee:delete'])"
-            link
-            type="danger"
-            @click="handleDelete(row.id)"
-          >
-            删除
-          </ElButton>
-        </template>
-      </ElTableColumn>
-    </ElTable>
-    <Form ref="formRef" @success="getList" />
+  <div class="w-full">
+    <Grid table-title="联系人列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: '新增',
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['hrm:employee:update'],
+              onClick: () => openForm(),
+            },
+          ]"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['hrm:employee:update'],
+              onClick: () => openForm(row),
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:employee:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm'),
+                confirm: () => handleDelete(row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+    <FormModal @success="gridApi.query" />
   </div>
 </template>
