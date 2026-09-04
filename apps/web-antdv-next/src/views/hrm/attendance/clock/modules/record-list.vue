@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：删除/操作确认改 TableAction popConfirm（对齐 system/user），不要 confirm + 空 catch 把取消和失败一起吞掉。
 import type { PageParam } from '@vben/request';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
@@ -61,28 +60,20 @@ async function handleDelete(id?: number) {
   if (!id) {
     return;
   }
-  try {
-    await confirm($t('ui.actionMessage.deleteConfirm'));
-    await deleteAttendanceClock(id);
-    message.success($t('ui.actionMessage.deleteSuccess'));
-    handleRefresh();
-  } catch {}
+  await deleteAttendanceClock(id);
+  message.success($t('ui.actionMessage.deleteSuccess'));
+  handleRefresh();
 }
 
 async function handleBatchDelete() {
   if (checkedIds.value.length === 0) {
     return;
   }
+  batchDeleteLoading.value = true;
   try {
-    await confirm(
-      `确定删除选中的 ${checkedIds.value.length} 条打卡记录吗？删除后会立即影响日/月考勤统计。`,
-    );
-    batchDeleteLoading.value = true;
     await deleteAttendanceClockList(checkedIds.value);
     message.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
-  } catch {
-    //
   } finally {
     batchDeleteLoading.value = false;
   }
@@ -195,7 +186,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['hrm:attendance:clock:delete'],
               disabled: checkedIds.length === 0,
               loading: batchDeleteLoading,
-              onClick: handleBatchDelete,
+              popConfirm: {
+                title: `确定删除选中的 ${checkedIds.length} 条打卡记录吗？删除后会立即影响日/月考勤统计。`,
+                confirm: handleBatchDelete,
+              },
             },
             {
               label: '导出',
@@ -226,7 +220,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['hrm:attendance:clock:delete'],
               disabled: !isManualClock(row),
-              onClick: handleDelete.bind(null, row.id),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm'),
+                confirm: () => handleDelete(row.id),
+              },
             },
           ]"
         />

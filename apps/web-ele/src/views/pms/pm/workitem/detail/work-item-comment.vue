@@ -3,6 +3,7 @@ import type { PmsWorkItemCommentApi } from '#/api/pms/pm/workitem/comment';
 
 import { computed, ref, watch } from 'vue';
 
+import { Spinner } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 import { formatDateTime } from '@vben/utils';
 
@@ -24,8 +25,6 @@ import {
 } from '#/api/pms/pm/workitem/comment';
 
 defineOptions({ name: 'PmsWorkItemComment' });
-
-// TODO @AI：评论区可以保留自定义；antd/antdv-next 不要用 v-loading。三端模板对齐。
 
 const props = withDefaults(
   defineProps<{
@@ -171,7 +170,7 @@ watch(
 <template>
   <div>
     <ElDivider v-if="showTitle" content-position="left">评论</ElDivider>
-    <div v-loading="loading">
+    <Spinner :spinning="loading">
       <!-- 发表评论 -->
       <div v-if="editable" class="mb-5 flex items-start gap-3">
         <ElAvatar
@@ -387,6 +386,6 @@ watch(
           </div>
         </div>
       </div>
-    </div>
+    </Spinner>
   </div>
 </template>

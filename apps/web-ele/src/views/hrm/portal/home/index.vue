@@ -17,7 +17,7 @@ import HrmHomeCalendar from '#/views/hrm/home/components/calendar.vue';
 import { HrmHomeCalendarItemType } from '#/views/hrm/utils/constants';
 import { checkHrmPortalAccess } from '#/views/hrm/utils/employee';
 
-import EmployeeSurvey from './components/employee-survey.vue';
+import EmployeeSurvey from './modules/employee-survey.vue';
 
 defineOptions({ name: 'HrmPortalHome' });
 

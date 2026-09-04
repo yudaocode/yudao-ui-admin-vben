@@ -18,8 +18,8 @@ import {
 import { checkHrmPortalAccess } from '#/views/hrm/utils/employee';
 import { formatHrmDays } from '#/views/hrm/utils/format';
 
-import AttendanceCalendar from './AttendanceCalendar.vue';
-import AttendanceLeaveList from './AttendanceLeaveList.vue';
+import AttendanceCalendar from './modules/attendance-calendar.vue';
+import AttendanceLeaveList from './modules/attendance-leave-list.vue';
 
 defineOptions({ name: 'HrmPortalAttendanceReport' });
 

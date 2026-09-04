@@ -1,15 +1,11 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { HrmPerformanceAssessmentTemplateApi } from '#/api/hrm/performance/config/assessment-template';
 
 import { ref } from 'vue';
 
-import { useVbenModal } from '@vben/common-ui';
+import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
-import { Checkbox, Form, Input, InputNumber, Select } from 'ant-design-vue';
-
-import { HrmPerformanceQuotaType } from '#/views/hrm/utils/constants';
+import { useDimensionFormSchema } from '../data';
 
 defineOptions({ name: 'HrmPerformanceAssessmentDimensionForm' });
 
@@ -17,82 +13,39 @@ const emit = defineEmits<{
   confirm: [value: HrmPerformanceAssessmentTemplateApi.AssessmentDimension];
 }>();
 
-const formData =
-  ref<HrmPerformanceAssessmentTemplateApi.AssessmentDimension>(createDefault());
+const quotas = ref<HrmPerformanceAssessmentTemplateApi.AssessmentQuota[]>([]);
 
-const [Modal, modalApi] = useVbenModal({
-  onConfirm() {
-    emit('confirm', { ...formData.value, quotas: formData.value.quotas || [] });
-    modalApi.close();
-  },
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 112 },
+  layout: 'horizontal',
+  schema: useDimensionFormSchema(),
+  showDefaultActions: false,
 });
 
-function createDefault(): HrmPerformanceAssessmentTemplateApi.AssessmentDimension {
-  return {
-    name: '',
-    quotaType: HrmPerformanceQuotaType.PERFORMANCE,
-    weight: undefined,
-    remark: '',
-    allowEdit: false,
-    quotas: [],
-  };
-}
-
-function open(
-  dimension?: HrmPerformanceAssessmentTemplateApi.AssessmentDimension,
-) {
-  formData.value = dimension
-    ? { ...dimension, quotas: [...(dimension.quotas || [])] }
-    : createDefault();
-  modalApi.open();
-}
-
-defineExpose({ open });
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    const { valid } = await formApi.validate();
+    if (!valid) return;
+    emit('confirm', {
+      ...(await formApi.getValues()),
+      quotas: quotas.value,
+    } as HrmPerformanceAssessmentTemplateApi.AssessmentDimension);
+    await modalApi.close();
+  },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const dimension = modalApi.getData() as
+      | HrmPerformanceAssessmentTemplateApi.AssessmentDimension
+      | undefined;
+    quotas.value = [...(dimension?.quotas || [])];
+    await formApi.resetForm();
+    if (dimension) await formApi.setValues(dimension);
+  },
+});
 </script>
 
 <template>
   <Modal class="w-[560px]" title="考核维度">
-    <Form class="mx-4" layout="vertical">
-      <Form.Item label="维度名称" required>
-        <Input
-          v-model:value="formData.name"
-          :maxlength="50"
-          placeholder="请输入维度名称"
-        />
-      </Form.Item>
-      <Form.Item label="指标类型" required>
-        <Select
-          v-model:value="formData.quotaType"
-          :options="[
-            { label: '业绩指标', value: HrmPerformanceQuotaType.PERFORMANCE },
-            { label: '行为态度指标', value: HrmPerformanceQuotaType.BEHAVIOR },
-          ]"
-          placeholder="请选择指标类型"
-        />
-      </Form.Item>
-      <Form.Item label="维度权重(%)" required>
-        <InputNumber
-          v-model:value="formData.weight"
-          :max="100"
-          :min="0"
-          :precision="2"
-          class="w-full"
-          placeholder="请输入维度权重"
-        />
-      </Form.Item>
-      <Form.Item label="备注">
-        <Input.TextArea
-          v-model:value="formData.remark"
-          :maxlength="200"
-          :rows="2"
-          placeholder="请输入备注"
-        />
-      </Form.Item>
-      <Form.Item>
-        <Checkbox v-model:checked="formData.allowEdit">
-          允许员工填写指标
-        </Checkbox>
-      </Form.Item>
-    </Form>
+    <Form class="mx-4" />
   </Modal>
 </template>

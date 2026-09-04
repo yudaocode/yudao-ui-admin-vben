@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：分步表单每步手写字段尽量抽 useVbenForm schema（放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import type { HrmPerformanceResultTemplateApi } from '#/api/hrm/performance/config/result-template';
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
@@ -43,7 +42,8 @@ const syncToSalary = computed({
   },
 });
 
-function handleResultTemplateChange(resultTemplateId?: number) {
+function handleResultTemplateChange() {
+  const resultTemplateId = model.value.resultTemplateId;
   const resultTemplate = props.resultTemplateList.find(
     (t) => t.id === resultTemplateId,
   );

@@ -3,7 +3,7 @@ import type { PmsKnowledgeDocumentCommentApi } from '#/api/pms/kb/interaction/co
 
 import { computed, ref, watch } from 'vue';
 
-import { confirm } from '@vben/common-ui';
+import { confirm, Spinner } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 import { formatDateTime } from '@vben/utils';
 
@@ -24,8 +24,6 @@ import {
 } from '#/api/pms/kb/interaction/comment';
 
 defineOptions({ name: 'PmsKnowledgeDocumentComment' });
-
-// TODO @AI：评论区可以保留自定义；antd/antdv-next 不要用 v-loading。
 
 const props = defineProps<{ documentId: number }>();
 
@@ -135,8 +133,7 @@ async function handleDelete(
     await deleteKnowledgeDocumentComment(comment.id);
     message.success('删除成功');
     await getList();
-  } catch {
-  }
+  } catch {}
 }
 
 watch(
@@ -151,7 +148,7 @@ watch(
   <Divider title-placement="left">
     {{ commentCount ? `评论（${commentCount}）` : '评论' }}
   </Divider>
-  <div v-loading="loading">
+  <Spinner :spinning="loading">
     <!-- 发表评论 -->
     <div class="mb-4">
       <TextArea
@@ -269,5 +266,5 @@ watch(
         </div>
       </div>
     </div>
-  </div>
+  </Spinner>
 </template>

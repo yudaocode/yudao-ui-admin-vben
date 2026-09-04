@@ -1,92 +1,76 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { ElForm, ElFormItem, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   addPerformancePlanEmployees,
   getPerformancePlanUnassignedEmployeeIdList,
 } from '#/api/hrm/performance/assessment';
-import HrmEmployeeMultiSelect from '#/views/hrm/employee/components/employee-multi-select.vue';
+
+import { useAssessmentAddFormSchema } from '../data';
 
 defineOptions({ name: 'HrmPerformancePlanAssessmentAddForm' });
 
-const emit = defineEmits(['success']);
-
+const emit = defineEmits<{ success: [] }>();
 const planId = ref<number>();
-const selectableEmployeeIds = ref<Set<number>>(new Set());
-const employeeIds = ref<number[]>([]);
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    labelWidth: 90,
+  },
+  layout: 'horizontal',
+  schema: [],
+  showDefaultActions: false,
+});
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    if (employeeIds.value.length === 0) {
-      ElMessage.warning('请选择参评员工');
-      throw new Error('validation');
-    }
-    if (!planId.value) return;
+    const { valid } = await formApi.validate();
+    if (!valid || !planId.value) return;
     modalApi.lock();
     try {
+      const { employeeIds } = await formApi.getValues();
       await addPerformancePlanEmployees({
+        employeeIds,
         planId: planId.value,
-        employeeIds: employeeIds.value,
       });
-      ElMessage.success('参评员工添加成功');
+      await modalApi.close();
       emit('success');
+      ElMessage.success('参评员工添加成功');
     } finally {
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
-      employeeIds.value = [];
       planId.value = undefined;
-      selectableEmployeeIds.value = new Set();
+      return;
+    }
+    planId.value = Number(modalApi.getData());
+    modalApi.lock();
+    try {
+      const selectableEmployeeIds = new Set(
+        await getPerformancePlanUnassignedEmployeeIdList(planId.value),
+      );
+      await formApi.setState({
+        schema: useAssessmentAddFormSchema(selectableEmployeeIds),
+      });
+      await formApi.resetForm();
+    } finally {
+      modalApi.unlock();
     }
   },
+  title: '添加参评员工',
 });
-
-async function open(id: number) {
-  planId.value = id;
-  employeeIds.value = [];
-  modalApi.open();
-  modalApi.setState({ loading: true });
-  try {
-    selectableEmployeeIds.value = new Set(
-      await getPerformancePlanUnassignedEmployeeIdList(id),
-    );
-  } finally {
-    modalApi.setState({ loading: false });
-  }
-}
-
-function isEmployeeSelectable(id?: number) {
-  return !!id && selectableEmployeeIds.value.has(id);
-}
-
-defineExpose({ open });
 </script>
 
 <template>
-  <Modal title="添加参评员工" class="w-[620px]">
-    <ElForm label-width="100px">
-      <ElFormItem label="参评员工" required>
-        <HrmEmployeeMultiSelect
-          v-model="employeeIds"
-          :enabled-ids="[...selectableEmployeeIds]"
-          placeholder="请选择未加入当前计划的员工"
-          title="选择参评员工"
-        />
-        <div
-          v-if="employeeIds.some((id) => !isEmployeeSelectable(id))"
-          class="mt-1 text-red-500"
-        >
-          请选择未加入当前计划的员工
-        </div>
-      </ElFormItem>
-    </ElForm>
+  <Modal class="w-[620px]">
+    <Form class="mx-4" />
   </Modal>
 </template>

@@ -1,124 +1,61 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
-import type { TableColumnCtx } from 'element-plus';
-
 import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/month-record/employee';
-import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
 
 import { computed, ref } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
-
-import { ElButton, ElDrawer, ElTable, ElTableColumn } from 'element-plus';
+import { useVbenDrawer } from '@vben/common-ui';
 
 import { getInsuranceMonthEmployeeRecord } from '#/api/hrm/insurance/month-record/employee';
 import { DictTag } from '#/components/dict-tag';
-import { HrmInsuranceSchemeType } from '#/views/hrm/utils/constants';
-import {
-  formatHrmDate,
-  formatHrmInsuranceProjectName,
-  formatHrmMoney,
-  formatHrmRate,
-} from '#/views/hrm/utils/format';
+import { formatHrmDate } from '#/views/hrm/utils/format';
+
+import ProjectGrid from './project-grid.vue';
 
 defineOptions({ name: 'HrmInsuranceMonthEmployeeDetail' });
 
-const props = defineProps<{
-  editable?: boolean;
-}>();
-
+const props = defineProps<{ editable?: boolean }>();
 const emit = defineEmits<{
   edit: [
     detail: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord,
   ];
 }>();
 
-type DetailProject = HrmInsuranceSchemeApi.Project & { totalAmount: number };
-
-const drawerVisible = ref(false);
-const loading = ref(false);
 const detail =
   ref<HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord>();
+const projects = computed(() => [
+  ...(detail.value?.socialSecurityProjectList || []),
+  ...(detail.value?.providentFundProjectList || []),
+]);
 
-const projects = computed<DetailProject[]>(() => {
-  if (!detail.value) {
-    return [];
-  }
-  return [
-    ...detail.value.socialSecurityProjectList,
-    ...detail.value.providentFundProjectList,
-  ].map((project) => ({
-    ...project,
-    totalAmount:
-      Number(project.personalAmount || 0) +
-      Number(project.corporateAmount || 0),
-  }));
+const [Drawer, drawerApi] = useVbenDrawer({
+  footer: false,
+  async onOpenChange(isOpen) {
+    if (!isOpen) {
+      detail.value = undefined;
+      return;
+    }
+    const id = drawerApi.getData() as number | undefined;
+    if (!id) {
+      await drawerApi.close();
+      return;
+    }
+    drawerApi.lock();
+    try {
+      detail.value = await getInsuranceMonthEmployeeRecord(id);
+    } finally {
+      drawerApi.unlock();
+    }
+  },
 });
 
-const showProportionColumns = computed(
-  () => detail.value?.schemeType === HrmInsuranceSchemeType.PROPORTION,
-);
-
-function getSummary({
-  columns,
-  data,
-}: {
-  columns: TableColumnCtx<DetailProject>[];
-  data: DetailProject[];
-}) {
-  return columns.map((column, index) => {
-    if (index === 0) {
-      return '缴费总价';
-    }
-    if (
-      !['corporateAmount', 'personalAmount', 'totalAmount'].includes(
-        column.property,
-      )
-    ) {
-      return '';
-    }
-    return formatHrmMoney(
-      data.reduce(
-        (total, project) =>
-          total + Number(project[column.property as keyof DetailProject] || 0),
-        0,
-      ),
-    );
-  });
-}
-
-async function open(id?: number) {
-  if (!id) {
-    return;
-  }
-  drawerVisible.value = true;
-  loading.value = true;
-  detail.value = undefined;
-  try {
-    detail.value = await getInsuranceMonthEmployeeRecord(id);
-  } finally {
-    loading.value = false;
-  }
-}
-
 function handleEdit() {
-  if (detail.value) {
-    emit('edit', detail.value);
-  }
+  if (detail.value) emit('edit', detail.value);
 }
-
-defineExpose({ open });
 </script>
 
 <template>
-  <ElDrawer
-    v-model="drawerVisible"
-    :size="980"
-    destroy-on-close
-    title="员工月度社保详情"
-  >
-    <div v-loading="loading" class="min-h-80">
+  <Drawer class="w-[980px]" title="员工月度社保详情">
+    <div class="min-h-80">
       <div class="mb-4 flex items-start justify-between gap-4">
         <div class="min-w-0">
           <div class="flex items-center gap-2">
@@ -126,7 +63,7 @@ defineExpose({ open });
               {{ detail?.employeeName || '--' }}
             </span>
             <DictTag
-              :type="DICT_TYPE.HRM_INSURANCE_EMP_STATUS"
+              type="hrm_insurance_emp_status"
               :value="detail?.status ?? ''"
             />
           </div>
@@ -136,7 +73,7 @@ defineExpose({ open });
           </div>
         </div>
         <ElButton
-          v-if="editable && detail"
+          v-if="props.editable && detail"
           v-access:code="['hrm:insurance:month-record:update']"
           type="primary"
           @click="handleEdit"
@@ -144,141 +81,68 @@ defineExpose({ open });
           编辑
         </ElButton>
       </div>
-
       <div class="mb-5 grid grid-cols-1 gap-3 md:grid-cols-3">
         <div>
           <span class="text-muted-foreground">性别：</span>
           <DictTag
-            v-if="detail?.sex !== null"
-            :type="DICT_TYPE.SYSTEM_USER_SEX"
+            v-if="detail?.sex != null"
+            type="system_user_sex"
             :value="detail.sex"
           />
           <span v-else>--</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 年龄： </span>
-          {{ detail?.age ?? '--' }}
+          <span class="text-muted-foreground">年龄：</span>
+          <span>{{ detail?.age ?? '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 工号： </span>
-          {{ detail?.jobNumber || '--' }}
+          <span class="text-muted-foreground">工号：</span>
+          <span>{{ detail?.jobNumber || '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 部门： </span>
-          {{ detail?.deptName || '--' }}
+          <span class="text-muted-foreground">部门：</span>
+          <span>{{ detail?.deptName || '--' }}</span>
         </div>
         <div>
           <span class="text-muted-foreground">员工状态：</span>
           <DictTag
-            v-if="detail?.employeeStatus !== null"
-            :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
+            v-if="detail?.employeeStatus != null"
+            type="hrm_employee_status"
             :value="detail.employeeStatus"
           />
           <span v-else>--</span>
         </div>
         <div>
           <span class="text-muted-foreground">入职日期：</span>
-          {{ formatHrmDate(detail?.entryTime) }}
+          <span>{{ formatHrmDate(detail?.entryTime) }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 参保城市： </span>
-          {{ detail?.areaName || '--' }}
+          <span class="text-muted-foreground">参保城市：</span>
+          <span>{{ detail?.areaName || '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 身份证号： </span>
-          {{ detail?.idNumber || '--' }}
+          <span class="text-muted-foreground">身份证号：</span>
+          <span>{{ detail?.idNumber || '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 个人社保号： </span>
-          {{ detail?.socialSecurityNumber || '--' }}
+          <span class="text-muted-foreground">个人社保号：</span>
+          <span>{{ detail?.socialSecurityNumber || '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 个人公积金号： </span>
-          {{ detail?.accumulationFundNumber || '--' }}
+          <span class="text-muted-foreground">个人公积金号：</span>
+          <span>{{ detail?.accumulationFundNumber || '--' }}</span>
         </div>
         <div>
-          <span class="text-muted-foreground"> 参保方案： </span>
-          {{ detail?.schemeName || '--' }}
+          <span class="text-muted-foreground">参保方案：</span>
+          <span>{{ detail?.schemeName || '--' }}</span>
         </div>
       </div>
-
       <div class="mb-2 text-base font-semibold">缴费项目</div>
-      <ElTable
-        :data="projects"
-        :summary-method="getSummary"
-        border
-        row-key="schemeProjectId"
-        show-summary
-        size="small"
-      >
-        <ElTableColumn label="缴纳项目" min-width="130">
-          <template #default="{ row }">
-            {{ formatHrmInsuranceProjectName(row) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          align="right"
-          label="缴纳基数"
-          min-width="100"
-          prop="baseAmount"
-        >
-          <template #default="{ row }">
-            {{ formatHrmMoney(row.baseAmount) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          v-if="showProportionColumns"
-          align="right"
-          label="企业比例"
-          min-width="90"
-          prop="corporateRate"
-        >
-          <template #default="{ row }">
-            {{ formatHrmRate(row.corporateRate) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          v-if="showProportionColumns"
-          align="right"
-          label="个人比例"
-          min-width="90"
-          prop="personalRate"
-        >
-          <template #default="{ row }">
-            {{ formatHrmRate(row.personalRate) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          align="right"
-          label="个人缴纳"
-          min-width="100"
-          prop="personalAmount"
-        >
-          <template #default="{ row }">
-            {{ formatHrmMoney(row.personalAmount) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          align="right"
-          label="企业缴纳"
-          min-width="100"
-          prop="corporateAmount"
-        >
-          <template #default="{ row }">
-            {{ formatHrmMoney(row.corporateAmount) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn
-          align="right"
-          label="合计缴费"
-          min-width="100"
-          prop="totalAmount"
-        >
-          <template #default="{ row }">
-            {{ formatHrmMoney(row.totalAmount) }}
-          </template>
-        </ElTableColumn>
-      </ElTable>
+      <ProjectGrid
+        mode="detail"
+        :rows="projects"
+        :scheme-type="detail?.schemeType"
+      />
     </div>
-  </ElDrawer>
+  </Drawer>
 </template>

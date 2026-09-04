@@ -3,6 +3,7 @@ import type { PmsWorkItemActivityApi } from '#/api/pms/pm/workitem/activity';
 
 import { onMounted, ref } from 'vue';
 
+import { Spinner } from '@vben/common-ui';
 import { formatDateTime } from '@vben/utils';
 
 import { ElAvatar, ElDivider, ElEmpty } from 'element-plus';
@@ -10,8 +11,6 @@ import { ElAvatar, ElDivider, ElEmpty } from 'element-plus';
 import { getWorkItemActivityList } from '#/api/pms/pm/workitem/activity';
 
 defineOptions({ name: 'PmsWorkItemActivity' });
-
-// TODO @AI：动态时间线可以保留自定义；antd/antdv-next 不要用 v-loading。
 
 const props = withDefaults(
   defineProps<{ showTitle?: boolean; workItemId: number }>(),
@@ -42,7 +41,7 @@ defineExpose({ getActivityList }); // 提供 getActivityList 方法，用于刷�
 <template>
   <!-- 工作项活动记录 -->
   <ElDivider v-if="showTitle" content-position="left">工作项动态</ElDivider>
-  <div v-loading="loading">
+  <Spinner :spinning="loading">
     <ElEmpty
       v-if="activityList.length === 0"
       :image-size="60"
@@ -70,5 +69,5 @@ defineExpose({ getActivityList }); // 提供 getActivityList 方法，用于刷�
         </div>
       </div>
     </div>
-  </div>
+  </Spinner>
 </template>

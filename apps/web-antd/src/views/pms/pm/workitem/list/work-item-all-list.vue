@@ -2,45 +2,29 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
 
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useAccess } from '@vben/access';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import {
-  Button,
-  Checkbox,
-  Dropdown,
-  Input,
-  Menu,
-  Popover,
-  Progress,
-  Select,
-} from 'ant-design-vue';
+import { Button, Dropdown, Menu, Progress } from 'ant-design-vue';
 
+import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { exportWorkItemList, getWorkItemPage } from '#/api/pms/pm/workitem';
-import IterationSelect from '#/views/pms/pm/iteration/components/iteration-select.vue';
-import ProjectMemberSelect from '#/views/pms/pm/project/components/project-member-select.vue';
 import {
-  PmsProjectType,
   PmsWorkItemLifecycleStatus,
-  PmsWorkItemStatusType,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 
 import WorkItemDetail from '../detail/work-item-detail.vue';
-import WorkItemForm from '../form/work-item-form.vue';
-import WorkItemLabelSelect from '../label/work-item-label-select.vue';
-import { useGridColumns } from './data';
+import { useGridColumns, useWorkItemSearchFormSchema } from './data';
+import WorkItemForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsWorkItemAllList' });
 
-// TODO @AI：筛选改 formOptions.schema，不要页面里手写 Input/Select/Popover。height 用 auto，补 toolbarConfig。和 work-item-list 的筛选项保持同一套 schema。
 const props = defineProps<{
   editable: boolean;
   iterationId?: number;
@@ -50,9 +34,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{ changed: [] }>();
 
+const { hasAccessByCodes } = useAccess();
 const route = useRoute(); // 当前项目路由
 
-const showFilterPopover = ref(false); // 是否显示高级筛选
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -76,6 +60,7 @@ const queryParams = reactive({
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
+    height: 'auto',
     pagerConfig: {
       pageSize: queryParams.pageSize,
     },
@@ -93,7 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     toolbarConfig: {
-      enabled: false,
+      refresh: true,
     },
   } as VxeTableGridOptions<PmsWorkItemApi.WorkItem>,
 });
@@ -104,26 +89,41 @@ function handleQuery() {
   gridApi.query();
 }
 
-/** 高级筛选确认 */
-function handleAdvancedQuery() {
-  showFilterPopover.value = false;
+/** 提交筛选 */
+async function handleFilterSubmit(values: any) {
+  Object.assign(queryParams, {
+    name: undefined,
+    types: [],
+    statuses: [],
+    priorities: [],
+    iterationIds: [],
+    excludedIterationIds: [],
+    assigneeUserIds: [],
+    labelIds: [],
+    unplannedOnly: false,
+    ...values,
+  });
   handleQuery();
 }
 
-/** 重置搜索条件 */
-function resetQuery() {
-  queryParams.name = undefined;
-  queryParams.types = [];
-  queryParams.statuses = [];
-  queryParams.priorities = [];
-  queryParams.iterationIds = [];
-  queryParams.excludedIterationIds = [];
-  queryParams.assigneeUserIds = [];
-  queryParams.labelIds = [];
-  queryParams.unplannedOnly = false;
-  showFilterPopover.value = false;
-  handleQuery();
-}
+const [FilterForm] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    labelWidth: 80,
+  },
+  layout: 'horizontal',
+  schema: useWorkItemSearchFormSchema({
+    projectId: props.projectId,
+    projectType: props.projectType,
+    iterationId: props.iterationId,
+    showTypes: true,
+    showUnplanned: true,
+    assigneeUserIds: queryParams.assigneeUserIds,
+  }),
+  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+  handleSubmit: handleFilterSubmit,
+  handleReset: handleFilterSubmit,
+});
 
 const [WorkItemFormModal, workItemFormModalApi] = useVbenModal({
   destroyOnClose: true,
@@ -170,146 +170,14 @@ defineExpose({ refresh: () => gridApi.reload() });
 
 <template>
   <div>
-    <!-- 搜索与操作 -->
+    <!-- 工作项筛选 -->
+    <FilterForm class="mb-4" />
+
+    <!-- 创建与导出 -->
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex flex-wrap items-center gap-2">
-        <Input
-          v-model:value="queryParams.name"
-          allow-clear
-          class="!w-[240px]"
-          placeholder="搜索事项"
-          @clear="handleQuery"
-          @press-enter="handleQuery"
-        />
-        <Popover
-          :open="showFilterPopover"
-          :arrow="false"
-          :overlay-style="{ width: '420px' }"
-          placement="bottomLeft"
-          trigger="click"
-        >
-          <template #content>
-            <div class="max-h-[360px] overflow-y-auto pr-1">
-              <div class="mb-3">
-                <div class="mb-1 font-bold">事项类型</div>
-                <Select
-                  v-model:value="queryParams.types"
-                  allow-clear
-                  class="!w-full"
-                  max-tag-count="responsive"
-                  mode="multiple"
-                  :options="[
-                    ...(projectType === PmsProjectType.AGILE
-                      ? [{ label: '需求', value: PmsWorkItemType.REQUIREMENT }]
-                      : []),
-                    { label: '任务', value: PmsWorkItemType.TASK },
-                    ...(projectType === PmsProjectType.AGILE
-                      ? [{ label: '缺陷', value: PmsWorkItemType.DEFECT }]
-                      : []),
-                  ]"
-                  placeholder="全部类型"
-                />
-              </div>
-              <div class="mb-3">
-                <div class="mb-1 font-bold">状态</div>
-                <Select
-                  v-model:value="queryParams.statuses"
-                  allow-clear
-                  class="!w-full"
-                  max-tag-count="responsive"
-                  mode="multiple"
-                  :options="[
-                    { label: '未开始', value: PmsWorkItemStatusType.PENDING },
-                    {
-                      label: '进行中',
-                      value: PmsWorkItemStatusType.PROCESSING,
-                    },
-                    { label: '已完成', value: PmsWorkItemStatusType.COMPLETED },
-                  ]"
-                  placeholder="全部状态"
-                />
-              </div>
-              <div class="mb-3">
-                <div class="mb-1 font-bold">优先级</div>
-                <Select
-                  v-model:value="queryParams.priorities"
-                  allow-clear
-                  class="!w-full"
-                  max-tag-count="responsive"
-                  mode="multiple"
-                  :options="
-                    getDictOptions(
-                      DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
-                      'number',
-                    ).map((item) => ({
-                      label: item.label,
-                      value: item.value,
-                    }))
-                  "
-                  placeholder="全部优先级"
-                />
-              </div>
-              <div
-                v-if="projectType === PmsProjectType.AGILE && !iterationId"
-                class="mb-3"
-              >
-                <div class="mb-1 font-bold">所属迭代</div>
-                <IterationSelect
-                  v-model="queryParams.iterationIds"
-                  multiple
-                  :project-id="projectId"
-                  placeholder="全部迭代"
-                />
-              </div>
-              <div
-                v-if="projectType === PmsProjectType.AGILE && !iterationId"
-                class="mb-3"
-              >
-                <div class="mb-1 font-bold">排除迭代</div>
-                <IterationSelect
-                  v-model="queryParams.excludedIterationIds"
-                  multiple
-                  :project-id="projectId"
-                  placeholder="不显示所选迭代"
-                />
-              </div>
-              <div class="mb-3">
-                <div class="mb-1 font-bold">负责人</div>
-                <ProjectMemberSelect
-                  v-model="queryParams.assigneeUserIds"
-                  multiple
-                  :project-id="projectId"
-                  placeholder="全部负责人"
-                />
-              </div>
-              <div class="mb-3">
-                <div class="mb-1 font-bold">标签</div>
-                <WorkItemLabelSelect
-                  v-model="queryParams.labelIds"
-                  placeholder="全部标签"
-                />
-              </div>
-              <div v-if="!iterationId" class="mb-3">
-                <Checkbox v-model:checked="queryParams.unplannedOnly">
-                  只显示未规划事项
-                </Checkbox>
-              </div>
-            </div>
-            <div class="flex w-full justify-end gap-2 pt-2">
-              <Button @click="resetQuery">清空</Button>
-              <Button @click="showFilterPopover = false">取消</Button>
-              <Button type="primary" @click="handleAdvancedQuery">确认</Button>
-            </div>
-          </template>
-          <Button @click="showFilterPopover = !showFilterPopover">
-            <IconifyIcon class="mr-1.5" icon="lucide:plus" />高级筛选
-          </Button>
-        </Popover>
-      </div>
-      <div class="flex items-center gap-3">
+      <div class="ml-auto flex items-center gap-3">
         <Dropdown
-          v-if="editable"
-          v-access:code="['pms:pm:work-item:create']"
+          v-if="editable && hasAccessByCodes(['pms:pm:work-item:create'])"
           trigger="click"
         >
           <Button type="primary">新建</Button>

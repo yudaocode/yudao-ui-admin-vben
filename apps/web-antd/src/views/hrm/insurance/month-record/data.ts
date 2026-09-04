@@ -1,74 +1,86 @@
-import type { TableColumnsType } from 'ant-design-vue';
-
+import type { VbenFormSchema } from '#/adapter/form';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
+
+import { formatDate } from '@vben/utils';
 
 import { formatHrmMoney } from '#/views/hrm/utils/format';
 
-export function useListColumns(): TableColumnsType<HrmInsuranceMonthRecordApi.InsuranceMonthRecord> {
+/** 列表搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'year',
+      label: '年份',
+      component: 'DatePicker',
+      defaultValue: formatDate(new Date(), 'YYYY'),
+      componentProps: {
+        allowClear: false,
+        class: 'w-full',
+        format: 'YYYY 年',
+        picker: 'year',
+        valueFormat: 'YYYY',
+      },
+    },
+  ];
+}
+
+/** 列表字段 */
+export function useGridColumns(): VxeTableGridOptions<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>['columns'] {
+  return [
+    {
+      field: 'title',
       title: '社保表',
-      dataIndex: 'title',
-      key: 'title',
       fixed: 'left',
       minWidth: 190,
+      slots: { default: 'title' },
     },
     {
+      field: 'insuredEmployeeCount',
       title: '参保人数',
-      dataIndex: 'insuredEmployeeCount',
-      key: 'insuredEmployeeCount',
       align: 'center',
       width: 100,
     },
     {
+      field: 'stoppedEmployeeCount',
       title: '停保人数',
-      dataIndex: 'stoppedEmployeeCount',
-      key: 'stoppedEmployeeCount',
       align: 'center',
       width: 100,
     },
     {
+      field: 'personalInsuranceAmount',
       title: '个人社保',
-      dataIndex: 'personalInsuranceAmount',
-      key: 'personalInsuranceAmount',
       align: 'right',
       width: 120,
-      customRender: ({ record }) =>
-        formatHrmMoney(record.personalInsuranceAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
+      field: 'corporateInsuranceAmount',
       title: '公司社保',
-      dataIndex: 'corporateInsuranceAmount',
-      key: 'corporateInsuranceAmount',
       align: 'right',
       width: 120,
-      customRender: ({ record }) =>
-        formatHrmMoney(record.corporateInsuranceAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
+      field: 'personalProvidentFundAmount',
       title: '个人公积金',
-      dataIndex: 'personalProvidentFundAmount',
-      key: 'personalProvidentFundAmount',
       align: 'right',
       width: 130,
-      customRender: ({ record }) =>
-        formatHrmMoney(record.personalProvidentFundAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
+      field: 'corporateProvidentFundAmount',
       title: '公司公积金',
-      dataIndex: 'corporateProvidentFundAmount',
-      key: 'corporateProvidentFundAmount',
       align: 'right',
       width: 130,
-      customRender: ({ record }) =>
-        formatHrmMoney(record.corporateProvidentFundAmount),
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
     {
       title: '操作',
-      key: 'action',
       align: 'center',
       fixed: 'right',
       width: 80,
+      slots: { default: 'actions' },
     },
   ];
 }

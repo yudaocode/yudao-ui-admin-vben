@@ -2,9 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
+import { markRaw } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
+import { z } from '#/adapter/form';
+import HrmEmployeeMultiSelect from '#/views/hrm/employee/components/employee-multi-select.vue';
 import { HrmPerformancePlanStatus } from '#/views/hrm/utils/constants';
 import { formatHrmDateRange } from '#/views/hrm/utils/format-performance';
 
@@ -121,6 +125,141 @@ export function useGridColumns(): VxeTableGridOptions<HrmPerformancePlanApi.Perf
 /** 阶段 Tag 文案 */
 export function formatStageCountLabel(stageType: number, count: number) {
   return `${getDictLabel(DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS, stageType) || '未知阶段'}（${count}）`;
+}
+
+/** 评分流程列 */
+export function useReviewStageGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { align: 'center', type: 'seq', title: '顺序', width: 70 },
+    { field: 'name', minWidth: 180, title: '评分阶段' },
+    {
+      field: 'raterType',
+      minWidth: 150,
+      slots: { default: 'raterType' },
+      title: '评分人类型',
+    },
+    {
+      align: 'center',
+      field: 'weight',
+      slots: { default: 'weight' },
+      title: '权重',
+      width: 90,
+    },
+    {
+      align: 'center',
+      field: 'requiredSetting',
+      formatter: ({ cellValue }) => (cellValue ? '是' : '否'),
+      title: '评语必填',
+      width: 100,
+    },
+    {
+      align: 'center',
+      field: 'rejectAuthority',
+      formatter: ({ cellValue }) => (cellValue ? '是' : '否'),
+      title: '允许驳回',
+      width: 100,
+    },
+  ];
+}
+
+/** 处理人阶段列 */
+export function useHandlerStageGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { field: 'type', slots: { default: 'type' }, title: '处理人', width: 180 },
+    {
+      field: 'scope',
+      minWidth: 260,
+      slots: { default: 'scope' },
+      title: '处理人范围',
+    },
+    {
+      align: 'center',
+      slots: { default: 'actions' },
+      title: '操作',
+      width: 72,
+    },
+  ];
+}
+
+/** 评分阶段编辑列 */
+export function useReviewEditGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    {
+      field: 'raterType',
+      slots: { default: 'raterType' },
+      title: '评分人',
+      width: 160,
+    },
+    {
+      field: 'raterScope',
+      minWidth: 220,
+      slots: { default: 'raterScope' },
+      title: '评分人范围',
+    },
+    {
+      field: 'weight',
+      slots: { default: 'weight' },
+      title: '评分权重',
+      width: 135,
+    },
+    {
+      field: 'scoringType',
+      minWidth: 170,
+      slots: { default: 'scoringType' },
+      title: '评分方式',
+    },
+    {
+      field: 'visibleContent',
+      minWidth: 160,
+      slots: { default: 'visibleContent' },
+      title: '可见内容',
+    },
+    {
+      align: 'center',
+      field: 'requiredSetting',
+      slots: { default: 'requiredSetting' },
+      title: '评语必填',
+      width: 95,
+    },
+    {
+      align: 'center',
+      field: 'rejectAuthority',
+      slots: { default: 'rejectAuthority' },
+      title: '允许驳回',
+      width: 95,
+    },
+    {
+      align: 'center',
+      slots: { default: 'actions' },
+      title: '操作',
+      width: 72,
+    },
+  ];
+}
+
+/** 新增参评员工表单 */
+export function useAssessmentAddFormSchema(
+  selectableEmployeeIds: Set<number>,
+): VbenFormSchema[] {
+  return [
+    {
+      component: markRaw(HrmEmployeeMultiSelect),
+      componentProps: {
+        enabledIds: [...selectableEmployeeIds],
+        placeholder: '请选择未加入当前计划的员工',
+        title: '选择参评员工',
+      },
+      fieldName: 'employeeIds',
+      label: '参评员工',
+      rules: z
+        .array(z.number())
+        .min(1, '请选择参评员工')
+        .refine(
+          (ids) => ids.every((id) => selectableEmployeeIds.has(id)),
+          '请选择未加入当前计划的员工',
+        ),
+    },
+  ];
 }
 
 export { HrmPerformancePlanStatus };

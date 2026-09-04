@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：空 catch 会把接口失败和用户取消一起吞掉；失败分支至少 message.error，仅取消才静默返回。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipSendRecordApi } from '#/api/hrm/salary/slip/send-record';
 
 import { useRouter } from 'vue-router';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElButton, ElMessage } from 'element-plus';
 
@@ -41,12 +40,9 @@ async function handleDeleteRecord(id?: number) {
   if (!id) {
     return;
   }
-  try {
-    await confirm('删除后，本次发放的工资条将同时删除，是否继续？', '删除确认');
-    await deleteSalarySlipSendRecord(id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    await gridApi.query();
-  } catch {}
+  await deleteSalarySlipSendRecord(id);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  await gridApi.query();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -111,7 +107,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['hrm:salary:slip:delete'],
-              onClick: () => handleDeleteRecord(row.id),
+              popConfirm: {
+                title: '删除后，本次发放的工资条将同时删除，是否继续？',
+                confirm: () => handleDeleteRecord(row.id),
+              },
             },
           ]"
         />

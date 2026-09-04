@@ -3,17 +3,11 @@ import type { HrmEmployeeSalaryCardApi } from '#/api/hrm/employee/salary-card';
 
 import { onMounted, ref } from 'vue';
 
-import { useAccess } from '@vben/access';
-import { confirm } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
-import {
-  Button,
-  Card,
-  Descriptions,
-  DescriptionsItem,
-  message,
-} from 'antdv-next';
+import { Card, Descriptions, DescriptionsItem, message } from 'antdv-next';
 
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import {
   deleteEmployeeSalaryCard,
   getEmployeeSalaryCard,
@@ -22,10 +16,13 @@ import {
 import SalaryCardForm from './salary-card-form.vue';
 
 const props = defineProps<{ employeeId: number }>();
-const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
 const salaryCard = ref<HrmEmployeeSalaryCardApi.EmployeeSalaryCard>();
-const formRef = ref<InstanceType<typeof SalaryCardForm>>();
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: SalaryCardForm,
+  destroyOnClose: true,
+});
 
 async function load() {
   loading.value = true;
@@ -36,35 +33,47 @@ async function load() {
   }
 }
 
+function openForm() {
+  formModalApi
+    .setData({ employeeId: props.employeeId, row: salaryCard.value })
+    .open();
+}
+
 async function handleDelete() {
-  try {
-    await confirm('确定删除当前员工的工资卡信息吗？');
-    await deleteEmployeeSalaryCard(props.employeeId);
-    message.success('工资卡删除成功');
-    await load();
-  } catch {}
+  await deleteEmployeeSalaryCard(props.employeeId);
+  message.success('工资卡删除成功');
+  await load();
 }
 
 onMounted(load);
 </script>
+
 <template>
   <Card title="工资卡信息" :style="{ marginBottom: '15px' }" :loading="loading">
     <template #extra>
-      <Button
-        v-if="hasAccessByCodes(['hrm:employee:update'])"
-        type="link"
-        @click="formRef?.open(employeeId, salaryCard)"
-      >
-        编辑
-      </Button>
-      <Button
-        v-if="salaryCard?.id && hasAccessByCodes(['hrm:employee:update'])"
-        danger
-        type="link"
-        @click="handleDelete"
-      >
-        删除
-      </Button>
+      <TableAction
+        :actions="[
+          {
+            label: '编辑',
+            type: 'link',
+            icon: ACTION_ICON.EDIT,
+            auth: ['hrm:employee:update'],
+            onClick: openForm,
+          },
+          {
+            label: '删除',
+            type: 'link',
+            danger: true,
+            icon: ACTION_ICON.DELETE,
+            auth: ['hrm:employee:update'],
+            ifShow: !!salaryCard?.id,
+            popConfirm: {
+              title: '确定删除当前员工的工资卡信息吗？',
+              confirm: handleDelete,
+            },
+          },
+        ]"
+      />
     </template>
     <Descriptions bordered :column="3" size="small">
       <DescriptionsItem label="银行卡号">
@@ -80,6 +89,6 @@ onMounted(load);
         {{ salaryCard?.bankBranchName || '-' }}
       </DescriptionsItem>
     </Descriptions>
-    <SalaryCardForm ref="formRef" @success="load" />
+    <FormModal @success="load" />
   </Card>
 </template>

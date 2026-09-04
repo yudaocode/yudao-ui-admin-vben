@@ -47,7 +47,6 @@ import {
 import { getWorkItemTypeCode } from '#/views/pms/pm/utils/format';
 
 defineOptions({ name: 'PmsProjectTemplateForm' });
-// TODO @AI：对齐 system/user，挪到 ./modules/form.vue；列表页 connectedComponent 改引 modules。
 
 // TODO @AI：基本信息页签改 useVbenForm + schema；状态/看板内嵌表格改 VXE Grid（可拖拽）。antd、antdv-next 的 v-loading 换成 lock。复杂 Tab 可以留，但不要继续手写 Form.Item。
 const emit = defineEmits<{ success: [] }>();
@@ -180,7 +179,7 @@ function initStatusSortable() {
         const targetStatus = group.statuses[newIndex]!;
         const oldGlobalIndex = formData.value.statuses.indexOf(movedStatus);
         const targetGlobalIndex = formData.value.statuses.indexOf(targetStatus);
-        if (oldGlobalIndex < 0 || targetGlobalIndex < 0) {
+        if (oldGlobalIndex === -1 || targetGlobalIndex === -1) {
           return;
         }
         formData.value.statuses.splice(oldGlobalIndex, 1);
@@ -287,7 +286,7 @@ function removeStatusByItem(
   status: PmsProjectTemplateApi.ProjectTemplateStatus,
 ) {
   const index = formData.value.statuses.indexOf(status);
-  if (index >= 0) {
+  if (index !== -1) {
     removeStatus(index);
   }
 }
@@ -544,11 +543,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     try {
       await formRef.value.validate();
-    } catch (fields: any) {
-      activeTab.value = Object.prototype.hasOwnProperty.call(
-        fields,
-        'itemTypes',
-      )
+    } catch (error: any) {
+      activeTab.value = Object.prototype.hasOwnProperty.call(error, 'itemTypes')
         ? 'itemType'
         : 'basic';
       return;
@@ -701,10 +697,10 @@ onBeforeUnmount(destroySortables);
               @change="handleItemTypesChange"
             >
               <ElCheckbox
-                          v-for="item in getDictOptions(
-                            DICT_TYPE.PMS_WORK_ITEM_TYPE,
-                            'number',
-                          )"
+                v-for="item in getDictOptions(
+                  DICT_TYPE.PMS_WORK_ITEM_TYPE,
+                  'number',
+                )"
                 :key="item.value"
                 :value="item.value"
               >

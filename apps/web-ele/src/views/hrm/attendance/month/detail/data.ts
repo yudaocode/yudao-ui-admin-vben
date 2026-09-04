@@ -1,3 +1,4 @@
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
 import { formatDate } from '@vben/utils';
@@ -86,4 +87,25 @@ export function buildCalendarDays(
       detail: dailyDetailMap.get(dateValue),
     };
   });
+}
+
+/** 请假记录列 */
+export function useLeaveGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { field: 'type', slots: { default: 'type' }, title: '类型', width: 120 },
+    {
+      field: 'startTime',
+      slots: { default: 'startTime' },
+      title: '开始时间',
+      width: 180,
+    },
+    {
+      field: 'endTime',
+      slots: { default: 'endTime' },
+      title: '结束时间',
+      width: 180,
+    },
+    { field: 'day', slots: { default: 'day' }, title: '时长', width: 100 },
+    { field: 'reason', minWidth: 200, title: '事由' },
+  ];
 }

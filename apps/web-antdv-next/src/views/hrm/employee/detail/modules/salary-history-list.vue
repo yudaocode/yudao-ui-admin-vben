@@ -1,153 +1,91 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：子列表手写 Table 改 useVbenVxeGrid（或至少三端结构一致），操作列走 TableAction popConfirm，对齐 employee 主列表。
-import type { TableColumnsType } from 'antdv-next';
-
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-record/employee';
 
-import { onMounted, reactive, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Card, Descriptions, DescriptionsItem, Table } from 'antdv-next';
+import { Card, Descriptions, DescriptionsItem } from 'antdv-next';
 
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSalaryEmployeeMonthRecordPage } from '#/api/hrm/salary/month-record/employee';
 import { HrmSalaryMonthStatus } from '#/views/hrm/utils/constants';
 import { formatHrmMoney, formatHrmYearMonth } from '#/views/hrm/utils/format';
 
-const props = defineProps<{ employeeId: number }>();
+import {
+  useSalaryHistoryGridColumns,
+  useSalaryOptionValueGridColumns,
+} from '../data';
 
-const loading = ref(false);
-const total = ref(0);
-const list = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[]>(
-  [],
-);
-const queryParams = reactive({
-  pageNo: 1,
-  pageSize: 10,
+const props = defineProps<{ employeeId: number }>();
+const detail = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>();
+
+const [OptionGrid, optionGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useSalaryOptionValueGridColumns(),
+    data: [],
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions,
 });
 
-const detail = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>();
-const historyColumns: TableColumnsType<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord> =
-  [
-    { title: '计薪月份', key: 'yearMonth', width: 110 },
-    { title: '计薪周期', key: 'workDays', minWidth: 150 },
-    {
-      title: '应发工资',
-      key: 'expectedPaySalary',
-      align: 'right',
-      width: 130,
-    },
-    {
-      title: '个人所得税',
-      key: 'personalTax',
-      align: 'right',
-      width: 130,
-    },
-    {
-      title: '实发工资',
-      key: 'realPaySalary',
-      align: 'right',
-      width: 130,
-    },
-    { title: '操作', key: 'actions', align: 'center', width: 80 },
-  ];
-const optionColumns: TableColumnsType<HrmSalaryMonthEmployeeRecordApi.OptionValue> =
-  [
-    { title: '工资项', dataIndex: 'name', key: 'name', minWidth: 180 },
-    { title: '金额', key: 'value', align: 'right', width: 140 },
-  ];
-
 const [DetailModal, detailModalApi] = useVbenModal({
-  onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      detail.value = undefined;
-    }
+  footer: false,
+  onOpenChange(isOpen) {
+    if (!isOpen) detail.value = undefined;
   },
 });
 
-/** 查询历史月度工资 */
-async function getList() {
-  loading.value = true;
-  try {
-    const data = await getSalaryEmployeeMonthRecordPage({
-      ...queryParams,
-      employeeId: props.employeeId,
-      monthRecordStatus: HrmSalaryMonthStatus.HISTORY,
-    });
-    list.value = data.list;
-    total.value = data.total;
-  } finally {
-    loading.value = false;
-  }
-}
-
-/** 打开工资明细 */
-function openDetail(
+async function openDetail(
   row: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord,
 ) {
   detail.value = row;
   detailModalApi.open();
+  await nextTick();
+  await optionGridApi.grid.reloadData(row.optionValues || []);
 }
 
-/** 分页变化 */
-function handleTableChange(pagination: {
-  current?: number;
-  pageSize?: number;
-}) {
-  queryParams.pageNo = pagination.current ?? 1;
-  queryParams.pageSize = pagination.pageSize ?? 10;
-  getList();
-}
-
-onMounted(() => {
-  getList();
+const [Grid] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useSalaryHistoryGridColumns(),
+    minHeight: 260,
+    proxyConfig: {
+      ajax: {
+        query: ({ page }) =>
+          getSalaryEmployeeMonthRecordPage({
+            employeeId: props.employeeId,
+            monthRecordStatus: HrmSalaryMonthStatus.HISTORY,
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+          }),
+      },
+    },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true },
+  } as VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>,
 });
 </script>
 
 <template>
   <Card title="历史月度工资" :style="{ marginBottom: '15px' }">
-    <Table
-      bordered
-      size="small"
-      :loading="loading"
-      :data-source="list"
-      :pagination="{
-        current: queryParams.pageNo,
-        pageSize: queryParams.pageSize,
-        total,
-        showSizeChanger: true,
-      }"
-      :row-key="(record) => record.id ?? `${record.year}-${record.month}`"
-      :columns="historyColumns"
-      @change="handleTableChange"
-    >
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'yearMonth'">
-          {{ formatHrmYearMonth(record.year, record.month) }}
-        </template>
-        <template v-else-if="column.key === 'workDays'">
-          {{ record.actualWorkDay ?? '-' }} / {{ record.needWorkDay ?? '-' }} 天
-        </template>
-        <template v-else-if="column.key === 'expectedPaySalary'">
-          {{ formatHrmMoney(record.expectedPaySalary) }}
-        </template>
-        <template v-else-if="column.key === 'personalTax'">
-          {{ formatHrmMoney(record.personalTax) }}
-        </template>
-        <template v-else-if="column.key === 'realPaySalary'">
-          {{ formatHrmMoney(record.realPaySalary) }}
-        </template>
-        <template v-else-if="column.key === 'actions'">
-          <a @click="openDetail(record)">详情</a>
-        </template>
+    <Grid>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '详情',
+              type: 'link',
+              onClick: () => openDetail(row),
+            },
+          ]"
+        />
       </template>
-    </Table>
+    </Grid>
 
-    <DetailModal
-      title="工资明细"
-      class="w-[620px]"
-      :show-confirm-button="false"
-    >
+    <DetailModal title="工资明细" class="w-[620px]">
       <Descriptions v-if="detail" bordered :column="2" size="small">
         <DescriptionsItem label="计薪月份">
           {{ formatHrmYearMonth(detail.year, detail.month) }}
@@ -165,22 +103,7 @@ onMounted(() => {
           {{ formatHrmMoney(detail.realPaySalary) }}
         </DescriptionsItem>
       </Descriptions>
-      <Table
-        v-if="detail?.optionValues?.length"
-        bordered
-        size="small"
-        class="mt-4"
-        :columns="optionColumns"
-        :data-source="detail.optionValues"
-        :pagination="false"
-        :row-key="(row) => row.code ?? row.name ?? ''"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'value'">
-            {{ formatHrmMoney(record.value) }}
-          </template>
-        </template>
-      </Table>
+      <OptionGrid v-if="detail?.optionValues?.length" class="mt-4 w-full" />
     </DetailModal>
   </Card>
 </template>

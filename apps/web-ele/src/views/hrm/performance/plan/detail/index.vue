@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：Grid 补 toolbarConfig: { refresh: true, search: true }，对齐 system/user，三端同步。
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessment';
@@ -9,7 +8,7 @@ import type { SystemOperateLogApi } from '#/api/system/operate-log';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -73,7 +72,10 @@ const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
 const stageCountList = ref<HrmPerformancePlanApi.PerformanceStageCount[]>([]);
 const levelList = ref<string[]>([]);
 const checkedEmployeeIds = ref<number[]>([]);
-const assessmentAddFormRef = ref<InstanceType<typeof AssessmentAddForm>>();
+const [AssessmentAddModal, assessmentAddModalApi] = useVbenModal({
+  connectedComponent: AssessmentAddForm,
+  destroyOnClose: true,
+});
 
 const isEditable = computed(
   () =>
@@ -373,6 +375,7 @@ const [EmployeeGrid, employeeGridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     checkboxConfig: { highlight: true },
+    toolbarConfig: { refresh: true, search: true },
   },
   gridEvents: {
     checkboxChange: ({
@@ -419,7 +422,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <AssessmentAddForm ref="assessmentAddFormRef" @success="getData" />
+    <AssessmentAddModal @success="getData" />
     <Header :loading="loading" :plan="plan" @back="close">
       <div class="flex flex-wrap items-center gap-2">
         <TableAction
@@ -527,7 +530,7 @@ onMounted(async () => {
                     type: 'primary',
                     icon: ACTION_ICON.ADD,
                     auth: ['hrm:performance:plan:update'],
-                    onClick: () => assessmentAddFormRef?.open(planId),
+                    onClick: () => assessmentAddModalApi.setData(planId).open(),
                   },
                   {
                     label: '移除员工',

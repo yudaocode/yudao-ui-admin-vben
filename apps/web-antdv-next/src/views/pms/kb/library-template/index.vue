@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeLibraryTemplateApi } from '#/api/pms/kb/library/template';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'antdv-next';
 
@@ -13,7 +13,7 @@ import {
 } from '#/api/pms/kb/library/template';
 
 import { useGridColumns, useGridFormSchema } from './data';
-import KnowledgeLibraryTemplateForm from './knowledge-library-template-form.vue';
+import KnowledgeLibraryTemplateForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibraryTemplate' });
 
@@ -22,7 +22,7 @@ const [
   knowledgeLibraryTemplateFormModalApi,
 ] = useVbenModal({
   connectedComponent: KnowledgeLibraryTemplateForm,
-  // TODO @AI：对齐 system user，补 destroyOnClose。删除改 TableAction popConfirm，不要 confirm + empty catch。
+  destroyOnClose: true,
 });
 
 /** 刷新表格 */
@@ -42,15 +42,9 @@ function openForm(formType: 'create' | 'update', id?: number) {
 
 /** 删除按钮操作 */
 async function handleDelete(id: number) {
-  try {
-    // 删除的二次确认
-    await confirm('是否确认删除该知识库模板？');
-    await deleteKnowledgeLibraryTemplate(id);
-    message.success('删除成功');
-    // 刷新列表
-    handleRefresh();
-  } catch {
-  }
+  await deleteKnowledgeLibraryTemplate(id);
+  message.success('删除成功');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -75,6 +69,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
     },
   } as VxeTableGridOptions<PmsKnowledgeLibraryTemplateApi.KnowledgeLibraryTemplate>,
 });
@@ -118,7 +116,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.DELETE,
               auth: ['pms:kb:library-template:delete'],
-              onClick: () => handleDelete(row.id!),
+              popConfirm: {
+                title: `确认删除知识库模板“${row.name}”吗？`,
+                confirm: () => handleDelete(row.id!),
+              },
             },
           ]"
         />

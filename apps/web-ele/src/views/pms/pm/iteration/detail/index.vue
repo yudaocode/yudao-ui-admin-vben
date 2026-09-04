@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EChartsOption } from '@vben/plugins/echarts';
+import type { EChartsOption, EchartsUIType } from '@vben/plugins/echarts';
 
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsIterationApi } from '#/api/pms/pm/iteration';
@@ -15,8 +15,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { formatDateTime } from '@vben/utils';
-import { getAllPageItems } from '@vben/utils';
+import { formatDateTime, getAllPageItems } from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -48,8 +47,8 @@ import {
 } from '#/api/pms/pm/iteration';
 import { getProject } from '#/api/pms/pm/project';
 import { getWorkItemPage } from '#/api/pms/pm/workitem';
-import IterationForm from '#/views/pms/pm/iteration/components/iteration-form.vue';
-import IterationStartForm from '#/views/pms/pm/iteration/components/iteration-start-form.vue';
+import IterationForm from '#/views/pms/pm/iteration/list/modules/form.vue';
+import IterationStartForm from '#/views/pms/pm/iteration/list/modules/start-form.vue';
 import {
   PmsIterationOverviewCardOptions,
   PmsIterationStatus,
@@ -58,9 +57,7 @@ import {
   PmsWorkItemStatusType,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
-import {
-  getIterationStatusTagType,
-} from '#/views/pms/pm/utils/format';
+import { getIterationStatusTagType } from '#/views/pms/pm/utils/format';
 import WorkItemAllList from '#/views/pms/pm/workitem/list/work-item-all-list.vue';
 import WorkItemList from '#/views/pms/pm/workitem/list/work-item-list.vue';
 
@@ -115,10 +112,12 @@ const typeDistribution = computed(() =>
     count: overview.value.typeCountMap[option.value] || 0,
   })),
 ); // 事项类型分布
-const distributionChartRef = ref<any>(); // 事项分布图
-const statusTrendChartRef = ref<any>(); // 事项状态趋势图
-const { renderEcharts: renderDistributionChart } = useEcharts(distributionChartRef);
-const { renderEcharts: renderStatusTrendChart } = useEcharts(statusTrendChartRef);
+const distributionChartRef = ref<EchartsUIType>(); // 事项分布图
+const statusTrendChartRef = ref<EchartsUIType>(); // 事项状态趋势图
+const { renderEcharts: renderDistributionChart } =
+  useEcharts(distributionChartRef);
+const { renderEcharts: renderStatusTrendChart } =
+  useEcharts(statusTrendChartRef);
 
 const statusTrendChartOptions = computed<EChartsOption>(() =>
   getStatusTrendChartOptions(overview.value),
@@ -134,12 +133,12 @@ const statusDistribution = computed(() => {
   };
   return getDictOptions(DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE, 'number').map(
     (option) => ({
-    name: option.label,
-    count: statusCountMap[option.value] ?? 0,
-    progressStatus:
-      option.value === PmsWorkItemStatusType.COMPLETED
-        ? ('success' as const)
-        : undefined,
+      name: option.label,
+      count: statusCountMap[option.value] ?? 0,
+      progressStatus:
+        option.value === PmsWorkItemStatusType.COMPLETED
+          ? ('success' as const)
+          : undefined,
     }),
   );
 }); // 当前状态分布
@@ -149,7 +148,7 @@ const teamNames = computed(() => {
     if (item.assigneeUserName) names.add(item.assigneeUserName);
     item.memberUserNames?.forEach((name) => names.add(name));
   });
-  return Array.from(names);
+  return [...names];
 }); // 迭代参与成员
 
 type BurnDown = PmsIterationApi.IterationOverview['burnDowns'][number];
@@ -250,8 +249,7 @@ async function handleComplete() {
     await completeIteration(iteration.value.id!);
     ElMessage.success('迭代已完成');
     await handleIterationChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 删除迭代 */
@@ -264,8 +262,7 @@ async function handleDelete() {
     await deleteIteration(iteration.value.id!);
     ElMessage.success('删除成功');
     close();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 刷新迭代详情和概览 */
@@ -329,7 +326,12 @@ onMounted(async () => {
                 v-if="iteration"
                 :type="getIterationStatusTagType(iteration.status)"
               >
-                {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+                {{
+                  getDictLabel(
+                    DICT_TYPE.PMS_ITERATION_STATUS,
+                    iteration.status,
+                  ) || '-'
+                }}
               </ElTag>
             </div>
             <div class="mt-1 text-[13px] text-[var(--el-text-color-secondary)]">
@@ -417,7 +419,12 @@ onMounted(async () => {
                 <ElCard header="迭代信息" shadow="never">
                   <ElDescriptions :column="2" border>
                     <ElDescriptionsItem label="状态">
-                      {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration?.status) || '-' }}
+                      {{
+                        getDictLabel(
+                          DICT_TYPE.PMS_ITERATION_STATUS,
+                          iteration?.status,
+                        ) || '-'
+                      }}
                     </ElDescriptionsItem>
                     <ElDescriptionsItem label="负责人">
                       {{ iteration?.ownerUserName || '未设置' }}

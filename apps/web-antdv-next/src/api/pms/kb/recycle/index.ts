@@ -67,7 +67,10 @@ export function getKnowledgeContentRecycleDetail(id: number) {
 }
 
 /** 预览知识库回收站内容 */
-export function getKnowledgeContentRecyclePreview(id: number, entityId?: number) {
+export function getKnowledgeContentRecyclePreview(
+  id: number,
+  entityId?: number,
+) {
   return requestClient.get<PmsKnowledgeRecycleApi.KnowledgeRecyclePreview>(
     '/pms/kb/recycle/content-preview',
     { params: { id, entityId } },

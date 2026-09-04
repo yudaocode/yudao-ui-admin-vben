@@ -58,20 +58,15 @@ import {
   formatProjectWorkItemCounts,
 } from '#/views/pms/pm/utils/format';
 
-import ProjectForm from '../components/project-form.vue';
 import FavoriteTrendChart from './components/favorite-trend-chart.vue';
 import ProjectGroupList from './components/group/project-group-list.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+import ProjectForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsProjectList' });
-// TODO @AI：对齐 system/user，项目表单从 components 改引 ./modules/form.vue。
 
-// TODO DONE @AI：web-ele 保留 v-loading，弹窗已启用 destroyOnClose，Grid 已补 refresh/search，三端一致。
 // TODO @AI：项目操作包含分组子菜单，后续需要在保留交互能力的前提下对齐 TableAction。
 /** 星标项目趋势小图（v-for 内逐卡片渲染） */
-// TODO DONE @AI：星标趋势图已拆为子组件，在组件 setup 生命周期内持有 EchartsUIType ref。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样逐项目查询概况；按用户要求本轮不调整 N+1 请求行为。
-// TODO DONE @AI：项目截止日期已统一通过 PMS format.ts 格式化并处理空值。
 
 const { hasAccessByCodes } = useAccess();
 const { push, replace } = useRouter(); // 路由

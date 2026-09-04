@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：内嵌明细表评估改 VXE Grid（可编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryMonthRecordApi } from '#/api/hrm/salary/month-record';
 import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-record/employee';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
 
-import { InputNumber, message, Spin, Table } from 'ant-design-vue';
+import { InputNumber, message } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getSalaryMonthEmployeeRecordList,
   updateSalaryMonthEmployeeRecordList,
@@ -21,11 +21,12 @@ import {
 } from '#/views/hrm/salary/utils/option';
 import { HRM_SALARY_COMPUTED_OPTION_CODES } from '#/views/hrm/utils/constants';
 
+import { buildEditableGridColumns } from '../data';
+
 defineOptions({ name: 'HrmSalaryBatchEmployeeRecordForm' });
 
 const emit = defineEmits(['success']);
 
-const loading = ref(false);
 const edited = ref(false);
 const editedEmployeeIdSet = ref<Set<number>>(new Set());
 const list = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[]>(
@@ -34,6 +35,19 @@ const list = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord[]>(
 const editableOptions = ref<
   NonNullable<HrmSalaryMonthRecordApi.SalaryMonthRecord['optionHeaders']>
 >([]);
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: [],
+    data: [],
+    height: 'calc(100vh - 260px)',
+    minHeight: 260,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>,
+});
 
 const [Modal, modalApi] = useVbenModal({
   class: 'w-[calc(100vw-32px)]',
@@ -76,48 +90,44 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       list.value = [];
       editableOptions.value = [];
       edited.value = false;
       editedEmployeeIdSet.value = new Set();
+      return;
+    }
+    const { record, queryParams } = modalApi.getData() as {
+      queryParams: {
+        deptId?: number;
+        employeeChangeType?: number;
+        employeeName?: string;
+        jobNumber?: string;
+      };
+      record: HrmSalaryMonthRecordApi.SalaryMonthRecord;
+    };
+    if (!record?.id) return;
+    modalApi.lock();
+    try {
+      list.value = await getSalaryMonthEmployeeRecordList({
+        ...queryParams,
+        monthRecordId: record.id,
+      });
+      editableOptions.value = getSalaryLeafOptions(record.optionHeaders).filter(
+        (option) => !HRM_SALARY_COMPUTED_OPTION_CODES.has(option.code),
+      );
+      gridApi.setGridOptions({
+        columns: buildEditableGridColumns(editableOptions.value),
+      });
+      await nextTick();
+      await gridApi.grid.reloadData(list.value);
+    } finally {
+      modalApi.unlock();
     }
   },
   title: '在线编辑工资',
 });
-
-async function open(
-  record: HrmSalaryMonthRecordApi.SalaryMonthRecord,
-  queryParams: {
-    deptId?: number;
-    employeeChangeType?: number;
-    employeeName?: string;
-    jobNumber?: string;
-  },
-) {
-  if (!record.id) {
-    return;
-  }
-  modalApi.open();
-  loading.value = true;
-  try {
-    list.value = await getSalaryMonthEmployeeRecordList({
-      deptId: queryParams.deptId,
-      employeeChangeType: queryParams.employeeChangeType,
-      employeeName: queryParams.employeeName,
-      jobNumber: queryParams.jobNumber,
-      monthRecordId: record.id,
-    });
-    editableOptions.value = getSalaryLeafOptions(record.optionHeaders).filter(
-      (option) => !HRM_SALARY_COMPUTED_OPTION_CODES.has(option.code),
-    );
-    edited.value = false;
-    editedEmployeeIdSet.value = new Set();
-  } finally {
-    loading.value = false;
-  }
-}
 
 function handleOptionChange(employeeRecordId?: number) {
   if (!employeeRecordId) {
@@ -136,64 +146,35 @@ function handleOptionUpdate(
   updateSalaryOptionValue(record, optionCode, value);
   handleOptionChange(record.id);
 }
-
-defineExpose({ open });
 </script>
 
 <template>
   <Modal>
-    <Spin :spinning="loading">
-      <Table
-        :columns="[
-          {
-            dataIndex: 'employeeName',
-            fixed: 'left',
-            title: '员工姓名',
-            width: 130,
-          },
-          { dataIndex: 'jobNumber', fixed: 'left', title: '工号', width: 120 },
-          { dataIndex: 'deptName', fixed: 'left', title: '部门', width: 130 },
-          { dataIndex: 'postName', fixed: 'left', title: '岗位', width: 130 },
-          ...editableOptions.map((option) => ({
-            dataIndex: `option-${option.code}`,
-            title: option.name,
-            width: 150,
-          })),
-        ]"
-        :data-source="list"
-        :pagination="false"
-        :scroll="{ x: 'max-content', y: 'calc(100vh - 300px)' }"
-        bordered
-        row-key="id"
-        size="small"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="String(column.dataIndex).startsWith('option-')">
-            <InputNumber
-              :controls="false"
-              :max="100000000"
-              :min="0"
-              :precision="2"
-              :value="
-                getSalaryOptionNumberValue(
-                  record,
-                  Number(String(column.dataIndex).replace('option-', '')),
-                )
-              "
-              class="w-full"
-              @update:value="
-                (value) =>
-                  handleOptionUpdate(
-                    record,
-                    Number(String(column.dataIndex).replace('option-', '')),
-                    value as number | null,
-                  )
-              "
-            />
-          </template>
-        </template>
-      </Table>
-    </Spin>
+    <Grid class="w-full">
+      <template #optionValue="{ column, row }">
+        <InputNumber
+          :controls="false"
+          :max="100000000"
+          :min="0"
+          :precision="2"
+          :value="
+            getSalaryOptionNumberValue(
+              row,
+              Number(String(column.field).replace('option-', '')),
+            )
+          "
+          class="w-full"
+          @update:value="
+            (value) =>
+              handleOptionUpdate(
+                row,
+                Number(String(column.field).replace('option-', '')),
+                value as number | null,
+              )
+          "
+        />
+      </template>
+    </Grid>
     <template #prepend-footer>
       <span class="text-muted-foreground">
         已修改 {{ editedEmployeeIdSet.size }} 人

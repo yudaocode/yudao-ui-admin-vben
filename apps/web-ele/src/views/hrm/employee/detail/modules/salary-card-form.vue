@@ -1,25 +1,31 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
 import type { HrmEmployeeSalaryCardApi } from '#/api/hrm/employee/salary-card';
 
 import { ref } from 'vue';
 
-import { useVbenForm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
+import { useVbenForm } from '#/adapter/form';
 import { saveEmployeeSalaryCard } from '#/api/hrm/employee/salary-card';
 import { $t } from '#/locales';
 
 import { useSalaryCardFormSchema } from '../../data';
+
 const emit = defineEmits(['success']);
 const employeeId = ref<number>();
+
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: {
+    labelWidth: 112,
+    componentProps: { class: 'w-full' },
+  },
   layout: 'horizontal',
   schema: useSalaryCardFormSchema(),
   showDefaultActions: false,
 });
+
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -37,19 +43,21 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { employeeId: currentEmployeeId, row } = modalApi.getData() as {
+      employeeId: number;
+      row?: HrmEmployeeSalaryCardApi.EmployeeSalaryCard;
+    };
+    employeeId.value = currentEmployeeId;
+    await formApi.reset();
+    await formApi.setValues({ ...row, employeeId: currentEmployeeId });
+  },
 });
-function open(
-  empId: number,
-  row?: HrmEmployeeSalaryCardApi.EmployeeSalaryCard,
-) {
-  employeeId.value = empId;
-  formApi.reset();
-  formApi.setValues({ ...row, employeeId: empId });
-  modalApi.setState({ title: '编辑工资卡' });
-  modalApi.open();
-}
-defineExpose({ open });
 </script>
+
 <template>
-  <Modal class="w-[560px]"><Form class="mx-4" /></Modal>
+  <Modal title="编辑工资卡" class="w-[560px]">
+    <Form class="mx-4" />
+  </Modal>
 </template>

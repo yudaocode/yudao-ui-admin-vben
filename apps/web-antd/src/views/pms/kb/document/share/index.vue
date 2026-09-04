@@ -4,6 +4,8 @@ import type { PmsKnowledgeDocumentShareApi } from '#/api/pms/kb/interaction/shar
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { Spinner } from '@vben/common-ui';
+
 import { Card, Empty } from 'ant-design-vue';
 
 import { getPublicKnowledgeDocument } from '#/api/pms/kb/interaction/share';
@@ -11,8 +13,6 @@ import { FilePreview } from '#/components/file-preview';
 import { PmsKnowledgeDocumentType } from '#/views/pms/kb/utils/constants';
 
 defineOptions({ name: 'PmsKnowledgeDocumentShare' });
-
-// TODO @AI：antd/antdv-next 不要用 v-loading。公开分享页三端布局对齐。
 
 const route = useRoute(); // 当前路由
 const loading = ref(false); // 数据加载中
@@ -38,7 +38,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-loading="loading" class="min-h-screen bg-accent px-6 py-6">
+  <Spinner :spinning="loading" class="min-h-screen bg-accent px-6 py-6">
     <Card
       v-if="document"
       :body-style="{ padding: '40px 48px' }"
@@ -65,7 +65,7 @@ onMounted(() => {
         </div>
       </div>
     </Card>
-  </div>
+  </Spinner>
 </template>
 
 <style lang="scss" scoped>

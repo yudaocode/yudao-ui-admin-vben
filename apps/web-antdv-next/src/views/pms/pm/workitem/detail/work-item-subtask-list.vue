@@ -7,16 +7,9 @@ import { ref, watch } from 'vue';
 
 import { getAllPageItems } from '@vben/utils';
 
-import {
-  Button,
-  Checkbox,
-  Empty,
-  Input,
-  message,
-  Popconfirm,
-} from 'antdv-next';
+import { Button, Checkbox, Empty, Input, message } from 'antdv-next';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createWorkItem,
   getWorkItemPage,
@@ -33,8 +26,6 @@ import {
 import { useColumns } from './data';
 
 defineOptions({ name: 'PmsWorkItemSubtaskList' });
-
-// TODO @AI：已用 VXE 的话操作列走 TableAction，不要手写按钮。
 
 const props = withDefaults(
   defineProps<{
@@ -244,19 +235,28 @@ watch(
         <span v-else>{{ row.name }}</span>
       </template>
       <template #action="{ row }">
-        <template v-if="editable">
-          <Button size="small" type="link" @click="startRename(row)">
-            改名
-          </Button>
-          <Popconfirm
-            :title="`确认删除子工作项“${row.name}”吗？删除后可在回收站恢复。`"
-            cancel-text="取消"
-            ok-text="确定"
-            @confirm="handleRecycle(row)"
-          >
-            <Button danger size="small" type="link">删除</Button>
-          </Popconfirm>
-        </template>
+        <TableAction
+          :actions="[
+            {
+              label: '改名',
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              ifShow: editable,
+              onClick: () => startRename(row),
+            },
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              ifShow: editable,
+              popConfirm: {
+                title: `确认删除子工作项“${row.name}”吗？删除后可在回收站恢复。`,
+                confirm: () => handleRecycle(row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
     <Empty

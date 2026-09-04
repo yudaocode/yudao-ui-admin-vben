@@ -27,7 +27,6 @@ import {
   Spin,
   Tag,
 } from 'antdv-next';
-import dayjs from 'dayjs';
 
 import { getIterationPage } from '#/api/pms/pm/iteration';
 import { getProjectOverview } from '#/api/pms/pm/project';
@@ -37,16 +36,13 @@ import {
   PmsProjectType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   formatProjectCompletionRate,
   getIterationStatusTagType,
 } from '#/views/pms/pm/utils/format';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
 defineOptions({ name: 'PmsProjectOverview' });
-
-// TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样全量查询迭代和公告；按用户要求本轮不调整请求行为。
-// TODO DONE @AI：trendChartRef 已对齐 CRM/system，使用 EchartsUIType 保留图表实例类型约束。
 
 const props = defineProps<{
   editable: boolean;
@@ -264,16 +260,10 @@ onMounted(() => {
           >
             <span>
               {{
-                iteration.startTime
-                  ? dayjs(iteration.startTime).format('YYYY-MM-DD')
-                  : '--'
+                iteration.startTime ? formatPmsDate(iteration.startTime) : '--'
               }}
               至
-              {{
-                iteration.endTime
-                  ? dayjs(iteration.endTime).format('YYYY-MM-DD')
-                  : '--'
-              }}
+              {{ iteration.endTime ? formatPmsDate(iteration.endTime) : '--' }}
             </span>
             <span v-if="iteration.progress !== undefined">
               完成 {{ iteration.progress }}%
@@ -283,7 +273,7 @@ onMounted(() => {
             class="mt-1.5"
             :percent="iteration.progress || 0"
             :show-info="false"
-            :size="['100%', 6]"
+            :stroke-width="6"
           />
         </div>
       </div>
@@ -308,17 +298,9 @@ onMounted(() => {
           {{ project.name }}
         </DescriptionsItem>
         <DescriptionsItem label="项目周期" :span="2">
-          {{
-            project.startTime
-              ? dayjs(project.startTime).format('YYYY-MM-DD')
-              : '未设置'
-          }}
+          {{ project.startTime ? formatPmsDate(project.startTime) : '未设置' }}
           至
-          {{
-            project.endTime
-              ? dayjs(project.endTime).format('YYYY-MM-DD')
-              : '未设置'
-          }}
+          {{ project.endTime ? formatPmsDate(project.endTime) : '未设置' }}
         </DescriptionsItem>
         <DescriptionsItem label="项目管理员">
           {{ project.adminNames.join('、') || '未设置' }}
@@ -329,7 +311,7 @@ onMounted(() => {
         <DescriptionsItem label="项目进度" :span="2">
           <Progress
             :percent="formatProjectCompletionRate(project)"
-            :size="['100%', 8]"
+            :stroke-width="8"
           />
         </DescriptionsItem>
         <DescriptionsItem label="项目描述" :span="2">
@@ -366,7 +348,7 @@ onMounted(() => {
         <Progress
           :percent="item.progress"
           :show-info="false"
-          :size="['100%', 6]"
+          :stroke-width="6"
         />
       </div>
     </Card>

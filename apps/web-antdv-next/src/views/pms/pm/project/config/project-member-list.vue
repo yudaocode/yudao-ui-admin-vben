@@ -16,11 +16,9 @@ import {
 } from '#/api/pms/pm/project/member';
 
 import { useProjectMemberGridColumns } from './data';
-import ProjectMemberForm from './project-member-form.vue';
+import ProjectMemberForm from './modules/member-form.vue';
 
 defineOptions({ name: 'PmsProjectMemberList' });
-
-// TODO @AI：删除改 TableAction popConfirm，不要 confirm + empty catch。补 destroyOnClose。
 
 const props = defineProps<{
   editable: boolean;
@@ -79,8 +77,7 @@ async function handleDelete(member: PmsProjectMemberApi.ProjectMember) {
     await deleteProjectMember(props.project.id, member.userId);
     message.success('成员已移出项目');
     gridApi.query();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 初始化 */

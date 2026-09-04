@@ -23,7 +23,6 @@ import {
   Spin,
   Tag,
 } from 'ant-design-vue';
-import dayjs from 'dayjs';
 import draggable from 'vuedraggable';
 
 import {
@@ -39,8 +38,8 @@ import {
   updateWorkItemIteration,
   updateWorkItemPlanningSort,
 } from '#/api/pms/pm/workitem';
-import IterationForm from '#/views/pms/pm/iteration/components/iteration-form.vue';
-import IterationStartForm from '#/views/pms/pm/iteration/components/iteration-start-form.vue';
+import IterationForm from '#/views/pms/pm/iteration/list/modules/form.vue';
+import IterationStartForm from '#/views/pms/pm/iteration/list/modules/start-form.vue';
 import {
   PmsIterationStatus,
   PmsWorkItemDefectType,
@@ -48,17 +47,15 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   getIterationStatusTagType,
   getPriorityColor,
   getWorkItemStatusTagType,
 } from '#/views/pms/pm/utils/format';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
-import WorkItemForm from '#/views/pms/pm/workitem/form/work-item-form.vue';
+import WorkItemForm from '#/views/pms/pm/workitem/list/modules/form.vue';
 
 defineOptions({ name: 'PmsPlanningBoard' });
-
-// TODO @AI：看板可以保留自定义拖拽；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts，不要页面里 dayjs.format。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样按迭代逐项查询；按用户要求本轮不调整 N+1 请求行为。
 
 const props = defineProps<{
   editable: boolean;
@@ -476,7 +473,9 @@ onMounted(() => {
       <!-- Backlog 区域：展示尚未规划到迭代的工作项 -->
       <Card>
         <template #title>
-          <span class="font-semibold">Backlog 共 {{ unplannedWorkItems.length }} 个事项</span>
+          <span class="font-semibold">
+            Backlog 共 {{ unplannedWorkItems.length }} 个事项
+          </span>
         </template>
         <draggable
           v-model="unplannedWorkItems"
@@ -648,14 +647,12 @@ onMounted(() => {
                 <span class="text-xs text-muted-foreground">
                   {{
                     iteration.startTime
-                      ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                      ? formatPmsDate(iteration.startTime)
                       : '--'
                   }}
                   至
                   {{
-                    iteration.endTime
-                      ? dayjs(iteration.endTime).format('YYYY-MM-DD')
-                      : '--'
+                    iteration.endTime ? formatPmsDate(iteration.endTime) : '--'
                   }}
                 </span>
                 <Tag :color="getIterationStatusTagType(iteration.status)">

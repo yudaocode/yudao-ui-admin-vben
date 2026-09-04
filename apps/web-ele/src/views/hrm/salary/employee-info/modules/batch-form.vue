@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：表单主体字段改 useVbenForm schema（放 data.ts），对齐 system/user；内嵌调薪明细表评估 VXE Grid（可编辑用 edit-render），三端同步。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { reactive, ref } from 'vue';
+import { nextTick, reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -26,11 +25,10 @@ import {
   ElRadioGroup,
   ElRow,
   ElSelect,
-  ElTable,
-  ElTableColumn,
   ElTreeSelect,
 } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSalaryOptionSimpleList } from '#/api/hrm/salary/config/option';
 import {
   getSalaryAdjustmentMinEffectDate,
@@ -43,6 +41,8 @@ import {
   HrmSalaryChangeReason,
   HrmSalaryOptionCategoryCode,
 } from '#/views/hrm/utils/constants';
+
+import { useBatchSalaryEditGridColumns } from '../data';
 
 defineOptions({ name: 'HrmSalaryEmployeeInfoBatchForm' });
 
@@ -82,6 +82,19 @@ const formRules = reactive({
   effectTime: [
     { required: true, message: '生效日期不能为空', trigger: 'change' },
   ],
+});
+
+const [OptionGrid, optionGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useBatchSalaryEditGridColumns(),
+    data: [],
+    maxHeight: 360,
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
 });
 
 function createDefaultFormData(): HrmSalaryEmployeeInfoApi.UpdateListReq {
@@ -133,40 +146,46 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       formData.value = createDefaultFormData();
       formRef.value?.clearValidate();
+      return;
+    }
+    formData.value = createDefaultFormData();
+    formData.value.employeeIds = [...((modalApi.getData() as number[]) || [])];
+    formLoading.value = true;
+    optionGridApi.setLoading(true);
+    try {
+      const [options, adjustmentMinEffectDate, deptList] = await Promise.all([
+        getSalaryOptionSimpleList(),
+        getSalaryAdjustmentMinEffectDate(),
+        getSimpleDeptList(),
+      ]);
+      deptTree.value = handleTree(deptList);
+      formData.value.salaryOptions = options
+        .filter(
+          (option) =>
+            option.parentCode === HrmSalaryOptionCategoryCode.BASIC_SALARY,
+        )
+        .map((option) => ({ code: option.code, name: option.name, value: 0 }));
+      minEffectDate.value = adjustmentMinEffectDate || undefined;
+    } finally {
+      formLoading.value = false;
+      optionGridApi.setLoading(false);
     }
   },
   title: '批量调薪',
 });
 
-async function open(employeeIds: number[]) {
-  formData.value = createDefaultFormData();
-  formData.value.employeeIds = [...employeeIds];
-  modalApi.open();
-  formLoading.value = true;
-  try {
-    const [options, adjustmentMinEffectDate, deptList] = await Promise.all([
-      getSalaryOptionSimpleList(),
-      getSalaryAdjustmentMinEffectDate(),
-      getSimpleDeptList(),
-    ]);
-    deptTree.value = handleTree(deptList);
-    formData.value.salaryOptions = options
-      .filter(
-        (option) =>
-          option.parentCode === HrmSalaryOptionCategoryCode.BASIC_SALARY,
-      )
-      .map((option) => ({ code: option.code, name: option.name, value: 0 }));
-    minEffectDate.value = adjustmentMinEffectDate || undefined;
-  } finally {
-    formLoading.value = false;
-  }
-}
-
-defineExpose({ open });
+watch(
+  () => formData.value.salaryOptions,
+  async (rows) => {
+    await nextTick();
+    await optionGridApi.grid.reloadData(rows || []);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -255,44 +274,33 @@ defineExpose({ open });
         </ElRadioGroup>
       </ElFormItem>
 
-      <ElTable
-        v-loading="formLoading"
-        border
-        max-height="260"
-        size="small"
-        :data="formData.salaryOptions"
-      >
-        <ElTableColumn label="调薪项" min-width="180" prop="name" />
-        <ElTableColumn align="center" label="编码" prop="code" width="100" />
-        <ElTableColumn
-          align="center"
-          :label="
+      <OptionGrid class="w-full">
+        <template #valueHeader>
+          {{
             formData.type === HrmSalaryBatchAdjustType.PERCENT
               ? '调薪比例'
               : '调薪金额'
-          "
-          width="240"
-        >
-          <template #default="{ row }">
-            <div class="flex items-center justify-center gap-2">
-              <ElInputNumber
-                v-model="row.value"
-                :controls="false"
-                :max="
-                  formData.type === HrmSalaryBatchAdjustType.PERCENT
-                    ? 9999.99
-                    : 9999999.99
-                "
-                :precision="2"
-                class="w-[180px]"
-              />
-              <span>{{
-                formData.type === HrmSalaryBatchAdjustType.PERCENT ? '%' : '元'
-              }}</span>
-            </div>
-          </template>
-        </ElTableColumn>
-      </ElTable>
+          }}
+        </template>
+        <template #value="{ row }">
+          <div class="flex items-center justify-center gap-2">
+            <ElInputNumber
+              v-model="row.value"
+              :controls="false"
+              :max="
+                formData.type === HrmSalaryBatchAdjustType.PERCENT
+                  ? 9999.99
+                  : 9999999.99
+              "
+              :precision="2"
+              class="w-[180px]"
+            />
+            <span>{{
+              formData.type === HrmSalaryBatchAdjustType.PERCENT ? '%' : '元'
+            }}</span>
+          </div>
+        </template>
+      </OptionGrid>
 
       <ElFormItem class="mt-4" label="备注" prop="remark">
         <ElInput

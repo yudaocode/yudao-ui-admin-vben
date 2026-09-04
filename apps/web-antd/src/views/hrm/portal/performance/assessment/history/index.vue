@@ -1,200 +1,86 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/performance/assessment';
 
-import { onActivated, reactive, ref } from 'vue';
+import { onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 
-import {
-  Button,
-  Card,
-  Form,
-  FormItem,
-  Input,
-  Pagination,
-  Table,
-  Tag,
-} from 'ant-design-vue';
+import { Tag } from 'ant-design-vue';
 
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getPerformanceAssessmentPage } from '#/api/hrm/portal/performance/assessment';
 import { checkHrmPortalAccess } from '#/views/hrm/utils/employee';
-import {
-  formatHrmDate,
-  formatHrmDateTime,
-  formatHrmScore,
-} from '#/views/hrm/utils/format';
 
-import PerformanceAssessmentDetail from '../detail/index.vue';
+import { useHistoryGridColumns, useHistoryGridFormSchema } from '../data';
+import PerformanceAssessmentDetail from '../modules/detail-drawer.vue';
 
 defineOptions({ name: 'HrmPortalPerformanceHistory' });
 
 const router = useRouter();
 const accessible = ref(false);
-const loading = ref(false);
-const total = ref(0);
-const list = ref<HrmPortalPerformanceAssessmentApi.AssessmentSummary[]>([]);
-const queryParams = reactive({
-  pageNo: 1,
-  pageSize: 10,
-  search: undefined as string | undefined,
-  archived: true,
+
+const [DetailDrawer, detailDrawerApi] = useVbenDrawer({
+  connectedComponent: PerformanceAssessmentDetail,
 });
-const detailRef = ref<InstanceType<typeof PerformanceAssessmentDetail>>();
 
-const columns = [
-  {
-    title: '考核名称',
-    dataIndex: 'name',
-    key: 'name',
-    minWidth: 220,
-    ellipsis: true,
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useHistoryGridFormSchema(),
+    submitOnEnter: true,
   },
-  { title: '考核周期', key: 'cycle', minWidth: 210 },
-  { title: '绩效得分', key: 'score', width: 110, align: 'center' as const },
-  {
-    title: '绩效等级',
-    key: 'resultLevel',
-    width: 110,
-    align: 'center' as const,
-  },
-  {
-    title: '绩效系数',
-    dataIndex: 'coefficient',
-    key: 'coefficient',
-    width: 100,
-    align: 'center' as const,
-  },
-  { title: '归档时间', key: 'archiveTime', width: 180 },
-  {
-    title: '操作',
-    key: 'action',
-    width: 90,
-    align: 'center' as const,
-    fixed: 'right' as const,
-  },
-];
+  gridOptions: {
+    columns: useHistoryGridColumns(),
+    height: 'auto',
+    proxyConfig: {
+      autoLoad: false,
+      ajax: {
+        query: async ({ page }, formValues) =>
+          getPerformanceAssessmentPage({
+            ...formValues,
+            archived: true,
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+          }),
+      },
+    },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true, search: true },
+  } as VxeTableGridOptions<HrmPortalPerformanceAssessmentApi.AssessmentSummary>,
+});
 
-/** 查询我的绩效档案 */
-async function getList() {
-  loading.value = true;
-  try {
-    const data = await getPerformanceAssessmentPage(queryParams);
-    list.value = data.list || [];
-    total.value = data.total || 0;
-  } finally {
-    loading.value = false;
-  }
-}
-
-/** 搜索 */
-function handleQuery() {
-  queryParams.pageNo = 1;
-  getList();
-}
-
-/** 重置搜索 */
-function resetQuery() {
-  queryParams.search = undefined;
-  handleQuery();
-}
-
-/** 打开绩效档案详情 */
 function openDetail(row: HrmPortalPerformanceAssessmentApi.AssessmentSummary) {
-  detailRef.value?.open(row);
+  detailDrawerApi.setData({ row }).open();
 }
 
-/** 页面激活时刷新绩效历史 */
 onActivated(async () => {
   accessible.value = await checkHrmPortalAccess(router);
-  if (!accessible.value) {
-    return;
-  }
-  await getList();
+  if (accessible.value) await gridApi.query();
 });
 </script>
 
 <template>
-  <Page v-if="accessible">
-    <Card class="mb-4">
-      <Form layout="inline" :model="queryParams">
-        <FormItem label="考核名称">
-          <Input
-            v-model:value="queryParams.search"
-            allow-clear
-            class="w-[240px]"
-            placeholder="请输入考核名称"
-            @press-enter="handleQuery"
-          />
-        </FormItem>
-        <FormItem>
-          <Button @click="handleQuery">
-            <IconifyIcon icon="lucide:search" class="mr-1" />
-            搜索
-          </Button>
-          <Button class="ml-2" @click="resetQuery">
-            <IconifyIcon icon="lucide:refresh-cw" class="mr-1" />
-            重置
-          </Button>
-        </FormItem>
-      </Form>
-    </Card>
-
-    <Card>
-      <Table
-        bordered
-        :columns="columns"
-        :data-source="list"
-        :loading="loading"
-        :pagination="false"
-        row-key="id"
-        :scroll="{ x: 1000 }"
-        size="small"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'cycle'">
-            {{ formatHrmDate(record.startTime) }} 至
-            {{ formatHrmDate(record.endTime) }}
-          </template>
-          <template v-else-if="column.key === 'score'">
-            {{ formatHrmScore(record.score) }}
-          </template>
-          <template v-else-if="column.key === 'resultLevel'">
-            <Tag v-if="record.resultLevel" color="success">
-              {{ record.resultLevel }}
-            </Tag>
-            <span v-else>-</span>
-          </template>
-          <template v-else-if="column.key === 'archiveTime'">
-            {{ formatHrmDateTime(record.archiveTime) }}
-          </template>
-          <template v-else-if="column.key === 'action'">
-            <Button
-              type="link"
-              @click="
-                openDetail(
-                  record as HrmPortalPerformanceAssessmentApi.AssessmentSummary,
-                )
-              "
-            >
-              查看
-            </Button>
-          </template>
-        </template>
-      </Table>
-      <div class="mt-4 flex justify-end">
-        <Pagination
-          v-model:current="queryParams.pageNo"
-          v-model:page-size="queryParams.pageSize"
-          :show-size-changer="true"
-          :total="total"
-          @change="getList"
+  <Page v-if="accessible" auto-content-height>
+    <Grid table-title="绩效档案">
+      <template #resultLevel="{ row }">
+        <Tag v-if="row.resultLevel" color="success">
+          {{ row.resultLevel }}
+        </Tag>
+        <span v-else>-</span>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '查看',
+              type: 'link',
+              onClick: () => openDetail(row),
+            },
+          ]"
         />
-      </div>
-    </Card>
-
-    <PerformanceAssessmentDetail ref="detailRef" />
+      </template>
+    </Grid>
+    <DetailDrawer />
   </Page>
 </template>

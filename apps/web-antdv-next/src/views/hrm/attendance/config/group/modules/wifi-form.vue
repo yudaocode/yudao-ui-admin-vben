@@ -1,93 +1,54 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：考勤组内嵌编辑弹窗可保留，但打开契约对齐 system/user 的 useVbenModal（connectedComponent + setData/open），三端一致。
-// TODO @AI（glm5.3 flash）：手写表单（reactive rules + 模板 FormItem）改 useVbenForm + useFormSchema（schema 放 data.ts），对齐 system/user/modules/form.vue，三端同步。
-import type { Rule } from 'antdv-next';
-
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, FormItem, Input } from 'antdv-next';
+import { useVbenForm } from '#/adapter/form';
+
+import { useWifiFormSchema } from '../data';
 
 defineOptions({ name: 'HrmAttendanceGroupWifiForm' });
 
 const emit = defineEmits<{
   confirm: [wifi: HrmAttendanceGroupApi.Wifi, index?: number];
 }>();
-
-const macPattern = /^((([0-9a-f]{2}:){5})|(([0-9a-f]{2}-){5}))[0-9a-f]{2}$/i;
-
 const editIndex = ref<number>();
-const formRef = ref();
-const formData = ref<HrmAttendanceGroupApi.Wifi>(createDefault());
 
-const formRules = reactive<Record<string, Rule[]>>({
-  ssid: [{ required: true, message: 'WiFi 名称不能为空', trigger: 'blur' }],
-  mac: [
-    { required: true, message: 'MAC 地址不能为空', trigger: 'blur' },
-    { pattern: macPattern, message: 'MAC 地址格式不正确', trigger: 'blur' },
-  ],
+const [Form, formApi] = useVbenForm({
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 88 },
+  layout: 'horizontal',
+  schema: useWifiFormSchema(),
+  showDefaultActions: false,
 });
-
-function createDefault(): HrmAttendanceGroupApi.Wifi {
-  return {
-    ssid: '',
-    mac: '',
-  };
-}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
-    emit('confirm', { ...formData.value }, editIndex.value);
+    const { valid } = await formApi.validate();
+    if (!valid) return;
+    emit(
+      'confirm',
+      (await formApi.getValues()) as HrmAttendanceGroupApi.Wifi,
+      editIndex.value,
+    );
     await modalApi.close();
   },
-  onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen) {
     if (!isOpen) return;
-    const payload = modalApi.getData() as {
-      index?: number;
-      wifi?: HrmAttendanceGroupApi.Wifi;
-    };
-    editIndex.value = payload?.index;
-    formData.value = payload?.wifi ? { ...payload.wifi } : createDefault();
-  },
-});
-
-defineExpose({
-  open(wifi?: HrmAttendanceGroupApi.Wifi, index?: number) {
-    modalApi.setData({ wifi, index }).open();
+    const { index, wifi } = modalApi.getData() as any;
+    editIndex.value = index;
+    modalApi.setState({
+      title: index === undefined ? '新增打卡 WiFi' : '编辑打卡 WiFi',
+    });
+    await formApi.reset();
+    if (wifi) await formApi.setValues(wifi);
   },
 });
 </script>
 
 <template>
-  <Modal
-    :title="editIndex === undefined ? '新增打卡 WiFi' : '编辑打卡 WiFi'"
-    class="w-[560px]"
-  >
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="formRules"
-      class="mx-4"
-      label-width="100px"
-    >
-      <FormItem label="WiFi 名称" name="ssid">
-        <Input
-          v-model:value="formData.ssid"
-          :maxlength="50"
-          placeholder="请输入 WiFi 名称"
-        />
-      </FormItem>
-      <FormItem label="MAC 地址" name="mac">
-        <Input
-          v-model:value="formData.mac"
-          :maxlength="17"
-          placeholder="例如 00:11:22:33:44:55"
-        />
-      </FormItem>
-    </Form>
+  <Modal class="w-[560px]">
+    <Form class="mx-4" />
   </Modal>
 </template>

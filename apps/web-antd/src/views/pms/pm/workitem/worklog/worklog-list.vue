@@ -6,18 +6,16 @@ import { ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Space } from 'ant-design-vue';
+import { Space } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getWorkItemWorkLogSummary } from '#/api/pms/pm/workitem/worklog';
 import { formatWorkHours } from '#/views/pms/pm/utils/format';
 
 import { useColumns } from './data';
-import WorkLogForm from './worklog-form.vue';
+import WorkLogForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsWorkItemWorkLogList' });
-
-// TODO @AI：登记/编辑操作对齐 TableAction，不要手写 Button。补 destroyOnClose。
 
 const props = withDefaults(
   defineProps<{
@@ -42,7 +40,7 @@ const [WorkLogFormModal, workLogFormModalApi] = useVbenModal({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useColumns(),
+    columns: useColumns(props.editable),
     maxHeight: 260,
     pagerConfig: {
       enabled: false,
@@ -102,27 +100,34 @@ watch(
         <span>已登记：{{ formatWorkHours(summary.actualHours) }}</span>
         <span>剩余：{{ formatWorkHours(summary.remainingHours) }}</span>
       </Space>
-      <Button
-        v-if="editable"
-        v-access:code="['pms:pm:work-item:update']"
-        @click="openForm()"
-      >
-        登记工时
-      </Button>
+      <TableAction
+        :actions="[
+          {
+            label: '登记工时',
+            icon: ACTION_ICON.ADD,
+            auth: ['pms:pm:work-item:update'],
+            ifShow: editable,
+            onClick: () => openForm(),
+          },
+        ]"
+      />
     </div>
 
     <!-- 工时列表 -->
     <Grid>
-      <template #action="{ row }">
-        <Button
-          v-if="editable"
-          v-access:code="['pms:pm:work-item:update']"
-          size="small"
-          type="link"
-          @click="openForm(row.id)"
-        >
-          编辑
-        </Button>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['pms:pm:work-item:update'],
+              ifShow: editable,
+              onClick: () => openForm(row.id),
+            },
+          ]"
+        />
       </template>
     </Grid>
 

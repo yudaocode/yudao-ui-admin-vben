@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
-import type { Dayjs } from 'dayjs';
-
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
 
 import { onMounted, ref } from 'vue';
@@ -9,10 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Card, DatePicker, Spin, Table } from 'antdv-next';
-import dayjs from 'dayjs';
-
-import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createNextInsuranceMonthRecord,
   deleteInsuranceMonthRecord,
@@ -20,43 +15,48 @@ import {
   getLastInsuranceMonthRecord,
 } from '#/api/hrm/insurance/month-record';
 import { HrmInsuranceMonthStatus } from '#/views/hrm/utils/constants';
-import { formatHrmMoney } from '#/views/hrm/utils/format';
 
-import { useListColumns } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 import FirstMonthForm from './modules/first-month-form.vue';
 
 defineOptions({ name: 'HrmInsuranceMonthRecord' });
 
 const router = useRouter();
-const loading = ref(true);
 const createLoading = ref(false);
-const queryYear = ref<Dayjs>(dayjs());
-const list = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord[]>([]);
 const latestRecord = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>();
-const columns = useListColumns();
 
 const [FirstMonthModal, firstMonthModalApi] = useVbenModal({
   connectedComponent: FirstMonthForm,
   destroyOnClose: true,
 });
 
-async function getList(useLatestYear = false) {
-  loading.value = true;
-  try {
-    latestRecord.value = await getLastInsuranceMonthRecord();
-    if (useLatestYear && latestRecord.value?.year) {
-      queryYear.value = dayjs(String(latestRecord.value.year), 'YYYY');
-    }
-    list.value = await getInsuranceMonthRecordList(queryYear.value.year());
-  } finally {
-    loading.value = false;
-  }
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+    submitOnChange: true,
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    pagerConfig: { enabled: false },
+    proxyConfig: {
+      autoLoad: false,
+      ajax: {
+        query: async (_params, formValues) =>
+          getInsuranceMonthRecordList(Number(formValues.year)),
+      },
+    },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true, search: true },
+  } as VxeTableGridOptions<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>,
+});
+
+async function loadLatestRecord() {
+  latestRecord.value = await getLastInsuranceMonthRecord();
 }
 
 function openDetail(id?: number) {
-  if (!id) {
-    return;
-  }
+  if (!id) return;
   router.push({
     name: 'HrmInsuranceMonthRecordDetail',
     params: { id },
@@ -71,9 +71,10 @@ function handleCreate() {
   handleCreateNext();
 }
 
-function handleCreateFirstSuccess(year: number) {
-  queryYear.value = dayjs(String(year), 'YYYY');
-  getList();
+async function handleCreateFirstSuccess(year: number) {
+  await gridApi.formApi.setFieldValue('year', String(year));
+  await loadLatestRecord();
+  await gridApi.query();
 }
 
 async function handleCreateNext() {
@@ -82,11 +83,12 @@ async function handleCreateNext() {
       content: '新建次月社保后，本月数据将不可修改。请确认要新建次月社保吗？',
       title: '新建确认',
     });
-    createLoading.value = true;
-    const id = await createNextInsuranceMonthRecord();
-    openDetail(id);
   } catch {
-    //
+    return;
+  }
+  createLoading.value = true;
+  try {
+    openDetail(await createNextInsuranceMonthRecord());
   } finally {
     createLoading.value = false;
   }
@@ -95,18 +97,10 @@ async function handleCreateNext() {
 async function handleDelete(
   row: HrmInsuranceMonthRecordApi.InsuranceMonthRecord,
 ) {
-  if (!row.id) {
-    return;
-  }
-  try {
-    await confirm({
-      content: `确认删除“${row.title}”吗？`,
-      icon: 'warning',
-      title: '删除确认',
-    });
-    await deleteInsuranceMonthRecord(row.id);
-    await getList();
-  } catch {}
+  if (!row.id) return;
+  await deleteInsuranceMonthRecord(row.id);
+  await loadLatestRecord();
+  await gridApi.query();
 }
 
 function isLatestEditableRecord(
@@ -118,8 +112,15 @@ function isLatestEditableRecord(
   );
 }
 
-onMounted(() => {
-  getList(true);
+onMounted(async () => {
+  await loadLatestRecord();
+  if (latestRecord.value?.year) {
+    await gridApi.formApi.setFieldValue(
+      'year',
+      String(latestRecord.value.year),
+    );
+  }
+  await gridApi.query();
 });
 </script>
 
@@ -131,16 +132,8 @@ onMounted(() => {
         url="https://doc.iocoder.cn/hrm/insurance/"
       />
     </template>
-    <Card>
-      <div class="mb-4 flex items-center justify-between">
-        <DatePicker
-          v-model:value="queryYear"
-          :allow-clear="false"
-          class="w-36"
-          format="YYYY 年"
-          picker="year"
-          @change="getList()"
-        />
+    <Grid table-title="社保表列表">
+      <template #toolbar-tools>
         <TableAction
           :actions="[
             {
@@ -153,55 +146,29 @@ onMounted(() => {
             },
           ]"
         />
-      </div>
-      <Spin :spinning="loading">
-        <Table
-          :columns="columns"
-          :data-source="list"
-          :pagination="false"
-          :scroll="{ x: 980 }"
-          row-key="id"
-          size="small"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'title'">
-              <Button type="link" @click="openDetail(record.id)">
-                {{ record.title }}
-              </Button>
-            </template>
-            <template v-else-if="column.key === 'personalInsuranceAmount'">
-              {{ formatHrmMoney(record.personalInsuranceAmount) }}
-            </template>
-            <template v-else-if="column.key === 'corporateInsuranceAmount'">
-              {{ formatHrmMoney(record.corporateInsuranceAmount) }}
-            </template>
-            <template v-else-if="column.key === 'personalProvidentFundAmount'">
-              {{ formatHrmMoney(record.personalProvidentFundAmount) }}
-            </template>
-            <template v-else-if="column.key === 'corporateProvidentFundAmount'">
-              {{ formatHrmMoney(record.corporateProvidentFundAmount) }}
-            </template>
-            <template v-else-if="column.key === 'action'">
-              <TableAction
-                :actions="[
-                  {
-                    label: '删除',
-                    type: 'link',
-                    danger: true,
-                    auth: ['hrm:insurance:month-record:delete'],
-                    ifShow: isLatestEditableRecord(record),
-                    popConfirm: {
-                      title: `确认删除“${record.title}”吗？`,
-                      confirm: () => handleDelete(record),
-                    },
-                  },
-                ]"
-              />
-            </template>
-          </template>
-        </Table>
-      </Spin>
-    </Card>
+      </template>
+      <template #title="{ row }">
+        <a @click="openDetail(row.id)">{{ row.title }}</a>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '删除',
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:insurance:month-record:delete'],
+              ifShow: isLatestEditableRecord(row),
+              popConfirm: {
+                title: `确认删除“${row.title}”吗？`,
+                confirm: () => handleDelete(row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
     <FirstMonthModal @success="handleCreateFirstSuccess" />
   </Page>
 </template>

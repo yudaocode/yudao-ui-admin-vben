@@ -12,10 +12,10 @@ import { getHrHomeCalendar, getHrHomeStatisticsSummary } from '#/api/hrm/home';
 import { HrmHomeCalendarItemType } from '#/views/hrm/utils/constants';
 
 import HrmHomeCalendar from '../components/calendar.vue';
-import HrmHomeEmployeeSurvey from '../components/employee-survey.vue';
-import HrmHomeRecruitSurvey from '../components/recruit-survey.vue';
-import HrmHomeSalarySurvey from '../components/salary-survey.vue';
-import HrmHomeTodoSurvey from '../components/todo-survey.vue';
+import HrmHomeEmployeeSurvey from '../modules/employee-survey.vue';
+import HrmHomeRecruitSurvey from '../modules/recruit-survey.vue';
+import HrmHomeSalarySurvey from '../modules/salary-survey.vue';
+import HrmHomeTodoSurvey from '../modules/todo-survey.vue';
 
 defineOptions({ name: 'HrmHrHome' });
 

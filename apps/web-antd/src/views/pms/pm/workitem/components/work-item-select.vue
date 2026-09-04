@@ -11,17 +11,23 @@ import { getWorkItemPage } from '#/api/pms/pm/workitem';
 
 defineOptions({ name: 'PmsWorkItemSelect' });
 
-// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
-
 const props = withDefaults(
   defineProps<{
+    allowClear?: boolean;
+    disabled?: boolean;
     excludeId?: number;
     modelValue?: number;
     placeholder?: string;
     projectId: number;
     type: number;
   }>(),
-  { excludeId: undefined, modelValue: undefined, placeholder: '请选择工作项' },
+  {
+    allowClear: true,
+    disabled: false,
+    excludeId: undefined,
+    modelValue: undefined,
+    placeholder: '请选择工作项',
+  },
 );
 
 const emit = defineEmits(['update:modelValue']);
@@ -57,7 +63,8 @@ watch(() => [props.projectId, props.type, props.excludeId], getWorkItemList, {
 
 <template>
   <Select
-    :allow-clear="true"
+    :allow-clear="allowClear"
+    :disabled="disabled"
     :loading="loading"
     :options="
       workItemList

@@ -11,9 +11,7 @@ import KnowledgeLibrarySelect from '#/views/pms/kb/library/components/knowledge-
 import { UserSelect } from '#/views/system/user/components';
 
 /** 列表的搜索表单 */
-export function useGridFormSchema(
-  defaultValues: Record<string, any>,
-): VbenFormSchema[] {
+export function useGridFormSchema(defaultValues: any): VbenFormSchema[] {
   return [
     {
       fieldName: 'keyword',
@@ -68,7 +66,7 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeDocumentApi.Kn
     {
       field: 'libraryName',
       title: '知识库',
-      width: 180,
+      minWidth: 180,
     },
     {
       field: 'type',

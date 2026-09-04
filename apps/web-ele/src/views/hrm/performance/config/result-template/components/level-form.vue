@@ -1,14 +1,19 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceResultTemplateApi } from '#/api/hrm/performance/config/result-template';
+
+import { nextTick, watch } from 'vue';
 
 import { ElMessage } from 'element-plus';
 
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   isSameNumber,
   isValidPerformanceCoefficient,
   isValidPerformanceScore,
 } from '#/views/hrm/utils/performance';
+
+import { useLevelGridColumns } from '../data';
 
 defineOptions({ name: 'HrmPerformanceResultLevelForm' });
 
@@ -19,6 +24,27 @@ const props = withDefaults(defineProps<{ disabled?: boolean }>(), {
 const modelValue = defineModel<HrmPerformanceResultTemplateApi.ResultLevel[]>({
   required: true,
 });
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useLevelGridColumns(),
+    data: [],
+    minHeight: 220,
+    pagerConfig: { enabled: false },
+    rowConfig: { isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmPerformanceResultTemplateApi.ResultLevel>,
+});
+
+watch(
+  modelValue,
+  async (levels) => {
+    await nextTick();
+    await gridApi.grid.reloadData(levels);
+  },
+  { immediate: true },
+);
 
 function validate() {
   if (modelValue.value.length === 0) {
@@ -89,8 +115,8 @@ function addLevel() {
   ];
 }
 
-function removeLevel(index: number) {
-  modelValue.value = modelValue.value.filter((_, i) => i !== index);
+function removeLevel(row: HrmPerformanceResultTemplateApi.ResultLevel) {
+  modelValue.value = modelValue.value.filter((item) => item !== row);
 }
 
 defineExpose({ validate });
@@ -107,70 +133,64 @@ defineExpose({ validate });
         新增结果等级
       </ElButton>
     </div>
-    <ElTable border :data="modelValue" size="small">
-      <ElTableColumn label="等级" width="140">
-        <template #default="{ row }">
-          <ElInput
-            v-model="row.name"
-            :disabled="props.disabled"
-            :maxlength="255"
-            placeholder="请输入等级"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="最低分数" width="150">
-        <template #default="{ row }">
-          <ElInputNumber
-            v-model="row.minScore"
-            :controls="false"
-            :disabled="props.disabled"
-            :max="100"
-            :min="0"
-            :precision="2"
-            class="w-full"
-            placeholder="0~100"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="最高分数" width="150">
-        <template #default="{ row }">
-          <ElInputNumber
-            v-model="row.maxScore"
-            :controls="false"
-            :disabled="props.disabled"
-            :max="100"
-            :min="0"
-            :precision="2"
-            class="w-full"
-            placeholder="0~100"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn label="绩效系数" width="150">
-        <template #default="{ row }">
-          <ElInputNumber
-            v-model="row.coefficient"
-            :controls="false"
-            :disabled="props.disabled"
-            :min="0"
-            :precision="2"
-            class="w-full"
-            placeholder="请输入系数"
-          />
-        </template>
-      </ElTableColumn>
-      <ElTableColumn align="center" label="操作" width="72">
-        <template #default="{ $index }">
-          <ElButton
-            :disabled="props.disabled"
-            link
-            type="danger"
-            @click="removeLevel($index)"
-          >
-            删除
-          </ElButton>
-        </template>
-      </ElTableColumn>
-    </ElTable>
+    <Grid class="w-full">
+      <template #name="{ row }">
+        <ElInput
+          v-model="row.name"
+          :disabled="props.disabled"
+          :maxlength="255"
+          placeholder="请输入等级"
+        />
+      </template>
+      <template #minScore="{ row }">
+        <ElInputNumber
+          v-model="row.minScore"
+          :controls="false"
+          :disabled="props.disabled"
+          :max="100"
+          :min="0"
+          :precision="2"
+          class="w-full"
+          placeholder="0~100"
+        />
+      </template>
+      <template #maxScore="{ row }">
+        <ElInputNumber
+          v-model="row.maxScore"
+          :controls="false"
+          :disabled="props.disabled"
+          :max="100"
+          :min="0"
+          :precision="2"
+          class="w-full"
+          placeholder="0~100"
+        />
+      </template>
+      <template #coefficient="{ row }">
+        <ElInputNumber
+          v-model="row.coefficient"
+          :controls="false"
+          :disabled="props.disabled"
+          :min="0"
+          :precision="2"
+          class="w-full"
+          placeholder="请输入系数"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              disabled: props.disabled,
+              onClick: () => removeLevel(row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </div>
 </template>

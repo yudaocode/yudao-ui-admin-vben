@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：空 catch 会把接口失败和用户取消一起吞掉；失败分支至少 message.error，仅取消才静默返回。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipApi } from '#/api/hrm/salary/slip';
 
 import { ref } from 'vue';
 
-import { confirm, prompt } from '@vben/common-ui';
+import { confirm, prompt, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -26,7 +25,11 @@ defineOptions({ name: 'HrmSalarySlipList' });
 const props = defineProps<{ sendRecordId: number }>();
 
 const checkedRows = ref<HrmSalarySlipApi.SalarySlip[]>([]);
-const slipDetailRef = ref<InstanceType<typeof SlipDetail>>();
+
+const [SlipDetailModal, slipDetailModalApi] = useVbenModal({
+  connectedComponent: SlipDetail,
+  destroyOnClose: true,
+});
 
 function handleRowCheckboxChange({
   records,
@@ -52,22 +55,24 @@ async function handleBatchRemark(clear: boolean) {
         return;
       }
     }
-    const success = await executeBatch(
-      checkedRows.value
-        .filter(
-          (item): item is HrmSalarySlipApi.SalarySlip & { id: number } =>
-            !!item.id,
-        )
-        .map((item) => updateSalarySlipRemark({ id: item.id, remark })),
-    );
-    if (success) {
-      await gridApi.query();
-    }
-  } catch {}
+  } catch {
+    return;
+  }
+  const success = await executeBatch(
+    checkedRows.value
+      .filter(
+        (item): item is HrmSalarySlipApi.SalarySlip & { id: number } =>
+          !!item.id,
+      )
+      .map((item) => updateSalarySlipRemark({ id: item.id, remark })),
+  );
+  if (success) {
+    await gridApi.query();
+  }
 }
 
 function openDetail(id?: number) {
-  slipDetailRef.value?.open(id);
+  if (id) slipDetailModalApi.setData({ id }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -78,7 +83,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '员工',
         component: 'Input',
         componentProps: {
-          clearable: true,
+          allowClear: true,
           placeholder: '请输入员工姓名或工号',
         },
       },
@@ -87,7 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '部门',
         component: 'ApiTreeSelect',
         componentProps: {
-          clearable: true,
+          allowClear: true,
           api: async () => {
             const { getSimpleDeptList } = await import('#/api/system/dept');
             const { handleTree } = await import('@vben/utils');
@@ -97,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           valueField: 'id',
           childrenField: 'children',
           placeholder: '请选择部门',
-          defaultExpandAll: true,
+          treeDefaultExpandAll: true,
         },
       },
       {
@@ -105,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '查看状态',
         component: 'Select',
         componentProps: {
-          clearable: true,
+          allowClear: true,
           options: getDictOptions(
             DICT_TYPE.HRM_SALARY_SLIP_READ_STATUS,
             'number',
@@ -118,7 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '备注',
         component: 'Input',
         componentProps: {
-          clearable: true,
+          allowClear: true,
           placeholder: '请输入备注',
         },
       },
@@ -230,7 +235,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div class="h-full">
-    <SlipDetail ref="slipDetailRef" />
+    <SlipDetailModal />
 
     <Grid class="h-full">
       <template #toolbar-tools>
@@ -262,8 +267,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :actions="[
             {
               label: '查看明细',
-              type: 'primary',
-              link: true,
               icon: ACTION_ICON.VIEW,
               onClick: () => openDetail(row.id),
             },

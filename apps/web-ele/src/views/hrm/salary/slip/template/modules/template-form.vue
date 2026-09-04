@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalarySlipTemplateApi } from '#/api/hrm/salary/slip/template';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -110,59 +109,58 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       selectedCodes.value = [];
       templateOptions.value = [];
       formType.value = 'create';
+      return;
+    }
+    const { id, type = 'create' } = modalApi.getData() as any;
+    modalApi.setState({
+      title: type === 'create' ? '新增工资条模板' : '编辑工资条模板',
+    });
+    formType.value = type;
+    modalApi.lock();
+    try {
+      await formApi.reset();
+      await nextTick();
+      salaryOptionAllList.value = (await optionSelectRef.value?.init()) || [];
+      salaryOptionList.value = salaryOptionAllList.value.filter(
+        (item) => item.parentCode !== HrmSalaryOptionCategoryCode.ROOT,
+      );
+      selectedCodes.value = [HrmSalaryOptionCode.REAL_PAY];
+      handleSelectedCodesChange(selectedCodes.value);
+      if (id) {
+        const data = await getSalarySlipTemplate(id);
+        templateOptions.value = (data.options || []).map((item) => ({
+          ...item,
+          parentCode:
+            item.parentCode === HrmSalaryOptionCategoryCode.ROOT
+              ? undefined
+              : item.parentCode,
+        }));
+        selectedCodes.value = templateOptions.value
+          .filter(
+            (item) => item.type !== HrmSalarySlipTemplateOptionType.CATEGORY,
+          )
+          .map((item) => item.code)
+          .filter((code): code is number => code !== undefined);
+        if (!selectedCodes.value.includes(HrmSalaryOptionCode.REAL_PAY)) {
+          selectedCodes.value.push(HrmSalaryOptionCode.REAL_PAY);
+          handleSelectedCodesChange(selectedCodes.value);
+        }
+        await formApi.setValues({
+          hideEmpty: data.hideEmpty,
+          id: data.id,
+          name: data.name,
+        });
+      }
+    } finally {
+      modalApi.unlock();
     }
   },
 });
-
-async function open(type: 'create' | 'update', id?: number) {
-  modalApi.setState({
-    title: type === 'create' ? '新增工资条模板' : '编辑工资条模板',
-  });
-  formType.value = type;
-  modalApi.open();
-  modalApi.lock();
-  try {
-    await formApi.reset();
-    salaryOptionAllList.value = (await optionSelectRef.value?.init()) || [];
-    salaryOptionList.value = salaryOptionAllList.value.filter(
-      (item) => item.parentCode !== HrmSalaryOptionCategoryCode.ROOT,
-    );
-    selectedCodes.value = [HrmSalaryOptionCode.REAL_PAY];
-    handleSelectedCodesChange(selectedCodes.value);
-    if (id) {
-      const data = await getSalarySlipTemplate(id);
-      templateOptions.value = (data.options || []).map((item) => ({
-        ...item,
-        parentCode:
-          item.parentCode === HrmSalaryOptionCategoryCode.ROOT
-            ? undefined
-            : item.parentCode,
-      }));
-      selectedCodes.value = templateOptions.value
-        .filter(
-          (item) => item.type !== HrmSalarySlipTemplateOptionType.CATEGORY,
-        )
-        .map((item) => item.code)
-        .filter((code): code is number => code !== undefined);
-      if (!selectedCodes.value.includes(HrmSalaryOptionCode.REAL_PAY)) {
-        selectedCodes.value.push(HrmSalaryOptionCode.REAL_PAY);
-        handleSelectedCodesChange(selectedCodes.value);
-      }
-      await formApi.setValues({
-        hideEmpty: data.hideEmpty,
-        id: data.id,
-        name: data.name,
-      });
-    }
-  } finally {
-    modalApi.unlock();
-  }
-}
 
 function handleSelectedCodesChange(codes: number[]) {
   templateOptions.value = templateOptions.value.filter(
@@ -240,8 +238,6 @@ function getNextSort() {
     Math.max(0, ...templateOptions.value.map((item) => item.sort || 0)) + 1
   );
 }
-
-defineExpose({ open });
 </script>
 
 <template>

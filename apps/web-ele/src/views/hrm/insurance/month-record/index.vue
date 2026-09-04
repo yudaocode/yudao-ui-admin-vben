@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmInsuranceMonthRecordApi } from '#/api/hrm/insurance/month-record';
 
 import { onMounted, ref } from 'vue';
@@ -7,16 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import dayjs from 'dayjs';
-import {
-  ElButton,
-  ElCard,
-  ElDatePicker,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
-
-import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createNextInsuranceMonthRecord,
   deleteInsuranceMonthRecord,
@@ -25,43 +16,47 @@ import {
 } from '#/api/hrm/insurance/month-record';
 import { HrmInsuranceMonthStatus } from '#/views/hrm/utils/constants';
 
-import { useListColumns } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 import FirstMonthForm from './modules/first-month-form.vue';
 
 defineOptions({ name: 'HrmInsuranceMonthRecord' });
 
 const router = useRouter();
-const loading = ref(true);
 const createLoading = ref(false);
-const queryYear = ref<Date>(dayjs().toDate());
-const list = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord[]>([]);
 const latestRecord = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>();
-const columns = useListColumns();
 
 const [FirstMonthModal, firstMonthModalApi] = useVbenModal({
   connectedComponent: FirstMonthForm,
   destroyOnClose: true,
 });
 
-async function getList(useLatestYear = false) {
-  loading.value = true;
-  try {
-    latestRecord.value = await getLastInsuranceMonthRecord();
-    if (useLatestYear && latestRecord.value?.year) {
-      queryYear.value = dayjs(String(latestRecord.value.year), 'YYYY').toDate();
-    }
-    list.value = await getInsuranceMonthRecordList(
-      dayjs(queryYear.value).year(),
-    );
-  } finally {
-    loading.value = false;
-  }
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+    submitOnChange: true,
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    pagerConfig: { enabled: false },
+    proxyConfig: {
+      autoLoad: false,
+      ajax: {
+        query: async (_params, formValues) =>
+          getInsuranceMonthRecordList(Number(formValues.year)),
+      },
+    },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true, search: true },
+  } as VxeTableGridOptions<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>,
+});
+
+async function loadLatestRecord() {
+  latestRecord.value = await getLastInsuranceMonthRecord();
 }
 
 function openDetail(id?: number) {
-  if (!id) {
-    return;
-  }
+  if (!id) return;
   router.push({
     name: 'HrmInsuranceMonthRecordDetail',
     params: { id },
@@ -76,9 +71,10 @@ function handleCreate() {
   handleCreateNext();
 }
 
-function handleCreateFirstSuccess(year: number) {
-  queryYear.value = dayjs(String(year), 'YYYY').toDate();
-  getList();
+async function handleCreateFirstSuccess(year: number) {
+  await gridApi.formApi.setFieldValue('year', String(year));
+  await loadLatestRecord();
+  await gridApi.query();
 }
 
 async function handleCreateNext() {
@@ -87,11 +83,12 @@ async function handleCreateNext() {
       content: '新建次月社保后，本月数据将不可修改。请确认要新建次月社保吗？',
       title: '新建确认',
     });
-    createLoading.value = true;
-    const id = await createNextInsuranceMonthRecord();
-    openDetail(id);
   } catch {
-    //
+    return;
+  }
+  createLoading.value = true;
+  try {
+    openDetail(await createNextInsuranceMonthRecord());
   } finally {
     createLoading.value = false;
   }
@@ -100,18 +97,10 @@ async function handleCreateNext() {
 async function handleDelete(
   row: HrmInsuranceMonthRecordApi.InsuranceMonthRecord,
 ) {
-  if (!row.id) {
-    return;
-  }
-  try {
-    await confirm({
-      content: `确认删除“${row.title}”吗？`,
-      icon: 'warning',
-      title: '删除确认',
-    });
-    await deleteInsuranceMonthRecord(row.id);
-    await getList();
-  } catch {}
+  if (!row.id) return;
+  await deleteInsuranceMonthRecord(row.id);
+  await loadLatestRecord();
+  await gridApi.query();
 }
 
 function isLatestEditableRecord(
@@ -123,8 +112,15 @@ function isLatestEditableRecord(
   );
 }
 
-onMounted(() => {
-  getList(true);
+onMounted(async () => {
+  await loadLatestRecord();
+  if (latestRecord.value?.year) {
+    await gridApi.formApi.setFieldValue(
+      'year',
+      String(latestRecord.value.year),
+    );
+  }
+  await gridApi.query();
 });
 </script>
 
@@ -136,16 +132,8 @@ onMounted(() => {
         url="https://doc.iocoder.cn/hrm/insurance/"
       />
     </template>
-    <ElCard>
-      <div class="mb-4 flex items-center justify-between">
-        <ElDatePicker
-          v-model="queryYear"
-          :clearable="false"
-          class="!w-36"
-          format="YYYY 年"
-          type="year"
-          @change="getList()"
-        />
+    <Grid table-title="社保表列表">
+      <template #toolbar-tools>
         <TableAction
           :actions="[
             {
@@ -158,50 +146,29 @@ onMounted(() => {
             },
           ]"
         />
-      </div>
-      <ElTable
-        v-loading="loading"
-        :data="list"
-        border
-        row-key="id"
-        size="small"
-      >
-        <ElTableColumn
-          v-for="col in columns"
-          :key="String(col.prop)"
-          :align="col.align"
-          :fixed="col.fixed"
-          :formatter="col.formatter"
-          :label="col.label"
-          :min-width="col.minWidth"
-          :prop="col.slot ? undefined : (col.prop as string)"
-          :width="col.width"
-        >
-          <template v-if="col.slot === 'title'" #default="{ row }">
-            <ElButton link type="primary" @click="openDetail(row.id)">
-              {{ row.title }}
-            </ElButton>
-          </template>
-          <template v-else-if="col.slot === 'action'" #default="{ row }">
-            <TableAction
-              :actions="[
-                {
-                  label: '删除',
-                  type: 'danger',
-                  link: true,
-                  auth: ['hrm:insurance:month-record:delete'],
-                  ifShow: isLatestEditableRecord(row),
-                  popConfirm: {
-                    title: `确认删除“${row.title}”吗？`,
-                    confirm: () => handleDelete(row),
-                  },
-                },
-              ]"
-            />
-          </template>
-        </ElTableColumn>
-      </ElTable>
-    </ElCard>
+      </template>
+      <template #title="{ row }">
+        <a @click="openDetail(row.id)">{{ row.title }}</a>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:insurance:month-record:delete'],
+              ifShow: isLatestEditableRecord(row),
+              popConfirm: {
+                title: `确认删除“${row.title}”吗？`,
+                confirm: () => handleDelete(row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
     <FirstMonthModal @success="handleCreateFirstSuccess" />
   </Page>
 </template>

@@ -4,7 +4,7 @@ import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
 import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { confirm, Spinner, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -43,7 +43,8 @@ import {
 } from '#/views/pms/pm/utils/constants';
 import { getWorkItemStatusTagType } from '#/views/pms/pm/utils/format';
 
-import WorkItemForm from '../form/work-item-form.vue';
+import WorkItemSelect from '../components/work-item-select.vue';
+import WorkItemForm from '../list/modules/form.vue';
 import WorkItemStatusSelect from '../status/work-item-status-select.vue';
 import WorkItemWorkLogList from '../worklog/worklog-list.vue';
 import WorkItemActivity from './work-item-activity.vue';
@@ -51,9 +52,6 @@ import WorkItemComment from './work-item-comment.vue';
 import WorkItemSubtaskList from './work-item-subtask-list.vue';
 
 defineOptions({ name: 'PmsWorkItemDetail' });
-
-// TODO @AI：详情里可编辑字段（时间、负责人等）尽量抽 schema；as any、v-loading 对齐 system user 的 lock。三端模板差异也收一下。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样提交当前详情对象；按用户要求本轮不调整更新行为。
 
 const emit = defineEmits<{ success: [] }>(); // 定义 success 事件，用于详情变更后的回调
 
@@ -245,8 +243,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
 
 <template>
   <Drawer>
-    <div
-      v-loading="loading"
+    <Spinner
+      :spinning="loading"
       class="flex h-full min-w-[900px] flex-col bg-background"
     >
       <!-- 工作项标题与操作 -->
@@ -654,12 +652,19 @@ const [Drawer, drawerApi] = useVbenDrawer({
                   <span class="text-muted-foreground">开始时间</span>
                   <DatePicker
                     v-if="workItem && canUpdate && isInlineEditing('startTime')"
-                    v-model:value="workItem.startTime as any"
+                    :value="
+                      workItem.startTime
+                        ? String(workItem.startTime)
+                        : undefined
+                    "
                     class="!w-full"
                     allow-clear
                     placeholder="请选择开始时间"
                     show-time
                     value-format="x"
+                    @update:value="
+                      workItem.startTime = $event ? Number($event) : undefined
+                    "
                     @change="saveInlineWorkItem"
                     @blur="cancelInlineEditing"
                     @keyup.esc.stop="cancelInlineEditing"
@@ -685,12 +690,17 @@ const [Drawer, drawerApi] = useVbenDrawer({
                   <span class="text-muted-foreground">截止时间</span>
                   <DatePicker
                     v-if="workItem && canUpdate && isInlineEditing('endTime')"
-                    v-model:value="workItem.endTime as any"
+                    :value="
+                      workItem.endTime ? String(workItem.endTime) : undefined
+                    "
                     class="!w-full"
                     allow-clear
                     placeholder="请选择截止时间"
                     show-time
                     value-format="x"
+                    @update:value="
+                      workItem.endTime = $event ? Number($event) : undefined
+                    "
                     @change="saveInlineWorkItem"
                     @blur="cancelInlineEditing"
                     @keyup.esc.stop="cancelInlineEditing"
@@ -723,7 +733,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
           </Collapse>
         </aside>
       </div>
-    </div>
+    </Spinner>
 
     <!-- 工作项编辑表单 -->
     <WorkItemFormModal @success="handleFormSuccess" />

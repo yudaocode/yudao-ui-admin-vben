@@ -23,10 +23,9 @@ export namespace PmsKnowledgeLibraryMemberApi {
 
 /** 查询知识库成员列表 */
 export function getKnowledgeLibraryMemberList(libraryId: number) {
-  return requestClient.get<PmsKnowledgeLibraryMemberApi.KnowledgeLibraryMember[]>(
-    '/pms/kb/library-member/list',
-    { params: { libraryId } },
-  );
+  return requestClient.get<
+    PmsKnowledgeLibraryMemberApi.KnowledgeLibraryMember[]
+  >('/pms/kb/library-member/list', { params: { libraryId } });
 }
 
 /** 修改知识库成员列表 */

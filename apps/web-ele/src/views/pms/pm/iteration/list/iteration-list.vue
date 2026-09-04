@@ -4,17 +4,9 @@ import type { PmsIterationApi } from '#/api/pms/pm/iteration';
 
 import { useRouter } from 'vue-router';
 
-import { useAccess } from '@vben/access';
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElDropdown,
-  ElDropdownItem,
-  ElDropdownMenu,
-  ElMessage,
-  ElProgress,
-} from 'element-plus';
+import { ElButton, ElMessage, ElProgress } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -24,9 +16,9 @@ import {
 } from '#/api/pms/pm/iteration';
 import { PmsIterationStatus } from '#/views/pms/pm/utils/constants';
 
-import IterationForm from '../components/iteration-form.vue';
-import IterationStartForm from '../components/iteration-start-form.vue';
-import { useGridColumns, useSearchFormSchema } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
+import IterationForm from './modules/form.vue';
+import IterationStartForm from './modules/start-form.vue';
 
 defineOptions({ name: 'PmsIterationList' });
 
@@ -35,12 +27,11 @@ const props = defineProps<{
   projectId: number;
 }>();
 
-const { hasAccessByCodes } = useAccess();
 const { push } = useRouter(); // 路由操作
 
 const [IterationFormModal, iterationFormModalApi] = useVbenModal({
   connectedComponent: IterationForm,
-  // TODO @AI：对齐 system user，补 destroyOnClose。删除改 TableAction popConfirm，不要 confirm + empty catch。
+  destroyOnClose: true,
 });
 const [IterationStartFormModal, iterationStartFormModalApi] = useVbenModal({
   destroyOnClose: true,
@@ -64,57 +55,34 @@ function handleCreate() {
     .open();
 }
 
-/** 处理迭代操作 */
-function handleIterationCommand(
-  command: string,
-  iteration: PmsIterationApi.Iteration,
-) {
-  if (command === 'start') {
-    iterationStartFormModalApi.setData(iteration).open();
-  } else if (command === 'complete') {
-    handleComplete(iteration);
-  } else if (command === 'edit') {
-    iterationFormModalApi
-      .setData({
-        formType: 'update',
-        id: iteration.id,
-        projectId: props.projectId,
-      })
-      .open();
-  } else if (command === 'delete') {
-    handleDelete(iteration);
-  }
+/** 编辑迭代 */
+function handleEdit(iteration: PmsIterationApi.Iteration) {
+  iterationFormModalApi
+    .setData({
+      formType: 'update',
+      id: iteration.id,
+      projectId: props.projectId,
+    })
+    .open();
 }
 
 /** 完成迭代 */
 async function handleComplete(iteration: PmsIterationApi.Iteration) {
-  try {
-    // 完成的二次确认
-    await confirm(`确认完成迭代“${iteration.name}”吗？`);
-    // 发起完成
-    await completeIteration(iteration.id!);
-    ElMessage.success('迭代已完成');
-    handleRefresh();
-  } catch {
-  }
+  await completeIteration(iteration.id!);
+  ElMessage.success('迭代已完成');
+  handleRefresh();
 }
 
 /** 删除迭代 */
 async function handleDelete(iteration: PmsIterationApi.Iteration) {
-  try {
-    // 删除的二次确认
-    await confirm(`确认删除迭代“${iteration.name}”吗？`);
-    // 发起删除
-    await deleteIteration(iteration.id!);
-    ElMessage.success('删除成功');
-    handleRefresh();
-  } catch {
-  }
+  await deleteIteration(iteration.id!);
+  ElMessage.success('删除成功');
+  handleRefresh();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(),
+    schema: useGridFormSchema(),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -136,6 +104,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
     },
   } as VxeTableGridOptions<PmsIterationApi.Iteration>,
   gridEvents: {
@@ -181,47 +153,44 @@ defineExpose({ refresh: handleRefresh });
         <ElProgress :percentage="row.progress" />
       </template>
       <template #actions="{ row }">
-        <ElDropdown
-          trigger="click"
-          @command="handleIterationCommand($event, row)"
-        >
-          <ElButton link type="primary" @click.stop>更多</ElButton>
-          <template #dropdown>
-            <ElDropdownMenu>
-              <ElDropdownItem
-                v-if="
-                  row.status === PmsIterationStatus.PLANNED &&
-                  hasAccessByCodes(['pms:pm:iteration:update'])
-                "
-                command="start"
-              >
-                开始迭代
-              </ElDropdownItem>
-              <ElDropdownItem
-                v-if="
-                  row.status === PmsIterationStatus.ACTIVE &&
-                  hasAccessByCodes(['pms:pm:iteration:update'])
-                "
-                command="complete"
-              >
-                完成迭代
-              </ElDropdownItem>
-              <ElDropdownItem
-                v-if="hasAccessByCodes(['pms:pm:iteration:update'])"
-                command="edit"
-              >
-                编辑迭代
-              </ElDropdownItem>
-              <ElDropdownItem
-                v-if="hasAccessByCodes(['pms:pm:iteration:delete'])"
-                command="delete"
-                divided
-              >
-                删除迭代
-              </ElDropdownItem>
-            </ElDropdownMenu>
-          </template>
-        </ElDropdown>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['pms:pm:iteration:update'],
+              onClick: () => handleEdit(row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: '开始迭代',
+              auth: ['pms:pm:iteration:update'],
+              ifShow: row.status === PmsIterationStatus.PLANNED,
+              onClick: () => iterationStartFormModalApi.setData(row).open(),
+            },
+            {
+              label: '完成迭代',
+              auth: ['pms:pm:iteration:update'],
+              ifShow: row.status === PmsIterationStatus.ACTIVE,
+              popConfirm: {
+                title: `确认完成迭代“${row.name}”吗？`,
+                confirm: () => handleComplete(row),
+              },
+            },
+            {
+              label: '删除',
+              type: 'danger',
+              auth: ['pms:pm:iteration:delete'],
+              popConfirm: {
+                title: `确认删除迭代“${row.name}”吗？`,
+                confirm: () => handleDelete(row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
 

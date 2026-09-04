@@ -1,80 +1,82 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：主列表手写 Table 改 useVbenVxeGrid（formOptions.schema + toolbarConfig + TableAction + height auto），对齐 system/user 与 recruit/post，三端同步。
-import { onMounted, ref } from 'vue';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+
+import { nextTick, onMounted, ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElCard,
-  ElInput,
-  ElMessage,
-  ElTable,
-  ElTableColumn,
-} from 'element-plus';
+import { ElInput, ElMessage } from 'element-plus';
 
-import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getRecruitEliminateReasonList,
   saveRecruitEliminateReason,
 } from '#/api/hrm/recruit/config';
 import { $t } from '#/locales';
 
+import { parseRecruitEliminateReasons, useGridColumns } from './data';
+
 defineOptions({ name: 'HrmRecruitEliminateReason' });
 
-interface ReasonRow {
-  key: number;
-  reason: string;
-}
-
-const loading = ref(false);
 const saving = ref(false);
-const reasonList = ref<ReasonRow[]>([]);
+const reasonList = ref<any[]>([]);
 let rowKeySeed = 0;
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useGridColumns(),
+    data: reasonList.value,
+    height: 'auto',
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'key', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
 
 /** 查询列表 */
 async function getReasonList() {
-  loading.value = true;
+  gridApi.setLoading(true);
   try {
     const list = await getRecruitEliminateReasonList();
     reasonList.value = (list || []).map((reason) => ({
       key: ++rowKeySeed,
       reason,
     }));
+    await nextTick();
+    await gridApi.grid.reloadData(reasonList.value);
   } finally {
-    loading.value = false;
+    gridApi.setLoading(false);
   }
 }
 
 /** 新增一行 */
-function handleAdd() {
+async function handleAdd() {
   if (reasonList.value.some((row) => !row.reason.trim())) {
     ElMessage.warning('请先填写新增的淘汰原因');
     return;
   }
   reasonList.value.push({ key: ++rowKeySeed, reason: '' });
+  await gridApi.grid.reloadData(reasonList.value);
 }
 
 /** 删除一行 */
-function handleRemove(index: number) {
-  reasonList.value.splice(index, 1);
+async function handleRemove(row: any) {
+  reasonList.value = reasonList.value.filter((item) => item.key !== row.key);
+  await gridApi.grid.reloadData(reasonList.value);
 }
 
 /** 保存整表 */
 async function handleSave() {
-  const reasons = reasonList.value.map((row) => row.reason.trim());
-  if (reasons.some((reason) => !reason)) {
-    ElMessage.warning('淘汰原因不能为空');
-    return;
-  }
-  if (new Set(reasons).size !== reasons.length) {
-    ElMessage.warning('淘汰原因不能重复');
+  const { error, reasons } = parseRecruitEliminateReasons(reasonList.value);
+  if (error) {
+    ElMessage.warning(error);
     return;
   }
 
   saving.value = true;
   try {
-    await saveRecruitEliminateReason(reasons);
+    await saveRecruitEliminateReason(reasons!);
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     await getReasonList();
   } finally {
@@ -82,9 +84,7 @@ async function handleSave() {
   }
 }
 
-onMounted(() => {
-  getReasonList();
-});
+onMounted(getReasonList);
 </script>
 
 <template>
@@ -95,8 +95,8 @@ onMounted(() => {
         url="https://doc.iocoder.cn/hrm/recruit/"
       />
     </template>
-    <ElCard header="原因列表">
-      <div class="mb-4 flex justify-end">
+    <Grid table-title="原因列表">
+      <template #toolbar-tools>
         <TableAction
           :actions="[
             {
@@ -116,33 +116,29 @@ onMounted(() => {
             },
           ]"
         />
-      </div>
-
-      <ElTable v-loading="loading" :data="reasonList" border>
-        <ElTableColumn align="center" label="序号" type="index" width="80" />
-        <ElTableColumn label="淘汰原因" min-width="320">
-          <template #default="{ row }">
-            <ElInput
-              v-model="row.reason"
-              :maxlength="255"
-              clearable
-              placeholder="请输入淘汰原因"
-            />
-          </template>
-        </ElTableColumn>
-        <ElTableColumn align="center" label="操作" width="100">
-          <template #default="{ $index }">
-            <ElButton
-              v-access:code="['hrm:recruit:config:update']"
-              link
-              type="danger"
-              @click="handleRemove($index)"
-            >
-              删除
-            </ElButton>
-          </template>
-        </ElTableColumn>
-      </ElTable>
-    </ElCard>
+      </template>
+      <template #reason="{ row }">
+        <ElInput
+          v-model="row.reason"
+          :maxlength="255"
+          clearable
+          placeholder="请输入淘汰原因"
+        />
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:recruit:config:update'],
+              onClick: () => handleRemove(row),
+            },
+          ]"
+        />
+      </template>
+    </Grid>
   </Page>
 </template>

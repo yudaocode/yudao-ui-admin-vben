@@ -9,16 +9,22 @@ import { getProjectMemberList } from '#/api/pms/pm/project/member';
 
 defineOptions({ name: 'PmsProjectMemberSelect' });
 
-// TODO @AI：对齐 system/user/components/select.vue：modelValue、禁用、清空、回显；三端 props 和清空行为保持一致。
-
 const props = withDefaults(
   defineProps<{
+    allowClear?: boolean;
+    disabled?: boolean;
     modelValue?: number | number[];
     multiple?: boolean;
     placeholder?: string;
     projectId: number;
   }>(),
-  { modelValue: undefined, multiple: false, placeholder: '请选择项目成员' },
+  {
+    allowClear: true,
+    disabled: false,
+    modelValue: undefined,
+    multiple: false,
+    placeholder: '请选择项目成员',
+  },
 );
 
 const emit = defineEmits(['update:modelValue', 'loaded']);
@@ -42,13 +48,14 @@ watch(() => props.projectId, getMemberList, { immediate: true });
 
 <template>
   <ElSelect
+    :clearable="allowClear"
+    :disabled="disabled"
     :model-value="modelValue"
     :collapse-tags="multiple"
     :loading="loading"
     :multiple="multiple"
     :placeholder="placeholder"
     class="w-full"
-    clearable
     collapse-tags-tooltip
     filterable
     @update:model-value="emit('update:modelValue', $event)"

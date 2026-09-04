@@ -10,7 +10,13 @@ import type { PmsKnowledgeLibraryApi } from '#/api/pms/kb/library';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import {
+  confirm,
+  DocAlert,
+  Page,
+  Spinner,
+  useVbenModal,
+} from '@vben/common-ui';
 
 import { ElMessage } from 'element-plus';
 
@@ -41,24 +47,22 @@ import {
 } from '#/views/pms/kb/utils/constants';
 import { canEditKnowledgeContent } from '#/views/pms/kb/utils/permission';
 
-import KnowledgeMemberForm from '../library/knowledge-member-form.vue';
-import KnowledgeContentMoveDialog from './knowledge-content-move-dialog.vue';
-import KnowledgeContentPermissionForm from './knowledge-content-permission-form.vue';
-import KnowledgeDocumentCreateForm from './knowledge-document-create-form.vue';
+import KnowledgeMemberForm from '../library/modules/member-form.vue';
 import KnowledgeDocumentDetail from './knowledge-document-detail.vue';
-import KnowledgeDocumentShareDialog from './knowledge-document-share-dialog.vue';
-import KnowledgeDocumentUpdateForm from './knowledge-document-update-form.vue';
-import KnowledgeFileUploadForm from './knowledge-file-upload-form.vue';
 import KnowledgeFolderDetail from './knowledge-folder-detail.vue';
-import KnowledgeFolderForm from './knowledge-folder-form.vue';
 import KnowledgeLibraryHome from './knowledge-library-home.vue';
 import KnowledgeLibrarySidebar from './knowledge-library-sidebar.vue';
 import KnowledgeRecyclePanel from './knowledge-recycle-panel.vue';
+import KnowledgeDocumentCreateForm from './modules/create-form.vue';
+import KnowledgeFolderForm from './modules/folder-form.vue';
+import KnowledgeContentMoveDialog from './modules/move-dialog.vue';
+import KnowledgeContentPermissionForm from './modules/permission-form.vue';
+import KnowledgeDocumentShareDialog from './modules/share-dialog.vue';
+import KnowledgeDocumentUpdateForm from './modules/update-form.vue';
+import KnowledgeFileUploadForm from './modules/upload-form.vue';
 
 defineOptions({ name: 'PmsKnowledgeLibraryDetail' });
-// TODO @AI：对齐 system/user，创建/编辑/文件夹/上传/权限/分享/移动这些弹窗挪到 ./modules/；侧栏、首页、详情、回收站页签继续留在这层。
 
-// TODO @AI：antd/antdv-next 不要用 v-loading。目录/列表能用 VXE 的地方用 VXE，自定义树和详情区可以留。三端 index.vue 行数差一截，先对齐交互再对齐结构。
 const route = useRoute(); // 当前路由
 const router = useRouter(); // 路由
 const libraryId = computed(() => Number(route.params.libraryId)); // 知识库编号
@@ -76,14 +80,49 @@ const favoriteItems = ref<
 >([]); // 当前知识库关注内容
 const favoriteLoading = ref(false); // 关注内容加载中
 const favoriteTabActive = ref(false); // 是否正在查看关注页签
-const folderFormRef = ref<any>(); // 文件夹表单 Ref
-const documentCreateFormRef = ref<any>(); // 文档新增表单 Ref
-const fileUploadFormRef = ref<any>(); // 文件上传表单 Ref
-const documentUpdateFormRef = ref<any>(); // 文档编辑表单 Ref
-const memberFormRef = ref<any>(); // 成员表单 Ref
-const shareDialogRef = ref<any>(); // 文档分享 Ref
-const permissionFormRef = ref<any>(); // 内容协作权限 Ref
-const moveDialogRef = ref<any>(); // 内容移动弹窗 Ref
+
+const [KnowledgeFolderFormModal, knowledgeFolderFormModalApi] = useVbenModal({
+  connectedComponent: KnowledgeFolderForm,
+  destroyOnClose: true,
+});
+const [KnowledgeDocumentCreateFormModal, knowledgeDocumentCreateFormModalApi] =
+  useVbenModal({
+    connectedComponent: KnowledgeDocumentCreateForm,
+    destroyOnClose: true,
+  });
+const [KnowledgeFileUploadFormModal, knowledgeFileUploadFormModalApi] =
+  useVbenModal({
+    connectedComponent: KnowledgeFileUploadForm,
+    destroyOnClose: true,
+  });
+const [KnowledgeDocumentUpdateFormModal, knowledgeDocumentUpdateFormModalApi] =
+  useVbenModal({
+    connectedComponent: KnowledgeDocumentUpdateForm,
+    destroyOnClose: true,
+  });
+const [KnowledgeMemberFormModal, knowledgeMemberFormModalApi] = useVbenModal({
+  connectedComponent: KnowledgeMemberForm,
+  destroyOnClose: true,
+});
+const [
+  KnowledgeDocumentShareDialogModal,
+  knowledgeDocumentShareDialogModalApi,
+] = useVbenModal({
+  connectedComponent: KnowledgeDocumentShareDialog,
+  destroyOnClose: true,
+});
+const [
+  KnowledgeContentPermissionFormModal,
+  knowledgeContentPermissionFormModalApi,
+] = useVbenModal({
+  connectedComponent: KnowledgeContentPermissionForm,
+  destroyOnClose: true,
+});
+const [KnowledgeContentMoveDialogModal, knowledgeContentMoveDialogModalApi] =
+  useVbenModal({
+    connectedComponent: KnowledgeContentMoveDialog,
+    destroyOnClose: true,
+  });
 
 const treeData = computed<KnowledgeTreeNode[]>(() => {
   if (!tree.value) {
@@ -104,7 +143,7 @@ const currentNodeKey = computed(() => {
   return undefined;
 }); // 当前目录节点标识
 const selectedDocumentLabels = computed(() => {
-  const labelIds = new Set(selectedDocument.value?.labelIds ?? []);
+  const labelIds = new Set(selectedDocument.value?.labelIds);
   return labelList.value.filter((label) => labelIds.has(label.id));
 }); // 当前文档标签
 const selectedFolderChildren = computed(() => {
@@ -250,33 +289,47 @@ async function handleNodeAction(node: KnowledgeTreeNode, command: string) {
     command === 'upload'
   ) {
     if (command === 'create-document') {
-      documentCreateFormRef.value?.open(
-        libraryId.value,
-        node.entityId,
-        PmsKnowledgeRootId,
-      );
+      knowledgeDocumentCreateFormModalApi
+        .setData({
+          libraryId: libraryId.value,
+          folderId: node.entityId,
+          parentId: PmsKnowledgeRootId,
+        })
+        .open();
     } else if (command === 'create-folder') {
-      folderFormRef.value?.open('create', libraryId.value, node.entityId);
+      knowledgeFolderFormModalApi
+        .setData({
+          formType: 'create',
+          libraryId: libraryId.value,
+          parentId: node.entityId,
+        })
+        .open();
     } else {
-      fileUploadFormRef.value?.open(
-        libraryId.value,
-        node.entityId,
-        PmsKnowledgeRootId,
-      );
+      knowledgeFileUploadFormModalApi
+        .setData({
+          libraryId: libraryId.value,
+          folderId: node.entityId,
+          parentId: PmsKnowledgeRootId,
+        })
+        .open();
     }
     return;
   }
   if (node.kind === 'folder') {
     const folder = await getKnowledgeFolder(node.entityId);
     if (command === 'rename') {
-      folderFormRef.value?.open(
-        'update',
-        libraryId.value,
-        folder.parentId,
-        folder.id,
-      );
+      knowledgeFolderFormModalApi
+        .setData({
+          formType: 'update',
+          libraryId: libraryId.value,
+          parentId: folder.parentId,
+          id: folder.id,
+        })
+        .open();
     } else if (command === 'move') {
-      moveDialogRef.value?.open('folder', folder);
+      knowledgeContentMoveDialogModalApi
+        .setData({ kind: 'folder', content: folder })
+        .open();
     } else if (command === 'delete') {
       await deleteFolder(folder);
     }
@@ -284,9 +337,11 @@ async function handleNodeAction(node: KnowledgeTreeNode, command: string) {
   }
   const document = await getKnowledgeDocument(node.entityId);
   if (command === 'rename') {
-    documentUpdateFormRef.value?.open(document.id);
+    knowledgeDocumentUpdateFormModalApi.setData({ id: document.id }).open();
   } else if (command === 'move') {
-    moveDialogRef.value?.open('document', document);
+    knowledgeContentMoveDialogModalApi
+      .setData({ kind: 'document', content: document })
+      .open();
   } else if (command === 'delete') {
     await deleteDocument(document);
   }
@@ -299,8 +354,7 @@ async function deleteFolder(folder: PmsKnowledgeFolderApi.KnowledgeFolder) {
     await deleteKnowledgeFolder(folder.id);
     ElMessage.success('删除成功');
     await getTree();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 删除文档并刷新目录树 */
@@ -312,8 +366,7 @@ async function deleteDocument(
     await deleteKnowledgeDocument(document.id);
     ElMessage.success('删除成功');
     await getTree();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 从知识库主页进入限定当前知识库的搜索 */
@@ -357,32 +410,39 @@ function handleCreateCommand(command: 'document' | 'folder' | 'upload') {
 
 /** 打开文件夹表单 */
 function openFolderForm(formType: 'create' | 'update') {
-  folderFormRef.value?.open(
-    formType,
-    libraryId.value,
-    formType === 'create'
-      ? selectedFolder.value?.id || PmsKnowledgeRootId
-      : PmsKnowledgeRootId,
-    formType === 'update' ? selectedFolder.value?.id : undefined,
-  );
+  knowledgeFolderFormModalApi
+    .setData({
+      formType,
+      libraryId: libraryId.value,
+      parentId:
+        formType === 'create'
+          ? selectedFolder.value?.id || PmsKnowledgeRootId
+          : PmsKnowledgeRootId,
+      id: formType === 'update' ? selectedFolder.value?.id : undefined,
+    })
+    .open();
 }
 
 /** 打开文档新增表单 */
 function openDocumentCreateForm() {
-  documentCreateFormRef.value?.open(
-    libraryId.value,
-    selectedFolder.value?.id || PmsKnowledgeRootId,
-    selectedDocument.value?.id || PmsKnowledgeRootId,
-  );
+  knowledgeDocumentCreateFormModalApi
+    .setData({
+      libraryId: libraryId.value,
+      folderId: selectedFolder.value?.id || PmsKnowledgeRootId,
+      parentId: selectedDocument.value?.id || PmsKnowledgeRootId,
+    })
+    .open();
 }
 
 /** 打开文件上传表单 */
 function openFileUploadForm() {
-  fileUploadFormRef.value?.open(
-    libraryId.value,
-    selectedFolder.value?.id || PmsKnowledgeRootId,
-    selectedDocument.value?.id || PmsKnowledgeRootId,
-  );
+  knowledgeFileUploadFormModalApi
+    .setData({
+      libraryId: libraryId.value,
+      folderId: selectedFolder.value?.id || PmsKnowledgeRootId,
+      parentId: selectedDocument.value?.id || PmsKnowledgeRootId,
+    })
+    .open();
 }
 
 /** 打开文档编辑表单 */
@@ -390,7 +450,9 @@ function openDocumentUpdateForm() {
   if (!selectedDocument.value) {
     return;
   }
-  documentUpdateFormRef.value?.open(selectedDocument.value.id);
+  knowledgeDocumentUpdateFormModalApi
+    .setData({ id: selectedDocument.value.id })
+    .open();
 }
 
 /** 处理内容删除成功 */
@@ -456,11 +518,9 @@ async function handleDocumentLike() {
   if (!selectedDocument.value) {
     return;
   }
-  if (selectedDocument.value.likeStatus) {
-    await deleteKnowledgeDocumentLike(selectedDocument.value.id);
-  } else {
-    await createKnowledgeDocumentLike(selectedDocument.value.id);
-  }
+  await (selectedDocument.value.likeStatus
+    ? deleteKnowledgeDocumentLike(selectedDocument.value.id)
+    : createKnowledgeDocumentLike(selectedDocument.value.id));
   selectedDocument.value = await getKnowledgeDocument(
     selectedDocument.value.id,
   );
@@ -477,8 +537,7 @@ async function handleExitLibrary() {
     await exitKnowledgeLibrary(libraryId.value);
     ElMessage.success('已退出知识库');
     await router.push('/pms/kb/library');
-  } catch {
-  }
+  } catch {}
 }
 
 /** 内容变化后刷新目录与选中内容 */
@@ -540,8 +599,8 @@ watch([() => route.query.folderId, () => route.query.documentId], () => {
       />
     </template>
 
-    <div
-      v-loading="loading"
+    <Spinner
+      :spinning="loading"
       class="knowledge-library-workspace grid min-h-[calc(100vh-120px)] grid-cols-[240px_minmax(0,1fr)] gap-4 max-[900px]:grid-cols-1"
     >
       <!-- 左侧导航与目录 -->
@@ -577,9 +636,21 @@ watch([() => route.query.folderId, () => route.query.documentId], () => {
           @collect="handleDocumentCollect"
           @delete="handleContentDeleted"
           @like="handleDocumentLike"
-          @move="moveDialogRef?.open('document', selectedDocument)"
-          @permission="permissionFormRef?.open(selectedDocument.permissionId)"
-          @share="shareDialogRef?.open(selectedDocument.id)"
+          @move="
+            knowledgeContentMoveDialogModalApi
+              .setData({ kind: 'document', content: selectedDocument })
+              .open()
+          "
+          @permission="
+            knowledgeContentPermissionFormModalApi
+              .setData({ id: selectedDocument.permissionId })
+              .open()
+          "
+          @share="
+            knowledgeDocumentShareDialogModalApi
+              .setData({ id: selectedDocument.id })
+              .open()
+          "
           @update="openDocumentUpdateForm"
         />
         <KnowledgeFolderDetail
@@ -588,9 +659,17 @@ watch([() => route.query.folderId, () => route.query.documentId], () => {
           :folder="selectedFolder"
           @collect="handleFolderCollect"
           @delete="handleContentDeleted"
-          @move="moveDialogRef?.open('folder', selectedFolder)"
+          @move="
+            knowledgeContentMoveDialogModalApi
+              .setData({ kind: 'folder', content: selectedFolder })
+              .open()
+          "
           @node-click="handleNodeClick"
-          @permission="permissionFormRef?.open(selectedFolder.permissionId)"
+          @permission="
+            knowledgeContentPermissionFormModalApi
+              .setData({ id: selectedFolder.permissionId })
+              .open()
+          "
           @update="openFolderForm('update')"
         />
         <KnowledgeLibraryHome
@@ -603,38 +682,25 @@ watch([() => route.query.folderId, () => route.query.documentId], () => {
           :write-status="Boolean(tree?.writeStatus)"
           @collect="handleLibraryCollect"
           @exit="handleExitLibrary"
-          @member="memberFormRef?.open(libraryId)"
+          @member="
+            knowledgeMemberFormModalApi.setData({ id: libraryId }).open()
+          "
           @node-click="handleNodeClick"
           @search="handleLibrarySearch"
           @tab-change="handleLibraryTabChange"
         />
       </div>
-    </div>
+    </Spinner>
 
     <!-- 内容管理弹窗 -->
-    <KnowledgeFolderForm ref="folderFormRef" @success="handleContentChanged" />
-    <KnowledgeDocumentCreateForm
-      ref="documentCreateFormRef"
-      @success="handleContentChanged"
-    />
-    <KnowledgeFileUploadForm
-      ref="fileUploadFormRef"
-      @success="handleContentChanged"
-    />
-    <KnowledgeDocumentUpdateForm
-      ref="documentUpdateFormRef"
-      @success="handleContentChanged"
-    />
-    <KnowledgeMemberForm ref="memberFormRef" @success="getPageData" />
-    <KnowledgeDocumentShareDialog ref="shareDialogRef" />
-    <KnowledgeContentPermissionForm
-      ref="permissionFormRef"
-      @success="handleContentChanged"
-    />
-    <KnowledgeContentMoveDialog
-      ref="moveDialogRef"
-      @success="handleMoveChanged"
-    />
+    <KnowledgeFolderFormModal @success="handleContentChanged" />
+    <KnowledgeDocumentCreateFormModal @success="handleContentChanged" />
+    <KnowledgeFileUploadFormModal @success="handleContentChanged" />
+    <KnowledgeDocumentUpdateFormModal @success="handleContentChanged" />
+    <KnowledgeMemberFormModal @success="getPageData" />
+    <KnowledgeDocumentShareDialogModal />
+    <KnowledgeContentPermissionFormModal @success="handleContentChanged" />
+    <KnowledgeContentMoveDialogModal @success="handleMoveChanged" />
   </Page>
 </template>
 

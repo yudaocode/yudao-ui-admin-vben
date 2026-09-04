@@ -6,10 +6,7 @@ import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
-import {
-  ElMessage,
-  ElTag,
-} from 'element-plus';
+import { ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -65,6 +62,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
       isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
     },
   } as VxeTableGridOptions<PmsProjectTemplateApi.ProjectTemplate>,
 });

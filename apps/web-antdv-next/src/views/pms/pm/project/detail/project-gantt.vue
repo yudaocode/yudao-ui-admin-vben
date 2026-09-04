@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Dayjs } from 'dayjs';
+
 import type { PmsIterationApi } from '#/api/pms/pm/iteration';
 import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
 
@@ -8,17 +10,24 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { getAllPageItems } from '@vben/utils';
 
-import { Button, DatePicker, Empty, Input, Popover, Select, Spin } from 'antdv-next';
+import {
+  Button,
+  DatePicker,
+  Empty,
+  Input,
+  Popover,
+  Select,
+  Spin,
+} from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { getIterationPage } from '#/api/pms/pm/iteration';
 import { getWorkItemPage } from '#/api/pms/pm/workitem';
 import { PmsProjectType } from '#/views/pms/pm/utils/constants';
+import { formatPmsDate } from '#/views/pms/pm/utils/format';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
 defineOptions({ name: 'PmsProjectGantt' });
-
-// TODO @AI：甘特可以保留自定义；antd/antdv-next 不要用 v-loading。日期格式抽到 format.ts。三端行数差一截，对齐交互。
 
 const props = defineProps<{
   editable: boolean;
@@ -44,7 +53,7 @@ const loading = ref(false); // 加载中
 const items = ref<PmsWorkItemApi.WorkItem[]>([]); // 工作项列表
 const iterationList = ref<PmsIterationApi.Iteration[]>([]); // 项目迭代列表
 const keyword = ref(''); // 搜索关键词
-const dateRange = ref<[any, any]>(); // 时间轴日期范围
+const dateRange = ref<[Dayjs, Dayjs]>(); // 时间轴日期范围
 const viewMode = ref<ViewMode>('Day'); // 时间轴视图模式
 const viewModeOptions = [
   { label: '日视图', value: 'Day' },
@@ -191,16 +200,16 @@ function buildRows() {
     const iterationEndTime = iteration.endTime
       ? Number(iteration.endTime)
       : Math.max(...iterationItems.map((item) => Number(item.endTime)));
-    result.push({
-      key: `iteration-${iteration.id}`,
-      name: iteration.name,
-      startTime: iterationStartTime,
-      endTime: iterationEndTime,
-      progress: 0,
-      depth: 0,
-      group: true,
-    });
     result.push(
+      {
+        key: `iteration-${iteration.id}`,
+        name: iteration.name,
+        startTime: iterationStartTime,
+        endTime: iterationEndTime,
+        progress: 0,
+        depth: 0,
+        group: true,
+      },
       ...buildItemRows(iterationItems, 1, `iteration-${iteration.id}`),
     );
   });
@@ -209,19 +218,23 @@ function buildRows() {
       !item.iterationId &&
       (!searchKeyword || item.name.includes(searchKeyword)),
   );
-  if (unplannedItems.length) {
-    result.push({
-      key: 'iteration-unplanned',
-      name: '未规划事项',
-      startTime: Math.min(
-        ...unplannedItems.map((item) => Number(item.startTime)),
-      ),
-      endTime: Math.max(...unplannedItems.map((item) => Number(item.endTime))),
-      progress: 0,
-      depth: 0,
-      group: true,
-    });
-    result.push(...buildItemRows(unplannedItems, 1, 'iteration-unplanned'));
+  if (unplannedItems.length > 0) {
+    result.push(
+      {
+        key: 'iteration-unplanned',
+        name: '未规划事项',
+        startTime: Math.min(
+          ...unplannedItems.map((item) => Number(item.startTime)),
+        ),
+        endTime: Math.max(
+          ...unplannedItems.map((item) => Number(item.endTime)),
+        ),
+        progress: 0,
+        depth: 0,
+        group: true,
+      },
+      ...buildItemRows(unplannedItems, 1, 'iteration-unplanned'),
+    );
   }
   return result;
 }
@@ -437,12 +450,12 @@ onMounted(() => {
           <span
             class="flex items-center border-0 border-l border-solid border-border px-2.5 text-xs"
           >
-            {{ dayjs(row.startTime).format('YYYY-MM-DD') }}
+            {{ formatPmsDate(row.startTime) }}
           </span>
           <span
             class="flex items-center border-0 border-l border-solid border-border px-2.5 text-xs"
           >
-            {{ dayjs(row.endTime).format('YYYY-MM-DD') }}
+            {{ formatPmsDate(row.endTime) }}
           </span>
         </div>
         <div
@@ -460,8 +473,8 @@ onMounted(() => {
             <template #content>
               <div class="font-semibold">{{ row.name }}</div>
               <div class="mt-2 text-[13px]">
-                {{ dayjs(row.startTime).format('YYYY-MM-DD') }} 至
-                {{ dayjs(row.endTime).format('YYYY-MM-DD') }}
+                {{ formatPmsDate(row.startTime) }} 至
+                {{ formatPmsDate(row.endTime) }}
               </div>
               <template v-if="row.item">
                 <div class="mt-1.5 text-[13px]">

@@ -1,22 +1,20 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：defineExpose({ open }) + 父组件 ref 调用，对齐 system/user 改 useVbenModal({ connectedComponent, destroyOnClose: true }) + xxxModalApi.setData().open()，成功回调走 @success，三端同步。
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipApi } from '#/api/hrm/salary/slip';
 
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Spin, Table } from 'ant-design-vue';
-
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSalarySlip } from '#/api/hrm/salary/slip';
 import { formatHrmMoney } from '#/views/hrm/utils/format';
 
+import { useSlipOptionGridColumns } from '../../data';
+
 defineOptions({ name: 'HrmSalarySlipDetail' });
 
-const loading = ref(false);
 const detail = ref<HrmSalarySlipApi.SalarySlip>({});
-const expandedRowKeys = ref<string[]>([]);
 
 function getOptionRowKey(option: HrmSalarySlipApi.SlipOption) {
   return option.code === undefined
@@ -24,94 +22,64 @@ function getOptionRowKey(option: HrmSalarySlipApi.SlipOption) {
     : `option-${option.code}`;
 }
 
-/** 去掉空 children，避免叶子节点误显示展开按钮 */
-function normalizeSlipOptions(
-  options?: HrmSalarySlipApi.SlipOption[],
-): HrmSalarySlipApi.SlipOption[] {
-  return (options || []).map((option) => {
-    const children = option.children?.length
+/** 补充树节点 key，并去掉叶子节点的空 children */
+function normalizeSlipOptions(options?: HrmSalarySlipApi.SlipOption[]): any[] {
+  return (options || []).map((option) => ({
+    ...option,
+    key: getOptionRowKey(option),
+    children: option.children?.length
       ? normalizeSlipOptions(option.children)
-      : undefined;
-    return { ...option, children };
-  });
+      : undefined,
+  }));
 }
 
-function collectExpandedKeys(
-  options?: HrmSalarySlipApi.SlipOption[],
-): string[] {
-  const keys: string[] = [];
-  for (const option of options || []) {
-    if (option.children?.length) {
-      keys.push(
-        getOptionRowKey(option),
-        ...collectExpandedKeys(option.children),
-      );
-    }
-  }
-  return keys;
-}
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useSlipOptionGridColumns(),
+    data: [],
+    minHeight: 260,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'key', isHover: true },
+    toolbarConfig: { enabled: false },
+    treeConfig: { childrenField: 'children', expandAll: true },
+  } as VxeTableGridOptions<any>,
+});
 
 const [Modal, modalApi] = useVbenModal({
   footer: false,
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       detail.value = {};
-      expandedRowKeys.value = [];
+      return;
+    }
+    const { id } = modalApi.getData() as any;
+    if (!id) return;
+    modalApi.lock();
+    try {
+      const data = await getSalarySlip(id);
+      const options = normalizeSlipOptions(data.options);
+      detail.value = { ...data, options };
+      await gridApi.grid.reloadData(options);
+      await gridApi.grid.setAllTreeExpand(true);
+    } finally {
+      modalApi.unlock();
     }
   },
   title: '工资条明细',
 });
-
-async function open(id?: number) {
-  if (!id) {
-    return;
-  }
-  modalApi.open();
-  loading.value = true;
-  detail.value = {};
-  expandedRowKeys.value = [];
-  try {
-    const data = await getSalarySlip(id);
-    const options = normalizeSlipOptions(data.options);
-    detail.value = { ...data, options };
-    expandedRowKeys.value = collectExpandedKeys(options);
-  } finally {
-    loading.value = false;
-  }
-}
-
-defineExpose({ open });
 </script>
 
 <template>
   <Modal class="w-[600px]">
-    <Spin :spinning="loading">
-      <div class="min-h-[320px]">
-        <div class="mb-5 text-center">
-          <div class="text-2xl font-semibold">
-            {{ formatHrmMoney(detail.realPaySalary) }}
-          </div>
-          <div class="text-muted-foreground mt-2 text-sm">实发金额（元）</div>
+    <div class="min-h-[320px]">
+      <div class="mb-5 text-center">
+        <div class="text-2xl font-semibold">
+          {{ formatHrmMoney(detail.realPaySalary) }}
         </div>
-        <Table
-          v-model:expanded-row-keys="expandedRowKeys"
-          bordered
-          size="small"
-          :columns="[
-            { title: '项目', dataIndex: 'name', key: 'name' },
-            { title: '金额', key: 'value', align: 'right', width: 150 },
-          ]"
-          :data-source="detail.options || []"
-          :pagination="false"
-          :row-key="getOptionRowKey"
-        >
-          <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'value'">
-              {{ record.children?.length ? '-' : formatHrmMoney(record.value) }}
-            </template>
-          </template>
-        </Table>
+        <div class="text-muted-foreground mt-2 text-sm">实发金额（元）</div>
       </div>
-    </Spin>
+      <Grid class="w-full" />
+    </div>
   </Modal>
 </template>

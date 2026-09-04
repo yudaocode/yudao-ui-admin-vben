@@ -57,9 +57,6 @@ export const PmsKnowledgeContentIdentityType = {
   DEPT: 'dept',
 } as const;
 
-export type PmsKnowledgeContentIdentityType =
-  (typeof PmsKnowledgeContentIdentityType)[keyof typeof PmsKnowledgeContentIdentityType];
-
 /** PMS 知识库分组类型 */
 export const PmsKnowledgeGroupType = {
   ALL: 1,

@@ -12,8 +12,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
-import { getAllPageItems } from '@vben/utils';
+import { downloadFileFromBlobPart, getAllPageItems } from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -60,22 +59,21 @@ import {
   PmsWorkItemStatusType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   getPriorityColor,
   getWorkItemStatusTagType,
 } from '#/views/pms/pm/utils/format';
 
 import WorkItemDetail from '../detail/work-item-detail.vue';
-import WorkItemForm from '../form/work-item-form.vue';
-import WorkItemImportForm from '../import/import-form.vue';
 import WorkItemLabelSelect from '../label/work-item-label-select.vue';
 import WorkItemStatusList from '../status/status-list.vue';
 import { useWorkItemGridColumns } from './data';
+import WorkItemForm from './modules/form.vue';
+import WorkItemImportForm from './modules/import-form.vue';
 
 defineOptions({ name: 'PmsWorkItemList' });
-// TODO @AI：对齐 system/user，工作项表单和导入弹窗改引 ./modules/form.vue、./modules/import-form.vue。
 
 // TODO @AI：筛选不要手写 Input/Select/Popover，放到 formOptions.schema，对齐 system user。height 用 auto。不要为前端搜索把全部分页拉下来。看板模式可保留自定义。
-// TODO @AI：列表模式每次当前页查询都并行再拉一遍 getAllPageItems 全量缓存，随后才串行请求状态选项；这是按搜索刷新放大的重复网络开销，应改为服务端筛选/专用搜索接口，并把独立状态请求并入同一 Promise.all。
 const props = defineProps<{
   defaultViewMode?: 'board' | 'list';
   editable: boolean;
@@ -149,13 +147,13 @@ const isActiveLifecycle = computed(
 const hasBoardFilter = computed(() =>
   Boolean(
     normalizedSearchKeyword.value ||
-    queryParams.statuses.length ||
-    queryParams.priorities.length ||
+    queryParams.statuses.length > 0 ||
+    queryParams.priorities.length > 0 ||
     queryParams.iterationId ||
-    queryParams.iterationIds.length ||
-    queryParams.excludedIterationIds.length ||
-    queryParams.assigneeUserIds.length ||
-    queryParams.labelIds.length,
+    queryParams.iterationIds.length > 0 ||
+    queryParams.excludedIterationIds.length > 0 ||
+    queryParams.assigneeUserIds.length > 0 ||
+    queryParams.labelIds.length > 0,
   ),
 ); // 看板是否正在筛选，筛选结果不允许拖拽排序
 
@@ -373,8 +371,7 @@ async function handleArchive(workItem: PmsWorkItemApi.WorkItem) {
     await archiveWorkItem(workItem.id!);
     ElMessage.success('归档成功');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 将工作项移入回收站 */
@@ -388,8 +385,7 @@ async function handleRecycle(workItem: PmsWorkItemApi.WorkItem) {
     await recycleWorkItem(workItem.id!);
     ElMessage.success('已移入回收站');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 恢复工作项 */
@@ -401,8 +397,7 @@ async function handleRestore(workItem: PmsWorkItemApi.WorkItem) {
     await restoreWorkItem(workItem.id!);
     ElMessage.success('恢复成功');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 彻底删除回收站中的工作项 */
@@ -416,8 +411,7 @@ async function handleDelete(workItem: PmsWorkItemApi.WorkItem) {
     await deleteWorkItem(workItem.id!);
     ElMessage.success('删除成功');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 打开状态设置弹窗 */
@@ -894,7 +888,7 @@ onMounted(() => {
                     :type="isWorkItemOverdue(element) ? 'danger' : 'info'"
                     size="small"
                   >
-                    {{ dayjs(element.endTime).format('MM月DD日') }}截止
+                    {{ formatPmsDate(element.endTime, 'MM月DD日') }}截止
                   </ElTag>
                 </div>
                 <div class="mt-3 flex items-center justify-between gap-2">

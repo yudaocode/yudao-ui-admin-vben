@@ -3,7 +3,9 @@ import type { PmsKnowledgeRecycleApi } from '#/api/pms/kb/recycle';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { Spinner } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { formatDateTime } from '@vben/utils';
 
 import {
   Alert,
@@ -13,7 +15,6 @@ import {
   Empty,
   Tag,
 } from 'antdv-next';
-import dayjs from 'dayjs';
 
 import { getKnowledgeContentRecyclePreview } from '#/api/pms/kb/recycle';
 import { FilePreview } from '#/components/file-preview';
@@ -21,8 +22,6 @@ import { PmsKnowledgeObjectType } from '#/views/pms/kb/utils/constants';
 import { formatKnowledgeFileSize } from '#/views/pms/kb/utils/format';
 
 defineOptions({ name: 'PmsKnowledgeRecycleDetail' });
-
-// TODO @AI：antd/antdv-next 不要用 v-loading。删除时间用 formatDateTime，不要页面里 dayjs.format。
 
 const props = defineProps<{
   detail: PmsKnowledgeRecycleApi.KnowledgeRecycleDetail;
@@ -169,7 +168,7 @@ onMounted(() => openNode(nodes.value[0]?.key || ''));
 
     <Alert
       :closable="false"
-      :message="`“${detail.root.name}”删除于 ${detail.root.deleteTime ? dayjs(detail.root.deleteTime).format('YYYY-MM-DD HH:mm') : '未知时间'}`"
+      :message="`“${detail.root.name}”删除于 ${detail.root.deleteTime ? formatDateTime(detail.root.deleteTime) : '未知时间'}`"
       class="!mb-3"
       type="info"
     />
@@ -221,7 +220,7 @@ onMounted(() => openNode(nodes.value[0]?.key || ''));
         <IconifyIcon icon="lucide:file-text" class="text-[22px] text-primary" />
         <span class="text-lg font-semibold">{{ currentNode.name }}</span>
       </div>
-      <div v-loading="previewLoading">
+      <Spinner :spinning="previewLoading">
         <!-- 富文本文档正文预览 -->
         <template
           v-if="preview && currentNode.type === PmsKnowledgeObjectType.DOCUMENT"
@@ -255,7 +254,7 @@ onMounted(() => openNode(nodes.value[0]?.key || ''));
           />
         </template>
         <Empty v-else description="该内容暂无可预览数据" />
-      </div>
+      </Spinner>
     </div>
   </div>
 </template>

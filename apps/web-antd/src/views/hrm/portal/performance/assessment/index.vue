@@ -6,7 +6,7 @@ import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/perform
 import { computed, onActivated, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
 import { Card, message, Pagination } from 'ant-design-vue';
 
@@ -26,14 +26,14 @@ import {
 } from '#/views/hrm/utils/constants';
 import { checkHrmPortalAccess } from '#/views/hrm/utils/employee';
 
-import PerformanceAssessmentDetail from './detail/index.vue';
-import PerformanceTaskTable from './PerformanceTaskTable.vue';
-import PerformanceTaskTabs from './PerformanceTaskTabs.vue';
-import PerformanceAppealForm from './process/PerformanceAppealForm.vue';
-import PerformanceHandleForm from './process/PerformanceHandleForm.vue';
-import PerformanceTargetConfirmForm from './process/PerformanceTargetConfirmForm.vue';
-import PerformanceQuotaForm from './review/PerformanceQuotaForm.vue';
-import PerformanceReviewForm from './review/PerformanceReviewForm.vue';
+import PerformanceAssessmentDetail from './modules/detail-drawer.vue';
+import PerformanceAppealForm from './modules/performance-appeal-form.vue';
+import PerformanceHandleForm from './modules/performance-handle-form.vue';
+import PerformanceQuotaForm from './modules/performance-quota-form.vue';
+import PerformanceReviewForm from './modules/performance-review-form.vue';
+import PerformanceTargetConfirmForm from './modules/performance-target-confirm-form.vue';
+import PerformanceTaskTable from './modules/performance-task-table.vue';
+import PerformanceTaskTabs from './modules/performance-task-tabs.vue';
 
 defineOptions({ name: 'HrmPortalPerformanceAssessment' });
 
@@ -67,14 +67,34 @@ const taskCount = ref<HrmPortalPerformanceAssessmentApi.TaskCount>({
   appealCompletedCount: 0,
 });
 
-const detailRef = ref<InstanceType<typeof PerformanceAssessmentDetail>>();
-const appealFormRef = ref<InstanceType<typeof PerformanceAppealForm>>();
-const quotaFormRef = ref<InstanceType<typeof PerformanceQuotaForm>>();
-const targetConfirmFormRef =
-  ref<InstanceType<typeof PerformanceTargetConfirmForm>>();
-const reviewFormRef = ref<InstanceType<typeof PerformanceReviewForm>>();
-const resultAuditFormRef = ref<InstanceType<typeof PerformanceHandleForm>>();
-const appealHandleFormRef = ref<InstanceType<typeof PerformanceHandleForm>>();
+const [DetailDrawer, detailDrawerApi] = useVbenDrawer({
+  connectedComponent: PerformanceAssessmentDetail,
+  destroyOnClose: true,
+});
+const [TargetConfirmDrawer, targetConfirmDrawerApi] = useVbenDrawer({
+  connectedComponent: PerformanceTargetConfirmForm,
+  destroyOnClose: true,
+});
+const [ReviewDrawer, reviewDrawerApi] = useVbenDrawer({
+  connectedComponent: PerformanceReviewForm,
+  destroyOnClose: true,
+});
+const [QuotaDrawer, quotaDrawerApi] = useVbenDrawer({
+  connectedComponent: PerformanceQuotaForm,
+  destroyOnClose: true,
+});
+const [ResultAuditModal, resultAuditModalApi] = useVbenModal({
+  connectedComponent: PerformanceHandleForm,
+  destroyOnClose: true,
+});
+const [AppealHandleModal, appealHandleModalApi] = useVbenModal({
+  connectedComponent: PerformanceHandleForm,
+  destroyOnClose: true,
+});
+const [AppealModal, appealModalApi] = useVbenModal({
+  connectedComponent: PerformanceAppealForm,
+  destroyOnClose: true,
+});
 
 const statusTabs = computed(() => {
   if (activeTab.value === HrmPerformanceStageType.FILL_QUOTA) {
@@ -170,7 +190,7 @@ const statusTabs = computed(() => {
 function openDetail(
   row: HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment,
 ) {
-  detailRef.value?.open(row, activeTab.value);
+  detailDrawerApi.setData({ row, taskType: activeTab.value }).open();
 }
 
 /** 确认绩效结果 */
@@ -193,9 +213,27 @@ async function confirmResult(id?: number) {
 }
 
 function openAppeal(id?: number) {
-  if (id) {
-    appealFormRef.value?.open(id);
-  }
+  appealModalApi.setData({ assessmentId: id }).open();
+}
+
+function openTargetConfirm(assessmentId?: number, stageId?: number) {
+  targetConfirmDrawerApi.setData({ assessmentId, stageId }).open();
+}
+
+function openReview(assessmentId?: number, stageId?: number) {
+  reviewDrawerApi.setData({ assessmentId, stageId }).open();
+}
+
+function openQuota(assessmentId?: number) {
+  quotaDrawerApi.setData({ assessmentId }).open();
+}
+
+function openResultAudit(assessmentId?: number, stageId?: number) {
+  resultAuditModalApi.setData({ assessmentId, stageId }).open();
+}
+
+function openAppealHandle(assessmentId?: number, stageId?: number) {
+  appealHandleModalApi.setData({ assessmentId, stageId }).open();
 }
 
 /** 获取任务分页 */
@@ -297,13 +335,13 @@ onActivated(async () => {
         :list="list"
         :loading="loading"
         @appeal="openAppeal"
-        @appeal-handle="appealHandleFormRef?.open"
+        @appeal-handle="openAppealHandle"
         @detail="openDetail"
-        @quota="quotaFormRef?.open"
-        @result-audit="resultAuditFormRef?.open"
+        @quota="openQuota"
+        @result-audit="openResultAudit"
         @result-confirm="confirmResult"
-        @review="reviewFormRef?.open"
-        @target-confirm="targetConfirmFormRef?.open"
+        @review="openReview"
+        @target-confirm="openTargetConfirm"
       />
       <div class="mt-4 flex justify-end">
         <Pagination
@@ -316,23 +354,12 @@ onActivated(async () => {
       </div>
     </Card>
 
-    <PerformanceAssessmentDetail ref="detailRef" />
-    <PerformanceQuotaForm ref="quotaFormRef" @success="loadData" />
-    <PerformanceTargetConfirmForm
-      ref="targetConfirmFormRef"
-      @success="loadData"
-    />
-    <PerformanceReviewForm ref="reviewFormRef" @success="loadData" />
-    <PerformanceAppealForm ref="appealFormRef" @success="loadData" />
-    <PerformanceHandleForm
-      ref="resultAuditFormRef"
-      mode="result-audit"
-      @success="loadData"
-    />
-    <PerformanceHandleForm
-      ref="appealHandleFormRef"
-      mode="appeal"
-      @success="loadData"
-    />
+    <DetailDrawer />
+    <QuotaDrawer @success="loadData" />
+    <TargetConfirmDrawer @success="loadData" />
+    <ReviewDrawer @success="loadData" />
+    <AppealModal @success="loadData" />
+    <ResultAuditModal mode="result-audit" @success="loadData" />
+    <AppealHandleModal mode="appeal" @success="loadData" />
   </Page>
 </template>

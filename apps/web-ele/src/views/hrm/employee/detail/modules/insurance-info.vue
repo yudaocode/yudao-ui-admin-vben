@@ -3,24 +3,25 @@ import type { HrmInsuranceEmployeeInfoApi } from '#/api/hrm/insurance/employee-i
 
 import { onMounted, ref } from 'vue';
 
-import { useAccess } from '@vben/access';
+import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElButton,
-  ElCard,
-  ElDescriptions,
-  ElDescriptionsItem,
-} from 'element-plus';
+import { ElCard, ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import { getInsuranceEmployeeInfo } from '#/api/hrm/insurance/employee-info';
 import { formatHrmMonth, formatHrmYesNo } from '#/views/hrm/utils/format';
 
 import InsuranceInfoForm from './insurance-info-form.vue';
+
 const props = defineProps<{ employeeId: number }>();
-const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
 const info = ref<HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo>();
-const formRef = ref<InstanceType<typeof InsuranceInfoForm>>();
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: InsuranceInfoForm,
+  destroyOnClose: true,
+});
+
 async function load() {
   loading.value = true;
   try {
@@ -29,23 +30,36 @@ async function load() {
     loading.value = false;
   }
 }
+
+function openForm() {
+  formModalApi
+    .setData({ employeeId: props.employeeId, row: info.value })
+    .open();
+}
+
 onMounted(load);
 </script>
+
 <template>
   <ElCard
+    v-loading="loading"
     header="社保资料"
     :style="{ marginBottom: '15px' }"
-    :loading="loading"
+    shadow="never"
   >
     <template #extra>
-      <ElButton
-        v-if="hasAccessByCodes(['hrm:insurance:employee-info:update'])"
-        link
-        type="primary"
-        @click="formRef?.open(employeeId, info)"
-      >
-        编辑
-      </ElButton>
+      <TableAction
+        :actions="[
+          {
+            label: '编辑',
+            type: 'primary',
+            link: true,
+            icon: ACTION_ICON.EDIT,
+            auth: ['hrm:insurance:employee-info:update'],
+            onClick: openForm,
+          },
+        ]"
+      />
     </template>
     <ElDescriptions border :column="3" size="small">
       <ElDescriptionsItem label="社保编号">
@@ -67,6 +81,6 @@ onMounted(load);
         {{ formatHrmYesNo(info?.firstAccumulationFund) }}
       </ElDescriptionsItem>
     </ElDescriptions>
-    <InsuranceInfoForm ref="formRef" @success="load" />
+    <FormModal @success="load" />
   </ElCard>
 </template>

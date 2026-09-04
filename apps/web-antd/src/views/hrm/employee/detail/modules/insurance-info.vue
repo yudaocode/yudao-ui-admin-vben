@@ -3,19 +3,25 @@ import type { HrmInsuranceEmployeeInfoApi } from '#/api/hrm/insurance/employee-i
 
 import { onMounted, ref } from 'vue';
 
-import { useAccess } from '@vben/access';
+import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Card, Descriptions } from 'ant-design-vue';
+import { Card, Descriptions } from 'ant-design-vue';
 
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import { getInsuranceEmployeeInfo } from '#/api/hrm/insurance/employee-info';
 import { formatHrmMonth, formatHrmYesNo } from '#/views/hrm/utils/format';
 
 import InsuranceInfoForm from './insurance-info-form.vue';
+
 const props = defineProps<{ employeeId: number }>();
-const { hasAccessByCodes } = useAccess();
 const loading = ref(false);
 const info = ref<HrmInsuranceEmployeeInfoApi.InsuranceEmployeeInfo>();
-const formRef = ref<InstanceType<typeof InsuranceInfoForm>>();
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: InsuranceInfoForm,
+  destroyOnClose: true,
+});
+
 async function load() {
   loading.value = true;
   try {
@@ -24,18 +30,30 @@ async function load() {
     loading.value = false;
   }
 }
+
+function openForm() {
+  formModalApi
+    .setData({ employeeId: props.employeeId, row: info.value })
+    .open();
+}
+
 onMounted(load);
 </script>
+
 <template>
   <Card title="社保资料" :style="{ marginBottom: '15px' }" :loading="loading">
     <template #extra>
-      <Button
-        v-if="hasAccessByCodes(['hrm:insurance:employee-info:update'])"
-        type="link"
-        @click="formRef?.open(employeeId, info)"
-      >
-        编辑
-      </Button>
+      <TableAction
+        :actions="[
+          {
+            label: '编辑',
+            type: 'link',
+            icon: ACTION_ICON.EDIT,
+            auth: ['hrm:insurance:employee-info:update'],
+            onClick: openForm,
+          },
+        ]"
+      />
     </template>
     <Descriptions bordered :column="3" size="small">
       <Descriptions.Item label="社保编号">
@@ -57,6 +75,6 @@ onMounted(load);
         {{ formatHrmYesNo(info?.firstAccumulationFund) }}
       </Descriptions.Item>
     </Descriptions>
-    <InsuranceInfoForm ref="formRef" @success="load" />
+    <FormModal @success="load" />
   </Card>
 </template>

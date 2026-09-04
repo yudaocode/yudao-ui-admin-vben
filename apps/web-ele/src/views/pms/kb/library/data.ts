@@ -287,3 +287,19 @@ export function useLibraryFormSchema(currentUserId?: number): VbenFormSchema[] {
     },
   ];
 }
+
+/** 新增/修改知识库分组的表单 */
+export function useGroupFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      componentProps: {
+        maxlength: 100,
+        placeholder: '请输入分组名称',
+      },
+      fieldName: 'name',
+      label: '分组名称',
+      rules: 'required',
+    },
+  ];
+}

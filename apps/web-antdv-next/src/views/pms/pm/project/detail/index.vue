@@ -7,15 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import {
-  Button,
-  Dropdown,
-  Menu,
-  MenuItem,
-  message,
-  Spin,
-  Tabs,
-} from 'antdv-next';
+import { Button, Dropdown, Menu, message, Spin, Tabs } from 'antdv-next';
 
 import { getProject } from '#/api/pms/pm/project';
 import {
@@ -38,8 +30,6 @@ import ProjectOverview from './project-overview.vue';
 import ProjectWorkLog from './project-work-log.vue';
 
 defineOptions({ name: 'PmsProjectDetail' });
-
-// TODO @AI：antd/antdv-next 不要用 v-loading。三端详情页结构差一截，对齐页签、权限按钮和空态。
 
 type ProjectDetailTab =
   | 'all'
@@ -219,14 +209,16 @@ watch(
           </Button>
           <template #popupRender>
             <Menu @click="({ key }: any) => handleProjectCommand(key)">
-              <MenuItem v-if="project.memberStatus" key="favorite">
+              <Menu.Item v-if="project.memberStatus" key="favorite">
                 {{ project.favoriteStatus ? '取消星标' : '星标项目' }}
-              </MenuItem>
-              <MenuItem v-if="project.adminStatus" key="config">
+              </Menu.Item>
+              <Menu.Item v-if="project.adminStatus" key="config">
                 项目设置
-              </MenuItem>
+              </Menu.Item>
               <Menu.Divider v-if="project.exitStatus" />
-              <MenuItem v-if="project.exitStatus" key="exit">退出项目</MenuItem>
+              <Menu.Item v-if="project.exitStatus" key="exit">
+                退出项目
+              </Menu.Item>
             </Menu>
           </template>
         </Dropdown>

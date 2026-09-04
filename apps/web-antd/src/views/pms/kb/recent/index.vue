@@ -19,7 +19,6 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsKnowledgeRecent' });
 
-// TODO @AI：antd 给 Tabs 加了 scoped 去 margin，ele 没有；三端 Tabs 样式对齐。补 toolbarConfig。
 const router = useRouter(); // 路由对象
 const activeTab =
   ref<keyof PmsKnowledgeViewRecordApi.KnowledgeRecentList>('todayItems'); // 当前时间分组
@@ -52,6 +51,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       keyField: 'id',
       isHover: true,
     },
+    toolbarConfig: {
+      refresh: true,
+    },
   } as VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>,
 });
 
@@ -63,18 +65,16 @@ async function handleTabChange() {
 /** 打开内容详情 */
 function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
   if (item.documentId) {
-    router.push(
-      {
-        path: `/pms/kb/library/${item.libraryId}`,
-        query: { documentId: String(item.documentId) },
-      },
-    );
+    router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { documentId: String(item.documentId) },
+    });
     return;
   }
   router.push({
-      path: `/pms/kb/library/${item.libraryId}`,
-      query: { folderId: String(item.folderId) },
-    });
+    path: `/pms/kb/library/${item.libraryId}`,
+    query: { folderId: String(item.folderId) },
+  });
 }
 </script>
 

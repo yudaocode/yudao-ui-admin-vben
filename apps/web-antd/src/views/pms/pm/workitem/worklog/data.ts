@@ -5,7 +5,6 @@ import type { PmsWorkItemWorkLogApi } from '#/api/pms/pm/workitem/worklog';
 import { formatWorkHours } from '#/views/pms/pm/utils/format';
 
 /** 登记/编辑工时的表单 */
-// TODO @AI：列表列如果有时间字段，用 formatter: 'formatDateTime'。操作列 slots 名和 list 页对齐。
 export function useWorkLogFormSchema(
   onActualHoursChange: (actualHours?: number) => void,
 ): VbenFormSchema[] {
@@ -46,7 +45,9 @@ export function useWorkLogFormSchema(
 }
 
 /** 工时记录列表的字段 */
-export function useColumns(): VxeTableGridOptions<PmsWorkItemWorkLogApi.WorkItemWorkLog>['columns'] {
+export function useColumns(
+  editable: boolean,
+): VxeTableGridOptions<PmsWorkItemWorkLogApi.WorkItemWorkLog>['columns'] {
   return [
     {
       field: 'actualHours',
@@ -79,7 +80,8 @@ export function useColumns(): VxeTableGridOptions<PmsWorkItemWorkLogApi.WorkItem
     {
       title: '操作',
       width: 70,
-      slots: { default: 'action' },
+      visible: editable,
+      slots: { default: 'actions' },
     },
   ];
 }

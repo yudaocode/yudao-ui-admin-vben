@@ -44,8 +44,6 @@ import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue'
 defineOptions({ name: 'PmsProjectOverview' });
 
 // TODO @AI：antd/antdv-next 不要用 v-loading。日期用 formatDateTime，不要页面里 dayjs.format。
-// TODO DONE @AI：已对照 Vue3 + EP，源端同样全量查询迭代和公告；按用户要求本轮不调整请求行为。
-// TODO DONE @AI：trendChartRef 已对齐 CRM/system，使用 EchartsUIType 保留图表实例类型约束。
 
 const props = defineProps<{
   editable: boolean;
@@ -314,7 +312,9 @@ onMounted(() => {
       <template #header>
         <div class="flex items-center gap-2">
           <span class="font-semibold">工作项趋势</span>
-          <span class="text-xs text-[var(--el-text-color-secondary)]">近 14 日已完成</span>
+          <div class="text-xs text-[var(--el-text-color-secondary)]">
+            近 14 日已完成
+          </div>
         </div>
       </template>
       <EchartsUI ref="trendChartRef" height="220px" />

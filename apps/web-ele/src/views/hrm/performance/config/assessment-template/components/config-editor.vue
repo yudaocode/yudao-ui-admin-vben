@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：手写 Table 评估改 VXE Grid（行编辑用 edit-render）；确实不适合替换时保持三端实现一致。
 import type { HrmPerformanceAssessmentTemplateApi } from '#/api/hrm/performance/config/assessment-template';
 
 import { computed, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -12,7 +12,6 @@ import {
   ElButton as Button,
   ElCol as Col,
   ElEmpty as Empty,
-  ElInput as Input,
   ElInputNumber as InputNumber,
   ElMessage as message,
   ElRow as Row,
@@ -21,7 +20,6 @@ import {
 } from 'element-plus';
 
 import {
-  HrmPerformanceQuotaScoreType,
   HrmPerformanceQuotaType,
   HrmPerformanceUpperLimitType,
 } from '#/views/hrm/utils/constants';
@@ -32,6 +30,7 @@ import {
 } from '#/views/hrm/utils/performance';
 
 import DimensionForm from '../modules/dimension-form.vue';
+import QuotaGrid from './quota-grid.vue';
 
 defineOptions({ name: 'HrmPerformanceAssessmentConfigEditor' });
 
@@ -54,8 +53,11 @@ const model = defineModel<HrmPerformanceAssessmentTemplateApi.AssessmentConfig>(
   },
 );
 
-const dimensionFormRef = ref<InstanceType<typeof DimensionForm>>();
 const currentDimensionIndex = ref<number>();
+const [DimensionModal, dimensionModalApi] = useVbenModal({
+  connectedComponent: DimensionForm,
+  destroyOnClose: true,
+});
 
 const dimensionWeightTotal = computed(() =>
   (model.value.dimensions || []).reduce(
@@ -86,9 +88,9 @@ function formatQuotaType(quotaType?: number) {
 
 function openDimensionForm(index?: number) {
   currentDimensionIndex.value = index;
-  dimensionFormRef.value?.open(
-    index === undefined ? undefined : model.value.dimensions?.[index],
-  );
+  dimensionModalApi
+    .setData(index === undefined ? undefined : model.value.dimensions?.[index])
+    .open();
 }
 
 function handleDimensionConfirm(
@@ -104,23 +106,6 @@ function handleDimensionConfirm(
 
 function removeDimension(index: number) {
   model.value.dimensions?.splice(index, 1);
-}
-
-function addQuota(dimensionIndex: number) {
-  const dimension = model.value.dimensions?.[dimensionIndex];
-  if (!dimension) return;
-  dimension.quotas ||= [];
-  dimension.quotas.push({
-    name: '',
-    illustrate: '',
-    standard: '',
-    weight: undefined,
-    scoreType: HrmPerformanceQuotaScoreType.DIRECT_INPUT,
-  });
-}
-
-function removeQuota(dimensionIndex: number, quotaIndex: number) {
-  model.value.dimensions?.[dimensionIndex]?.quotas?.splice(quotaIndex, 1);
 }
 
 defineExpose({ validate });
@@ -247,7 +232,7 @@ defineExpose({ validate });
         </div>
       </div>
       <div class="p-4">
-        <div class="mb-3 flex items-center justify-between">
+        <div class="mb-3">
           <span class="text-sm text-gray-500">
             指标权重合计：
             <span
@@ -260,91 +245,10 @@ defineExpose({ validate });
               {{ getQuotaWeightTotal(dimension) }}%
             </span>
           </span>
-          <Button :disabled="props.disabled" @click="addQuota(dimensionIndex)">
-            新增指标项
-          </Button>
         </div>
-        <ElTable border :data="dimension.quotas || []" size="small">
-          <ElTableColumn label="指标名称" width="150">
-            <template #default="{ row }">
-              <Input
-                v-model="row.name"
-                :disabled="props.disabled"
-                :maxlength="50"
-                placeholder="请输入指标名称"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="指标说明" width="190">
-            <template #default="{ row }">
-              <Input
-                v-model="row.illustrate"
-                :autosize="{ minRows: 1, maxRows: 3 }"
-                :disabled="props.disabled"
-                :maxlength="200"
-                placeholder="请输入指标说明"
-                type="textarea"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="考核标准" width="190">
-            <template #default="{ row }">
-              <Input
-                v-model="row.standard"
-                :autosize="{ minRows: 1, maxRows: 3 }"
-                :disabled="props.disabled"
-                :maxlength="200"
-                placeholder="请输入考核标准"
-                type="textarea"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="指标权重" width="130">
-            <template #default="{ row }">
-              <div class="flex items-center gap-1">
-                <InputNumber
-                  v-model="row.weight"
-                  :controls="false"
-                  :disabled="props.disabled"
-                  :max="100"
-                  :min="0"
-                  :precision="2"
-                  class="w-full"
-                />
-                <span class="text-gray-500">%</span>
-              </div>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="评分方式" width="130">
-            <template #default="{ row }">
-              <Select
-                v-model="row.scoreType"
-                :disabled="props.disabled"
-                class="w-full"
-                :options="[
-                  {
-                    label: '直接输入',
-                    value: HrmPerformanceQuotaScoreType.DIRECT_INPUT,
-                  },
-                ]"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn align="center" label="操作" width="80">
-            <template #default="{ $index }">
-              <Button
-                :disabled="props.disabled"
-                link
-                type="danger"
-                @click="removeQuota(dimensionIndex, $index)"
-              >
-                删除
-              </Button>
-            </template>
-          </ElTableColumn>
-        </ElTable>
+        <QuotaGrid v-model="dimension.quotas" :disabled="props.disabled" />
       </div>
     </div>
-    <DimensionForm ref="dimensionFormRef" @confirm="handleDimensionConfirm" />
+    <DimensionModal @confirm="handleDimensionConfirm" />
   </template>
 </template>

@@ -74,7 +74,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
     {
       field: 'member',
       title: '协作者',
-      width: 250,
+      minWidth: 250,
       slots: { default: 'member' },
     },
     {

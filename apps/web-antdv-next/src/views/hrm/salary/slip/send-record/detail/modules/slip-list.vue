@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-// TODO @AI（glm5.3 flash）：空 catch 会把接口失败和用户取消一起吞掉；失败分支至少 message.error，仅取消才静默返回。
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipApi } from '#/api/hrm/salary/slip';
 
 import { ref } from 'vue';
 
-import { confirm, prompt } from '@vben/common-ui';
+import { confirm, prompt, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -26,7 +25,11 @@ defineOptions({ name: 'HrmSalarySlipList' });
 const props = defineProps<{ sendRecordId: number }>();
 
 const checkedRows = ref<HrmSalarySlipApi.SalarySlip[]>([]);
-const slipDetailRef = ref<InstanceType<typeof SlipDetail>>();
+
+const [SlipDetailModal, slipDetailModalApi] = useVbenModal({
+  connectedComponent: SlipDetail,
+  destroyOnClose: true,
+});
 
 function handleRowCheckboxChange({
   records,
@@ -52,22 +55,24 @@ async function handleBatchRemark(clear: boolean) {
         return;
       }
     }
-    const success = await executeBatch(
-      checkedRows.value
-        .filter(
-          (item): item is HrmSalarySlipApi.SalarySlip & { id: number } =>
-            !!item.id,
-        )
-        .map((item) => updateSalarySlipRemark({ id: item.id, remark })),
-    );
-    if (success) {
-      await gridApi.query();
-    }
-  } catch {}
+  } catch {
+    return;
+  }
+  const success = await executeBatch(
+    checkedRows.value
+      .filter(
+        (item): item is HrmSalarySlipApi.SalarySlip & { id: number } =>
+          !!item.id,
+      )
+      .map((item) => updateSalarySlipRemark({ id: item.id, remark })),
+  );
+  if (success) {
+    await gridApi.query();
+  }
 }
 
 function openDetail(id?: number) {
-  slipDetailRef.value?.open(id);
+  if (id) slipDetailModalApi.setData({ id }).open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -127,7 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: [
-      { type: 'checkbox' as const, width: 50, fixed: 'left' },
+      { type: 'checkbox', width: 50, fixed: 'left' },
       {
         field: 'employeeName',
         title: '员工姓名',
@@ -230,7 +235,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div class="h-full">
-    <SlipDetail ref="slipDetailRef" />
+    <SlipDetailModal />
 
     <Grid class="h-full">
       <template #toolbar-tools>

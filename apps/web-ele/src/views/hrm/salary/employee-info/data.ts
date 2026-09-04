@@ -1,5 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { HrmSalaryChangeRecordApi } from '#/api/hrm/salary/change-record';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -10,6 +11,7 @@ import { getSimpleDeptList } from '#/api/system/dept';
 import {
   HrmEmployeeStatus,
   HrmEmployeeStatusTab,
+  HrmSalaryRecordType,
 } from '#/views/hrm/utils/constants';
 import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
 
@@ -100,7 +102,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         childrenField: 'children',
         placeholder: '请选择部门',
         clearable: true,
-        defaultExpandAll: true,
+        treeDefaultExpandAll: true,
       },
     },
     {
@@ -218,6 +220,134 @@ export function useGridColumns(): VxeTableGridOptions<HrmSalaryEmployeeInfoApi.S
       width: 90,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 员工调薪记录列表字段 */
+export function useChangeRecordGridColumns(): VxeTableGridOptions<HrmSalaryChangeRecordApi.SalaryChangeRecord>['columns'] {
+  return [
+    {
+      field: 'recordType',
+      title: '类型',
+      width: 90,
+      formatter: ({ cellValue }) =>
+        cellValue === HrmSalaryRecordType.FIXED ? '定薪' : '调薪',
+    },
+    {
+      field: 'changeReason',
+      title: '调整原因',
+      width: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.HRM_SALARY_CHANGE_REASON },
+      },
+    },
+    {
+      field: 'effectTime',
+      title: '生效日期',
+      width: 120,
+      formatter: ({ cellValue }) => formatHrmDate(cellValue),
+    },
+    {
+      field: 'beforeTotal',
+      title: '正式调整前',
+      width: 120,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+    {
+      field: 'afterTotal',
+      title: '正式调整后',
+      width: 120,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+    {
+      field: 'probationBeforeTotal',
+      title: '试用调整前',
+      width: 120,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+    {
+      field: 'probationAfterTotal',
+      title: '试用调整后',
+      width: 120,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+    {
+      field: 'status',
+      title: '状态',
+      width: 110,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.HRM_SALARY_CHANGE_RECORD_STATUS },
+      },
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 160,
+      showOverflow: true,
+    },
+    {
+      title: '操作',
+      width: 180,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 薪资明细列表字段 */
+export function useSalaryOptionGridColumns(): VxeTableGridOptions<any>['columns'] {
+  return [
+    { field: 'name', title: '薪资项', minWidth: 160, showOverflow: true },
+    { field: 'code', title: '编码', width: 110 },
+    {
+      field: 'value',
+      title: '金额',
+      width: 130,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+  ];
+}
+
+/** 单个员工定薪/调薪明细编辑列 */
+export function useSalaryEditOptionGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { field: 'name', minWidth: 180, title: '薪资项' },
+    { align: 'center', field: 'code', title: '编码', width: 100 },
+    {
+      align: 'center',
+      field: 'probationOption',
+      slots: { default: 'probation' },
+      title: '试用期工资',
+      width: 220,
+    },
+    {
+      align: 'center',
+      field: 'regularOption',
+      slots: { default: 'regular' },
+      title: '转正后工资',
+      width: 220,
+    },
+  ];
+}
+
+/** 批量调薪明细编辑列 */
+export function useBatchSalaryEditGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { field: 'name', minWidth: 180, title: '调薪项' },
+    { align: 'center', field: 'code', title: '编码', width: 100 },
+    {
+      align: 'center',
+      field: 'value',
+      slots: { default: 'value', header: 'valueHeader' },
+      width: 240,
     },
   ];
 }
