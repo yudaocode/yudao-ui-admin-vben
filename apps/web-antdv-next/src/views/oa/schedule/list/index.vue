@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaScheduleApi } from '#/api/oa/schedule';
 
+import { nextTick } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
@@ -40,8 +42,10 @@ function handleRefresh() {
 }
 
 /** 日程范围勾选变化后立即查询 */
-function handleScopeChange() {
-  gridApi.query();
+async function handleScopeChange() {
+  // 等勾选值写入表单后提交，同步查询条件并回到第一页
+  await nextTick();
+  await gridApi.formApi.submit();
 }
 
 /** 创建日程 */

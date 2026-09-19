@@ -166,7 +166,8 @@ async function openSelect() {
   open.value = true;
   await nextTick();
   await gridApi.formApi.reset();
-  await gridApi.query();
+  // 同步清空后的查询条件，并回到第一页
+  await gridApi.formApi.submit();
 }
 
 /** 确认选择 */
