@@ -1,0 +1,61 @@
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { IconifyIcon } from '@vben/icons';
+
+import { getDiscussionPage } from '#/api/oa/discussion';
+
+defineOptions({ name: 'OaHomeDiscussionCount' });
+
+const { push } = useRouter(); // 路由跳转
+const loading = ref(false); // 区块加载中
+const loadError = ref(false); // 区块加载失败
+const count = ref(0); // 讨论区数量
+
+/** 查询当前区块数据 */
+async function getList() {
+  if (loading.value) return;
+  loading.value = true;
+  loadError.value = false;
+  try {
+    count.value = (await getDiscussionPage({ pageNo: 1, pageSize: 1 })).total;
+  } catch {
+    loadError.value = true;
+  } finally {
+    loading.value = false;
+  }
+}
+
+/** 初始化 */
+onMounted(() => {
+  getList();
+});
+</script>
+
+<template>
+  <div
+    v-loading="loading"
+    class="relative flex min-h-[116px] cursor-pointer items-center gap-4 overflow-hidden rounded-lg bg-[linear-gradient(135deg,#e6a23c,#ebb563)] p-5 text-white shadow-md transition-transform duration-200 hover:-translate-y-0.5"
+    @click="push('/oa/discussion/list')"
+  >
+    <!-- 数据区与图标区分开，窄屏时优先保留数据 -->
+    <div class="min-w-0 flex-1">
+      <div class="mb-1 text-sm opacity-90">讨论区</div>
+      <div
+        v-if="loadError"
+        class="mt-1 truncate text-xs opacity-85"
+        @click.stop="getList"
+      >
+        加载失败，点击重试
+      </div>
+      <div v-else class="truncate text-[28px] font-semibold">{{ count }}</div>
+      <div class="mt-1 truncate text-xs opacity-85">全部讨论与投票</div>
+    </div>
+    <div
+      class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/20"
+    >
+      <IconifyIcon icon="ep:chat-dot-round" class="text-[30px]" />
+    </div>
+  </div>
+</template>
