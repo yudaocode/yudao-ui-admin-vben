@@ -1,0 +1,174 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { OaSupplyItemApi } from '#/api/oa/supply/item';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
+
+import { message, Tag } from 'ant-design-vue';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteSupplyItem,
+  getSupplyItemPage,
+} from '#/api/oa/supply/item';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Form from './modules/form.vue';
+import StockForm from './modules/stock-form.vue';
+
+defineOptions({ name: 'OaSupplyItem' });
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+const [StockFormModal, stockFormModalApi] = useVbenModal({
+  connectedComponent: StockForm,
+  destroyOnClose: true,
+});
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 创建办公用品 */
+async function handleCreate() {
+  // 新增时，默认带入当前筛选的类别
+  const formValues = await gridApi.formApi.getValues();
+  formModalApi.setData({ category: formValues.category }).open();
+}
+
+/** 编辑办公用品 */
+function handleEdit(row: OaSupplyItemApi.SupplyItem) {
+  formModalApi.setData(row).open();
+}
+
+/** 办公用品入库 */
+function handleStockIn(row: OaSupplyItemApi.SupplyItem) {
+  stockFormModalApi.setData(row).open();
+}
+
+/** 删除办公用品 */
+async function handleDelete(row: OaSupplyItemApi.SupplyItem) {
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.id]),
+    duration: 0,
+  });
+  try {
+    await deleteSupplyItem(row.id!);
+    message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getSupplyItemPage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<OaSupplyItemApi.SupplyItem>,
+});
+</script>
+
+<template>
+  <Page auto-content-height>
+    <FormModal @success="handleRefresh" />
+    <StockFormModal @success="handleRefresh" />
+
+    <Grid table-title="办公用品列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['办公用品']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['oa:supply-item:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #stockQuantity="{ row }">
+        <span
+          :class="
+            row.minStockQuantity! > 0 &&
+            row.stockQuantity! < row.minStockQuantity!
+              ? 'text-red-500'
+              : ''
+          "
+        >
+          {{ row.stockQuantity }}
+        </span>
+      </template>
+      <template #statusTag="{ row }">
+        <Tag
+          :color="
+            row.status === CommonStatusEnum.ENABLE ? 'success' : 'error'
+          "
+        >
+          {{ row.status === CommonStatusEnum.ENABLE ? '正常' : '停用' }}
+        </Tag>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              icon: ACTION_ICON.EDIT,
+              auth: ['oa:supply-item:update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: '入库',
+              type: 'link',
+              icon: ACTION_ICON.ADD,
+              auth: ['oa:supply-item:stock-in'],
+              onClick: handleStockIn.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              danger: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['oa:supply-item:delete'],
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.id]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </Page>
+</template>
