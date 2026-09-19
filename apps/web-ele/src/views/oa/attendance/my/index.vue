@@ -4,7 +4,7 @@ import type { OaAttendanceApi } from '#/api/oa/attendance';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { formatDate } from '@vben/utils';
@@ -110,6 +110,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
     <div class="flex h-full flex-col gap-4">
       <!-- 今日打卡 -->
       <ElCard class="shrink-0">

@@ -4,7 +4,7 @@ import type { OaDiscussionApi } from '#/api/oa/discussion';
 
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { buildSortingField } from '@vben/request';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -63,6 +63,7 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
     <Grid table-title="讨论列表">
       <template #title="{ row }">
         <span class="cursor-pointer text-primary" @click="handleDetail(row)">

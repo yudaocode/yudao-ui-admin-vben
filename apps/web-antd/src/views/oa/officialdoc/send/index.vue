@@ -4,7 +4,7 @@ import type { OaOfficialDocSendApi } from '#/api/oa/officialdoc/send';
 
 import { useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 
 import { message, Tag } from 'ant-design-vue';
@@ -137,6 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【流程】公文管理" url="https://doc.iocoder.cn/oa/official-doc/" />
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

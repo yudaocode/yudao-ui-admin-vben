@@ -5,7 +5,7 @@ import { computed, onActivated, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { downloadFileFromBlobPart, formatDate } from '@vben/utils';
 
 import dayjs from 'dayjs';
@@ -135,6 +135,7 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
+    <DocAlert title="【考勤】考勤管理" url="https://doc.iocoder.cn/hrm/attendance/" />
     <ElCard shadow="never">
       <template #header>
         <span class="font-semibold">考勤报表</span>

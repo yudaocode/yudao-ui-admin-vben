@@ -6,7 +6,7 @@ import type { ActionItem } from '#/components/table-action';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
 import { Avatar, Button, Card, Divider, Menu, message, Tag } from 'ant-design-vue';
@@ -310,6 +310,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
     <FormModal @success="handleCategoryChange" />
     <DetailModal />
     <ShareFormModal @success="handleRefresh" />

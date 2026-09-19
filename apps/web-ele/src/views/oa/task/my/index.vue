@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaTaskApi } from '#/api/oa/task';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { formatDate } from '@vben/utils';
 
 import { ElLoading, ElMessage, ElProgress, ElTag } from 'element-plus';
@@ -79,6 +79,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
     <DetailModal @success="handleRefresh" />
 
     <Grid table-title="我的任务">

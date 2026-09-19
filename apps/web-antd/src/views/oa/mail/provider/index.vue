@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaMailProviderApi } from '#/api/oa/mail/provider';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -95,6 +95,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="邮箱服务列表">

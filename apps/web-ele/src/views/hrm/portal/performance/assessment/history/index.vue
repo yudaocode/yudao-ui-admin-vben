@@ -5,7 +5,7 @@ import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/perform
 import { onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
+import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
 import { ElTag } from 'element-plus';
 
@@ -62,6 +62,7 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible" auto-content-height>
+    <DocAlert title="【绩效】绩效考核、绩效档案" url="https://doc.iocoder.cn/hrm/performance/assessment/" />
     <Grid table-title="绩效档案">
       <template #resultLevel="{ row }">
         <ElTag v-if="row.resultLevel" type="success">

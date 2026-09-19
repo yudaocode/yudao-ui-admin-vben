@@ -6,7 +6,7 @@ import type { OaScheduleApi } from '#/api/oa/schedule';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDate, getAllPageItems } from '@vben/utils';
@@ -196,6 +196,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
     <FormModal @success="getCalendarList" />
     <DetailModal @edit="handleEdit" />
 
