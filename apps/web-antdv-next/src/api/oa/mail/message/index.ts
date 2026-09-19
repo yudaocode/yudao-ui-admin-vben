@@ -16,8 +16,8 @@ export namespace OaMailMessageApi {
     hasAttach?: boolean; // 是否有附件
     content?: string; // 安全 HTML 正文
     replyTos?: string[]; // 回复地址
-    attachments?: { name: string; part: string; size: number }[]; // 附件
-    attachmentParts?: string[]; // 保留的原附件路径
+    attachments?: { name: string; part: string; size: number }[]; // 附件（part 为远端 MIME 部件路径，size 单位为字节）
+    attachmentParts?: string[]; // 保留的原附件路径（空数组表示移除）
     draftId?: number; // 原草稿编号
     sourceId?: number; // 原邮件编号
     mode?: string; // 写信方式
@@ -72,7 +72,7 @@ export function deleteMailMessage(id: number) {
   });
 }
 
-/** 保存草稿 */
+/** 保存草稿（FormData 包含邮件数据和附件） */
 export function saveMailMessageDraft(data: FormData) {
   return requestClient.post<number>('/oa/mail-message/save-draft', data, {
     timeout: 120_000,

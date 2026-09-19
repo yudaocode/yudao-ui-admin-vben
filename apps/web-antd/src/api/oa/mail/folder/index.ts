@@ -3,7 +3,7 @@ import { requestClient } from '#/api/request';
 export namespace OaMailFolderApi {
   /** OA 邮箱文件夹 */
   export interface MailFolder {
-    key: string; // 目录查询标识
+    key: string; // 目录查询标识（标准目录、UNREAD 或自定义目录 ID）
     name: string; // 显示名称
     unreadCount: number; // 未读数量
   }

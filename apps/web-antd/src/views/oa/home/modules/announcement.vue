@@ -20,7 +20,7 @@ import OaHomePanel from './panel.vue';
 
 defineOptions({ name: 'OaHomeAnnouncement' });
 
-const { push } = useRouter(); // 路由跳转
+const { push } = useRouter();
 const loading = ref(false); // 区块加载中
 const loadError = ref(false); // 区块加载失败
 const list = ref<OaAnnouncementApi.Announcement[]>([]); // 公告列表

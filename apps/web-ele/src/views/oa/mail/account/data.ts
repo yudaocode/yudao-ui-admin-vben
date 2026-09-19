@@ -8,7 +8,7 @@ import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 
-import MailProviderSelect from '../provider/components/mail-provider-select.vue';
+import MailProviderSelect from '../provider/components/select.vue';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

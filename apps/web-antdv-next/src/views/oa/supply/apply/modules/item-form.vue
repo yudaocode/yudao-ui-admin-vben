@@ -9,7 +9,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { InputNumber, message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import ItemSelect from '#/views/oa/supply/item/components/item-select.vue';
+import ItemSelect from '#/views/oa/supply/item/components/select-modal.vue';
 
 import { useFormItemColumns } from '../data';
 

@@ -13,7 +13,7 @@ import { ElButton } from 'element-plus';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSupplyItemSelectPage } from '#/api/oa/supply/item';
 
-defineOptions({ name: 'OaSupplyItemSelect' });
+defineOptions({ name: 'OaSupplyItemSelectModal' });
 
 const emit = defineEmits<{ select: [item: OaSupplyItemApi.SupplyItem] }>(); // 选择结果
 

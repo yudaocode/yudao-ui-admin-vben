@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 
 import { OA_TASK_STATUS } from './constants';
 
-// TODO DONE @AI：移除车辆状态、还车状态、共享类型和共享权限的字典包装，调用处直接使用 getDictLabel。
 
 /** 获得讨论投票方式 */
 export function getDiscussionVoteModeName(multiple?: boolean) {

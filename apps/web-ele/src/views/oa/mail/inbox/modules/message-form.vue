@@ -23,13 +23,13 @@ import {
   sendMailMessage,
 } from '#/api/oa/mail/message';
 import { Tinymce } from '#/components/tinymce';
-import MailAddressSelect from '#/views/oa/mail/account/components/mail-address-select.vue';
+import MailAddressSelect from '#/views/oa/mail/account/components/address-select.vue';
 
 /** 写信表单 */
 defineOptions({ name: 'OaMailMessageForm' });
 
 const props = defineProps<{ data: OaMailMessageApi.MailMessage }>();
-const emit = defineEmits(['success', 'close']); // 定义成功和关闭事件
+const emit = defineEmits(['success', 'close']);
 const formLoading = ref(false); // 表单提交中
 const fileList = ref<UploadUserFile[]>([]); // 本次新增附件
 const formData = ref<OaMailMessageApi.MailMessage>({ ...props.data }); // 表单数据
@@ -92,6 +92,7 @@ async function handleSaveDraft() {
   try {
     const draftId = await saveMailMessageDraft(buildFormData());
     formData.value.draftId = draftId;
+    // 重新获取远端附件路径，避免重复上传。
     fileList.value = [];
     formData.value.attachmentParts = undefined;
     formData.value = await getMailMessageCompose(draftId, 'draft');

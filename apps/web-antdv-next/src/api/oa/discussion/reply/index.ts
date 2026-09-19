@@ -21,7 +21,7 @@ export namespace OaDiscussionReplyApi {
   }
 }
 
-/** 查询讨论回复分页 */
+/** 查询讨论回复分页（主回复含子回复） */
 export function getDiscussionReplyPage(params: PageParam) {
   return requestClient.get<PageResult<OaDiscussionReplyApi.DiscussionReply>>(
     '/oa/discussion-reply/page',

@@ -20,7 +20,7 @@ import { useDetailItemColumns, useDetailSchema } from '../data';
 defineOptions({ name: 'OaSupplyApplyBusinessDetail' });
 
 const props = defineProps<{ id?: number | string }>();
-const route = useRoute(); // 路由
+const route = useRoute();
 const detailLoading = ref(false); // 详情加载中
 const formData = ref<OaSupplyApplyApi.SupplyApply>(); // 申请详情
 

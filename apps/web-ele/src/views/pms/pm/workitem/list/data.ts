@@ -17,7 +17,7 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 
-import WorkItemSelect from '../components/work-item-select.vue';
+import WorkItemSelect from '../components/work-select-modal.vue';
 
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<PmsWorkItemApi.WorkItem>['columns'] {

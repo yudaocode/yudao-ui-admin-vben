@@ -5,7 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import BookingDetail from '../detail/index.vue';
 
-defineOptions({ name: 'OaMeetingRoomBookingDetailDialog' });
+defineOptions({ name: 'OaMeetingRoomBookingDetailModal' });
 
 const detailId = ref<number>(); // 预定编号
 

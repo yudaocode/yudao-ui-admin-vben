@@ -25,7 +25,7 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'OaSealApply' });
 
-const router = useRouter(); // 路由
+const router = useRouter();
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,

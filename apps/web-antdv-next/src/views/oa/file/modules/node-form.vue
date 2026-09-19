@@ -26,7 +26,7 @@ import { useNodeFormSchema } from '../data';
 
 defineOptions({ name: 'OaFileNodeForm' });
 
-const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']);
 
 interface DirectoryNode extends OaFileNodeApi.FileNode {
   children?: DirectoryNode[];

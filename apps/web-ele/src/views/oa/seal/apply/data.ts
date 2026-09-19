@@ -14,7 +14,7 @@ import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
 import { OaSealApplyType, OaSealUseMode } from '#/views/oa/utils/constants';
 
-import SealSelect from '../components/seal-select.vue';
+import SealSelect from '../components/select.vue';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

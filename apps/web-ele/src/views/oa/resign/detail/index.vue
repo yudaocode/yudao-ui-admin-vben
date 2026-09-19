@@ -19,7 +19,7 @@ defineOptions({ name: 'OaResignApplyDetail' });
 
 const props = defineProps<{ id?: number | string }>(); // 离职申请编号，BPM 通过业务编号传入
 
-const route = useRoute(); // 路由参数
+const route = useRoute();
 const detailLoading = ref(false); // 详情的加载中
 const detailData = ref<OaResignApplyApi.ResignApply>(); // 详情数据
 

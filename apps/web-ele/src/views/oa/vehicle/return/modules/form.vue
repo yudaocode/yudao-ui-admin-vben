@@ -20,7 +20,7 @@ import {
 import { $t } from '#/locales';
 import { OA_VEHICLE_RETURN_STATUS } from '#/views/oa/utils/constants';
 
-import OaVehicleApplySelect from '../../apply/components/apply-select.vue';
+import OaVehicleApplySelect from '../../apply/components/select.vue';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);

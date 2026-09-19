@@ -27,7 +27,7 @@ const getTitle = computed(() => {
 });
 
 const rangeTimes = ref<{ endTime?: string; startTime?: string }>({}); // 起止时间，用于计算天数
-/** 按申请起止时间计算天数 */
+/** 按起止时间差计算天数，不足一天向上取整（时间戳单位为毫秒） */
 const days = computed(() => {
   if (!rangeTimes.value.startTime || !rangeTimes.value.endTime) {
     return undefined;

@@ -14,7 +14,7 @@ type UploadRequestOption = any;
 defineOptions({ name: 'OaFileUpload' });
 
 const props = defineProps<{ parentId: number }>(); // 上传目标目录
-const emit = defineEmits(['success']); // 定义 success 事件，用于上传成功后的回调
+const emit = defineEmits(['success']);
 
 const uploadLoading = ref(false); // 文件上传中
 

@@ -28,7 +28,7 @@ const [FormModal, formModalApi] = useVbenModal({
 /** 刷新目录表格 */
 async function getList() {
   const list = await getNoteCategoryList();
-  await nextTick(); // 保证 gridApi 已经初始化
+  await nextTick(); // 特殊：保证 gridApi 已经初始化
   await gridApi.grid.reloadData(list);
 }
 

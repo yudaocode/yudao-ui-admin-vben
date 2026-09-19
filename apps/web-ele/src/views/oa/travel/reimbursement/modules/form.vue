@@ -33,7 +33,7 @@ import {
 } from '#/api/oa/travel/reimbursement';
 import { FileUpload } from '#/components/upload';
 import { $t } from '#/locales';
-import ApplySelectModal from '#/views/oa/travel/apply/components/apply-select-modal.vue';
+import ApplySelectModal from '#/views/oa/travel/apply/components/select-modal.vue';
 
 import { useItemGridColumns } from '../data';
 
