@@ -643,6 +643,7 @@ export type ComponentType =
   | 'Space'
   | 'Switch'
   | 'TextArea'
+  | 'Textarea'
   | 'TimePicker'
   | 'TreeSelect'
   | 'Upload'
@@ -678,6 +679,7 @@ export interface ComponentPropsMap {
   Space: SpaceProps;
   Switch: SwitchProps;
   TextArea: TextAreaProps;
+  Textarea: TextAreaProps;
   TimePicker: TimePickerProps;
   TreeSelect: TreeSelectProps;
   Upload: AdapterUploadProps;
@@ -758,6 +760,8 @@ async function initComponentAdapter() {
     Space,
     Switch,
     TextArea: withDefaultPlaceholder(Textarea, 'input'),
+    // Textarea 为 TextArea 的别名，与 web-antd / web-ele 的组件注册名保持一致
+    Textarea: withDefaultPlaceholder(Textarea, 'input'),
     RichTextarea,
     TimePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
