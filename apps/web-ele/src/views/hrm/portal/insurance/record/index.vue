@@ -5,7 +5,7 @@ import type { HrmPortalInsuranceRecordApi } from '#/api/hrm/portal/insurance/rec
 import { nextTick, onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
 import dayjs from 'dayjs';
@@ -85,6 +85,7 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible" auto-content-height>
+    <DocAlert title="【社保】社保管理" url="https://doc.iocoder.cn/hrm/insurance/" />
     <Grid table-title="社保管理">
       <template #schemeName="{ row }">
         <div>{{ row.schemeName || '-' }}</div>

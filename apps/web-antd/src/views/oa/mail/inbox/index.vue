@@ -6,7 +6,7 @@ import type { OaMailMessageApi } from '#/api/oa/mail/message';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 
 import { message, Spin } from 'ant-design-vue';
@@ -276,6 +276,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
     <div class="h-full overflow-x-auto border border-border bg-card">
       <div class="flex h-full min-w-[1080px]">
         <!-- 左栏：账号及文件夹 -->

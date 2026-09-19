@@ -5,7 +5,7 @@ import { computed, onActivated, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 import { downloadFileFromBlobPart, formatDate } from '@vben/utils';
 
 import { Button, Card, DatePicker, Spin } from 'ant-design-vue';
@@ -136,6 +136,7 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
+    <DocAlert title="【考勤】考勤管理" url="https://doc.iocoder.cn/hrm/attendance/" />
     <Card title="考勤报表">
       <Spin :spinning="loading">
         <div class="mb-4 flex flex-wrap items-center gap-3">

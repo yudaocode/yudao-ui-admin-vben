@@ -4,7 +4,7 @@ import type { OaAnnouncementApi } from '#/api/oa/announcement';
 
 import { ref } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
@@ -122,6 +122,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
     <DetailModal @read="handleRead" />
 
     <Grid table-title="公告列表">

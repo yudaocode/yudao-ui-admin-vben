@@ -4,7 +4,7 @@ import type { OaReimbursementApi } from '#/api/oa/reimbursement';
 
 import { useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 
 import { ElMessage, ElTag } from 'element-plus';
@@ -111,6 +111,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【流程】出差、费用报销" url="https://doc.iocoder.cn/oa/travel-reimbursement/" />
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

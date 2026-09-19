@@ -5,7 +5,7 @@ import type { OaMailProviderApi } from '#/api/oa/mail/provider';
 
 import { ref } from 'vue';
 
-import { alert, Page, useVbenModal } from '@vben/common-ui';
+import { alert, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 
 import { message, Tag } from 'ant-design-vue';
@@ -132,6 +132,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="我的账号">

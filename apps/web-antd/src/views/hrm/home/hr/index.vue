@@ -4,7 +4,7 @@ import type { HrmHomeApi } from '#/api/hrm/home';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Col, Row, Spin } from 'ant-design-vue';
 
@@ -63,6 +63,7 @@ onMounted(() => {
 
 <template>
   <Page>
+    <DocAlert title="【组织】工作台、组织架构" url="https://doc.iocoder.cn/hrm/organization/" />
     <Spin :spinning="loading">
       <div class="mb-4 text-2xl leading-7">HR 工作台</div>
       <Row :gutter="[16, 16]" align="top">

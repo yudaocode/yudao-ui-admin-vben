@@ -4,7 +4,7 @@ import type { HrmHomeApi } from '#/api/hrm/home';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElCol, ElRow } from 'element-plus';
 
@@ -56,6 +56,7 @@ onMounted(() => {
 
 <template>
   <Page>
+    <DocAlert title="【组织】工作台、组织架构" url="https://doc.iocoder.cn/hrm/organization/" />
     <div v-loading="loading">
       <div class="mb-4 text-2xl leading-7">团队工作台</div>
       <ElRow :gutter="16" align="top">

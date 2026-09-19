@@ -4,7 +4,7 @@ import type { OaLeaveApi } from '#/api/oa/leave';
 
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 
 import { ElMessage, ElTag } from 'element-plus';
@@ -103,6 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

@@ -4,7 +4,7 @@ import type { SystemDeptApi } from '#/api/system/dept';
 
 import { computed, onMounted, reactive, ref } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import dayjs from 'dayjs';
@@ -212,6 +212,7 @@ onMounted(() => {
 
 <template>
   <Page>
+    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
     <DetailModal />
 
     <div class="flex h-full w-full gap-4">

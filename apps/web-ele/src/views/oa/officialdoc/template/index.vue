@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaOfficialDocTemplateApi } from '#/api/oa/officialdoc/template';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
@@ -85,6 +85,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【流程】公文管理" url="https://doc.iocoder.cn/oa/official-doc/" />
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="套红模板列表">

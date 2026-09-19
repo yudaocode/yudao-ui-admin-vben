@@ -5,7 +5,7 @@ import type { OaFileNodeApi } from '#/api/oa/file/node';
 import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -298,6 +298,7 @@ function getFileIcon(name: string) {
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【办公】企业云盘" url="https://doc.iocoder.cn/oa/file/" />
     <div class="flex h-full flex-col gap-4">
       <!-- 云盘概览，独立于列表筛选 -->
       <Storage ref="storageRef" />

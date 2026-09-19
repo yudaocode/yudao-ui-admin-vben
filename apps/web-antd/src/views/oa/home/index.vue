@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAccess } from '@vben/access';
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Col, Row } from 'ant-design-vue';
 
@@ -21,6 +21,7 @@ const { hasAccessByCodes } = useAccess();
 
 <template>
   <Page>
+    <DocAlert title="OA 手册（功能开启）" url="https://doc.iocoder.cn/oa/build/" />
     <!-- 各区块独立请求，首页仅负责布局 -->
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
       <OaHomeAttendance />

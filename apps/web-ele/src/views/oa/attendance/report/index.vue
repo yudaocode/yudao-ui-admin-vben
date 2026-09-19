@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import { ContentWrap, Page } from '@vben/common-ui';
+import { ContentWrap, DocAlert, Page } from '@vben/common-ui';
 
 import { ElTabPane, ElTabs } from 'element-plus';
 
@@ -15,6 +15,7 @@ const activeTab = ref('week'); // 当前报表类型
 
 <template>
   <Page>
+    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
     <!-- 考勤报表 -->
     <ContentWrap>
       <ElTabs v-model="activeTab">

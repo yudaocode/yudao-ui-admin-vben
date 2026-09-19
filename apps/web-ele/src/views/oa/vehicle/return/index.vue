@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaVehicleReturnApi } from '#/api/oa/vehicle/return';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 
 import { ElLoading, ElMessage, ElTag } from 'element-plus';
@@ -137,6 +137,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【行政】会议室、车辆管理" url="https://doc.iocoder.cn/oa/administration/meeting-vehicle/" />
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

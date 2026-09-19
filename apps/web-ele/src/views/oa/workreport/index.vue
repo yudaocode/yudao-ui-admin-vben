@@ -4,7 +4,7 @@ import type { OaWorkReportApi } from '#/api/oa/workreport';
 
 import { computed, ref, toRaw } from 'vue';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import dayjs from 'dayjs';
 import { ElLoading, ElMessage, ElTabPane, ElTabs } from 'element-plus';
@@ -193,6 +193,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
     <FormModal @success="handleRefresh" />
 
     <div class="flex h-full flex-col">

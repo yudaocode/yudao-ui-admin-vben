@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaSealApi } from '#/api/oa/seal';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -94,6 +94,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【行政】办公用品、用印管理" url="https://doc.iocoder.cn/oa/administration/supply-seal/" />
     <FormModal @success="handleRefresh" />
     <DetailModal />
 
