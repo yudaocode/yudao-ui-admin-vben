@@ -68,7 +68,7 @@ async function handleSubmit(row: OaResignApplyApi.ResignApply) {
     ElMessage.success('提交成功');
     handleRefresh();
   } catch {
-    //
+    // 取消确认或请求失败
   }
 }
 

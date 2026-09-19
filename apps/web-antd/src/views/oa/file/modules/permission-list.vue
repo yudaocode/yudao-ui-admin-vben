@@ -25,7 +25,7 @@ import PermissionForm from './permission-form.vue';
 
 defineOptions({ name: 'OaFilePermissionList' });
 
-const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']);
 
 const nodeId = ref(0); // 文件节点编号
 const userList = ref<SystemUserApi.User[]>([]); // 用户列表

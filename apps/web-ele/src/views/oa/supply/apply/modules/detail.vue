@@ -5,7 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import Detail from '../detail/index.vue';
 
-defineOptions({ name: 'OaSupplyApplyDetail' });
+defineOptions({ name: 'OaSupplyApplyDetailModal' });
 
 const detailId = ref<number>(); // 申请编号
 

@@ -28,7 +28,7 @@ import Form from './modules/form.vue';
 
 defineOptions({ name: 'OaOfficialDocReceive' });
 
-const router = useRouter(); // 路由
+const router = useRouter();
 const userStore = useUserStore(); // 当前用户
 
 const [FormModal, formModalApi] = useVbenModal({

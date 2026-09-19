@@ -23,7 +23,7 @@ import { usePermissionFormSchema } from '../data';
 
 defineOptions({ name: 'OaFilePermissionForm' });
 
-const emit = defineEmits(['success']); // 定义 success 事件，用于操作成功后的回调
+const emit = defineEmits(['success']);
 
 const formData = ref<OaFilePermissionApi.FilePermission>(); // 表单数据
 const subjectType = ref<number>(OA_FILE_SUBJECT_TYPE.USER); // 当前共享类型

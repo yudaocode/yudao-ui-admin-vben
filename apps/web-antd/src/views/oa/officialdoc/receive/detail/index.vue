@@ -19,7 +19,7 @@ import { useDetailSchema } from '../data';
 defineOptions({ name: 'OaOfficialDocReceiveBusinessDetail' });
 
 const props = defineProps<{ id?: number | string }>();
-const route = useRoute(); // 路由参数
+const route = useRoute();
 const loading = ref(false); // 详情加载状态
 const detail = ref<OaOfficialDocReceiveApi.OfficialDocReceive>({}); // 公文详情
 

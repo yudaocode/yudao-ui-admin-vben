@@ -12,7 +12,7 @@ import { OA_TASK_STATUS } from '#/views/oa/utils/constants';
 defineOptions({ name: 'OaHomeTaskCount' });
 
 const { hasAccessByCodes } = useAccess();
-const { push } = useRouter(); // 路由跳转
+const { push } = useRouter();
 const loading = ref(false); // 区块加载中
 const loadError = ref(false); // 区块加载失败
 const count = ref(0); // 新任务数量

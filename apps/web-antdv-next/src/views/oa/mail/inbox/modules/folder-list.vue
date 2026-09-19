@@ -4,7 +4,7 @@ import type { OaMailFolderApi } from '#/api/oa/mail/folder';
 
 import { Button } from 'antdv-next';
 
-import MailAccountSelect from '../../account/components/mail-account-select.vue';
+import MailAccountSelect from '../../account/components/select.vue';
 
 /** 邮箱文件夹侧栏 */
 defineOptions({ name: 'OaMailFolderList' });

@@ -19,7 +19,7 @@ type Schedule = Awaited<ReturnType<typeof getMySchedulePage>>['list'][number];
 
 const loading = ref(false); // 区块加载中
 const loadError = ref(false); // 区块加载失败
-const { push } = useRouter(); // 路由跳转
+const { push } = useRouter();
 const schedules = ref<Schedule[]>([]); // 当前月份日程
 const selectedDate = ref<Dayjs>(dayjs()); // 当前选中日期
 const selectedDateKey = computed(() => selectedDate.value.format('YYYY-MM-DD')); // 选中日期标识

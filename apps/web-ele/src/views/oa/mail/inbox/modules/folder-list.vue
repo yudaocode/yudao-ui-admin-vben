@@ -2,9 +2,9 @@
 import type { OaMailAccountApi } from '#/api/oa/mail/account';
 import type { OaMailFolderApi } from '#/api/oa/mail/folder';
 
-import { Button } from 'ant-design-vue';
+import { ElButton } from 'element-plus';
 
-import MailAccountSelect from '../../account/components/mail-account-select.vue';
+import MailAccountSelect from '../../account/components/select.vue';
 
 /** 邮箱文件夹侧栏 */
 defineOptions({ name: 'OaMailFolderList' });
@@ -25,7 +25,6 @@ const emit = defineEmits<{
   sync: [];
 }>();
 const accountId = defineModel<number>('accountId'); // 当前账号
-
 </script>
 
 <template>
@@ -36,14 +35,14 @@ const accountId = defineModel<number>('accountId'); // 当前账号
       :disabled="syncing || composing"
       @change="emit('accountChange')"
     />
-    <Button
+    <ElButton
       type="primary"
       class="mt-2 w-full"
       :disabled="!accountId || composing"
       @click="emit('compose')"
     >
       写信
-    </Button>
+    </ElButton>
     <nav class="mt-3 min-h-0 flex-1 overflow-auto">
       <button
         v-for="folder in folders"
@@ -70,10 +69,14 @@ const accountId = defineModel<number>('accountId'); // 当前账号
       </button>
     </nav>
     <div class="mt-auto grid grid-cols-2 gap-2 pt-4 [&>button]:!ml-0 [&>button]:w-full">
-      <Button :loading="syncing" :disabled="!accountId || composing" @click="emit('sync')">
+      <ElButton
+        :loading="syncing"
+        :disabled="!accountId || composing"
+        @click="emit('sync')"
+      >
         同步
-      </Button>
-      <Button @click="emit('settings')">账号设置</Button>
+      </ElButton>
+      <ElButton @click="emit('settings')">账号设置</ElButton>
     </div>
   </aside>
 </template>

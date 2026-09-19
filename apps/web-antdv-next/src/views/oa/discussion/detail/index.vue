@@ -22,7 +22,7 @@ import Vote from './modules/vote.vue';
 
 defineOptions({ name: 'OaDiscussionDetail' });
 
-const route = useRoute(); // 当前路由
+const route = useRoute();
 const loading = ref(false); // 详情加载中
 const likeLoading = ref(false); // 点赞提交中
 const detail = ref<OaDiscussionApi.Discussion>(); // 讨论详情

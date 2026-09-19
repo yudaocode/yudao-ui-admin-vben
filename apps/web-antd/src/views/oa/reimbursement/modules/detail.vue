@@ -5,7 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import ReimbursementDetail from '../detail/index.vue';
 
-defineOptions({ name: 'OaReimbursementDetailDialog' });
+defineOptions({ name: 'OaReimbursementDetailModal' });
 
 const detailId = ref<number>(); // 申请编号
 

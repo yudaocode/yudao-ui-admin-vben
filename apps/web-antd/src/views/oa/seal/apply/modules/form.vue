@@ -16,7 +16,7 @@ import {
 } from '#/api/oa/seal/apply';
 import { $t } from '#/locales';
 
-import SealSelect from '../../components/seal-select.vue';
+import SealSelect from '../../components/select.vue';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);

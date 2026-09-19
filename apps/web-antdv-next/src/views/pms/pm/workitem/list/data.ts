@@ -18,7 +18,7 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 
-import WorkItemSelect from '../components/work-item-select.vue';
+import WorkItemSelect from '../components/work-select-modal.vue';
 import WorkItemLabelSelect from '../label/work-item-label-select.vue';
 
 /** 工作项列表和看板共用的筛选表单 */

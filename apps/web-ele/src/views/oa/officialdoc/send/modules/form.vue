@@ -19,7 +19,7 @@ import {
 import { getOfficialDocTemplate } from '#/api/oa/officialdoc/template';
 import { $t } from '#/locales';
 
-import OfficialDocPreview from '../../components/official-doc-preview.vue';
+import OfficialDocPreview from '../../components/preview.vue';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);

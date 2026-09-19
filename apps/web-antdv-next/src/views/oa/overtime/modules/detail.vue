@@ -5,7 +5,7 @@ import { useVbenModal } from '@vben/common-ui';
 
 import OvertimeDetail from '../detail/index.vue';
 
-defineOptions({ name: 'OaOvertimeApplyDetailDialog' });
+defineOptions({ name: 'OaOvertimeApplyDetailModal' });
 
 const detailId = ref<number>(); // 申请编号
 

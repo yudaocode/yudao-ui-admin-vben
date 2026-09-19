@@ -17,7 +17,7 @@ type Attendance = Awaited<
   ReturnType<typeof getMyTodayAttendanceList>
 >[number];
 
-const { push } = useRouter(); // 路由跳转
+const { push } = useRouter();
 const loading = ref(false); // 区块加载中
 const loadError = ref(false); // 区块加载失败
 const clockLoading = ref(false); // 打卡提交中

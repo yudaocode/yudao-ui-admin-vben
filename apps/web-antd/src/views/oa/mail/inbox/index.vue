@@ -27,14 +27,14 @@ import {
   OA_MAIL_FOLDER_KEY,
 } from '#/views/oa/utils/constants';
 
-import MailFolderList from './modules/mail-folder-list.vue';
-import MailMessageDetail from './modules/mail-message-detail.vue';
-import MailMessageForm from './modules/mail-message-form.vue';
-import MailMessageList from './modules/mail-message-list.vue';
+import MailFolderList from './modules/folder-list.vue';
+import MailMessageDetail from './modules/message-detail.vue';
+import MailMessageForm from './modules/message-form.vue';
+import MailMessageList from './modules/message-list.vue';
 
 defineOptions({ name: 'OaMailInbox' });
 
-const router = useRouter(); // 路由
+const router = useRouter();
 const loading = ref(false); // 列表加载中
 const detailLoading = ref(false); // 详情加载中
 const syncing = ref(false); // 同步中

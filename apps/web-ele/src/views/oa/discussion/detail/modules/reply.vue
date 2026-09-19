@@ -47,7 +47,7 @@ const inlineContent = ref(''); // 楼层内回复内容
 const submitLoading = ref(false); // 回复提交中
 const replyLoading = ref(false); // 回复加载中
 const replyList = ref<OaDiscussionReplyApi.DiscussionReply[]>([]); // 回复列表
-const replyTotal = ref(0); // 回复总数
+const replyTotal = ref(0); // 主回复总数，用于楼层分页
 const replyContent = ref(''); // 回复内容
 const replyVisible = ref(false); // 主回复输入框是否显示
 const replyInputRef = ref(); // 主回复输入框
@@ -207,7 +207,7 @@ async function handleDeleteReply(id: number) {
     }
     emit('success');
   } catch {
-    // 取消删除
+    // 取消确认或请求失败
   }
 }
 

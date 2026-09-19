@@ -16,14 +16,14 @@ import { getOfficialDocTemplate } from '#/api/oa/officialdoc/template';
 import { useDescription } from '#/components/description';
 import { FileUpload } from '#/components/upload';
 
-import OfficialDocPreview from '../../components/official-doc-preview.vue';
+import OfficialDocPreview from '../../components/preview.vue';
 import { useDetailSchema } from '../data';
 import Form from '../modules/form.vue';
 
 defineOptions({ name: 'OaOfficialDocSendBusinessDetail' });
 
 const props = defineProps<{ id?: number | string }>();
-const route = useRoute(); // 路由参数
+const route = useRoute();
 const userStore = useUserStore(); // 当前用户
 const loading = ref(false); // 详情加载状态
 const detail = ref<OaOfficialDocSendApi.OfficialDocSend>({}); // 公文详情
