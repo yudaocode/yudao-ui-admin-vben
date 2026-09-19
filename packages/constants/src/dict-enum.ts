@@ -372,6 +372,60 @@ const PMS_DICT = {
   PMS_KNOWLEDGE_LIBRARY_MEMBER_LEVEL: 'pms_knowledge_library_member_level', // PMS 知识库成员等级
 } as const;
 
+/** ========== OA - 办公自动化模块 ========== */
+const OA_DICT = {
+  OA_ANNOUNCEMENT_TYPE: 'oa_announcement_type', // OA 公告类型
+  OA_APPLY_URGENCY: 'oa_apply_urgency', // OA 申请紧急程度
+  OA_ATTENDANCE_STATUS: 'oa_attendance_status', // OA 考勤状态
+  OA_ATTENDANCE_TYPE: 'oa_attendance_type', // OA 考勤类型
+  OA_DISCUSSION_TYPE: 'oa_discussion_type', // OA 讨论类型
+  OA_EXPENSE_TYPE: 'oa_expense_type', // OA 报销费用类型
+  OA_FILE_CATEGORY: 'oa_file_category', // OA 云盘文件分类
+  OA_FILE_PERMISSION_LEVEL: 'oa_file_permission_level', // OA 云盘权限等级
+  OA_FILE_SUBJECT_TYPE: 'oa_file_subject_type', // OA 云盘共享主体类型
+  OA_LEAVE_TYPE: 'oa_leave_type', // OA 请假类型
+  OA_MEETING_ROOM_BOOKING_SCOPE: 'oa_meeting_room_booking_scope', // OA 会议室预定范围
+  OA_MEETING_ROOM_EQUIPMENT: 'oa_meeting_room_equipment', // OA 会议室设备
+  OA_MEETING_ROOM_REMINDER_TYPE: 'oa_meeting_room_reminder_type', // OA 会议室提醒方式
+  OA_MEETING_ROOM_STATUS: 'oa_meeting_room_status', // OA 会议室状态
+  OA_MEETING_ROOM_TYPE: 'oa_meeting_room_type', // OA 会议室类型
+  OA_MEETING_ROOM_USE_STATUS: 'oa_meeting_room_use_status', // OA 会议室使用状态
+  OA_NOTE_TYPE: 'oa_note_type', // OA 笔记类型
+  OA_OFFICIAL_DOC_HANDLE_STATUS: 'oa_official_doc_handle_status', // OA 公文收文办理状态
+  OA_OFFICIAL_DOC_PUBLIC_CATEGORY: 'oa_official_doc_public_category', // OA 公文公开类别
+  OA_OFFICIAL_DOC_RECEIVE_TYPE: 'oa_official_doc_receive_type', // OA 公文收文类型
+  OA_OFFICIAL_DOC_SECRET_LEVEL: 'oa_official_doc_secret_level', // OA 公文密级
+  OA_OFFICIAL_DOC_SEPARATOR_TYPE: 'oa_official_doc_separator_type', // OA 公文模板分隔线
+  OA_OFFICIAL_DOC_URGENCY_LEVEL: 'oa_official_doc_urgency_level', // OA 公文紧急程度
+  OA_OVERTIME_TYPE: 'oa_overtime_type', // OA 加班类型
+  OA_PAY_STATUS: 'oa_pay_status', // OA 支付状态
+  OA_PLAN_STATUS: 'oa_plan_status', // OA 计划状态
+  OA_PLAN_TYPE: 'oa_plan_type', // OA 计划类型
+  OA_PRIORITY: 'oa_priority', // OA 优先级
+  OA_REIMBURSE_STATUS: 'oa_reimburse_status', // OA 报销状态
+  OA_REIMBURSEMENT_PAYMENT_METHOD: 'oa_reimbursement_payment_method', // OA 报销支付方式
+  OA_SCHEDULE_TYPE: 'oa_schedule_type', // OA 日程类型
+  OA_SEAL_APPLY_TYPE: 'oa_seal_apply_type', // OA 用印申请类型
+  OA_SEAL_CATEGORY: 'oa_seal_category', // OA 印章分类
+  OA_SEAL_STATUS: 'oa_seal_status', // OA 印章状态
+  OA_SEAL_TYPE: 'oa_seal_type', // OA 印章类型
+  OA_SEAL_USE_MODE: 'oa_seal_use_mode', // OA 用印方式
+  OA_SEAL_USE_STATUS: 'oa_seal_use_status', // OA 用印状态
+  OA_SUPPLY_CATEGORY: 'oa_supply_category', // OA 办公用品分类
+  OA_SUPPLY_ITEM_STATUS: 'oa_supply_item_status', // OA 办公用品明细状态
+  OA_SUPPLY_MANAGE_TYPE: 'oa_supply_manage_type', // OA 办公用品管理类型
+  OA_SUPPLY_PICKUP_METHOD: 'oa_supply_pickup_method', // OA 办公用品领取方式
+  OA_SUPPLY_USE_TYPE: 'oa_supply_use_type', // OA 办公用品使用类型
+  OA_TASK_STATUS: 'oa_task_status', // OA 任务状态
+  OA_TASK_TYPE: 'oa_task_type', // OA 任务类型
+  OA_TRANSPORT_TYPE: 'oa_transport_type', // OA 交通方式
+  OA_VEHICLE_CATEGORY: 'oa_vehicle_category', // OA 车辆分类
+  OA_VEHICLE_RETURN_STATUS: 'oa_vehicle_return_status', // OA 车辆归还状态
+  OA_VEHICLE_STATUS: 'oa_vehicle_status', // OA 车辆状态
+  OA_WORK_REPORT_STATUS: 'oa_work_report_status', // OA 工作汇报状态
+  OA_WORK_REPORT_TYPE: 'oa_work_report_type', // OA 工作汇报类型
+} as const;
+
 /** 字典类型枚举 - 统一导出 */
 const DICT_TYPE = {
   ...AI_DICT,
@@ -384,6 +438,7 @@ const DICT_TYPE = {
   ...IOT_DICT,
   ...HRM_DICT,
   ...MES_DICT,
+  ...OA_DICT,
   ...WMS_DICT,
   ...MEMBER_DICT,
   ...MP_DICT,
