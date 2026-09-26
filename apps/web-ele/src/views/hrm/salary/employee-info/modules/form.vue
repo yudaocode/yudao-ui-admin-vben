@@ -4,7 +4,7 @@ import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 
-import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -193,10 +193,15 @@ function getSelectedOptionDefinitions(): HrmSalaryChangeTemplateApi.ChangeOption
     (item) => item.id === selectedTemplateId.value,
   );
   if (template?.options?.length) {
-    return template.options.map((item) => ({
-      code: item.code,
-      name: item.name,
-    }));
+    const enabledOptions = new Map(
+      salaryOptionList.value.map((item) => [item.code, item]),
+    );
+    return template.options
+      .filter((item) => enabledOptions.has(item.code))
+      .map((item) => ({
+        code: item.code,
+        name: enabledOptions.get(item.code)!.name,
+      }));
   }
   return salaryOptionList.value.map((item) => ({
     code: item.code,
@@ -236,7 +241,7 @@ function selectDefaultTemplate() {
 
 async function loadSimpleData() {
   const [options, templates, adjustmentMinEffectDate] = await Promise.all([
-    getSalaryOptionSimpleList(),
+    getSalaryOptionSimpleList(true),
     getSalaryChangeTemplateList(),
     getSalaryAdjustmentMinEffectDate(),
   ]);
@@ -363,9 +368,8 @@ const [Modal, modalApi] = useVbenModal({
 
 watch(
   salaryOptionRows,
-  async (rows) => {
-    await nextTick();
-    await optionGridApi.grid.reloadData(rows);
+  (rows) => {
+    optionGridApi.setGridOptions({ data: rows });
   },
   { immediate: true },
 );
