@@ -1,4 +1,3 @@
-<!-- 值输入组件 -->
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
@@ -39,6 +38,13 @@ interface Emits {
 const localValue = useVModel(props, 'modelValue', emit, {
   defaultValue: '',
 });
+
+const isRangeOperator = computed(() =>
+  [
+    IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value,
+    IotRuleSceneTriggerConditionParameterOperatorEnum.NOT_BETWEEN.value,
+  ].some((operator) => operator === props.operator),
+);
 
 const rangeStart = ref(''); // 范围开始值
 const rangeEnd = ref(''); // 范围结束值
@@ -148,10 +154,7 @@ function handleNumberChange(value: any) {
 /** 根据外部值同步内部输入态 */
 function syncInternalValue(value = '') {
   const normalized = value;
-  if (
-    props.operator ===
-    IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value
-  ) {
+  if (isRangeOperator.value) {
     const [start = '', end = ''] = normalized.split(',');
     rangeStart.value = start;
     rangeEnd.value = end;
@@ -232,13 +235,7 @@ watch(
     </Select>
 
     <!-- 范围输入 (between 操作符) -->
-    <div
-      v-else-if="
-        operator ===
-        IotRuleSceneTriggerConditionParameterOperatorEnum.BETWEEN.value
-      "
-      class="w-full! flex items-center gap-2"
-    >
+    <div v-else-if="isRangeOperator" class="w-full! flex items-center gap-2">
       <Input
         v-model:value="rangeStart"
         :type="getInputType()"
