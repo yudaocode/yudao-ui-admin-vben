@@ -48,6 +48,7 @@ import {
 } from '#/views/pms/pm/utils/constants';
 import { getWorkItemStatusTagType } from '#/views/pms/pm/utils/format';
 
+import WorkItemSelect from '../components/work-item-select.vue';
 import WorkItemForm from '../list/modules/form.vue';
 import WorkItemStatusSelect from '../status/work-item-status-select.vue';
 import WorkItemWorkLogList from '../worklog/worklog-list.vue';
