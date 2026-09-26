@@ -87,7 +87,12 @@ export function getFileNameFromUrl(url: null | string | undefined): string {
     // 如果 URL 解析失败，尝试从字符串中提取
     const cleanUrl = url.split(/[?#]/)[0] || '';
     const parts = cleanUrl.split('/');
-    return parts[parts.length - 1] || 'unknown';
+    const fileName = parts[parts.length - 1] || 'unknown';
+    try {
+      return decodeURIComponent(fileName);
+    } catch {
+      return fileName;
+    }
   }
 }
 
