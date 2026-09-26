@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
+import { isServerHost } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 
@@ -94,7 +95,10 @@ function useConnectionFormSchema(
       componentProps: {
         placeholder: '请输入服务器域名',
       },
-      rules: 'required',
+      rules: z
+        .string()
+        .min(1, '请输入服务器域名')
+        .refine(isServerHost, '请输入有效的服务器域名或 IP 地址'),
     },
     {
       fieldName: `${protocol}.port`,
