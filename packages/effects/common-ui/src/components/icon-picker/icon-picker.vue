@@ -147,9 +147,7 @@ const searchInputProps = computed(() => {
 
 function updateCurrentSelect(v: string) {
   currentSelect.value = v;
-  if (props.modelValueProp === 'modelValue') {
-    modelValue.value = v;
-  }
+  modelValue.value = v;
   const eventKey = `onUpdate:${props.modelValueProp}`;
   if (attrs[eventKey] && isFunction(attrs[eventKey])) {
     attrs[eventKey](v);
