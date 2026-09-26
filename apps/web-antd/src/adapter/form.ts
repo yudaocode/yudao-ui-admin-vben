@@ -18,6 +18,10 @@ async function initSetupVbenForm() {
 
       // 一些组件是 v-model:checked 或者 v-model:fileList
       modelPropNameMap: {
+        ApiCascader: 'modelValue',
+        ApiSelect: 'modelValue',
+        ApiTreeSelect: 'modelValue',
+        IconPicker: 'modelValue',
         Checkbox: 'checked',
         Radio: 'checked',
         Switch: 'checked',
