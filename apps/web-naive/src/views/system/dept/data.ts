@@ -37,10 +37,15 @@ export function useFormSchema(): VbenFormSchema[] {
         clearable: true,
         api: async () => {
           const data = await getDeptList();
-          data.unshift({
-            id: 0,
-            name: '顶级部门',
-          });
+          if (
+            data.length === 0 ||
+            data.some((dept: SystemDeptApi.Dept) => dept.parentId === 0)
+          ) {
+            data.unshift({
+              id: 0,
+              name: '顶级部门',
+            });
+          }
           return handleTree(data);
         },
         labelField: 'name',
