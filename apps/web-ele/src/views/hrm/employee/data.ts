@@ -74,7 +74,7 @@ export function useCreateFromUserGridColumns(): VxeTableGridOptions<any>['column
     },
     {
       field: 'postName',
-      title: '职位',
+      title: '岗位',
       width: 170,
       slots: { default: 'postName' },
     },
@@ -516,10 +516,10 @@ export function usePositionChangeFormSchema(
     },
     {
       fieldName: 'newPostLevel',
-      label: `${postLabel}职级`,
+      label: `${postLabel}岗位职级`,
       component: 'Input',
       componentProps: {
-        placeholder: '未调整则保持当前职级',
+        placeholder: '未调整则保持当前岗位职级',
         clearable: true,
       },
     },
@@ -593,7 +593,7 @@ export function useFullTimeFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'newPostLevel',
-      label: '转全职后职级',
+      label: '转全职后岗位职级',
       component: 'Input',
       componentProps: { clearable: true },
     },
@@ -935,7 +935,7 @@ export function useEmployeeEntryFormSchema(
     },
     {
       fieldName: 'postName',
-      label: '职位名称',
+      label: '岗位',
       component: 'Input',
       componentProps: { maxlength: 255, clearable: true },
     },
@@ -1087,7 +1087,7 @@ export function useEmployeeEntryFormSchema(
 export function useHeaderSchema() {
   return [
     { field: 'deptName', label: '所属部门' },
-    { field: 'postName', label: '职位名称' },
+    { field: 'postName', label: '岗位' },
     { field: 'jobNumber', label: '工号' },
     { field: 'mobile', label: '手机号' },
     { field: 'leaderEmployeeName', label: '直属上级' },

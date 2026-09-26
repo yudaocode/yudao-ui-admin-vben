@@ -24,7 +24,7 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
       <ElDescriptionsItem label="所属部门">
         {{ employee.deptName || '-' }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="职位名称">
+      <ElDescriptionsItem label="岗位">
         {{ employee.postName || '-' }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="岗位职级">

@@ -183,7 +183,7 @@ async function removeRow(index: number) {
         <EmployeeSelect v-model="row.leaderEmployeeId" />
       </template>
       <template #postName="{ row }">
-        <ElInput v-model="row.postName" placeholder="请输入职位" />
+        <ElInput v-model="row.postName" placeholder="请输入岗位" />
       </template>
       <template #entryTime="{ row }">
         <ElDatePicker
