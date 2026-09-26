@@ -29,6 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'menuIds',
+      modelPropName: 'modelValue',
       label: '菜单权限',
       component: 'Input',
       formItemClass: 'items-start',
