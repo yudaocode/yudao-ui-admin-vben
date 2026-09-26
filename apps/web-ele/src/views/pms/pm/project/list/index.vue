@@ -131,7 +131,10 @@ function getProjectSceneByRoute() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema(),
+    schema: useGridFormSchema(
+      () => groupList.value,
+      () => isParticipatedScene.value,
+    ),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -186,19 +189,6 @@ async function getGroupList() {
   const allGroup = groupList.value.find(
     (group) => group.type === PmsProjectGroupType.ALL,
   );
-  gridApi.formApi.updateSchema([
-    {
-      fieldName: 'groupId',
-      componentProps: {
-        allowClear: true,
-        options: groupList.value.map((group) => ({
-          label: `${group.name}（${group.projectCount}）`,
-          value: group.id!,
-        })),
-        placeholder: '请选择个人分组',
-      },
-    },
-  ]);
   await gridApi.formApi.setFieldValue('groupId', allGroup?.id);
 }
 
@@ -460,8 +450,10 @@ watch(
               <template #dropdown>
                 <ElDropdownMenu>
                   <ElDropdownItem
-                    v-if="project.adminStatus"
-                    v-access:code="['pms:pm:project:update']"
+                    v-if="
+                      project.adminStatus &&
+                      hasAccessByCodes(['pms:pm:project:update'])
+                    "
                     command="config"
                   >
                     项目设置
@@ -477,8 +469,10 @@ watch(
                     </ElDropdownItem>
                   </template>
                   <ElDropdownItem
-                    v-if="project.exitStatus"
-                    v-access:code="['pms:pm:project-member:query']"
+                    v-if="
+                      project.exitStatus &&
+                      hasAccessByCodes(['pms:pm:project-member:query'])
+                    "
                     command="exit"
                     divided
                   >
@@ -594,8 +588,9 @@ watch(
           <template #dropdown>
             <ElDropdownMenu>
               <ElDropdownItem
-                v-if="row.adminStatus"
-                v-access:code="['pms:pm:project:update']"
+                v-if="
+                  row.adminStatus && hasAccessByCodes(['pms:pm:project:update'])
+                "
                 command="config"
               >
                 项目设置
@@ -611,8 +606,10 @@ watch(
                 </ElDropdownItem>
               </template>
               <ElDropdownItem
-                v-if="row.exitStatus"
-                v-access:code="['pms:pm:project-member:query']"
+                v-if="
+                  row.exitStatus &&
+                  hasAccessByCodes(['pms:pm:project-member:query'])
+                "
                 command="exit"
                 divided
               >

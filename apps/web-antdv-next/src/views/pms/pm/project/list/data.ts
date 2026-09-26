@@ -1,6 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsProjectApi } from '#/api/pms/pm/project';
+import type { PmsProjectGroupApi } from '#/api/pms/pm/project/group';
 
 import { markRaw } from 'vue';
 
@@ -13,7 +14,10 @@ import {
 import { UserSelect } from '#/views/system/user/components';
 
 /** 列表的搜索表单 */
-export function useGridFormSchema(): VbenFormSchema[] {
+export function useGridFormSchema(
+  getGroups: () => PmsProjectGroupApi.ProjectGroup[],
+  isParticipatedScene: () => boolean,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'name',
@@ -39,14 +43,18 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'groupId',
       label: '个人分组',
       component: 'Select',
-      componentProps: {
+      // 从响应式数据读取，避免表单重建时丢失动态回填的选项。
+      componentProps: () => ({
         allowClear: true,
+        options: getGroups().map((group) => ({
+          label: `${group.name}（${group.projectCount}）`,
+          value: group.id!,
+        })),
         placeholder: '请选择个人分组',
-      },
+      }),
       dependencies: {
-        // 默认隐藏，页面根据项目范围通过 updateSchema 控制显隐
         triggerFields: ['name'],
-        if: () => false,
+        if: isParticipatedScene,
       },
     },
   ];

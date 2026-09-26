@@ -127,7 +127,10 @@ function getProjectSceneByRoute() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useGridFormSchema(),
+    schema: useGridFormSchema(
+      () => groupList.value,
+      () => isParticipatedScene.value,
+    ),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -182,19 +185,6 @@ async function getGroupList() {
   const allGroup = groupList.value.find(
     (group) => group.type === PmsProjectGroupType.ALL,
   );
-  gridApi.formApi.updateSchema([
-    {
-      fieldName: 'groupId',
-      componentProps: {
-        allowClear: true,
-        options: groupList.value.map((group) => ({
-          label: `${group.name}（${group.projectCount}）`,
-          value: group.id!,
-        })),
-        placeholder: '请选择个人分组',
-      },
-    },
-  ]);
   await gridApi.formApi.setFieldValue('groupId', allGroup?.id);
 }
 
@@ -459,8 +449,10 @@ watch(
                     "
                   >
                     <Menu.Item
-                      v-if="project.adminStatus"
-                      v-access:code="['pms:pm:project:update']"
+                      v-if="
+                        project.adminStatus &&
+                        hasAccessByCodes(['pms:pm:project:update'])
+                      "
                       key="config"
                     >
                       项目设置
@@ -476,8 +468,10 @@ watch(
                     </template>
                     <Menu.Divider v-if="project.exitStatus" />
                     <Menu.Item
-                      v-if="project.exitStatus"
-                      v-access:code="['pms:pm:project-member:query']"
+                      v-if="
+                        project.exitStatus &&
+                        hasAccessByCodes(['pms:pm:project-member:query'])
+                      "
                       key="exit"
                     >
                       退出项目
@@ -586,8 +580,9 @@ watch(
           <template #popupRender>
             <Menu @click="({ key }: any) => handleProjectCommand(key, row)">
               <Menu.Item
-                v-if="row.adminStatus"
-                v-access:code="['pms:pm:project:update']"
+                v-if="
+                  row.adminStatus && hasAccessByCodes(['pms:pm:project:update'])
+                "
                 key="config"
               >
                 项目设置
@@ -603,8 +598,10 @@ watch(
               </template>
               <Menu.Divider v-if="row.exitStatus" />
               <Menu.Item
-                v-if="row.exitStatus"
-                v-access:code="['pms:pm:project-member:query']"
+                v-if="
+                  row.exitStatus &&
+                  hasAccessByCodes(['pms:pm:project-member:query'])
+                "
                 key="exit"
               >
                 退出项目
