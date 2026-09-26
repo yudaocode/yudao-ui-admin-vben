@@ -6,7 +6,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { nextTick, reactive, ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -156,7 +156,7 @@ const [Modal, modalApi] = useVbenModal({
     optionGridApi.setLoading(true);
     try {
       const [options, adjustmentMinEffectDate, deptList] = await Promise.all([
-        getSalaryOptionSimpleList(),
+        getSalaryOptionSimpleList(true),
         getSalaryAdjustmentMinEffectDate(),
         getSimpleDeptList(),
       ]);
@@ -178,9 +178,8 @@ const [Modal, modalApi] = useVbenModal({
 
 watch(
   () => formData.value.salaryOptions,
-  async (rows) => {
-    await nextTick();
-    await optionGridApi.grid.reloadData(rows || []);
+  (rows) => {
+    optionGridApi.setGridOptions({ data: rows || [] });
   },
   { immediate: true },
 );
