@@ -31,7 +31,7 @@ const platformOptions = [
     value: 'common',
   },
   {
-    label: 'DALL3 绘画',
+    label: 'OpenAI 绘画',
     value: AiPlatformEnum.OPENAI,
   },
   {

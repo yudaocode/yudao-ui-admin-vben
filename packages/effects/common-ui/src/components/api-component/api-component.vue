@@ -89,13 +89,24 @@ const getOptions = computed(() => {
 });
 
 const bindProps = computed(() => {
+  const modelProp = props.modelPropName;
+  const updateEvent = `onUpdate:${modelProp}`;
+  // 表单适配器（antd）用 v-model:value，不能吞掉父级 onUpdate，否则选中后字段仍是 undefined
+  const parentValue = attrs[modelProp];
+  const parentUpdate = attrs[updateEvent];
+  const currentValue =
+    parentValue === undefined ? unref(modelValue) : parentValue;
+
   return {
-    [props.modelPropName]: unref(modelValue),
+    ...objectOmit(attrs, [modelProp, updateEvent]),
     [props.optionsPropName]: unref(getOptions),
-    [`onUpdate:${props.modelPropName}`]: (val: string) => {
+    [modelProp]: currentValue,
+    [updateEvent]: (val: any) => {
       modelValue.value = val;
+      if (isFunction(parentUpdate)) {
+        parentUpdate(val);
+      }
     },
-    ...objectOmit(attrs, [`onUpdate:${props.modelPropName}`]),
     ...(props.visibleEvent
       ? {
           [props.visibleEvent]: handleFetchForVisible,

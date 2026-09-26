@@ -51,7 +51,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'url',
       label: '自定义 API URL',
       componentProps: {
-        placeholder: '请输入自定义 API URL',
+        placeholder: '需含 /v1，如 https://api.aixoras.com/v1',
       },
     },
     {

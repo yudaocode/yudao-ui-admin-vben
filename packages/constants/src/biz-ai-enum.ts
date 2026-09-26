@@ -9,6 +9,7 @@ export const AiPlatformEnum = {
   XING_HUO: 'XingHuo', // 讯飞
   SiliconFlow: 'SiliconFlow', // 硅基流动
   OPENAI: 'OpenAI',
+  AZURE_OPENAI: 'AzureOpenAI', // OpenAI 微软
   Ollama: 'Ollama',
   STABLE_DIFFUSION: 'StableDiffusion', // Stability AI
   MIDJOURNEY: 'Midjourney', // Midjourney
@@ -31,6 +32,10 @@ export interface ImageModel {
 }
 
 export const OtherPlatformEnum: ImageModel[] = [
+  {
+    key: AiPlatformEnum.OPENAI,
+    name: 'OpenAI / GPT Image',
+  },
   {
     key: AiPlatformEnum.TONG_YI,
     name: '通义万相',
@@ -241,7 +246,23 @@ export const StableDiffusionClipGuidancePresets: ImageModel[] = [
   },
 ];
 
+/** OpenAI 绘图预设（含 GPT Image / DALL·E）；实际可选以后台配置的 IMAGE 模型为准 */
 export const Dall3Models: ImageModel[] = [
+  {
+    key: 'gpt-image-1',
+    name: 'GPT Image 1',
+    image: `/static/imgs/ai/dall2.jpg`,
+  },
+  {
+    key: 'gpt-image-1.5',
+    name: 'GPT Image 1.5',
+    image: `/static/imgs/ai/dall2.jpg`,
+  },
+  {
+    key: 'gpt-image-2',
+    name: 'GPT Image 2',
+    image: `/static/imgs/ai/dall2.jpg`,
+  },
   {
     key: 'dall-e-3',
     name: 'DALL·E 3',
@@ -253,6 +274,11 @@ export const Dall3Models: ImageModel[] = [
     image: `/static/imgs/ai/dall3.jpg`,
   },
 ];
+
+/** 判断是否为 GPT Image 系列（含中转自定义标识如 gpt-image-2.5-flare） */
+export function isGptImageModel(model?: string) {
+  return !!model && model.toLowerCase().includes('gpt-image');
+}
 
 export const Dall3StyleList: ImageModel[] = [
   {
@@ -372,6 +398,70 @@ export const Dall3SizeList: ImageSize[] = [
     style: 'width: 50px; height: 30px;background-color: #dcdcdc;',
   },
 ];
+
+/** DALL·E 2 尺寸 */
+export const Dall2SizeList: ImageSize[] = [
+  {
+    key: '256x256',
+    name: '1:1',
+    width: '256',
+    height: '256',
+    style: 'width: 24px; height: 24px;background-color: #dcdcdc;',
+  },
+  {
+    key: '512x512',
+    name: '1:1',
+    width: '512',
+    height: '512',
+    style: 'width: 28px; height: 28px;background-color: #dcdcdc;',
+  },
+  {
+    key: '1024x1024',
+    name: '1:1',
+    width: '1024',
+    height: '1024',
+    style: 'width: 30px; height: 30px;background-color: #dcdcdc;',
+  },
+];
+
+/** GPT Image 尺寸（gpt-image-1 / 1.5 / 2） */
+export const GptImageSizeList: ImageSize[] = [
+  {
+    key: '1024x1024',
+    name: '1:1',
+    width: '1024',
+    height: '1024',
+    style: 'width: 30px; height: 30px;background-color: #dcdcdc;',
+  },
+  {
+    key: '1536x1024',
+    name: '3:2',
+    width: '1536',
+    height: '1024',
+    style: 'width: 45px; height: 30px;background-color: #dcdcdc;',
+  },
+  {
+    key: '1024x1536',
+    name: '2:3',
+    width: '1024',
+    height: '1536',
+    style: 'width: 30px; height: 45px;background-color: #dcdcdc;',
+  },
+];
+
+/** 按模型返回可用尺寸 */
+export function getOpenAiImageSizeList(model?: string): ImageSize[] {
+  if (!model) {
+    return Dall3SizeList;
+  }
+  if (isGptImageModel(model)) {
+    return GptImageSizeList;
+  }
+  if (model === 'dall-e-2') {
+    return Dall2SizeList;
+  }
+  return Dall3SizeList;
+}
 
 // ========== 【写作 UI】相关的枚举 ==========
 

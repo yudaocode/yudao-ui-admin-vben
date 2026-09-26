@@ -30,7 +30,7 @@ const selectHotWord = ref<string>(''); // 选中的热词
 const prompt = ref<string>(''); // 提示词
 const width = ref<number>(512); // 图片宽度
 const height = ref<number>(512); // 图片高度
-const otherPlatform = ref<string>(AiPlatformEnum.TONG_YI); // 平台
+const otherPlatform = ref<string>(AiPlatformEnum.OPENAI); // 平台（默认 OpenAI / GPT Image）
 const platformModels = ref<AiModelModelApi.Model[]>([]); // 模型列表
 const modelId = ref<number>(); // 选中的模型
 

@@ -1,19 +1,20 @@
-<!-- dall3 -->
+<!-- OpenAI / GPT Image / DALL·E -->
 <script setup lang="ts">
 import type { ImageModel, ImageSize } from '@vben/constants';
 
 import type { AiImageApi } from '#/api/ai/image';
 import type { AiModelModelApi } from '#/api/ai/model/model';
 
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { confirm } from '@vben/common-ui';
 import {
   AiPlatformEnum,
   Dall3Models,
-  Dall3SizeList,
   Dall3StyleList,
+  getOpenAiImageSizeList,
   ImageHotWords,
+  isGptImageModel,
 } from '@vben/constants';
 
 import { Button, Image, message, Space, Textarea } from 'ant-design-vue';
@@ -28,114 +29,142 @@ const props = defineProps({
 }); // 接收父组件传入的模型列表
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
 
-const prompt = ref<string>(''); // 提示词
-const drawIn = ref<boolean>(false); // 生成中
-const selectHotWord = ref<string>(''); // 选中的热词
-const selectModel = ref<string>('dall-e-3'); // 模型
-const selectSize = ref<string>('1024x1024'); // 选中 size
-const style = ref<string>('vivid'); // style 样式
+const prompt = ref<string>('');
+const drawIn = ref<boolean>(false);
+const selectHotWord = ref<string>('');
+const selectModel = ref<string>('');
+const selectSize = ref<string>('1024x1024');
+const style = ref<string>('vivid');
 
-/** 选择热词 */
+/** 后台已配置的 OpenAI 图像模型 */
+const openaiModels = computed(() =>
+  props.models.filter((item) => item.platform === AiPlatformEnum.OPENAI),
+);
+
+/**
+ * 展示列表：优先用后台配置（可含 gpt-image-2.5-flare 等中转标识）；
+ * 未配置时回退到预设，便于提示需要先在「模型配置」里加 IMAGE 模型
+ */
+const displayModels = computed(() => {
+  if (openaiModels.value.length > 0) {
+    return openaiModels.value.map((m) => {
+      const meta =
+        Dall3Models.find((d) => d.key === m.model) ||
+        Dall3Models.find(
+          (d) =>
+            isGptImageModel(m.model) &&
+            isGptImageModel(d.key) &&
+            d.key === 'gpt-image-2',
+        ) ||
+        Dall3Models.find(
+          (d) => isGptImageModel(m.model) && isGptImageModel(d.key),
+        );
+      return {
+        key: m.model,
+        name: m.name || meta?.name || m.model,
+        image: meta?.image || `/static/imgs/ai/dall2.jpg`,
+      } as ImageModel;
+    });
+  }
+  return Dall3Models;
+});
+
+const sizeList = computed(() => getOpenAiImageSizeList(selectModel.value));
+
+/** 仅 DALL·E 3 支持 vivid/natural 风格 */
+const showStyle = computed(() => selectModel.value === 'dall-e-3');
+
+watch(
+  displayModels,
+  (list) => {
+    if (list.length === 0) {
+      return;
+    }
+    const exists = list.some((item) => item.key === selectModel.value);
+    if (!exists) {
+      handleModelClick(list[0]!);
+    }
+  },
+  { immediate: true },
+);
+
 async function handleHotWordClick(hotWord: string) {
-  // 情况一：取消选中
   if (selectHotWord.value === hotWord) {
     selectHotWord.value = '';
     return;
   }
-  // 情况二：选中
   selectHotWord.value = hotWord;
   prompt.value = hotWord;
 }
 
-/** 选择 model 模型 */
 async function handleModelClick(model: ImageModel) {
   selectModel.value = model.key;
-  // 可以在这里添加模型特定的处理逻辑
-  // 例如，如果未来需要根据不同模型设置不同参数
   if (model.key === 'dall-e-3') {
-    // DALL-E-3 模型特定的处理
-    style.value = 'vivid'; // 默认设置vivid风格
+    style.value = 'vivid';
   } else if (model.key === 'dall-e-2') {
-    // DALL-E-2 模型特定的处理
-    style.value = 'natural'; // 如果有其他DALL-E-2适合的默认风格
+    style.value = 'natural';
   }
-
-  // 更新其他相关参数
-  // 例如可以默认选择最适合当前模型的尺寸
-  const recommendedSize = Dall3SizeList.find(
-    (size) =>
-      (model.key === 'dall-e-3' && size.key === '1024x1024') ||
-      (model.key === 'dall-e-2' && size.key === '512x512'),
-  );
-
-  if (recommendedSize) {
-    selectSize.value = recommendedSize.key;
+  const sizes = getOpenAiImageSizeList(model.key);
+  const preferred =
+    sizes.find((s) => s.key === '1024x1024') ||
+    sizes.find((s) => s.key === '512x512') ||
+    sizes[0];
+  if (preferred) {
+    selectSize.value = preferred.key;
   }
 }
 
-/** 选择 style 样式  */
 async function handleStyleClick(imageStyle: ImageModel) {
   style.value = imageStyle.key;
 }
 
-/** 选择 size 大小  */
 async function handleSizeClick(imageSize: ImageSize) {
   selectSize.value = imageSize.key;
 }
 
-/**  图片生产  */
 async function handleGenerateImage() {
-  // 从 models 中查找匹配的模型
-  const matchedModel = props.models.find(
-    (item) =>
-      item.model === selectModel.value &&
-      item.platform === AiPlatformEnum.OPENAI,
+  const matchedModel = openaiModels.value.find(
+    (item) => item.model === selectModel.value,
   );
   if (!matchedModel) {
-    message.error('该模型不可用，请选择其它模型');
+    message.error(
+      '该模型未在后台配置。请到「AI 大模型 → 模型配置」新增类型为图像、平台为 OpenAI 的模型（标识填 gpt-image-1 / gpt-image-2 等）',
+    );
     return;
   }
 
-  // 二次确认
   await confirm(`确认生成内容?`);
   try {
-    // 加载中
     drawIn.value = true;
-    // 回调
     emits('onDrawStart', AiPlatformEnum.OPENAI);
-    const imageSize = Dall3SizeList.find(
+    const imageSize = sizeList.value.find(
       (item) => item.key === selectSize.value,
     ) as ImageSize;
     const form = {
       platform: AiPlatformEnum.OPENAI,
-      prompt: prompt.value, // 提示词
-      modelId: matchedModel.id, // 使用匹配到的模型
-      style: style.value, // 图像生成的风格
-      width: Number(imageSize.width), // size 不能为空
-      height: Number(imageSize.height), // size 不能为空
-      options: {
-        style: style.value, // 图像生成的风格
-      },
+      prompt: prompt.value,
+      modelId: matchedModel.id,
+      width: Number(imageSize.width),
+      height: Number(imageSize.height),
+      options: showStyle.value ? { style: style.value } : {},
     } as AiImageApi.ImageDrawReqVO;
-    // 发送请求
     await drawImage(form);
   } finally {
-    // 回调
     emits('onDrawComplete', AiPlatformEnum.OPENAI);
-    // 加载结束
     drawIn.value = false;
   }
 }
 
-/** 填充值 */
 async function settingValues(detail: AiImageApi.Image) {
   prompt.value = detail.prompt;
   selectModel.value = detail.model;
-  style.value = detail.options?.style;
-  const imageSize = Dall3SizeList.find(
+  style.value = detail.options?.style || 'vivid';
+  const imageSize = getOpenAiImageSizeList(detail.model).find(
     (item) => item.key === `${detail.width}x${detail.height}`,
-  ) as ImageSize;
-  await handleSizeClick(imageSize);
+  );
+  if (imageSize) {
+    await handleSizeClick(imageSize);
+  }
 }
 
 defineExpose({ settingValues });
@@ -172,13 +201,16 @@ defineExpose({ settingValues });
 
   <div class="mt-8">
     <div><b>模型选择</b></div>
+    <p v-if="openaiModels.length === 0" class="mt-2 text-xs text-orange-500">
+      尚未配置 OpenAI 图像模型，请先在「模型配置」中新增（GPT Image / DALL·E）
+    </p>
     <Space wrap class="mt-4 flex flex-wrap gap-2">
       <div
         class="flex w-28 cursor-pointer flex-col items-center overflow-hidden rounded-lg border-2"
         :class="[
           selectModel === model.key ? '!border-blue-500' : 'border-transparent',
         ]"
-        v-for="model in Dall3Models"
+        v-for="model in displayModels"
         :key="model.key"
       >
         <Image
@@ -187,14 +219,14 @@ defineExpose({ settingValues });
           fit="contain"
           @click="handleModelClick(model)"
         />
-        <div class="text-sm font-bold text-gray-600">
+        <div class="px-1 text-center text-sm font-bold text-gray-600">
           {{ model.name }}
         </div>
       </div>
     </Space>
   </div>
 
-  <div class="mt-8">
+  <div v-if="showStyle" class="mt-8">
     <div><b>风格选择</b></div>
     <Space wrap class="mt-4 flex flex-wrap gap-2">
       <div
@@ -223,7 +255,7 @@ defineExpose({ settingValues });
     <Space wrap class="mt-5 flex w-full flex-wrap gap-2">
       <div
         class="flex cursor-pointer flex-col items-center"
-        v-for="imageSize in Dall3SizeList"
+        v-for="imageSize in sizeList"
         :key="imageSize.key"
         @click="handleSizeClick(imageSize)"
       >
