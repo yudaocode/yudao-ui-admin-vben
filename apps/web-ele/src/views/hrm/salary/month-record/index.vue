@@ -201,13 +201,8 @@ async function getReadiness() {
 }
 
 async function refreshData() {
-  await Promise.all([
-    getRecord(),
-    gridApi.query(),
-    getEmployeeChangeCount(),
-    getSummary(),
-    getReadiness(),
-  ]);
+  await getRecord();
+  await Promise.all([gridApi.query(), getReadiness()]);
 }
 
 async function handleTabChange(type: number | string) {
@@ -291,12 +286,9 @@ async function init() {
       columns: buildGridColumns(record.value.optionHeaders),
       footerMethod: buildFooterMethod(summaryMap.value),
     });
-    await Promise.all([
-      gridApi.query(),
-      getEmployeeChangeCount(),
-      getSummary(),
-      getReadiness(),
-    ]);
+    // 工资表加载后才会挂载表格，统计随表格查询一起刷新
+    await nextTick();
+    await Promise.all([gridApi.query(), getReadiness()]);
   } finally {
     pageLoading.value = false;
   }

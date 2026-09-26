@@ -1,22 +1,11 @@
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-record/employee';
 
-/** 获得叶子薪资项 */
+/** 获得工资表表头中的明细项，跳过空分类 */
 export function getSalaryLeafOptions(
   options?: HrmSalaryOptionApi.SalaryOption[],
 ) {
-  const result: HrmSalaryOptionApi.SalaryOption[] = [];
-  function append(optionsToAppend?: HrmSalaryOptionApi.SalaryOption[]) {
-    for (const option of optionsToAppend || []) {
-      if (option.children?.length) {
-        append(option.children);
-      } else {
-        result.push(option);
-      }
-    }
-  }
-  append(options);
-  return result;
+  return (options || []).flatMap((category) => category.children || []);
 }
 
 /** 获得员工指定薪资项金额 */

@@ -83,7 +83,9 @@ async function handleUpdateVisible(option: HrmSalaryOptionApi.SalaryOption) {
 
 async function handleSync() {
   await syncSalaryOption();
-  ElMessage.success($t('ui.actionMessage.operationSuccess'));
+  ElMessage.success(
+    '同步完成，已保留启用和显示设置；已移除的标准项可通过「添加薪资项」恢复',
+  );
   await gridApi.query();
 }
 
