@@ -4,7 +4,7 @@ import type { PageParam } from '@vben/request';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
-import { computed, h, onMounted, ref } from 'vue';
+import { computed, h, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
@@ -57,8 +57,10 @@ import RegularForm from './modules/regular-form.vue';
 
 defineOptions({ name: 'HrmEmployee' });
 
-const { push } = useRouter();
+const router = useRouter();
+const { push } = router;
 const route = useRoute();
+const employeePath = route.path;
 const { hasAccessByCodes } = useAccess();
 
 const activeStatus = ref(String(HrmEmployeeStatusTab.FULL_TIME));
@@ -69,17 +71,31 @@ const exportLoading = ref(false);
 const batchDeleteLoading = ref(false);
 const cancelQuitReason = ref('');
 
-const statusCategory = computed(() => Number(activeStatus.value));
+const entryTotal = ref(0);
+const isEntrySurvey = computed(
+  () => Number(route.query.surveyType) === HrmEmployeeSurveyType.ENTRY,
+);
+const statusCategory = computed(() =>
+  activeStatus.value === 'entry' ? undefined : Number(activeStatus.value),
+);
 
 const statusTabOptions = computed(() => {
   const countMap = Object.fromEntries(
     statusCounts.value.map((item) => [item.status, item.count]),
   );
-  return getEmployeeStatusTabItems().map((item) => ({
+  const items = getEmployeeStatusTabItems().map((item) => ({
     label: item.label,
     value: String(item.status),
     count: countMap[item.status] ?? 0,
   }));
+  if (isEntrySurvey.value) {
+    items.unshift({
+      label: '本月入职',
+      value: 'entry',
+      count: entryTotal.value,
+    });
+  }
+  return items;
 });
 
 const hasBatchPermission = computed(
@@ -134,22 +150,54 @@ function isEmployeeInsuranceEligible(employee: HrmEmployeeApi.Employee) {
 async function handleRefresh() {
   checkedIds.value = [];
   checkedEmployees.value = [];
-  await Promise.all([gridApi.query(), getStatusCounts()]);
+  await gridApi.reload();
 }
 
-async function getStatusCounts() {
-  const formValues = await gridApi.formApi.getValues();
-  statusCounts.value = await getEmployeeStatusCount({
-    pageNo: 1,
-    pageSize: 1,
-    ...formValues,
-    statusCategory: statusCategory.value,
-  } as PageParam);
+/** 首页来源筛选同时用于列表、统计与导出 */
+function getHomeFilters() {
+  const leaderEmployeeId = Number(route.query.leaderEmployeeId);
+  const todoType = Number(route.query.todoType);
+  const surveyType = Number(route.query.surveyType);
+  return {
+    leaderEmployeeId:
+      Number.isSafeInteger(leaderEmployeeId) && leaderEmployeeId > 0
+        ? leaderEmployeeId
+        : undefined,
+    todoType: (Object.values(HrmEmployeeTodoType) as number[]).includes(
+      todoType,
+    )
+      ? todoType
+      : undefined,
+    surveyType: (Object.values(HrmEmployeeSurveyType) as number[]).includes(
+      surveyType,
+    )
+      ? surveyType
+      : undefined,
+  };
 }
 
-function handleStatusTabChange(key: number | string) {
+/** 普通状态页签清除首页来源筛选，并同步地址栏 */
+async function handleStatusTabChange(key: number | string) {
+  if (key === 'entry') {
+    return;
+  }
   activeStatus.value = String(key);
-  handleRefresh();
+  if (
+    route.query.statusCategory === String(key) &&
+    !route.query.surveyType &&
+    !route.query.todoType
+  ) {
+    await handleRefresh();
+    return;
+  }
+  await router.replace({
+    query: {
+      ...route.query,
+      statusCategory: String(key),
+      surveyType: undefined,
+      todoType: undefined,
+    },
+  });
 }
 
 function handleCreate() {
@@ -299,6 +347,7 @@ async function handleExport() {
       pageNo: 1,
       pageSize: 100,
       ...formValues,
+      ...getHomeFilters(),
       statusCategory: statusCategory.value,
     } as PageParam);
     downloadFileFromBlobPart({ fileName: '员工档案.xlsx', source: data });
@@ -422,32 +471,36 @@ function handleRowCheckboxChange({
 }
 
 function applyHomeFilter() {
-  let category: number = HrmEmployeeStatusTab.FULL_TIME;
-  activeStatus.value = String(category);
   const routeCategory = Number(route.query.statusCategory);
-  if (
-    (Object.values(HrmEmployeeStatusTab) as number[]).includes(routeCategory)
-  ) {
-    category = routeCategory;
-    activeStatus.value = String(routeCategory);
-  }
+  let category = getEmployeeStatusTabItems().some(
+    (item) => item.status === routeCategory,
+  )
+    ? routeCategory
+    : HrmEmployeeStatusTab.FULL_TIME;
   const surveyType = Number(route.query.surveyType);
-  if ((Object.values(HrmEmployeeSurveyType) as number[]).includes(surveyType)) {
-    if (surveyType === HrmEmployeeSurveyType.LEAVE) {
-      category = HrmEmployeeStatusTab.LEFT;
-    } else if (surveyType === HrmEmployeeSurveyType.PENDING_ENTRY) {
-      category = HrmEmployeeStatusTab.PENDING_ENTRY;
-    } else if (surveyType === HrmEmployeeSurveyType.PENDING_LEAVE) {
-      category = HrmEmployeeStatusTab.PENDING_LEAVE;
-    }
-    activeStatus.value = String(category);
+  if (surveyType === HrmEmployeeSurveyType.LEAVE) {
+    category = HrmEmployeeStatusTab.LEFT;
+  } else if (surveyType === HrmEmployeeSurveyType.PENDING_ENTRY) {
+    category = HrmEmployeeStatusTab.PENDING_ENTRY;
+  } else if (surveyType === HrmEmployeeSurveyType.PENDING_LEAVE) {
+    category = HrmEmployeeStatusTab.PENDING_LEAVE;
   }
+  activeStatus.value = isEntrySurvey.value ? 'entry' : String(category);
 }
+
+applyHomeFilter();
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     collapsed: true,
     schema: useGridFormSchema(),
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      gridApi.formApi.setLatestSubmissionValues(
+        await gridApi.formApi.getValues(),
+      );
+      await handleStatusTabChange(HrmEmployeeStatusTab.ACTIVE);
+    },
   },
   gridOptions: {
     columns: useGridColumns(),
@@ -456,28 +509,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const leaderEmployeeId = Number(route.query.leaderEmployeeId);
-          const todoType = Number(route.query.todoType);
-          return await getEmployeePage({
-            pageNo: page.currentPage,
-            pageSize: page.pageSize,
-            statusCategory: statusCategory.value,
-            leaderEmployeeId:
-              Number.isSafeInteger(leaderEmployeeId) && leaderEmployeeId > 0
-                ? leaderEmployeeId
-                : undefined,
-            todoType: (Object.values(HrmEmployeeTodoType) as number[]).includes(
-              todoType,
-            )
-              ? todoType
-              : undefined,
-            surveyType: (
-              Object.values(HrmEmployeeSurveyType) as number[]
-            ).includes(Number(route.query.surveyType))
-              ? Number(route.query.surveyType)
-              : undefined,
-            ...formValues,
-          });
+          const filters = { ...formValues, ...getHomeFilters() };
+          const [data, counts] = await Promise.all([
+            getEmployeePage({
+              ...filters,
+              pageNo: page.currentPage,
+              pageSize: page.pageSize,
+              statusCategory: statusCategory.value,
+            }),
+            getEmployeeStatusCount({
+              ...filters,
+              // 普通页签展示点击后的人数，本月入职人数由列表 total 展示
+              surveyType: isEntrySurvey.value ? undefined : filters.surveyType,
+            } as PageParam),
+          ]);
+          entryTotal.value = data.total;
+          statusCounts.value = counts;
+          return data;
         },
       },
     },
@@ -490,10 +538,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
-onMounted(async () => {
-  applyHomeFilter();
-  await getStatusCounts();
-});
+/** 缓存页面再次进入、来源条件变化及前进后退时同步列表 */
+watch(
+  () => [
+    route.path,
+    route.query.statusCategory,
+    route.query.surveyType,
+    route.query.todoType,
+    route.query.leaderEmployeeId,
+  ],
+  () => {
+    if (route.path !== employeePath) {
+      return;
+    }
+    applyHomeFilter();
+    handleRefresh();
+  },
+);
 </script>
 
 <template>
