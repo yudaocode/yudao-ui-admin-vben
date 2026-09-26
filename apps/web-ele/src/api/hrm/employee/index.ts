@@ -33,7 +33,7 @@ export namespace HrmEmployeeApi {
     probation?: number; // 试用期，单位月
     regularTime?: number; // 转正时间
     leaveTime?: number; // 离职时间
-    postName?: string; // 职位名称
+    postName?: string; // 岗位
     postLevel?: string; // 岗位职级
     workCity?: string; // 工作城市
     workAddress?: string; // 工作地点
@@ -79,7 +79,7 @@ export namespace HrmEmployeeApi {
     reason?: number; // 异动原因
     newDeptId?: number; // 新部门编号；未填写表示不变
     newPostName?: string; // 新岗位名称；未填写表示不变
-    newPostLevel?: string; // 新职级；未填写表示不变
+    newPostLevel?: string; // 新岗位职级；未填写表示不变
     newWorkAddress?: string; // 新工作地点；未填写表示不变
     newLeaderEmployeeId?: number; // 新直属上级员工编号；未填写表示不变
     effectTime?: number; // 生效时间
@@ -111,7 +111,7 @@ export namespace HrmEmployeeApi {
     status?: number; // 非正式员工状态
     entryTime: number; // 入职时间
     probation?: number; // 试用期，单位月
-    postName?: string; // 职位名称
+    postName?: string; // 岗位
     postLevel?: string; // 岗位职级
     workCity?: string; // 工作城市
     workAddress?: string; // 工作地点
