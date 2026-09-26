@@ -4,7 +4,7 @@ import type { PropType } from 'vue';
 
 import type { ActionItem, PopConfirm } from './typing';
 
-import { computed, unref, watch } from 'vue';
+import { computed, unref } from 'vue';
 
 import { useAccess } from '@vben/access';
 import { IconifyIcon } from '@vben/icons';
@@ -137,15 +137,6 @@ function handleButtonClick(action: ActionItem) {
     action.onClick();
   }
 }
-
-/** 监听 props 变化，强制重新计算 */
-watch(
-  () => [props.actions, props.dropDownActions],
-  () => {
-    // 这里不需要额外处理，computed 会自动重新计算
-  },
-  { deep: true },
-);
 </script>
 
 <template>
