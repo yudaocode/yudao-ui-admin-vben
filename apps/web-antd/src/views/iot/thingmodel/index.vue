@@ -7,7 +7,7 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, inject } from 'vue';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { useVbenModal } from '@vben/common-ui';
 import { IOT_PROVIDE_KEY } from '@vben/constants';
 
 import { message } from 'ant-design-vue';
@@ -75,7 +75,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(),
-    height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {
@@ -102,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 </script>
 
 <template>
-  <Page auto-content-height>
+  <div>
     <FormModal @success="handleRefresh" />
     <TslModal />
 
@@ -154,5 +153,5 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
     </Grid>
-  </Page>
+  </div>
 </template>
