@@ -3,8 +3,6 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { OaSupplyItemApi } from '#/api/oa/supply/item';
 
-import { nextTick } from 'vue';
-
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
@@ -111,12 +109,8 @@ function handleSelect(item: OaSupplyItemApi.SupplyItem) {
 
 const [Modal, modalApi] = useVbenModal({
   showConfirmButton: false,
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      return;
-    }
-    // 打开时重置搜索并重新查询
-    await nextTick();
+  async onOpened() {
+    // 表格挂载后重置搜索并重新查询
     await gridApi.formApi.reset();
     gridApi.query();
   },

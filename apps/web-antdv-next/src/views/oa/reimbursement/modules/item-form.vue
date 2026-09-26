@@ -7,7 +7,7 @@ import { computed, nextTick, ref, watch } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { formatDateTime } from '@vben/utils';
+import { cloneDeep, formatDateTime, isEqual } from '@vben/utils';
 
 import { Button, DatePicker, Input, InputNumber, Select } from 'antdv-next';
 import dayjs from 'dayjs';
@@ -72,34 +72,39 @@ async function reloadData() {
   await gridApi.grid?.reloadData(tableData.value);
 }
 
-/** 监听外部传入的明细数据，同引用回写时跳过重载 */
+/** 表单值可能只读，使用独立副本编辑；同值回写时不重载表格 */
 watch(
   () => props.modelValue,
   async (items) => {
     const next = items ?? [];
-    const unchanged =
-      next.length === tableData.value.length &&
-      next.every((item, index) => item === tableData.value[index]);
-    if (unchanged) {
+    if (isEqual(next, tableData.value)) {
       return;
     }
-    tableData.value = [...next];
+    tableData.value = cloneDeep(next);
     await reloadData();
   },
   { immediate: true },
 );
 
+watch(
+  tableData,
+  (items) => {
+    if (!isEqual(items, props.modelValue)) {
+      emit('update:modelValue', cloneDeep(items));
+    }
+  },
+  { deep: true },
+);
+
 /** 新增费用明细 */
 async function handleAdd() {
   tableData.value.push({ invoiceCount: 0, price: 0 });
-  emit('update:modelValue', [...tableData.value]);
   await reloadData();
 }
 
 /** 删除费用明细 */
 async function handleDelete(index: number) {
   tableData.value.splice(index, 1);
-  emit('update:modelValue', [...tableData.value]);
   await reloadData();
 }
 
