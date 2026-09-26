@@ -10,7 +10,13 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { checkFileType, isFunction, isObject, isString } from '@vben/utils';
+import {
+  checkFileType,
+  getFileNameFromUrl,
+  isFunction,
+  isObject,
+  isString,
+} from '@vben/utils';
 
 import { Button, message, Upload } from 'ant-design-vue';
 
@@ -90,7 +96,7 @@ watch(
           if (item && isString(item)) {
             return {
               uid: `${-i}`,
-              name: item.slice(Math.max(0, item.lastIndexOf('/') + 1)),
+              name: getFileNameFromUrl(item),
               status: UploadResultStatus.DONE,
               url: item,
             };
