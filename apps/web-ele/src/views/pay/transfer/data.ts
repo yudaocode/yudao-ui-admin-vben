@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'merchantTransferId',
+      fieldName: 'merchantOrderId',
       label: '商户单号',
       component: 'Input',
       componentProps: {
