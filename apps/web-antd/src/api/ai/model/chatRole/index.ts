@@ -76,7 +76,14 @@ export function createMy(data: AiModelChatRoleApi.ChatRole) {
 
 /** 更新角色 */
 export function updateMy(data: AiModelChatRoleApi.ChatRole) {
-  return requestClient.put('/ai/chat-role/update', data);
+  return requestClient.put('/ai/chat-role/update-my', data);
+}
+
+/** 获得【我的】聊天角色 */
+export function getMy(id: number) {
+  return requestClient.get<AiModelChatRoleApi.ChatRole>(
+    `/ai/chat-role/get-my?id=${id}`,
+  );
 }
 
 /** 删除角色 my */

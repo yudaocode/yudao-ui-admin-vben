@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, provide, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { Page } from '@vben/common-ui';
 import { AiModelTypeEnum, CommonStatusEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
@@ -11,7 +11,6 @@ import { Button, Card, message } from 'antdv-next';
 
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { createWorkflow, getWorkflow, updateWorkflow } from '#/api/ai/workflow';
-import { createModel, deployModel, updateModel } from '#/api/bpm/model';
 
 import BasicInfo from './modules/basic-info.vue';
 import WorkflowDesign from './modules/workflow-design.vue';
@@ -122,40 +121,6 @@ async function handleSave() {
   }
 }
 
-/** 发布操作 */
-async function handleDeploy() {
-  try {
-    // 修改场景下直接发布，新增场景下需要先确认
-    if (!formData.value.id) {
-      await confirm('是否确认发布该流程？');
-    }
-    // 校验所有步骤
-    await validateAllSteps();
-
-    // 更新表单数据
-    const modelData = {
-      ...formData.value,
-    };
-
-    // 先保存所有数据
-    if (formData.value.id) {
-      await updateModel(modelData);
-    } else {
-      const result = await createModel(modelData);
-      formData.value.id = result.id;
-    }
-
-    // 发布
-    await deployModel(formData.value.id);
-    message.success('发布成功');
-    // 返回列表页
-    await router.push({ name: 'AiWorkflow' });
-  } catch (error: any) {
-    console.error('发布失败:', error);
-    message.warning(error.message || '发布失败');
-  }
-}
-
 /** 步骤切换处理 */
 async function handleStepClick(index: number) {
   try {
@@ -254,13 +219,6 @@ onBeforeUnmount(() => {
 
         <!-- 右侧按钮 -->
         <div class="flex w-48 items-center justify-end gap-2">
-          <Button
-            v-if="actionType === 'update'"
-            type="primary"
-            @click="handleDeploy"
-          >
-            发 布
-          </Button>
           <Button type="primary" @click="handleSave">
             <span v-if="actionType === 'definition'">恢 复</span>
             <span v-else>保 存</span>

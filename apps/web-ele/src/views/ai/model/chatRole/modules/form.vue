@@ -10,8 +10,11 @@ import { ElMessage } from 'element-plus';
 import { useVbenForm } from '#/adapter/form';
 import {
   createChatRole,
+  createMy,
   getChatRole,
+  getMy,
   updateChatRole,
+  updateMy,
 } from '#/api/ai/model/chatRole';
 import { $t } from '#/locales';
 
@@ -19,6 +22,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<AiModelChatRoleApi.ChatRole>();
+const isMyRole = ref(false); // 是否为「我的角色」
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['聊天角色'])
@@ -48,7 +52,9 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as AiModelChatRoleApi.ChatRole;
     try {
-      await (formData.value?.id ? updateChatRole(data) : createChatRole(data));
+      await (formData.value?.id
+        ? (isMyRole.value ? updateMy : updateChatRole)(data)
+        : (isMyRole.value ? createMy : createChatRole)(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');
@@ -60,17 +66,19 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       formData.value = undefined;
+      isMyRole.value = false;
       return;
     }
     // 加载数据
     const data = modalApi.getData() as AiModelChatRoleApi.ChatRole;
+    isMyRole.value = !!(data as any)?.formType?.startsWith('my-');
     if (!data || !data.id) {
       await formApi.setValues(data);
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getChatRole(data.id);
+      formData.value = await (isMyRole.value ? getMy : getChatRole)(data.id);
       // 设置到 values
       await formApi.setValues({ ...data, ...formData.value });
     } finally {
