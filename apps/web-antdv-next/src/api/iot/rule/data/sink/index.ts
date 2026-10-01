@@ -119,6 +119,9 @@ export namespace DataSinkApi {
 
   /** Redis Stream MQ 配置 */
   export interface RedisStreamMQConfig extends BaseConfig {
+    dataStructure: number;
+    hashField?: string;
+    scoreField?: string;
     host: string;
     port: number;
     password: string;

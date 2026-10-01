@@ -91,6 +91,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
           '备注名称只能包含中文、英文字母、日文、数字和下划线（_）',
         )
         .optional()
+        .nullable()
         .or(z.literal('')),
     },
     {
@@ -121,6 +122,7 @@ export function useAdvancedFormSchema(): VbenFormSchema[] {
         .string()
         .regex(/^[\w-]+$/, '序列号只能包含字母、数字、中划线和下划线')
         .optional()
+        .nullable()
         .or(z.literal('')),
     },
     {
