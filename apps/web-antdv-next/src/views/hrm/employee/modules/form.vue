@@ -41,6 +41,7 @@ const createFieldVisibleMap = ref<Record<number, Set<string>>>({});
 const leaderEmployeeId = ref<number>();
 const userId = ref<number>();
 const candidateId = ref<number>();
+const employeeId = ref<number>(); // 员工编号
 
 const modalTitle = computed(() => {
   if (formType.value === 'confirm') return '确认入职';
@@ -145,6 +146,7 @@ const [Modal, modalApi] = useVbenModal({
         leaderEmployeeId: leaderEmployeeId.value,
         userId: userId.value,
         candidateId: candidateId.value,
+        id: employeeId.value,
       } as HrmEmployeeApi.Employee;
       const submitData = buildSubmitData(values);
       if (formType.value === 'create') {
@@ -191,6 +193,7 @@ const [Modal, modalApi] = useVbenModal({
     leaderEmployeeId.value = undefined;
     userId.value = undefined;
     candidateId.value = undefined;
+    employeeId.value = undefined;
     modalApi.lock();
     try {
       if (formType.value !== 'update') {
@@ -198,6 +201,7 @@ const [Modal, modalApi] = useVbenModal({
       }
       if (data?.id) {
         const employee = await getEmployee(data.id);
+        employeeId.value = employee.id ?? data.id;
         await formApi.setValues(employee);
         await entryFormApi.setValues(employee);
         leaderEmployeeId.value = employee.leaderEmployeeId;
