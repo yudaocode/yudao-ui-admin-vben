@@ -59,7 +59,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const { id } = modalApi.getData() as {
+    // 新增时列表页传入的是 null，不能直接解构
+    const { id } = (modalApi.getData() ?? {}) as {
       id?: number;
     };
     if (!id) {

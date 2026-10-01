@@ -60,9 +60,9 @@ export function useTransferFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['oldOwnerHandler'],
         show: (values) => values.oldOwnerHandler,
-        trigger(values) {
+        trigger(values, actions) {
           if (!values.oldOwnerHandler) {
-            values.oldOwnerPermissionLevel = undefined;
+            actions.setFieldValue('oldOwnerPermissionLevel', undefined);
           }
         },
       },

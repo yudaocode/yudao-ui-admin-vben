@@ -490,6 +490,10 @@ export class FormApi<
     filterFields: boolean = true,
     shouldValidate: boolean = false,
   ) {
+    // 兼容新增场景传入 undefined / null（如 setValues(modalApi.getData())），直接忽略
+    if (fields === null || fields === undefined) {
+      return;
+    }
     const form = await this.getForm();
     if (!filterFields) {
       form.setValues(fields, shouldValidate);

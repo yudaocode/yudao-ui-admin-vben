@@ -309,7 +309,8 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolApi.Tool>['column
             : '-';
         }
         if (row.maintenType === MesMaintenTypeEnum.USAGE) {
-          return row.nextMaintenPeriod === null
+          return row.nextMaintenPeriod === null ||
+            row.nextMaintenPeriod === undefined
             ? '-'
             : `${row.nextMaintenPeriod} 次`;
         }

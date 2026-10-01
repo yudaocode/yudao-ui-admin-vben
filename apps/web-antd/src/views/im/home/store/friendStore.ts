@@ -785,13 +785,13 @@ export const useFriendStore = defineStore('imFriendStore', {
       if (!friend) {
         return;
       }
-      if (payload.displayName !== null) {
+      if (payload.displayName !== null && payload.displayName !== undefined) {
         friend.displayName = payload.displayName;
       }
-      if (payload.silent !== null) {
+      if (payload.silent !== null && payload.silent !== undefined) {
         friend.silent = payload.silent;
       }
-      if (payload.pinned !== null) {
+      if (payload.pinned !== null && payload.pinned !== undefined) {
         friend.pinned = payload.pinned;
       }
       const conversationStore = useConversationStore();

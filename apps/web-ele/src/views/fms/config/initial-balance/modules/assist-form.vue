@@ -10,7 +10,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { ElMessage } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
-import FmsAuxiliaryItemSelect from '#/views/fms/config/auxiliary/components/auxiliary-select-modal.vue';
+import FmsAuxiliaryItemSelect from '#/views/fms/config/auxiliary/components/auxiliary-item-select.vue';
 
 defineOptions({ name: 'FmsInitialAssistForm' });
 
