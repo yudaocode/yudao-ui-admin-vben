@@ -333,7 +333,7 @@ async function applySceneType() {
   gridApi.setGridOptions({
     columns: useGridColumns(sceneType.value !== PmsProjectSceneType.ALL),
   });
-  await Promise.all([gridApi.query(), getFavoriteList()]);
+  await Promise.all([gridApi.formApi.submit(), getFavoriteList()]);
 }
 
 /** 初始化 */

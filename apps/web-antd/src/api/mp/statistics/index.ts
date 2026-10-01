@@ -11,8 +11,8 @@ export namespace MpStatisticsApi {
   export interface StatisticsUpstreamMessageRespVO {
     refDate: string;
     msgType: string;
-    msgUser: number;
-    msgCount: number;
+    messageUser: number;
+    messageCount: number;
   }
 
   /** 用户增减数据 */

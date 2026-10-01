@@ -90,6 +90,7 @@ export function useGridColumns(
     ...(editable
       ? [
           {
+            field: 'actions',
             title: '操作',
             width: 90,
             align: 'center' as const,

@@ -26,11 +26,7 @@ import {
   getWorkReportWeekStart,
 } from '#/views/oa/utils/format';
 
-import {
-  useGridColumns,
-  useGridFormSchema,
-  workReportTypeTabs,
-} from './data';
+import { useGridColumns, useGridFormSchema, workReportTypeTabs } from './data';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'OaWorkReport' });
@@ -98,11 +94,7 @@ async function handleStatusChange(row: OaWorkReportApi.WorkReport) {
     await confirm(
       isDraft ? '确认提交该工作汇报吗？' : '确认取消提交并恢复为草稿吗？',
     );
-    if (isDraft) {
-      await submitWorkReport(row.id!);
-    } else {
-      await cancelWorkReport(row.id!);
-    }
+    await (isDraft ? submitWorkReport(row.id!) : cancelWorkReport(row.id!));
     message.success(isDraft ? '提交成功' : '取消提交成功');
     handleRefresh();
   } catch {}
@@ -175,6 +167,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...filters,
+            type: activeType.value,
             periodTime,
           });
         },
@@ -227,12 +220,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
             />
           </template>
           <template #no="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.no }}
             </span>
           </template>
           <template #title="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.title }}
             </span>
           </template>

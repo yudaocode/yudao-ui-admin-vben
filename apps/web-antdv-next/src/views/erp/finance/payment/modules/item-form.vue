@@ -206,8 +206,8 @@ const validate = () => {
   // 检查每行的付款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (!item?.paymentPrice || item.paymentPrice <= 0) {
-      throw new Error(`第 ${i + 1} 行：本次付款必须大于0`);
+    if (item?.paymentPrice === undefined || item.paymentPrice === null) {
+      throw new Error(`第 ${i + 1} 行：请输入本次付款金额`);
     }
   }
 };

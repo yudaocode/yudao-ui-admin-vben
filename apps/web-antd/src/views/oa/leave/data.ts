@@ -92,7 +92,10 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'fileUrls',
       label: '附件',
       component: 'FileUpload',
+      defaultValue: [],
       componentProps: {
+        maxNumber: 5,
+        multiple: true,
         showDescription: false,
       },
     },

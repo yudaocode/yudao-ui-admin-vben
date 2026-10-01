@@ -1,5 +1,7 @@
 import type { MpStatisticsApi } from '#/api/mp/statistics';
 
+import { formatDate } from '@vben/utils';
+
 /** 用户增减数据图表配置项 */
 export function userSummaryOption(
   data: MpStatisticsApi.StatisticsUserSummaryRespVO[],
@@ -25,7 +27,11 @@ export function userSummaryOption(
           show: true,
         },
         barGap: 0,
-        data: data.map((item) => item.newUser), // 新增用户的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.newUser ?? 0,
+        ), // 新增用户的数据
       },
       {
         name: '取消关注的用户',
@@ -33,7 +39,11 @@ export function userSummaryOption(
         label: {
           show: true,
         },
-        data: data.map((item) => item.cancelUser), // 取消关注的用户的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.cancelUser ?? 0,
+        ), // 取消关注的用户的数据
       },
     ],
   };
@@ -58,7 +68,11 @@ export function userCumulateOption(
     series: [
       {
         name: '累计用户量',
-        data: data.map((item) => item.cumulateUser), // 累计用户量的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.cumulateUser ?? 0,
+        ), // 累计用户量的数据
         type: 'line',
         smooth: true,
         label: {
@@ -94,7 +108,11 @@ export function upstreamMessageOption(
         label: {
           show: true,
         },
-        data: data.map((item) => item.msgUser), // 用户发送人数的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.messageUser ?? 0,
+        ), // 用户发送人数的数据
       },
       {
         name: '用户发送条数',
@@ -103,7 +121,11 @@ export function upstreamMessageOption(
         label: {
           show: true,
         },
-        data: data.map((item) => item.msgCount), // 用户发送条数的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.messageCount ?? 0,
+        ), // 用户发送条数的数据
       },
     ],
   };
@@ -132,7 +154,11 @@ export function interfaceSummaryOption(
           show: true,
         },
         barGap: 0,
-        data: data.map((item) => item.callbackCount), // 被动回复用户消息的次数的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.callbackCount ?? 0,
+        ), // 被动回复用户消息的次数的数据
       },
       {
         name: '失败次数',
@@ -140,7 +166,11 @@ export function interfaceSummaryOption(
         label: {
           show: true,
         },
-        data: data.map((item) => item.failCount), // 失败次数的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.failCount ?? 0,
+        ), // 失败次数的数据
       },
       {
         name: '最大耗时',
@@ -148,7 +178,11 @@ export function interfaceSummaryOption(
         label: {
           show: true,
         },
-        data: data.map((item) => item.maxTimeCost), // 最大耗时的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.maxTimeCost ?? 0,
+        ), // 最大耗时的数据
       },
       {
         name: '总耗时',
@@ -156,7 +190,11 @@ export function interfaceSummaryOption(
         label: {
           show: true,
         },
-        data: data.map((item) => item.totalTimeCost), // 总耗时的数据
+        data: dates.map(
+          (date) =>
+            data.find((item) => formatDate(item.refDate, 'YYYY-MM-DD') === date)
+              ?.totalTimeCost ?? 0,
+        ), // 总耗时的数据
       },
     ],
   };

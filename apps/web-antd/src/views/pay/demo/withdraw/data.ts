@@ -30,7 +30,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         class: '!w-full',
-        min: 1,
+        min: 0.01,
         precision: 2,
         step: 0.01,
         placeholder: '请输入提现金额',

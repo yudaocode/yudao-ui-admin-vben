@@ -37,7 +37,9 @@ function getPeriodBeginTime(date: Dayjs, type: number) {
   }
   if (type === OA_PLAN_TYPE.WEEK) {
     const dayOfWeek = date.day();
-    return date.subtract(dayOfWeek === 0 ? 6 : dayOfWeek - 1, 'day').startOf('day');
+    return date
+      .subtract(dayOfWeek === 0 ? 6 : dayOfWeek - 1, 'day')
+      .startOf('day');
   }
   return date.startOf('month');
 }
@@ -45,36 +47,44 @@ function getPeriodBeginTime(date: Dayjs, type: number) {
 /** 切换计划类型 */
 async function handleTypeChange() {
   // 切换类型后重置统计日期，重新归一统计周期
-  await gridApi.formApi.setFieldValue('periodDate', dayjs().format('YYYY-MM-DD'));
-  handleRefresh();
+  await gridApi.formApi.setFieldValue(
+    'periodDate',
+    dayjs().format('YYYY-MM-DD'),
+  );
+  await gridApi.formApi.submit();
 }
 
 /** 选择统计日期 */
 async function handlePeriodDateChange(date: unknown) {
   const values = await gridApi.formApi.getValues();
   // 周计划归一到周一、月计划归一到月初展示
-  const beginTime = getPeriodBeginTime(dayjs(date as string), Number(values.type));
+  const beginTime = getPeriodBeginTime(
+    dayjs(date as string),
+    Number(values.type),
+  );
   await gridApi.formApi.setFieldValue(
     'periodDate',
     beginTime.format('YYYY-MM-DD'),
   );
-  handleRefresh();
+  await gridApi.formApi.submit();
 }
 
 /** 切换上一个或下一个统计周期 */
 async function handlePeriodChange(step: number) {
   const values = await gridApi.formApi.getValues();
-  const unit =
-    Number(values.type) === OA_PLAN_TYPE.DAY
-      ? 'day'
-      : Number(values.type) === OA_PLAN_TYPE.WEEK
-        ? 'week'
-        : 'month';
+  let unit: 'day' | 'month' | 'week' = 'month';
+  if (Number(values.type) === OA_PLAN_TYPE.DAY) {
+    unit = 'day';
+  } else if (Number(values.type) === OA_PLAN_TYPE.WEEK) {
+    unit = 'week';
+  }
   await gridApi.formApi.setFieldValue(
     'periodDate',
-    dayjs(values.periodDate as string).add(step, unit).format('YYYY-MM-DD'),
+    dayjs(values.periodDate as string)
+      .add(step, unit)
+      .format('YYYY-MM-DD'),
   );
-  handleRefresh();
+  await gridApi.formApi.submit();
 }
 
 /** 打开点评表单 */
@@ -101,12 +111,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
             dayjs((formValues?.periodDate as string) || undefined),
             type,
           );
-          const endTime =
-            type === OA_PLAN_TYPE.DAY
-              ? beginTime
-              : type === OA_PLAN_TYPE.WEEK
-                ? beginTime.add(6, 'day')
-                : beginTime.endOf('month');
+          let endTime = beginTime.endOf('month');
+          if (type === OA_PLAN_TYPE.DAY) {
+            endTime = beginTime;
+          } else if (type === OA_PLAN_TYPE.WEEK) {
+            endTime = beginTime.add(6, 'day');
+          }
           return await getPlanReportPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -135,7 +145,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
+    <DocAlert
+      title="【协作】日程、任务、计划与汇报"
+      url="https://doc.iocoder.cn/oa/collaboration/work/"
+    />
     <CommentFormModal @success="handleRefresh" />
 
     <Grid table-title="工作计划报表">

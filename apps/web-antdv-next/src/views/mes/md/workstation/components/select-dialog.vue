@@ -180,7 +180,9 @@ async function openModal(
     columns: useWorkstationSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }

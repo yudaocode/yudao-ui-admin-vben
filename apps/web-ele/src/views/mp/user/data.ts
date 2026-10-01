@@ -1,6 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { getSimpleTagList } from '#/api/mp/tag';
+
 /** 修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -19,6 +21,19 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入昵称',
       },
+    },
+    {
+      fieldName: 'tagIds',
+      label: '标签',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleTagList,
+        labelField: 'name',
+        valueField: 'tagId',
+        multiple: true,
+        placeholder: '请选择标签',
+      },
+      defaultValue: [],
     },
     {
       fieldName: 'remark',
@@ -95,9 +110,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'tagIds',
       title: '标签',
       minWidth: 200,
-      cellRender: {
-        name: 'CellTags',
-      },
+      slots: { default: 'tagIds' },
     },
     {
       field: 'subscribeStatus',

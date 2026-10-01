@@ -29,7 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'InputNumber',
       rules: 'required',
       componentProps: {
-        min: 1,
+        min: 0.01,
         precision: 2,
         step: 0.01,
         placeholder: '请输入提现金额',

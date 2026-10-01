@@ -238,7 +238,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           checkedIds.value = [];
           const { scene, ...params } = formValues;
           const getPage =
-            scene === OA_NOTE_SCENE_TYPE.SHARED
+            activeScene.value === OA_NOTE_SCENE_TYPE.SHARED
               ? getReceivedNotePage
               : getMyNotePage;
           return await getPage({
@@ -330,7 +330,10 @@ onMounted(() => {
             </Button>
           </template>
           <template #title="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.title }}
             </span>
           </template>
@@ -377,7 +380,8 @@ onMounted(() => {
                   danger: true,
                   icon: ACTION_ICON.DELETE,
                   popConfirm: {
-                    title: '确认移除这条共享笔记？笔记正文和其他接收人不受影响。',
+                    title:
+                      '确认移除这条共享笔记？笔记正文和其他接收人不受影响。',
                     confirm: handleDeleteReceived.bind(null, row),
                   },
                 },

@@ -199,9 +199,10 @@ onMounted(async () => {
     await gridApi.formApi.setValues({
       categoryId: Number(route.query.categoryId),
     });
+    await gridApi.formApi.submit();
   }
   // 获得每个 Tab 的数量
-  await getTabCount();
+  await getTabCount(await gridApi.formApi.getValues());
 });
 </script>
 

@@ -610,6 +610,7 @@ export function useConfigGridFormSchema(): VbenFormSchema[] {
 /** 配置列表的字段 */
 export function useConfigGridColumns(
   onAutoGenerateChange: (
+    newValue: boolean,
     row: MesWmBarcodeConfigApi.BarcodeConfig,
   ) => Promise<boolean>,
 ): VxeTableGridOptions<MesWmBarcodeConfigApi.BarcodeConfig>['columns'] {
@@ -659,6 +660,7 @@ export function useConfigGridColumns(
       cellRender: {
         name: 'CellSwitch',
         attrs: { beforeChange: onAutoGenerateChange },
+        props: { activeValue: true, inactiveValue: false },
       },
     },
     {

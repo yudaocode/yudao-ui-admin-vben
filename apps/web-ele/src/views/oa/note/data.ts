@@ -86,18 +86,26 @@ export function useFormSchema(): VbenFormSchema[] {
         .string({ message: '笔记内容不能为空' })
         .refine(
           (value) =>
-            value.replace(/<[^>]*>/g, '').trim().length > 0 ||
+            value.replaceAll(/<[^>]*>/g, '').trim().length > 0 ||
             value.includes('<img'),
           { message: '笔记内容不能为空' },
         )
-        .refine((value) => value.replace(/<[^>]*>/g, '').trim().length >= 10, {
-          message: '笔记内容不能少于 10 个字',
-        }),
+        .refine(
+          (value) => value.replaceAll(/<[^>]*>/g, '').trim().length >= 10,
+          {
+            message: '笔记内容不能少于 10 个字',
+          },
+        ),
     },
     {
       fieldName: 'fileUrls',
       label: '附件',
       component: 'FileUpload',
+      defaultValue: [],
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
       formItemClass: 'col-span-3',
     },
   ];
@@ -250,9 +258,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns(
-  scene: number,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(scene: number): VxeTableGridOptions['columns'] {
   const isMine = scene === OA_NOTE_SCENE_TYPE.MINE;
   return [
     ...(isMine ? [{ type: 'checkbox', width: 40 }] : []),

@@ -109,10 +109,10 @@ function handleCategorySelect(index: string) {
 }
 
 /** 切换联系人类型 */
-function handleSceneSelect(index: string) {
+async function handleSceneSelect(index: string) {
   activeScene.value = Number(index);
   // 处理状态仅在“共享与我”场景生效
-  gridApi.formApi.setValues({
+  await gridApi.formApi.setValues({
     scene: activeScene.value,
     handleStatus: undefined,
   });
@@ -120,7 +120,7 @@ function handleSceneSelect(index: string) {
   gridApi.setState({
     gridOptions: { columns: useGridColumns(activeScene.value) },
   });
-  handleRefresh();
+  await gridApi.formApi.submit();
 }
 
 /** 判断是否为联系人创建人 */
@@ -166,14 +166,10 @@ async function handleDelete(row: OaContactApi.Contact) {
   });
   try {
     // 移除本人持有的联系人；最后一人移除时由后端删除正文
-    if (
-      activeScene.value === OA_CONTACT_SCENE_TYPE.MINE &&
-      isContactOwner(row)
-    ) {
-      await deleteContact(row.id!);
-    } else {
-      await deleteReceivedContact(row.id!);
-    }
+    await (activeScene.value === OA_CONTACT_SCENE_TYPE.MINE &&
+    isContactOwner(row)
+      ? deleteContact(row.id!)
+      : deleteReceivedContact(row.id!));
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -272,12 +268,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const getPage =
-            activeScene.value === OA_CONTACT_SCENE_TYPE.MINE
-              ? getMyContactPage
-              : activeScene.value === OA_CONTACT_SCENE_TYPE.RECEIVED
-                ? getReceivedContactPage
-                : getSharedContactPage;
+          let getPage = getSharedContactPage;
+          if (activeScene.value === OA_CONTACT_SCENE_TYPE.MINE) {
+            getPage = getMyContactPage;
+          } else if (activeScene.value === OA_CONTACT_SCENE_TYPE.RECEIVED) {
+            getPage = getReceivedContactPage;
+          }
           return await getPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -307,7 +303,10 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+    <DocAlert
+      title="【协作】公告、讨论、通讯录与笔记"
+      url="https://doc.iocoder.cn/oa/collaboration/communication/"
+    />
     <FormModal @success="handleCategoryChange" />
     <DetailModal />
     <ShareFormModal @success="handleRefresh" />
@@ -322,11 +321,7 @@ onMounted(() => {
           class="mb-3 flex items-center justify-between border-b pb-3 font-semibold"
         >
           <span>分类</span>
-          <ElButton
-            link
-            type="primary"
-            @click="categoryListModalApi.open()"
-          >
+          <ElButton link type="primary" @click="categoryListModalApi.open()">
             管理分类
           </ElButton>
         </div>
@@ -387,7 +382,10 @@ onMounted(() => {
             />
           </template>
           <template #name="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.name }}
             </span>
           </template>
