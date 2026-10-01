@@ -172,18 +172,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '选择商品',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope', 'productScopeValues'],
+        triggerFields: ['productScope'],
         show: (values) => {
           return values.productScope === PromotionProductScopeEnum.SPU.scope;
-        },
-        trigger(values, form) {
-          // 当加载已有数据时，根据 productScopeValues 设置 productSpuIds
-          if (
-            values.productScope === PromotionProductScopeEnum.SPU.scope &&
-            values.productScopeValues
-          ) {
-            form.setFieldValue('productSpuIds', values.productScopeValues);
-          }
         },
       },
       rules: 'required',
@@ -193,20 +184,11 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '选择分类',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope', 'productScopeValues'],
+        triggerFields: ['productScope'],
         show: (values) => {
           return (
             values.productScope === PromotionProductScopeEnum.CATEGORY.scope
           );
-        },
-        trigger(values, form) {
-          // 当加载已有数据时，根据 productScopeValues 设置 productCategoryIds
-          if (
-            values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
-            values.productScopeValues
-          ) {
-            form.setFieldValue('productCategoryIds', values.productScopeValues);
-          }
         },
       },
       rules: 'required',
@@ -222,29 +204,11 @@ export function useFormSchema(): VbenFormSchema[] {
         .default([]),
     },
     {
-      fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues
+      fieldName: 'productScopeValues',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope', 'productSpuIds', 'productCategoryIds'],
+        triggerFields: [''],
         show: () => false,
-        trigger(values, form) {
-          switch (values.productScope) {
-            case PromotionProductScopeEnum.CATEGORY.scope: {
-              let categoryIds: number[] = [];
-              if (Array.isArray(values.productCategoryIds)) {
-                categoryIds = values.productCategoryIds;
-              } else if (values.productCategoryIds) {
-                categoryIds = [values.productCategoryIds];
-              }
-              form.setFieldValue('productScopeValues', categoryIds);
-              break;
-            }
-            case PromotionProductScopeEnum.SPU.scope: {
-              form.setFieldValue('productScopeValues', values.productSpuIds);
-              break;
-            }
-          }
-        },
       },
     },
   ];
