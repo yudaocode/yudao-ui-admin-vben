@@ -117,7 +117,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'planId',
       label: '回款期数',
       component: 'Select',
-      rules: 'required',
       dependencies: {
         triggerFields: ['contractId'],
         disabled: (values) => !values.contractId || values.id,

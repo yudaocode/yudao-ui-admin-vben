@@ -22,6 +22,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<CrmBusinessApi.Business>();
+const customerLocked = ref(false);
 const productFormRef = ref<InstanceType<typeof ProductEditTable>>();
 const getTitle = computed(() => {
   return formData.value?.id
@@ -58,7 +59,7 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
-  schema: useFormSchema(),
+  schema: useFormSchema(customerLocked),
   showDefaultActions: false,
 });
 
@@ -93,12 +94,15 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      customerLocked.value = false;
       formData.value = undefined;
       return;
     }
     // 加载数据
     const data = modalApi.getData() as CrmBusinessApi.Business;
+    customerLocked.value = !data?.id && !!data?.customerId;
     if (!data || !data.id) {
+      await formApi.setValues(data ?? {});
       return;
     }
     modalApi.lock();

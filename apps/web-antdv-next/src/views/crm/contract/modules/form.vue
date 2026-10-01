@@ -8,6 +8,7 @@ import { erpPriceMultiply } from '@vben/utils';
 
 import { message } from 'antdv-next';
 
+import { getBusiness } from '#/api/crm/business';
 import {
   createContract,
   getContract,
@@ -49,6 +50,26 @@ async function handleUpdateProducts(products: any) {
   await formApi.setFieldValue('totalPrice', totalPrice);
 }
 
+async function handleCustomerChange() {
+  await formApi.setValues({ businessId: undefined, signContactId: undefined });
+  await handleUpdateProducts([]);
+}
+
+async function handleBusinessChange(id?: number) {
+  if (!id) {
+    await handleUpdateProducts([]);
+    return;
+  }
+  const business = await getBusiness(id);
+  const values = await formApi.getValues();
+  if (values.businessId !== id) return;
+  const products = (business.products ?? []).map((product) => ({
+    ...product,
+    contractPrice: product.businessPrice,
+  }));
+  await handleUpdateProducts(products);
+}
+
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: {
@@ -58,7 +79,10 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
-  schema: useFormSchema(),
+  schema: useFormSchema({
+    onCustomerChange: handleCustomerChange,
+    onBusinessChange: handleBusinessChange,
+  }),
   showDefaultActions: false,
 });
 

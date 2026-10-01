@@ -176,7 +176,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="customer?.name" :loading="loading">
     <FormModal @success="loadCustomerDetail" />
-    <TransferModal @success="loadCustomerDetail" />
+    <TransferModal @success="handleBack" />
     <DistributeModal @success="loadCustomerDetail" />
     <template #extra>
       <TableAction

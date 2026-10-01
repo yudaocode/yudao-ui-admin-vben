@@ -108,7 +108,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="business?.name" :loading="loading">
     <FormModal @success="getBusinessDetail" />
-    <TransferModal @success="getBusinessDetail" />
+    <TransferModal @success="handleBack" />
     <UpStatusModal @success="getBusinessDetail" />
     <template #extra>
       <TableAction

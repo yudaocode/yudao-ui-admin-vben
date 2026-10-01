@@ -64,11 +64,19 @@ export function useFormSchema(
       fieldName: 'picUrls',
       label: '图片',
       component: 'ImageUpload',
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
     },
     {
       fieldName: 'fileUrls',
       label: '附件',
       component: 'FileUpload',
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
     },
     {
       fieldName: 'contactIds',

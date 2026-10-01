@@ -100,7 +100,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="contract?.name" :loading="loading">
     <FormModal @success="loadContractDetail" />
-    <TransferModal @success="loadContractDetail" />
+    <TransferModal @success="handleBack" />
     <template #extra>
       <TableAction
         :actions="[

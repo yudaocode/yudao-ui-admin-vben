@@ -100,7 +100,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.actionTitle.create', ['商机状态']),
               type: 'primary',
               icon: ACTION_ICON.ADD,
-              auth: ['system:post:create'],
+              auth: ['crm:business-status:create'],
               onClick: handleCreate,
             },
           ]"

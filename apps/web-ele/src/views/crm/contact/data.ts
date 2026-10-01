@@ -1,3 +1,5 @@
+import type { Ref } from 'vue';
+
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
@@ -13,9 +15,17 @@ import { getSimpleUserList } from '#/api/system/user';
 import { AreaCascader } from '#/components/area';
 
 /** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
+    {
+      fieldName: 'businessId',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
     {
       fieldName: 'id',
       component: 'Input',
@@ -55,13 +65,19 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户名称',
       component: 'ApiSelect',
       rules: 'required',
-      componentProps: (_values, form) => ({
+      componentProps: () => ({
+        disabled: customerLocked.value,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        onChange: () => form.setFieldValue('parentId', undefined),
       }),
+      dependencies: {
+        triggerFields: ['customerId'],
+        componentProps: (_values, form) => ({
+          onChange: () => form.setFieldValue('parentId', undefined),
+        }),
+      },
     },
     {
       fieldName: 'mobile',

@@ -124,7 +124,7 @@ async function handleQuit() {
     .getData()
     .find(
       (item) =>
-        item.id === userStore.userInfo?.id &&
+        item.userId === userStore.userInfo?.id &&
         item.level === PermissionLevelEnum.OWNER,
     );
   if (permission) {
@@ -134,7 +134,7 @@ async function handleQuit() {
 
   const userPermission = gridApi.grid
     .getData()
-    .find((item) => item.id === userStore.userInfo?.id);
+    .find((item) => item.userId === userStore.userInfo?.id);
   if (!userPermission) {
     ElMessage.warning('你不是团队成员！');
     return;

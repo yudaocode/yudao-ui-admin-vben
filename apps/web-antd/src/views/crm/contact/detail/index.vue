@@ -95,7 +95,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="contact?.name" :loading="loading">
     <FormModal @success="getContactDetail" />
-    <TransferModal @success="getContactDetail" />
+    <TransferModal @success="handleBack" />
     <template #extra>
       <TableAction
         :actions="[

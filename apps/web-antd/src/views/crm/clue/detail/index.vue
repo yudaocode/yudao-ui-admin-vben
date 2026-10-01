@@ -107,7 +107,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="clue?.name" :loading="loading">
     <FormModal @success="getClueDetail" />
-    <TransferModal @success="getClueDetail" />
+    <TransferModal @success="handleBack" />
     <template #extra>
       <TableAction
         :actions="[
