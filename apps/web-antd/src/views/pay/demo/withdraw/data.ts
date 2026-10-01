@@ -114,7 +114,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '提现金额',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'userName',

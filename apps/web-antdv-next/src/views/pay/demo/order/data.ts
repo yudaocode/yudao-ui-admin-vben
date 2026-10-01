@@ -57,13 +57,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '支付价格',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'createTime',

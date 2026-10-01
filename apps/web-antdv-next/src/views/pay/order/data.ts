@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
+import { erpPriceInputFormatter, fenToYuan, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'antdv-next';
 
@@ -96,19 +96,19 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '支付金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'channelFeePrice',
       title: '手续金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'no',
@@ -192,12 +192,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'price',
       label: '支付金额',
-      render: (val) => `￥${erpPriceInputFormatter(val)}`,
+      render: (val) => `￥${fenToYuan(val)}`,
     },
     {
       field: 'channelFeePrice',
       label: '手续费',
-      render: (val) => `￥${erpPriceInputFormatter(val)}`,
+      render: (val) => `￥${fenToYuan(val)}`,
     },
     {
       field: 'channelFeeRate',
@@ -257,7 +257,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'refundPrice',
       label: '退款金额',
-      render: (val) => `￥${erpPriceInputFormatter(val)}`,
+      render: (val) => `￥${fenToYuan(val)}`,
     },
     {
       field: 'notifyUrl',
