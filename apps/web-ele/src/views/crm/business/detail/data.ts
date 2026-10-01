@@ -127,7 +127,7 @@ export function useStatusFormSchema(
           }));
           const options = DEFAULT_STATUSES.map((item) => ({
             label: `${item.name}(赢单率：${item.percent}%)`,
-            value: item.endStatus,
+            value: -item.endStatus,
           }));
           statusOptions.push(...options);
           return {

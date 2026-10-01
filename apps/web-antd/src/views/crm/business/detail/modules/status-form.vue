@@ -65,7 +65,10 @@ const [Modal, modalApi] = useVbenModal({
     if (!data || !data.id) {
       return;
     }
-    data.status = data.endStatus === null ? data.statusId : -data.endStatus;
+    data.status =
+      data.endStatus === null || data.endStatus === undefined
+        ? data.statusId
+        : -data.endStatus;
     formData.value = data;
     modalApi.lock();
     try {
