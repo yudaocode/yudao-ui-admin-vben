@@ -155,7 +155,7 @@ async function resetQuery() {
       v-if="!showSubject"
       placement="bottomLeft"
       trigger="click"
-      :overlay-style="{ width: '360px' }"
+      :styles="{ root: { width: '360px' } }"
     >
       <template #content>
         <div class="flex flex-col gap-3">

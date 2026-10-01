@@ -271,7 +271,7 @@ async function submitReview() {
       <Alert
         v-if="currentStage?.rejectReason"
         class="mb-4"
-        :message="`评分被驳回：${currentStage.rejectReason}`"
+        :title="`评分被驳回：${currentStage.rejectReason}`"
         show-icon
         type="warning"
       />
@@ -298,7 +298,7 @@ async function submitReview() {
 
       <Alert
         class="mb-3"
-        :message="`单项评分范围为 0～${detail.upperLimitScore ?? '-'} 分，最多保留两位小数；总分按评分、维度权重和指标权重计算。`"
+        :title="`单项评分范围为 0～${detail.upperLimitScore ?? '-'} 分，最多保留两位小数；总分按评分、维度权重和指标权重计算。`"
         show-icon
         type="info"
       />

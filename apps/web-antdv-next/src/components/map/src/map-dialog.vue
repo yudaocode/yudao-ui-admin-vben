@@ -4,7 +4,16 @@ import { nextTick, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Button, Form, FormItem, Input, Select, Space } from 'antdv-next';
+import {
+  Button,
+  Form,
+  FormItem,
+  Input,
+  Select,
+  Space,
+  SpaceAddon,
+  SpaceCompact,
+} from 'antdv-next';
 
 import { loadBaiduMapSdk } from './utils';
 
@@ -255,18 +264,14 @@ defineExpose({ open });
         <!-- 第二行：坐标显示 -->
         <FormItem label="当前坐标">
           <Space>
-            <Input
-              :value="state.longitude"
-              addon-before="经度"
-              disabled
-              style="width: 180px"
-            />
-            <Input
-              :value="state.latitude"
-              addon-before="纬度"
-              disabled
-              style="width: 180px"
-            />
+            <SpaceCompact style="width: 180px">
+              <SpaceAddon>经度</SpaceAddon>
+              <Input :value="state.longitude" disabled />
+            </SpaceCompact>
+            <SpaceCompact style="width: 180px">
+              <SpaceAddon>纬度</SpaceAddon>
+              <Input :value="state.latitude" disabled />
+            </SpaceCompact>
           </Space>
         </FormItem>
       </Form>

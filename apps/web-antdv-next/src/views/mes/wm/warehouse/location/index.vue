@@ -161,7 +161,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Alert
       v-if="currentWarehouse.id"
       class="mb-3"
-      :message="`当前仓库：${currentWarehouse.name || `#${currentWarehouse.id}`}`"
+      :title="`当前仓库：${currentWarehouse.name || `#${currentWarehouse.id}`}`"
       show-icon
       type="info"
     />

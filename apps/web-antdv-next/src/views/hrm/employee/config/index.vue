@@ -37,7 +37,7 @@ async function submitForm() {
         url="https://doc.iocoder.cn/hrm/employee/"
       />
     </template>
-    <Tabs v-model:active-key="activeTab" :destroy-inactive-tab-pane="false">
+    <Tabs v-model:active-key="activeTab" :destroy-on-hidden="false">
       <template #rightExtra>
         <Button
           v-access:code="['hrm:employee:config:update']"

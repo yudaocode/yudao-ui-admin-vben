@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
       type="info"
       show-icon
       :closable="false"
-      message="初始化后将建立本位币、财务参数和默认凭证字，启用期间不可随意变更"
+      title="初始化后将建立本位币、财务参数和默认凭证字，启用期间不可随意变更"
     />
   </Modal>
 </template>

@@ -81,7 +81,7 @@ defineExpose({ validate });
       <div v-if="configForm[`task${listener.type}ListenerEnable`]">
         <FormItem>
           <Alert
-            message="仅支持 POST 请求，以请求体方式接收参数"
+            title="仅支持 POST 请求，以请求体方式接收参数"
             type="warning"
             show-icon
             :closable="false"

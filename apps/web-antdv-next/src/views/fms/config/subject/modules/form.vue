@@ -393,7 +393,7 @@ const [Modal, modalApi] = useVbenModal({
     <Alert
       v-if="formType === 'create' && parentSubjectUsed"
       :closable="false"
-      :message="
+      :title="
         subjectUsage.childCount > 0
           ? '上级科目已有业务数据和下级科目，当前数据状态不允许继续新增下级'
           : `上级科目已有 ${subjectUsage.voucherEntryCount} 条凭证分录、${subjectUsage.initialBalanceCount} 条初始余额和 ${subjectUsage.auxiliaryCombinationCount} 个辅助核算组合，创建后将全部迁移到新科目`
@@ -407,7 +407,7 @@ const [Modal, modalApi] = useVbenModal({
         (subjectUsage.used || subjectUsage.childCount > 0)
       "
       :closable="false"
-      :message="
+      :title="
         subjectUsage.used
           ? '该科目已有业务数据，余额方向不能修改；首次启用辅助核算时，需要为历史数据指定迁移项目'
           : '该科目已有下级，科目类别、编码和辅助核算不能修改'
@@ -480,7 +480,7 @@ const [Modal, modalApi] = useVbenModal({
         <Alert
           :closable="false"
           class="mb-4"
-          message="请选择历史凭证要迁入的辅助核算项目，该操作不可撤销"
+          title="请选择历史凭证要迁入的辅助核算项目，该操作不可撤销"
           type="warning"
         />
         <FormItem

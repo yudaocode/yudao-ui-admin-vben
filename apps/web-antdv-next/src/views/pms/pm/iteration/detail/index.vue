@@ -409,7 +409,7 @@ onMounted(async () => {
               <div class="mb-2 flex justify-between">
                 <span>迭代进度</span><span>{{ overview.progress }}%</span>
               </div>
-              <Progress :percent="overview.progress" :stroke-width="12" />
+              <Progress :percent="overview.progress" :size="{ height: 12 }" />
             </div>
             <!-- 迭代信息与事项类型分布 -->
             <Row :gutter="16">
@@ -486,7 +486,7 @@ onMounted(async () => {
                       class="flex-1"
                       :percent="getTypePercentage(item.count)"
                       :status="item.progressStatus"
-                      :stroke-width="12"
+                      :size="{ height: 12 }"
                     />
                     <strong class="w-7 text-right">{{ item.count }}</strong>
                   </div>

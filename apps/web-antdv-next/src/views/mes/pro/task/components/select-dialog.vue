@@ -238,7 +238,7 @@ defineExpose({ open: openModal });
   >
     <Alert
       v-if="statusTip"
-      :message="statusTip"
+      :title="statusTip"
       type="info"
       show-icon
       class="!mb-3"

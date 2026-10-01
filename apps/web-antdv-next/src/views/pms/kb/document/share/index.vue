@@ -41,7 +41,7 @@ onMounted(() => {
   <Spinner :spinning="loading" class="min-h-screen bg-accent px-6 py-6">
     <Card
       v-if="document"
-      :body-style="{ padding: '40px 48px' }"
+      :styles="{ body: { padding: '40px 48px' } }"
       class="mx-auto min-h-[calc(100vh-48px)] max-w-[960px]"
     >
       <div

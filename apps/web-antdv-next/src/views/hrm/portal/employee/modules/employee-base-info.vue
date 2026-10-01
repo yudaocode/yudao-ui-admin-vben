@@ -146,7 +146,7 @@ onMounted(() => {
   <Spin :spinning="loading">
     <Alert
       :style="{ marginBottom: '15px' }"
-      :message="employeeReminder"
+      :title="employeeReminder"
       show-icon
       type="info"
     />

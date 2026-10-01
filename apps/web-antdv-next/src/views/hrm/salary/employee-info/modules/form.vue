@@ -468,7 +468,7 @@ watch(
       <Alert
         v-if="isPendingChange()"
         class="mb-4"
-        message="该调整将在生效日期前保持待生效，当前薪资档案不会提前变化"
+        title="该调整将在生效日期前保持待生效，当前薪资档案不会提前变化"
         show-icon
         type="warning"
       />

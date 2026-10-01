@@ -160,7 +160,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Alert
       v-if="currentLocation.id"
       class="mb-3"
-      :message="`当前仓库/库区：${currentLocation.warehouseName || `#${currentLocation.warehouseId || '-'}`} / ${currentLocation.name || `#${currentLocation.id}`}`"
+      :title="`当前仓库/库区：${currentLocation.warehouseName || `#${currentLocation.warehouseId || '-'}`} / ${currentLocation.name || `#${currentLocation.id}`}`"
       show-icon
       type="info"
     />

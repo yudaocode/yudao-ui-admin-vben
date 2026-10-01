@@ -22,6 +22,8 @@ import {
   message,
   Row,
   Select,
+  SpaceAddon,
+  SpaceCompact,
   TextArea,
 } from 'antdv-next';
 import dayjs from 'dayjs';
@@ -47,7 +49,9 @@ const formLoading = ref(false); // 表单加载及保存状态
 const formData = ref<OaTravelApplyApi.TravelApply>(createDefaultFormData()); // 单据
 const formRules = reactive<Record<string, Rule[]>>({
   reason: [{ required: true, message: '出差事由不能为空', trigger: 'blur' }],
-  startTime: [{ required: true, message: '开始日期不能为空', trigger: 'change' }],
+  startTime: [
+    { required: true, message: '开始日期不能为空', trigger: 'change' },
+  ],
   endTime: [{ required: true, message: '结束日期不能为空', trigger: 'change' }],
 });
 
@@ -119,7 +123,7 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 1. 校验表单及明细
     await formRef.value?.validate();
-    if (!formData.value.items.length) {
+    if (formData.value.items.length === 0) {
       message.warning('请添加行程明细');
       return;
     }
@@ -208,20 +212,28 @@ const [Modal, modalApi] = useVbenModal({
               placeholder="请选择结束日期"
               show-time
               value-format="x"
-              @update:value="formData.endTime = fromTimestampPickerValue($event)"
+              @update:value="
+                formData.endTime = fromTimestampPickerValue($event)
+              "
             />
           </FormItem>
         </Col>
         <Col :span="6">
           <FormItem label="出差天数">
-            <Input :value="days" addon-after="天" disabled placeholder="自动计算" />
+            <SpaceCompact block>
+              <Input :value="days" disabled placeholder="自动计算" />
+              <SpaceAddon>天</SpaceAddon>
+            </SpaceCompact>
           </FormItem>
         </Col>
       </Row>
       <Row :gutter="20">
         <Col :span="12">
           <FormItem label="同行人" name="companion">
-            <Input v-model:value="formData.companion" placeholder="请输入同行人" />
+            <Input
+              v-model:value="formData.companion"
+              placeholder="请输入同行人"
+            />
           </FormItem>
         </Col>
         <Col :span="12">

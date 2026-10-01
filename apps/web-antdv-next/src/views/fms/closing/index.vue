@@ -216,7 +216,7 @@ function disabledMonth(date: Dayjs) {
     <!-- 结账检查 -->
     <Card class="mb-4">
       <Alert
-        :message="
+        :title="
           overview.closed ? `${monthLabel} 已结账` : `${monthLabel} 尚未结账`
         "
         :type="overview.closed ? 'success' : 'info'"

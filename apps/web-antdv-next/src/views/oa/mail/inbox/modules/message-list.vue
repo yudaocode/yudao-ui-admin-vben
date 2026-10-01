@@ -72,7 +72,7 @@ function handleKeywordChange(e: any) {
       <Spin :spinning="loading">
         <Alert
           v-if="listError"
-          :message="listError"
+          :title="listError"
           type="error"
           :closable="false"
         />

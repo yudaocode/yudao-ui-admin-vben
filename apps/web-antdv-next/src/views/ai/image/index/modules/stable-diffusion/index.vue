@@ -20,6 +20,8 @@ import {
   message,
   Select,
   Space,
+  SpaceAddon,
+  SpaceCompact,
   TextArea,
 } from 'antdv-next';
 
@@ -209,20 +211,24 @@ defineExpose({ settingValues });
   <div class="mt-8">
     <div><b>图片尺寸</b></div>
     <Space wrap class="mt-4 w-full">
-      <InputNumber
-        v-model:value="width"
-        class="w-40"
-        placeholder="图片宽度"
-        addon-before="宽"
-        addon-after="px"
-      />
-      <InputNumber
-        v-model:value="height"
-        class="w-40"
-        placeholder="图片高度"
-        addon-before="高"
-        addon-after="px"
-      />
+      <SpaceCompact class="w-40">
+        <SpaceAddon>宽</SpaceAddon>
+        <InputNumber
+          v-model:value="width"
+          class="min-w-0 flex-1"
+          placeholder="图片宽度"
+        />
+        <SpaceAddon>px</SpaceAddon>
+      </SpaceCompact>
+      <SpaceCompact class="w-40">
+        <SpaceAddon>高</SpaceAddon>
+        <InputNumber
+          v-model:value="height"
+          class="min-w-0 flex-1"
+          placeholder="图片高度"
+        />
+        <SpaceAddon>px</SpaceAddon>
+      </SpaceCompact>
     </Space>
   </div>
 

@@ -71,7 +71,7 @@ const [Modal, modalApi] = useVbenModal({
       class="mb-5"
       show-icon
       type="warning"
-      message="删除后，相关员工和候选人的招聘渠道将同步变更"
+      title="删除后，相关员工和候选人的招聘渠道将同步变更"
     />
     <Form class="mx-4" />
   </Modal>

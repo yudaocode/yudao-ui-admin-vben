@@ -243,7 +243,7 @@ async function loadShift(applyDefaultTime = false) {
     <Form class="mx-4" />
     <Alert
       v-if="shiftInfo"
-      :message="shiftTimeTip"
+      :title="shiftTimeTip"
       class="mx-4 mb-2"
       show-icon
       type="info"
@@ -251,7 +251,7 @@ async function loadShift(applyDefaultTime = false) {
     <Alert
       v-else-if="showShiftWarning"
       class="mx-4 mb-2"
-      message="该员工当天未配置有效班次，不能补录打卡"
+      title="该员工当天未配置有效班次，不能补录打卡"
       show-icon
       type="warning"
     />

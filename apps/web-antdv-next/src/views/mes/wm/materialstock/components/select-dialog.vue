@@ -252,7 +252,7 @@ defineExpose({ open: openModal });
     <Alert
       v-if="showAlert"
       class="mb-3"
-      :message="alertTitle"
+      :title="alertTitle"
       show-icon
       type="info"
     />
