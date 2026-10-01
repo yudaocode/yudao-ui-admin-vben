@@ -15,6 +15,14 @@ export function useFormSchema(): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
     {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'period',
       label: '期数',
       component: 'Input',

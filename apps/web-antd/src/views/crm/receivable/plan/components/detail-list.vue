@@ -44,7 +44,7 @@ function handleCreate() {
 
 /** 编辑回款计划 */
 function handleEdit(row: CrmReceivablePlanApi.Plan) {
-  formModalApi.setData({ receivablePlan: row }).open();
+  formModalApi.setData(row).open();
 }
 
 /** 删除回款计划 */
