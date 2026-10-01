@@ -29,13 +29,23 @@ const emit = defineEmits(['update:products']);
 const tableData = ref<any[]>([]);
 
 /** 添加产品行 */
-function handleAdd() {
-  gridApi.grid.insertAt(null, -1);
+async function handleAdd() {
+  const row = {
+    id: Math.max(0, ...tableData.value.map((item) => Number(item.id) || 0)) + 1,
+    count: 1,
+  };
+  const { row: insertedRow } = await gridApi.grid.insertAt(row, -1);
+  tableData.value.push(insertedRow);
+  emit('update:products', [...tableData.value]);
 }
 
 /** 删除产品行 */
-function handleDelete(row: CrmProductApi.Product) {
-  gridApi.grid.remove(row);
+async function handleDelete(row: any) {
+  await gridApi.grid.remove(row);
+  tableData.value = tableData.value.filter(
+    (item) => item !== row && !(row.id && item.id === row.id),
+  );
+  emit('update:products', [...tableData.value]);
 }
 
 /** 切换产品时同步基础信息 */
@@ -44,12 +54,13 @@ function handleProductChange(productId: any, row: any) {
   if (!product) {
     return;
   }
+  row.productName = product.name;
   row.productUnit = product.unit;
   row.productNo = product.no;
   row.productPrice = product.price;
   row.sellingPrice = product.price;
-  row.count = 0;
-  row.totalPrice = 0;
+  row.count = 1;
+  row.totalPrice = erpPriceMultiply(row.sellingPrice, row.count) ?? 0;
   handleUpdateValue(row);
 }
 
@@ -68,13 +79,36 @@ function handleUpdateValue(row: any) {
     row.contractPrice = row.sellingPrice;
   }
   if (index === -1) {
-    row.id = tableData.value.length + 1;
+    row.id =
+      Math.max(0, ...tableData.value.map((item) => Number(item.id) || 0)) + 1;
     tableData.value.push(row);
   } else {
     tableData.value[index] = row;
   }
   emit('update:products', [...tableData.value]);
 }
+
+/** 产品明细校验 */
+function validate() {
+  const fields = [
+    { field: 'productId', label: '产品' },
+    { field: 'sellingPrice', label: '售价' },
+    { field: 'count', label: '数量' },
+  ];
+  for (const [index, row] of tableData.value.entries()) {
+    for (const { field, label } of fields) {
+      if (
+        row[field] === null ||
+        row[field] === undefined ||
+        row[field] === ''
+      ) {
+        throw new Error(`第 ${index + 1} 行：${label}不能为空`);
+      }
+    }
+  }
+}
+
+defineExpose({ validate });
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -180,7 +214,7 @@ onMounted(async () => {
             type: 'link',
             danger: true,
             popConfirm: {
-              title: $t('ui.actionMessage.deleteConfirm', [row.name]),
+              title: $t('ui.actionMessage.deleteConfirm', [row.productName]),
               confirm: handleDelete.bind(null, row),
             },
           },

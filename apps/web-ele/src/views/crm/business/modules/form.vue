@@ -22,6 +22,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<CrmBusinessApi.Business>();
+const productFormRef = ref<InstanceType<typeof ProductEditTable>>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['商机'])
@@ -67,6 +68,15 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
+    const productForm = Array.isArray(productFormRef.value)
+      ? productFormRef.value[0]
+      : productFormRef.value;
+    try {
+      await productForm?.validate();
+    } catch (error: any) {
+      ElMessage.error(error.message || '产品明细校验失败');
+      return;
+    }
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as CrmBusinessApi.Business;
@@ -108,6 +118,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4">
       <template #product="slotProps">
         <ProductEditTable
+          ref="productFormRef"
           v-bind="slotProps.componentProps"
           class="w-full"
           :products="formData?.products ?? []"
