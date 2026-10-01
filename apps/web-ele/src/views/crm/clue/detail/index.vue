@@ -79,7 +79,9 @@ function handleEdit() {
 
 /** 转移线索 */
 function handleTransfer() {
-  transferModalApi.setData({ bizType: BizTypeEnum.CRM_CLUE }).open();
+  transferModalApi
+    .setData({ id: clueId.value, bizType: BizTypeEnum.CRM_CLUE })
+    .open();
 }
 
 /** 转化为客户 */

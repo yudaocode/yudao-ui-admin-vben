@@ -84,7 +84,9 @@ function handleEdit() {
 
 /** 转移合同 */
 function handleTransfer() {
-  transferModalApi.setData({ bizType: BizTypeEnum.CRM_CONTRACT }).open();
+  transferModalApi
+    .setData({ id: contractId.value, bizType: BizTypeEnum.CRM_CONTRACT })
+    .open();
 }
 
 /** 加载数据 */

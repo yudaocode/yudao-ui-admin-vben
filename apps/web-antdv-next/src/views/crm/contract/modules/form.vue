@@ -28,25 +28,24 @@ const getTitle = computed(() => {
 });
 
 /** 更新产品列表 */
-function handleUpdateProducts(products: any) {
-  formData.value = modalApi.getData() as CrmContractApi.Contract;
-  formData.value!.products = products;
-  if (formData.value) {
-    const totalProductPrice =
-      formData.value.products?.reduce(
-        (prev, curr) => prev + curr.totalPrice,
-        0,
-      ) ?? 0;
-    const discountPercent = formData.value.discountPercent;
-    const discountPrice =
-      discountPercent === null
-        ? 0
-        : erpPriceMultiply(totalProductPrice, discountPercent / 100);
-    const totalPrice = totalProductPrice - (discountPrice ?? 0);
-    formData.value!.totalProductPrice = totalProductPrice;
-    formData.value!.totalPrice = totalPrice;
-    formApi.setValues(formData.value!);
+async function handleUpdateProducts(products: any) {
+  if (!formData.value) {
+    formData.value = {} as CrmContractApi.Contract;
   }
+  formData.value.products = products;
+  const totalProductPrice =
+    products?.reduce(
+      (prev: number, curr: any) => prev + (curr.totalPrice ?? 0),
+      0,
+    ) ?? 0;
+  const { discountPercent } = await formApi.getValues();
+  const discountPrice =
+    discountPercent === null || discountPercent === undefined
+      ? 0
+      : erpPriceMultiply(totalProductPrice, discountPercent / 100);
+  const totalPrice = totalProductPrice - (discountPrice ?? 0);
+  await formApi.setFieldValue('totalProductPrice', totalProductPrice);
+  await formApi.setFieldValue('totalPrice', totalPrice);
 }
 
 const [Form, formApi] = useVbenForm({

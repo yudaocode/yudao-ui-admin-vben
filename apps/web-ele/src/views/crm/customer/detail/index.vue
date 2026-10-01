@@ -97,7 +97,9 @@ function handleEdit() {
 
 /** 转移线索 */
 function handleTransfer() {
-  transferModalApi.setData({ id: customerId.value }).open();
+  transferModalApi
+    .setData({ id: customerId.value, bizType: BizTypeEnum.CRM_CUSTOMER })
+    .open();
 }
 
 /** 锁定客户 */

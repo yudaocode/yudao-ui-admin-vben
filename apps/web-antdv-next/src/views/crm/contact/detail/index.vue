@@ -80,7 +80,9 @@ function handleEdit() {
 
 /** 转移联系人 */
 function handleTransfer() {
-  transferModalApi.setData({ id: contactId.value }).open();
+  transferModalApi
+    .setData({ id: contactId.value, bizType: BizTypeEnum.CRM_CONTACT })
+    .open();
 }
 
 /** 加载数据 */

@@ -71,30 +71,35 @@ const [Modal, modalApi] = useVbenModal({
     try {
       switch (bizType.value) {
         case BizTypeEnum.CRM_BUSINESS: {
-          return await transferBusiness(data);
+          await transferBusiness(data);
+          break;
         }
         case BizTypeEnum.CRM_CLUE: {
-          return await transferClue(data);
+          await transferClue(data);
+          break;
         }
         case BizTypeEnum.CRM_CONTACT: {
-          return await transferContact(data);
+          await transferContact(data);
+          break;
         }
         case BizTypeEnum.CRM_CONTRACT: {
-          return await transferContract(data);
+          await transferContract(data);
+          break;
         }
         case BizTypeEnum.CRM_CUSTOMER: {
-          return await transferCustomer(data);
+          await transferCustomer(data);
+          break;
         }
         default: {
           ElMessage.error('【转移失败】没有转移接口');
-          throw new Error('【转移失败】没有转移接口');
+          return;
         }
       }
-    } finally {
       // 关闭并提示
       await modalApi.close();
       emit('success');
       ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    } finally {
       modalApi.unlock();
     }
   },
@@ -103,12 +108,12 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData() as { bizType: number };
-    if (!data || !data.bizType) {
+    const data = modalApi.getData() as { bizType: number; id: number };
+    if (!data || !data.id || !data.bizType) {
       return;
     }
     bizType.value = data.bizType;
-    await formApi.setFieldValue('id', data.bizType);
+    await formApi.setFieldValue('id', data.id);
   },
 });
 </script>
