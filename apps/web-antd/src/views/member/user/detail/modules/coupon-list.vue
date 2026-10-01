@@ -97,7 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           const params = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            userId: props.userId,
+            userIds: [props.userId],
             ...formValues,
             // Tab状态过滤
             status:
