@@ -11,6 +11,14 @@ import { HrmAttendanceHolidayType } from '#/views/hrm/utils/constants';
 export function useFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'date',
       label: '日期',
       component: 'DatePicker',

@@ -209,7 +209,11 @@ async function handleCancelQuit() {
         cancelButtonText: '取消',
         inputType: 'textarea',
         inputPlaceholder: '请输入取消原因',
-        inputValidator: (input) => !!input?.trim() || '取消原因不能为空',
+        inputValidator: (input) => {
+          const reason = input?.trim();
+          if (!reason) return '取消原因不能为空';
+          return reason.length <= 500 || '取消原因不能超过 500 字';
+        },
       },
     );
     await cancelEmployeeQuit({ employeeId, reason: value.trim() });

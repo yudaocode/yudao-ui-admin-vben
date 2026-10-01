@@ -14,7 +14,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择拼团状态',
         allowClear: true,
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.PROMOTION_COMBINATION_RECORD_STATUS,
+          'number',
+        ),
       },
     },
     {
@@ -107,7 +110,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
+        props: { type: DICT_TYPE.PROMOTION_COMBINATION_RECORD_STATUS },
       },
     },
     {
@@ -171,7 +174,7 @@ export function useUserGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
+        props: { type: DICT_TYPE.PROMOTION_COMBINATION_RECORD_STATUS },
       },
     },
   ];
