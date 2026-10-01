@@ -56,7 +56,10 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportUser(await gridApi.formApi.getValues());
+  const data = await exportUser({
+    ...(await gridApi.formApi.getValues()),
+    deptId: searchDeptId.value,
+  });
   downloadFileFromBlobPart({ fileName: '用户.xls', source: data });
 }
 

@@ -99,7 +99,11 @@ onMounted(async () => {
             <ExperienceRecordList class="h-full" :user-id="userId" />
           </TabPane>
           <TabPane tab="余额" key="BalanceList">
-            <BalanceList class="h-full" :wallet-id="wallet?.id" />
+            <BalanceList
+              v-if="wallet?.id"
+              class="h-full"
+              :wallet-id="wallet.id"
+            />
           </TabPane>
           <TabPane tab="收货地址" key="AddressList">
             <AddressList class="h-full" :user-id="userId" />

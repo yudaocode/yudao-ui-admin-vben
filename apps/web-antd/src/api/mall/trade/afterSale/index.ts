@@ -51,7 +51,7 @@ export namespace MallAfterSaleApi {
     /** 售后编号 */
     id: number;
     /** 拒绝原因 */
-    reason: string;
+    auditReason: string;
   }
 }
 

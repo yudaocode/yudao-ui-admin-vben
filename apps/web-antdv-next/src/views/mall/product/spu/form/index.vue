@@ -185,12 +185,24 @@ function handleTabChange(key: string) {
 
 /** 提交表单 */
 async function handleSubmit() {
-  const values: MallSpuApi.Spu = await infoFormApi
-    .merge(skuFormApi)
-    .merge(deliveryFormApi)
-    .merge(descriptionFormApi)
-    .merge(otherFormApi)
-    .submitAllForm(true);
+  const forms = [
+    ['info', infoFormApi],
+    ['sku', skuFormApi],
+    ['delivery', deliveryFormApi],
+    ['description', descriptionFormApi],
+    ['other', otherFormApi],
+  ] as const;
+  for (const [tab, api] of forms) {
+    const { valid } = await api.validate();
+    if (!valid) {
+      activeTabName.value = tab;
+      return;
+    }
+  }
+  const values: MallSpuApi.Spu = Object.assign(
+    {},
+    ...(await Promise.all(forms.map(([, api]) => api.getValues()))),
+  );
   // 校验商品名称不能为空（用于 SKU name）
   if (!values.name || values.name.trim() === '') {
     message.error('商品名称不能为空');
@@ -200,6 +212,7 @@ async function handleSubmit() {
     // 校验 sku
     skuListRef.value.validateSku();
   } catch {
+    activeTabName.value = 'sku';
     message.error('【库存价格】不完善，请填写相关信息');
     return;
   }

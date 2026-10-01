@@ -1059,7 +1059,9 @@ function handlePageShortcut(event: KeyboardEvent) {
     event.isComposing ||
     event.repeat ||
     loading.value ||
-    (event.target as HTMLElement | null)?.closest('.ant-modal')
+    (event.target as HTMLElement | null)?.closest(
+      '.ant-modal, [role="dialog"], [role="alertdialog"]',
+    )
   ) {
     return;
   }

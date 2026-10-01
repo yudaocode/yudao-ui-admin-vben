@@ -4,7 +4,10 @@ import type { MallCouponTemplateApi } from '#/api/mall/promotion/coupon/couponTe
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { CouponTemplateTakeTypeEnum } from '@vben/constants';
+import {
+  CouponTemplateTakeTypeEnum,
+  PromotionProductScopeEnum,
+} from '@vben/constants';
 import { convertToInteger, formatToFraction } from '@vben/utils';
 
 import { message } from 'antdv-next';
@@ -49,19 +52,12 @@ const [Form, formApi] = useVbenForm({
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    // 同步商品/分类选择到表单，确保验证时能获取到值
-    if (formData.value.productSpuIds) {
-      await formApi.setFieldValue(
-        'productSpuIds',
-        formData.value.productSpuIds,
-      );
-    }
-    if (formData.value.productCategoryIds) {
-      await formApi.setFieldValue(
-        'productCategoryIds',
-        formData.value.productCategoryIds,
-      );
-    }
+    // 同步插槽的选择，包括清空后的值
+    await formApi.setFieldValue('productSpuIds', formData.value.productSpuIds);
+    await formApi.setFieldValue(
+      'productCategoryIds',
+      formData.value.productCategoryIds,
+    );
     const { valid } = await formApi.validate();
     if (!valid) {
       return;
@@ -95,6 +91,17 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getCouponTemplate(data.id);
+      switch (formData.value.productScope) {
+        case PromotionProductScopeEnum.CATEGORY.scope: {
+          formData.value.productCategoryIds =
+            formData.value.productScopeValues?.[0];
+          break;
+        }
+        case PromotionProductScopeEnum.SPU.scope: {
+          formData.value.productSpuIds = formData.value.productScopeValues;
+          break;
+        }
+      }
       const processedData = await processLoadData(formData.value as any);
       // 设置到表单
       await formApi.setValues(processedData);
@@ -108,8 +115,20 @@ const [Modal, modalApi] = useVbenModal({
 async function processSubmitData(
   formValues: any,
 ): Promise<MallCouponTemplateApi.CouponTemplate> {
+  let productScopeValues: number[] = [];
+  switch (formValues.productScope) {
+    case PromotionProductScopeEnum.CATEGORY.scope: {
+      productScopeValues = [formValues.productCategoryIds];
+      break;
+    }
+    case PromotionProductScopeEnum.SPU.scope: {
+      productScopeValues = formValues.productSpuIds;
+      break;
+    }
+  }
   return {
     ...formValues,
+    productScopeValues,
     // 金额转换：元转分
     discountPrice: convertToInteger(formValues.discountPrice),
     discountPercent:

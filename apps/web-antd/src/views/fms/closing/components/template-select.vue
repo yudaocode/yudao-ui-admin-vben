@@ -153,9 +153,14 @@ async function handleDelete(template: FmsClosingTemplateApi.ClosingTemplate) {
     <div class="mb-4 flex items-center gap-5">
       <Tabs
         v-model:active-key="category"
-        :items="categoryTabs"
         class="closing-template-tabs min-w-0 flex-1"
-      />
+      >
+        <Tabs.TabPane
+          v-for="tab in categoryTabs"
+          :key="tab.key"
+          :tab="tab.label"
+        />
+      </Tabs>
       <Dropdown
         v-if="
           fmsStore.isAccountSetWritable &&

@@ -124,7 +124,7 @@ function handleUpdateOrder(order: ErpSaleOrderApi.SaleOrder) {
   // 将订单项设置到出库单项
   order.items!.forEach((item: any) => {
     item.totalCount = item.count;
-    item.count = item.totalCount - item.outCount;
+    item.count = (item.totalCount ?? 0) - (item.outCount ?? 0);
     item.orderItemId = item.id;
     item.id = undefined;
   });

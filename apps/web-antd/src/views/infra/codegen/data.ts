@@ -214,13 +214,6 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'Input',
-      fieldName: 'className',
-      label: '类名称',
-      help: '类名称（首字母大写），例如SysUser、SysMenu、SysDictData 等等',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
       fieldName: 'classComment',
       label: '类描述',
       help: '用作类描述，例如 用户',

@@ -20,7 +20,7 @@ export function useDisagreeFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'TextArea',
-      fieldName: 'reason',
+      fieldName: 'auditReason',
       label: '拒绝原因',
       componentProps: {
         placeholder: '请输入拒绝原因',

@@ -61,8 +61,6 @@ async function handleBusinessChange(id?: number) {
     return;
   }
   const business = await getBusiness(id);
-  const values = await formApi.getValues();
-  if (values.businessId !== id) return;
   const products = (business.products ?? []).map((product) => ({
     ...product,
     contractPrice: product.businessPrice,
