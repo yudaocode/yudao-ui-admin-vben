@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { Button } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCustomerPage } from '#/api/crm/customer';
+import { getPutPoolRemindCustomerPage } from '#/api/crm/customer';
 import { useGridColumns } from '#/views/crm/customer/data';
 
 import { SCENE_TYPES } from '../data';
@@ -42,10 +42,9 @@ const [Grid] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getCustomerPage({
+          return await getPutPoolRemindCustomerPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            pool: true, // 固定 公海参数为 true
             ...formValues,
           });
         },

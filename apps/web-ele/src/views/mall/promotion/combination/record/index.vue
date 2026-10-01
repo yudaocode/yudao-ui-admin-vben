@@ -18,7 +18,7 @@ const [UserListModal, userListModalApi] = useVbenModal({
 
 /** 查看拼团用户 */
 function handleViewUsers(row: any) {
-  userListModalApi.setData({ recordId: row.id }).open();
+  userListModalApi.setData({ headId: row.headId || row.id }).open();
 }
 
 const [Grid] = useVbenVxeGrid({

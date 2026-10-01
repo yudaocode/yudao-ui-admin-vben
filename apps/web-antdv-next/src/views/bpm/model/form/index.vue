@@ -338,8 +338,7 @@ async function handleDeploy() {
     if (formData.value.id) {
       await updateModel(modelData);
     } else {
-      const result = await createModel(modelData);
-      formData.value.id = result.id;
+      formData.value.id = await createModel(modelData);
     }
     // 2.3 发布
     await deployModel(formData.value.id);

@@ -126,6 +126,7 @@ async function handleWarehouseChange(warehouseId: any, row: any) {
   // 如果已选择产品，重新获取库存
   if (row.productId) {
     row.stockCount = (await getStockCount(row.productId, warehouseId)) || 0;
+    row.actualCount = row.stockCount;
   }
 
   handleRowChange(row);
@@ -154,17 +155,19 @@ async function handleProductChange(productId: any, row: any) {
 /** 处理实际库存变更 */
 function handleActualCountChange(actualCount: any, row: any) {
   row.actualCount = actualCount;
-  if (row.stockCount !== undefined && row.actualCount !== undefined) {
-    row.count = row.actualCount - row.stockCount;
-    if (row.productPrice && row.count) {
-      row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-    }
-  }
   handleRowChange(row);
 }
 
 /** 处理行数据变更 */
 function handleRowChange(row: any) {
+  row.count =
+    row.stockCount !== undefined &&
+    row.stockCount !== null &&
+    row.actualCount !== undefined &&
+    row.actualCount !== null
+      ? row.actualCount - row.stockCount
+      : undefined;
+  row.totalPrice = erpPriceMultiply(row.productPrice, row.count);
   const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index === -1) {
     tableData.value.push(row);

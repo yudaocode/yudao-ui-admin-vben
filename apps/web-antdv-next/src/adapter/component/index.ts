@@ -25,6 +25,7 @@ import type {
   SwitchProps,
   TextAreaProps,
   TimePickerProps,
+  TimeRangePickerProps,
   TreeSelectProps,
   UploadChangeParam,
   UploadFile,
@@ -130,6 +131,11 @@ const Textarea = defineAsyncComponent(
 );
 const TimePicker = defineAsyncComponent(
   () => import('antdv-next/dist/time-picker/index'),
+);
+const TimeRangePicker = defineAsyncComponent(() =>
+  import('antdv-next/dist/time-picker/index').then(
+    (res) => res.TimeRangePicker,
+  ),
 );
 const TreeSelect = defineAsyncComponent(
   () => import('antdv-next/dist/tree-select/index'),
@@ -645,6 +651,7 @@ export type ComponentType =
   | 'TextArea'
   | 'Textarea'
   | 'TimePicker'
+  | 'TimeRangePicker'
   | 'TreeSelect'
   | 'Upload'
   | BaseFormComponentType;
@@ -681,6 +688,7 @@ export interface ComponentPropsMap {
   TextArea: TextAreaProps;
   Textarea: TextAreaProps;
   TimePicker: TimePickerProps;
+  TimeRangePicker: TimeRangePickerProps;
   TreeSelect: TreeSelectProps;
   Upload: AdapterUploadProps;
 }
@@ -764,6 +772,7 @@ async function initComponentAdapter() {
     Textarea: withDefaultPlaceholder(Textarea, 'input'),
     RichTextarea,
     TimePicker,
+    TimeRangePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     PreviewUpload: withPreviewUpload(),
     FileUpload,

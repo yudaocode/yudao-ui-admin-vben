@@ -1,4 +1,4 @@
-import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
+import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmRecruitPostApi } from '#/api/hrm/recruit/post';
 import type { DescriptionItemSchema } from '#/components/description';
@@ -211,7 +211,7 @@ export function useGridColumns(): VxeTableGridOptions<HrmRecruitPostApi.RecruitP
 }
 
 /** 新增/修改表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -319,10 +319,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: markRaw(SalaryRangeField),
       formItemClass: 'items-start',
       description: '最低薪资不能大于最高薪资；勾选“面议”后无需填写范围。',
-      componentProps: ({ rootValues }) => ({
-        values: rootValues,
-        formApi,
-      }),
+      dependencies: {
+        triggerFields: ['maxSalary', 'salaryUnit', 'salaryNegotiable'],
+        componentProps: (values, formApi) => ({ values, formApi }),
+      },
     },
     {
       fieldName: 'maxSalary',
@@ -361,10 +361,10 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: markRaw(AgeRangeField),
       formItemClass: 'items-start',
       description: '最小年龄不能大于最大年龄；勾选“不限”后无需填写范围。',
-      componentProps: ({ rootValues }) => ({
-        values: rootValues,
-        formApi,
-      }),
+      dependencies: {
+        triggerFields: ['maxAge', 'ageUnlimited'],
+        componentProps: (values, formApi) => ({ values, formApi }),
+      },
     },
     {
       fieldName: 'maxAge',

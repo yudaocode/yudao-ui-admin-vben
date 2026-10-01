@@ -209,7 +209,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'exceptionStackTrace',
       label: '异常堆栈',
-      show: (val) => !val,
+      show: (data) => !!data.exceptionStackTrace,
       render: (val) => {
         if (val) {
           return h('textarea', {
@@ -235,12 +235,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'processUserId',
       label: '处理人',
-      show: (val) => !val,
+      show: (data) => !!data.processUserId,
     },
     {
       field: 'processTime',
       label: '处理时间',
-      show: (val) => !val,
+      show: (data) => !!data.processTime,
       render: (val) => {
         return formatDateTime(val) as string;
       },

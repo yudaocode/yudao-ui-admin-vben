@@ -160,7 +160,6 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
-        treeCheckStrictly: true,
         treeDefaultExpandAll: true,
         placeholder: '请选择部门',
       },
