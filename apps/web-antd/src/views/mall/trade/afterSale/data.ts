@@ -126,7 +126,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       field: 'refundPrice',
       title: '订单金额',
       width: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'user.nickname',
