@@ -87,5 +87,14 @@
     "copy": "复制",
     "copySuccess": "复制成功",
     "copyError": "复制失败"
+  },
+  "mp": {
+    "upload": {
+      "invalidFormat": "上传{0}格式不对!",
+      "maxSize": "上传{0}大小不能超过{1}M!",
+      "image": "图片",
+      "video": "视频",
+      "voice": "语音"
+    }
   }
 }

@@ -6,7 +6,13 @@ import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/perform
 import { computed, onActivated, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import {
+  confirm,
+  DocAlert,
+  Page,
+  useVbenDrawer,
+  useVbenModal,
+} from '@vben/common-ui';
 
 import { Card, message, Pagination } from 'antdv-next';
 
@@ -318,6 +324,12 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
+    <template #doc>
+      <DocAlert
+        title="【绩效】绩效考核、绩效档案"
+        url="https://doc.iocoder.cn/hrm/performance/assessment/"
+      />
+    </template>
     <Card>
       <PerformanceTaskTabs
         v-model:active-status="activeStatus"

@@ -4,9 +4,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
+import { h } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
+
+import { Image } from 'antdv-next';
 
 import { getBusinessPageByCustomer } from '#/api/crm/business';
 import { getContactPageByCustomer } from '#/api/crm/contact';
@@ -151,6 +155,40 @@ export function useGridColumns(
       },
     },
     { field: 'content', title: '跟进内容' },
+    {
+      field: 'picUrls',
+      title: '图片',
+      minWidth: 180,
+      slots: {
+        default: ({ row }) =>
+          h(
+            'div',
+            { class: 'flex flex-wrap gap-2' },
+            (row.picUrls ?? []).map((url: string) =>
+              h(Image, { src: url, width: 50, height: 50 }),
+            ),
+          ),
+      },
+    },
+    {
+      field: 'fileUrls',
+      title: '附件',
+      minWidth: 180,
+      slots: {
+        default: ({ row }) =>
+          h(
+            'div',
+            { class: 'flex flex-col gap-1' },
+            (row.fileUrls ?? []).map((url: string, index: number) =>
+              h(
+                'a',
+                { href: url, target: '_blank', rel: 'noopener noreferrer' },
+                `附件${index + 1}`,
+              ),
+            ),
+          ),
+      },
+    },
     {
       field: 'nextTime',
       title: '下次联系时间',

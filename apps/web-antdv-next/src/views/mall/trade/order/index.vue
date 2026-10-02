@@ -155,6 +155,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :drop-down-actions="[
             {
               label: '发货',
+              auth: ['trade:order:update'],
               type: 'link',
               ifShow: () =>
                 row.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
@@ -164,6 +165,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '备注',
+              auth: ['trade:order:update'],
               type: 'link',
               onClick: handleRemark.bind(null, row),
             },

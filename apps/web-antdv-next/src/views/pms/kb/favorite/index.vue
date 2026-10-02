@@ -58,7 +58,7 @@ async function handleCancelFavorite(
   item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
 ): Promise<boolean> {
   if (newStatus) {
-    return true;
+    return false;
   }
   try {
     // 取消关注的二次确认
@@ -66,6 +66,7 @@ async function handleCancelFavorite(
     // 发起取消关注
     await deleteKnowledgeFavorite(item.type, item.entityId);
     message.success('已取消关注');
+    await gridApi.reload();
     return true;
   } catch {
     return false;

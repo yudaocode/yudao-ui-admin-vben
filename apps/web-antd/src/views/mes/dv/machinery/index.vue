@@ -6,6 +6,7 @@ import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Button, message } from 'ant-design-vue';
@@ -18,6 +19,7 @@ import {
 } from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 import { MachineryTypeTree } from '#/views/mes/dv/machinery/type/components';
+import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -33,6 +35,13 @@ const [ImportModal, importModalApi] = useVbenModal({
   connectedComponent: ImportForm,
   destroyOnClose: true,
 });
+
+const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
+
+/** 查看设备条码 */
+function handleBarcode(row: MesDvMachineryApi.Machinery) {
+  barcodeDetailRef.value?.openByBusiness(row.id!, BarcodeBizTypeEnum.MACHINERY);
+}
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -130,6 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mes/dv/device/"
       />
     </template>
+    <BarcodeDetail ref="barcodeDetailRef" />
     <FormModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
     <div class="flex h-full w-full">
@@ -173,6 +183,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <template #actions="{ row }">
             <TableAction
               :actions="[
+                {
+                  label: '条码',
+                  onClick: handleBarcode.bind(null, row),
+                  auth: ['mes:dv-machinery:query'],
+                },
                 {
                   label: $t('common.edit'),
                   type: 'link',

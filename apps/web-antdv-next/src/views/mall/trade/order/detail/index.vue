@@ -89,7 +89,11 @@ const [DeliveryInfoDescriptions] = useDescription({
   bordered: false,
   column: 3,
   classes: { root: 'mx-4' },
-  schema: useDeliveryInfoSchema(),
+  schema: useDeliveryInfoSchema(
+    (id) =>
+      deliveryExpressList.value.find((item) => item.id === id)?.name ?? '-',
+    () => pickUpStore.value?.name ?? '-',
+  ),
 });
 
 const [ProductGrid, productGridApi] = useVbenVxeGrid({
@@ -254,17 +258,20 @@ onMounted(async () => {
           },
           {
             label: '调整价格',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleUpdatePrice,
             ifShow: order.status === TradeOrderStatusEnum.UNPAID.status,
           },
           {
             label: '备注',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleRemark,
           },
           {
             label: '发货',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleDelivery,
             ifShow:
@@ -273,6 +280,7 @@ onMounted(async () => {
           },
           {
             label: '修改地址',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleUpdateAddress,
             ifShow:
@@ -281,6 +289,7 @@ onMounted(async () => {
           },
           {
             label: '核销',
+            auth: ['trade:order:pick-up'],
             type: 'primary',
             onClick: handlePickUp,
             ifShow:

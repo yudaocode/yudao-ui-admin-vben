@@ -35,7 +35,7 @@ function deleteEnum(index: number) {
 }
 
 /** 校验单项枚举值：必填、数字、不重复 */
-const validateEnumValue: any = (_rule: any, value: any) => {
+function validateEnumValue(_rule: any, value: any) {
   if (isEmpty(value)) {
     return Promise.reject(new Error('枚举值不能为空'));
   }
@@ -49,10 +49,10 @@ const validateEnumValue: any = (_rule: any, value: any) => {
     return Promise.reject(new Error('枚举值不能重复'));
   }
   return Promise.resolve();
-};
+}
 
 /** 校验整个枚举列表：非空、无空项、无非法数字、无重复 */
-const validateEnumList: any = (_rule: any, _value: any) => {
+function validateEnumList(_rule: any, _value: any) {
   if (isEmpty(dataSpecsList.value)) {
     return Promise.reject(new Error('请至少添加一个枚举项'));
   }
@@ -73,12 +73,12 @@ const validateEnumList: any = (_rule: any, _value: any) => {
     return Promise.reject(new Error('存在重复的枚举值'));
   }
   return Promise.resolve();
-};
+}
 </script>
 
 <template>
   <ElFormItem
-    :rules="[{ validator: validateEnumList, trigger: 'change' }]"
+    :rules="[{ asyncValidator: validateEnumList, trigger: 'change' }]"
     label="枚举项"
   >
     <div class="flex flex-col">
@@ -95,7 +95,7 @@ const validateEnumList: any = (_rule: any, _value: any) => {
           :prop="`property.dataSpecsList.${index}.value`"
           :rules="[
             { required: true, message: '枚举值不能为空', trigger: 'blur' },
-            { validator: validateEnumValue, trigger: 'blur' },
+            { asyncValidator: validateEnumValue, trigger: 'blur' },
           ]"
           class="mb-0 flex-1"
         >
@@ -106,7 +106,7 @@ const validateEnumList: any = (_rule: any, _value: any) => {
           :prop="`property.dataSpecsList.${index}.name`"
           :rules="[
             { required: true, message: '枚举描述不能为空', trigger: 'blur' },
-            { validator: validateEnumName, trigger: 'blur' },
+            { asyncValidator: validateEnumName, trigger: 'blur' },
           ]"
           class="mb-0 flex-1"
         >

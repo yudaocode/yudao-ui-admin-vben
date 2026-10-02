@@ -38,13 +38,14 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'type',
       label: '模型类型',
       component: 'Select',
-      componentProps: (values) => {
-        return {
-          placeholder: '请输入模型类型',
-          disabled: !!values.id,
-          options: getDictOptions(DICT_TYPE.AI_MODEL_TYPE, 'number'),
-          allowClear: true,
-        };
+      componentProps: {
+        placeholder: '请输入模型类型',
+        options: getDictOptions(DICT_TYPE.AI_MODEL_TYPE, 'number'),
+        clearable: true,
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
       },
       rules: 'required',
     },
@@ -107,6 +108,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入温度参数',
         min: 0,
         max: 2,
+        precision: 2,
         controlsPosition: 'right',
         class: '!w-full',
       },

@@ -57,7 +57,7 @@ async function onTabChange(tabName: string) {
     await nextTick();
   }
   // 查询数据
-  await gridApi.query();
+  await gridApi.reload();
 }
 
 /** 新增自动回复 */

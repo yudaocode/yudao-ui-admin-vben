@@ -24,7 +24,7 @@ defineExpose({
         <div class="mx-auto w-full">
           <div class="relative w-full bg-[#acadae]">
             <img
-              :src="article.picUrl"
+              :src="article.picUrl || article.thumbUrl"
               :preview="false"
               class="w-[100px] object-cover"
             />
@@ -44,7 +44,7 @@ defineExpose({
               <div class="flex-1 text-sm">{{ article.title }}</div>
 
               <img
-                :src="article.picUrl"
+                :src="article.picUrl || article.thumbUrl"
                 class="h-[70px] w-[70px] object-cover"
                 alt="文章图片"
               />

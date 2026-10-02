@@ -2,7 +2,7 @@
 import type { BpmOALeaveApi } from '#/api/bpm/oa/leave';
 import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { confirm, Page, useVbenForm } from '@vben/common-ui';
@@ -63,6 +63,20 @@ const [Form, formApi] = useVbenForm({
   },
   layout: 'horizontal',
   schema: useFormSchema(),
+  handleValuesChange(_values, fieldsChanged) {
+    if (
+      processDefinitionId.value &&
+      fieldsChanged.some((field) =>
+        ['endTime', 'startTime', 'type'].includes(field),
+      )
+    ) {
+      tempStartUserSelectAssignees.value = {
+        ...startUserSelectAssignees.value,
+      };
+      startUserSelectAssignees.value = {};
+      getApprovalDetail();
+    }
+  },
   showDefaultActions: false,
 });
 
@@ -125,6 +139,7 @@ function onBack() {
 
 /** 审批相关：获取审批详情 */
 async function getApprovalDetail() {
+  const values = await formApi.getValues();
   processTimeLineLoading.value = true;
   try {
     const data = await getApprovalDetailApi({
@@ -132,10 +147,13 @@ async function getApprovalDetail() {
       // TODO 小北：可以支持 processDefinitionKey 查询
       activityId: BpmNodeIdEnum.START_USER_NODE_ID,
       processVariablesStr: JSON.stringify({
-        day: dayjs(formData.value?.startTime).diff(
-          dayjs(formData.value?.endTime),
-          'day',
-        ),
+        day:
+          values.startTime && values.endTime
+            ? dayjs(Number(values.endTime)).diff(
+                dayjs(Number(values.startTime)),
+                'day',
+              )
+            : 0,
       }), // 解决 GET 无法传递对象的问题，后端 String 再转 JSON
     });
     if (!data) {
@@ -196,26 +214,6 @@ async function getDetail(id: number) {
     formLoading.value = false;
   }
 }
-
-/** 审批相关：预测流程节点会因为输入的参数值而产生新的预测结果值，所以需重新预测一次, formData.value可改成实际业务中的特定字段 */
-watch(
-  formData.value as object,
-  (newValue, oldValue) => {
-    if (!oldValue) {
-      return;
-    }
-    if (newValue && Object.keys(newValue).length > 0) {
-      // 记录之前的节点审批人
-      tempStartUserSelectAssignees.value = startUserSelectAssignees.value;
-      startUserSelectAssignees.value = {};
-      // 加载最新的审批详情,主要用于节点预测
-      getApprovalDetail();
-    }
-  },
-  {
-    immediate: true,
-  },
-);
 
 /** 初始化 */
 onMounted(async () => {

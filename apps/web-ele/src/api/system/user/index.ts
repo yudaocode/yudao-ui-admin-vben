@@ -12,7 +12,7 @@ export namespace SystemUserApi {
     deptName?: string;
     postIds: string[];
     email: string;
-    mobile: string;
+    mobile?: string;
     sex: number;
     avatar: string;
     loginIp: string;

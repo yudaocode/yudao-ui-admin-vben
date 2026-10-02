@@ -16,9 +16,11 @@ export const schema: VbenFormSchema[] = [
     defaultValue: true,
   },
   {
-    component: 'Input',
+    component: 'InputNumber',
     fieldName: 'notifyDays',
     componentProps: {
+      min: 0,
+      precision: 0,
       placeholder: '请输入天数',
       class: '!w-full',
     },
@@ -26,7 +28,10 @@ export const schema: VbenFormSchema[] = [
       prepend: () => '提前',
       append: () => '天提醒',
     }),
-    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
+    rules: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z.coerce.number().int().min(0, '天数不能小于 0'),
+    ),
     dependencies: {
       triggerFields: ['notifyEnabled'],
       show: (values) => values.notifyEnabled,

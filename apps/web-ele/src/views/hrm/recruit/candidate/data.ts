@@ -738,7 +738,12 @@ export function useEliminateFormSchema(): VbenFormSchema[] {
       fieldName: 'eliminate',
       label: '淘汰原因',
       component: 'ApiSelect',
-      rules: 'required',
+      rules: z.union([
+        z.string().min(1, '淘汰原因不能为空').max(255, '淘汰原因不能超过255字'),
+        z
+          .array(z.string().min(1).max(255, '淘汰原因不能超过255字'))
+          .length(1, '请选择一个淘汰原因'),
+      ]),
       componentProps: {
         api: getRecruitEliminateReasonList,
         afterFetch: (list: string[]) => {

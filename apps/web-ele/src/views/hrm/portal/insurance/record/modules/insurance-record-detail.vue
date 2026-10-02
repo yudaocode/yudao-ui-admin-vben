@@ -5,6 +5,7 @@ import type { HrmPortalInsuranceRecordApi } from '#/api/hrm/portal/insurance/rec
 import { computed, nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
 import { ElDescriptions, ElDescriptionsItem } from 'element-plus';
 
@@ -79,7 +80,7 @@ const [Modal, modalApi] = useVbenModal({
       <ElDescriptionsItem label="方案类型">
         <DictTag
           v-if="record?.schemeType"
-          type="hrm_insurance_scheme_type"
+          :type="DICT_TYPE.HRM_INSURANCE_SCHEME_TYPE"
           :value="record.schemeType"
         />
         <span v-else>-</span>

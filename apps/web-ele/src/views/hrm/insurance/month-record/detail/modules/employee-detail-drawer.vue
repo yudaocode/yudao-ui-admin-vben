@@ -4,6 +4,7 @@ import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/mon
 import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 
 import { getInsuranceMonthEmployeeRecord } from '#/api/hrm/insurance/month-record/employee';
 import { DictTag } from '#/components/dict-tag';
@@ -63,7 +64,7 @@ function handleEdit() {
               {{ detail?.employeeName || '--' }}
             </span>
             <DictTag
-              type="hrm_insurance_emp_status"
+              :type="DICT_TYPE.HRM_INSURANCE_EMP_STATUS"
               :value="detail?.status ?? ''"
             />
           </div>
@@ -107,7 +108,7 @@ function handleEdit() {
           <span class="text-muted-foreground">员工状态：</span>
           <DictTag
             v-if="detail?.employeeStatus != null"
-            type="hrm_employee_status"
+            :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
             :value="detail.employeeStatus"
           />
           <span v-else>--</span>

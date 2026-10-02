@@ -22,7 +22,7 @@ import { useFormSchema } from '../data';
 import PurchaseOrderItemForm from './item-form.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<ErpPurchaseOrderApi.PurchaseOrder>();
+const formData = ref<Partial<ErpPurchaseOrderApi.PurchaseOrder>>();
 const formType = ref<FormType>('create'); // 表单类型：'create' | 'edit' | 'detail'
 const itemFormRef = ref<InstanceType<typeof PurchaseOrderItemForm>>();
 
@@ -57,8 +57,7 @@ const [Form, formApi] = useVbenForm({
 
 /** 更新采购订单项 */
 function handleUpdateItems(items: ErpPurchaseOrderApi.PurchaseOrderItem[]) {
-  formData.value = modalApi.getData() as ErpPurchaseOrderApi.PurchaseOrder;
-  formData.value.items = items;
+  formData.value = { ...formData.value, items };
   formApi.setValues({
     items,
   });

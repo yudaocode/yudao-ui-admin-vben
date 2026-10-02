@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PayTransferApi } from '#/api/pay/transfer';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { Tag } from 'antdv-next';
@@ -26,6 +26,11 @@ function handleRefresh() {
 
 /** 导出转账单 */
 async function handleExport() {
+  try {
+    await confirm('确认导出转账单？');
+  } catch {
+    return;
+  }
   const data = await exportTransfer(await gridApi.formApi.getValues());
   downloadFileFromBlobPart({ fileName: '转账单.xls', source: data });
 }

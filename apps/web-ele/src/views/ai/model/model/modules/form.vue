@@ -4,6 +4,7 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { AiModelTypeEnum } from '@vben/constants';
 
 import { ElMessage } from 'element-plus';
 
@@ -43,6 +44,11 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as AiModelModelApi.Model;
+    if (data.type !== AiModelTypeEnum.CHAT) {
+      delete data.temperature;
+      delete data.maxTokens;
+      delete data.maxContexts;
+    }
     try {
       await (formData.value?.id ? updateModel(data) : createModel(data));
       // 关闭并提示

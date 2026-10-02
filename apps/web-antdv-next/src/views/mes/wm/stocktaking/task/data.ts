@@ -476,7 +476,8 @@ export function useResultFormSchema(
       fieldName: 'lineId',
       dependencies: {
         triggerFields: ['id'],
-        show: (values) => isExecute && !values.id,
+        show: (values) => isExecute || !!values.lineId,
+        disabled: (values) => !!values.id,
       },
       label: '盘点清单',
       component: 'Select',

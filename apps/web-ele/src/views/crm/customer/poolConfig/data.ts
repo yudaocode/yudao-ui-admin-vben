@@ -15,25 +15,32 @@ export const schema: VbenFormSchema[] = [
     },
   },
   {
-    component: 'Input',
+    component: 'InputNumber',
     fieldName: 'contactExpireDays',
     componentProps: {
+      min: 0,
+      precision: 0,
       placeholder: '请输入天数',
       class: '!w-full',
     },
     renderComponentContent: () => ({
       append: () => '天不跟进或',
     }),
-    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
+    rules: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z.coerce.number().int().min(0, '天数不能小于 0'),
+    ),
     dependencies: {
       triggerFields: ['enabled'],
       show: (value) => value.enabled,
     },
   },
   {
-    component: 'Input',
+    component: 'InputNumber',
     fieldName: 'dealExpireDays',
     componentProps: {
+      min: 0,
+      precision: 0,
       placeholder: '请输入天数',
       class: '!w-full',
     },
@@ -41,7 +48,10 @@ export const schema: VbenFormSchema[] = [
       prepend: () => '或',
       append: () => '天未成交',
     }),
-    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
+    rules: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z.coerce.number().int().min(0, '天数不能小于 0'),
+    ),
     dependencies: {
       triggerFields: ['enabled'],
       show: (value) => value.enabled,
@@ -64,9 +74,11 @@ export const schema: VbenFormSchema[] = [
     defaultValue: false,
   },
   {
-    component: 'Input',
+    component: 'InputNumber',
     fieldName: 'notifyDays',
     componentProps: {
+      min: 0,
+      precision: 0,
       placeholder: '请输入天数',
       class: '!w-full',
     },
@@ -74,7 +86,10 @@ export const schema: VbenFormSchema[] = [
       prepend: () => '提前',
       append: () => '天提醒',
     }),
-    rules: z.coerce.number().int().min(0, '天数不能小于 0'),
+    rules: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z.coerce.number().int().min(0, '天数不能小于 0'),
+    ),
     dependencies: {
       triggerFields: ['notifyEnabled'],
       show: (value) => value.enabled && value.notifyEnabled,

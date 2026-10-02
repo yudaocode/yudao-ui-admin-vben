@@ -109,15 +109,23 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <div class="flex flex-col gap-1 text-left">
           <p class="text-sm">
             <ElTag size="small" type="primary"> 商户</ElTag>
-            {{ row.merchantOrderId }}
-          </p>
-          <p class="text-sm" v-if="row.merchantRefundId">
-            <ElTag size="small" type="warning">退款</ElTag>
             {{ row.merchantRefundId }}
+          </p>
+          <p class="text-sm" v-if="row.no">
+            <ElTag size="small" type="warning">退款</ElTag>
+            {{ row.no }}
           </p>
           <p class="text-sm" v-if="row.channelRefundNo">
             <ElTag size="small" type="success">渠道</ElTag>
             {{ row.channelRefundNo }}
+          </p>
+        </div>
+      </template>
+      <template #orderNo="{ row }">
+        <div class="flex flex-col gap-1 text-left">
+          <p><ElTag>商户</ElTag> {{ row.merchantOrderId }}</p>
+          <p v-if="row.channelOrderNo">
+            <ElTag type="success">渠道</ElTag> {{ row.channelOrderNo }}
           </p>
         </div>
       </template>

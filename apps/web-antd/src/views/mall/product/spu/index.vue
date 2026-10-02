@@ -110,6 +110,9 @@ async function handleStatusChange(
   newStatus: number,
   row: MallSpuApi.Spu,
 ): Promise<boolean | undefined> {
+  if (row.status! < 0) {
+    return false;
+  }
   // 二次确认
   const text = newStatus ? '上架' : '下架';
   try {
@@ -272,6 +275,7 @@ onMounted(async () => {
             },
             {
               label: '恢复',
+              ifShow: Number(tabType) === 4,
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
@@ -283,6 +287,7 @@ onMounted(async () => {
             },
             {
               label: '回收',
+              ifShow: Number(tabType) !== 4,
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],

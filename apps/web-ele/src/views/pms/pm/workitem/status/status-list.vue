@@ -40,14 +40,12 @@ import StatusDeleteForm from './modules/delete-form.vue';
 
 defineOptions({ name: 'PmsWorkItemStatusList' });
 
-// TODO @AI：拖拽看板可以保留自定义；新增状态字段能否抽 schema？操作对齐 TableAction。下面「定义 success 事件」注释删掉。
+// TODO @AI：拖拽看板可以保留自定义；新增状态字段能否抽 schema？操作对齐 TableAction。
 const emit = defineEmits(['success']);
 
 interface WorkItemBoard extends PmsWorkItemStatusApi.WorkItemBoard {
   statuses: PmsWorkItemStatusApi.WorkItemStatus[];
 }
-
-// 定义 success 事件，用于操作成功后的回调
 
 const loading = ref(false); // 数据提交中
 const projectId = ref(0); // 项目编号
@@ -177,6 +175,7 @@ async function submitForm() {
 
   // 创建或更新状态配置
   loading.value = true;
+  modalApi.lock();
   try {
     for (const status of statusList.value) {
       if (status.id < 0) {
@@ -225,6 +224,7 @@ async function submitForm() {
     emit('success');
   } finally {
     loading.value = false;
+    modalApi.unlock();
   }
 }
 

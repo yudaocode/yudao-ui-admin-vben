@@ -81,7 +81,7 @@ const [Modal, modalApi] = useVbenModal({
     isExecute.value = !!data.execute;
     // 执行盘点模式：加载盘点清单作为可选项，供选择后回填
     const taskLines =
-      isExecute.value && !data.id
+      isExecute.value || !!data.id
         ? await getStockTakingTaskLineSimpleList(data.taskId)
         : [];
     formApi.setState({

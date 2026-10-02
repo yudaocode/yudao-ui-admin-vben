@@ -5,7 +5,7 @@ import type { HrmPortalEmployeeApi } from '#/api/hrm/portal/employee';
 import { onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Button, Card, Spin, TabPane, Tabs } from 'antdv-next';
@@ -77,6 +77,12 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
+    <template #doc>
+      <DocAlert
+        title="【员工】员工管理"
+        url="https://doc.iocoder.cn/hrm/employee/"
+      />
+    </template>
     <Card :style="{ marginBottom: '15px' }">
       <div class="flex items-center justify-between">
         <span class="text-lg font-semibold">我的档案</span>

@@ -123,7 +123,7 @@ function useConnectionFormSchema(
         ],
       },
       dependencies: {
-        triggerFields: [''],
+        triggerFields: [`${protocol}.sslEnable`],
         componentProps: (_values, actions) => ({
           onChange: (value: any) => {
             // SSL 与 STARTTLS 互斥，切换时同步另一开关

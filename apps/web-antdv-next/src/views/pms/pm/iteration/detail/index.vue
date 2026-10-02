@@ -154,7 +154,7 @@ type BurnDown = PmsIterationApi.IterationOverview['burnDowns'][number];
 const [BurnDownGrid, burnDownGridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useBurnDownColumns(),
-    maxHeight: 170,
+    height: 210,
     pagerConfig: { enabled: false },
     proxyConfig: {
       ajax: {

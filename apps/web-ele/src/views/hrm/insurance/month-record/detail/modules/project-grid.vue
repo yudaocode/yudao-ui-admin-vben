@@ -4,6 +4,8 @@ import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/mon
 
 import { nextTick, watch } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { DictTag } from '#/components/dict-tag';
 import { HrmInsuranceSchemeType } from '#/views/hrm/utils/constants';
@@ -61,7 +63,10 @@ watch(
 <template>
   <Grid class="w-full">
     <template #type="{ row }">
-      <DictTag type="hrm_insurance_project_type" :value="row.type ?? ''" />
+      <DictTag
+        :type="DICT_TYPE.HRM_INSURANCE_PROJECT_TYPE"
+        :value="row.type ?? ''"
+      />
     </template>
     <template #baseAmount="{ row }">
       <ElInputNumber

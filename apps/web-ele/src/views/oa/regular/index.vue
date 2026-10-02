@@ -4,16 +4,13 @@ import type { OaRegularApplyApi } from '#/api/oa/regular';
 
 import { useRouter } from 'vue-router';
 
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 
 import { ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getRegularApplyPage,
-  submitRegularApply,
-} from '#/api/oa/regular';
+import { getRegularApplyPage, submitRegularApply } from '#/api/oa/regular';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
@@ -68,11 +65,6 @@ function handleProcessDetail(processInstanceId?: string) {
 
 /** 提交审批 */
 async function handleSubmit(row: OaRegularApplyApi.RegularApply) {
-  try {
-    await confirm('确认提交申请？');
-  } catch {
-    return;
-  }
   await submitRegularApply(row.id!, {});
   ElMessage.success('提交成功');
   handleRefresh();
@@ -111,7 +103,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
+    <DocAlert
+      title="【流程】考勤、请假、加班、转正与离职"
+      url="https://doc.iocoder.cn/oa/attendance-application/"
+    />
     <FormModal @success="handleRefresh" />
     <DetailModal />
 
@@ -156,7 +151,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               auth: ['oa:regular-apply:create'],
               ifShow: row.status === BpmProcessInstanceStatus.NOT_START,
-              onClick: handleSubmit.bind(null, row),
+              popConfirm: {
+                title: '确认提交申请？',
+                confirm: handleSubmit.bind(null, row),
+              },
             },
             {
               label: $t('common.edit'),

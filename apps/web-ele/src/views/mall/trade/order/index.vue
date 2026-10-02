@@ -161,6 +161,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :drop-down-actions="[
             {
               label: '发货',
+              auth: ['trade:order:update'],
               type: 'primary',
               link: true,
               ifShow: () =>
@@ -171,6 +172,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '备注',
+              auth: ['trade:order:update'],
               type: 'primary',
               link: true,
               onClick: handleRemark.bind(null, row),

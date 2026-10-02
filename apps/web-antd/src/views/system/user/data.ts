@@ -101,6 +101,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入手机号码',
       },
+      rules: 'mobile',
     },
     {
       fieldName: 'sex',

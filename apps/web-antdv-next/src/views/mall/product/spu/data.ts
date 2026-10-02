@@ -2,7 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
+import { h } from 'vue';
+
 import { handleTree, treeToString } from '@vben/utils';
+
+import { Switch, Tag } from 'antdv-next';
 
 import { getCategoryList } from '#/api/mall/product/category';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -88,14 +92,31 @@ export function useGridColumns(
       field: 'status',
       title: '销售状态',
       minWidth: 100,
-      cellRender: {
-        attrs: { beforeChange: onStatusChange },
-        name: 'CellSwitch',
-        props: {
-          checkedValue: 1,
-          checkedChildren: '上架',
-          unCheckedValue: 0,
-          unCheckedChildren: '下架',
+      slots: {
+        default: ({ row }) => {
+          if (row.status < 0) {
+            return h(Tag, {}, () => '回收站');
+          }
+          return h(Switch, {
+            checkedValue: 1,
+            unCheckedValue: 0,
+            checkedChildren: '上架',
+            unCheckedChildren: '下架',
+            checked: row.status,
+            loading: row.__loading_status ?? false,
+            'onUpdate:checked': async (value: unknown) => {
+              const status = Number(value);
+              row.__loading_status = true;
+              try {
+                const result = await onStatusChange?.(status, row);
+                if (result !== false) {
+                  row.status = status;
+                }
+              } finally {
+                row.__loading_status = false;
+              }
+            },
+          });
         },
       },
     },

@@ -95,6 +95,22 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
+      field: 'channelCode',
+      title: '渠道编码',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
+      },
+    },
+    {
+      field: 'userType',
+      title: '用户类型',
+      minWidth: 100,
+      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.USER_TYPE } },
+    },
+    { field: 'userId', title: '用户编号', minWidth: 100 },
+    {
       field: 'id',
       title: '编号',
       minWidth: 100,
@@ -182,6 +198,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 export function useDetailSchema(): DescriptionItemSchema[] {
   return [
     {
+      field: 'userType',
+      label: '用户类型',
+      render: (val) => h(DictTag, { type: DICT_TYPE.USER_TYPE, value: val }),
+    },
+    { field: 'userId', label: '用户编号' },
+    {
       field: 'createTime',
       label: '创建时间',
       render: (val) => formatDateTime(val) as string,
@@ -193,6 +215,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'channelCode',
       label: '短信渠道',
+      render: (val) =>
+        h(DictTag, { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, value: val }),
     },
     {
       field: 'templateId',

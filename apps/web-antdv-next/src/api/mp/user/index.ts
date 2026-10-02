@@ -10,6 +10,7 @@ export namespace MpUserApi {
     openid: string;
     nickname: string;
     avatar: string;
+    headImageUrl?: string; // 公众号粉丝头像
     sex: number;
     country: string;
     province: string;

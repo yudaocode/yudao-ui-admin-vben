@@ -32,8 +32,6 @@ export namespace HrmPortalInsuranceRecordApi {
     createTime?: Date; // 创建时间
     projects?: SchemeProject[]; // 社保项目列表
   }
-
-  export type Project = SchemeProject;
 }
 
 /** 获得我的社保记录列表 */

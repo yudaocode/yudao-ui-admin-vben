@@ -4,14 +4,19 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { SystemMenuTypeEnum } from '@vben/constants';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum, SystemMenuTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { message } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMenu, getMenuList } from '#/api/system/menu';
+import {
+  deleteMenu,
+  getMenu,
+  getMenuList,
+  updateMenu,
+} from '#/api/system/menu';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -57,6 +62,19 @@ async function handleDelete(row: SystemMenuApi.Menu) {
   }
 }
 
+/** 切换菜单状态 */
+async function handleStatusChange(status: number, row: SystemMenuApi.Menu) {
+  const text = status === CommonStatusEnum.ENABLE ? '启用' : '停用';
+  try {
+    await confirm(`确认${text}菜单“${row.name}”吗？`);
+  } catch {
+    return false;
+  }
+  await updateMenu({ ...(await getMenu(row.id)), status });
+  message.success(`${text}成功`);
+  return true;
+}
+
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(false);
 function handleExpand() {
@@ -69,7 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
   },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleStatusChange),
     height: 'auto',
     keepSource: true,
     pagerConfig: {

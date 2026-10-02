@@ -29,7 +29,7 @@ function unitChange(unitSpecs: any) {
 }
 
 /** 校验最小值 */
-const validateMin: any = (_rule: any, _value: any) => {
+function validateMin(_rule: any, _value: any) {
   const min = Number(dataSpecs.value.min);
   const max = Number(dataSpecs.value.max);
   if (Number.isNaN(min)) {
@@ -39,10 +39,10 @@ const validateMin: any = (_rule: any, _value: any) => {
     return Promise.reject(new Error('最小值必须小于最大值'));
   }
   return Promise.resolve();
-};
+}
 
 /** 校验最大值 */
-const validateMax: any = (_rule: any, _value: any) => {
+function validateMax(_rule: any, _value: any) {
   const min = Number(dataSpecs.value.min);
   const max = Number(dataSpecs.value.max);
   if (Number.isNaN(max)) {
@@ -52,10 +52,10 @@ const validateMax: any = (_rule: any, _value: any) => {
     return Promise.reject(new Error('最大值必须大于最小值'));
   }
   return Promise.resolve();
-};
+}
 
 /** 校验步长 */
-const validateStep: any = (_rule: any, _value: any) => {
+function validateStep(_rule: any, _value: any) {
   const step = Number(dataSpecs.value.step);
   if (Number.isNaN(step)) {
     return Promise.reject(new Error('请输入有效的数值'));
@@ -69,7 +69,7 @@ const validateStep: any = (_rule: any, _value: any) => {
     return Promise.reject(new Error('步长不能大于最大值与最小值的差值'));
   }
   return Promise.resolve();
-};
+}
 </script>
 
 <template>
@@ -78,7 +78,7 @@ const validateStep: any = (_rule: any, _value: any) => {
       <ElFormItem
         :rules="[
           { required: true, message: '最小值不能为空' },
-          { validator: validateMin, trigger: 'blur' },
+          { asyncValidator: validateMin, trigger: 'blur' },
         ]"
         class="mb-0 flex-1"
         prop="property.dataSpecs.min"
@@ -89,7 +89,7 @@ const validateStep: any = (_rule: any, _value: any) => {
       <ElFormItem
         :rules="[
           { required: true, message: '最大值不能为空' },
-          { validator: validateMax, trigger: 'blur' },
+          { asyncValidator: validateMax, trigger: 'blur' },
         ]"
         class="mb-0 flex-1"
         prop="property.dataSpecs.max"
@@ -101,7 +101,7 @@ const validateStep: any = (_rule: any, _value: any) => {
   <ElFormItem
     :rules="[
       { required: true, message: '步长不能为空' },
-      { validator: validateStep, trigger: 'blur' },
+      { asyncValidator: validateStep, trigger: 'blur' },
     ]"
     label="步长"
     prop="property.dataSpecs.step"

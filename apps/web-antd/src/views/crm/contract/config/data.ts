@@ -1,5 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
 
+import { z } from '#/adapter/form';
+
 export const schema: VbenFormSchema[] = [
   {
     component: 'RadioGroup',
@@ -25,6 +27,10 @@ export const schema: VbenFormSchema[] = [
       addonBefore: () => '提前',
       addonAfter: () => '天提醒',
     }),
+    rules: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z.coerce.number().int().min(0, '天数不能小于 0'),
+    ),
     dependencies: {
       triggerFields: ['notifyEnabled'],
       show: (values) => values.notifyEnabled,

@@ -6,6 +6,7 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { h } from 'vue';
 
+import { useAccess } from '@vben/access';
 import {
   CommonStatusEnum,
   DICT_TYPE,
@@ -41,7 +42,7 @@ export function useFormSchema(): VbenFormSchema[] {
           const data = await getMenuList();
           data.unshift({
             id: 0,
-            name: '顶级部门',
+            name: '顶级菜单',
           } as SystemMenuApi.Menu);
           return handleTree(data);
         },
@@ -293,7 +294,10 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
+export function useGridColumns(
+  onStatusChange: (status: number, row: SystemMenuApi.Menu) => Promise<boolean>,
+): VxeTableGridOptions<SystemMenuApi.Menu>['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'name',
@@ -324,7 +328,7 @@ export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['colum
       minWidth: 200,
     },
     {
-      field: 'path',
+      field: 'component',
       title: '组件路径',
       minWidth: 200,
     },
@@ -338,8 +342,13 @@ export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['colum
       title: '状态',
       minWidth: 100,
       cellRender: {
-        name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
+        attrs: { beforeChange: onStatusChange },
+        name: 'CellSwitch',
+        props: {
+          disabled: !hasAccessByCodes(['system:menu:update']),
+          activeValue: CommonStatusEnum.ENABLE,
+          inactiveValue: CommonStatusEnum.DISABLE,
+        },
       },
     },
     {

@@ -96,6 +96,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { field: 'appName', title: '支付应用', minWidth: 120 },
+    {
+      field: 'merchantOrderId',
+      title: '支付订单号',
+      minWidth: 240,
+      slots: { default: 'orderNo' },
+    },
     {
       field: 'id',
       title: '编号',
@@ -114,7 +121,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       formatter: 'formatFenToYuanAmount',
     },
     {
-      field: 'merchantRefundId',
+      field: 'no',
       title: '退款单号',
       minWidth: 240,
       slots: {

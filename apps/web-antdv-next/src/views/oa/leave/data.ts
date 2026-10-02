@@ -27,7 +27,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         maxlength: 255,
-        showCount: true,
         placeholder: '请输入标题',
       },
       rules: 'required',
@@ -83,7 +82,6 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         rows: 3,
         maxlength: 5000,
-        showCount: true,
         placeholder: '请输入申请原因',
       },
       rules: 'required',

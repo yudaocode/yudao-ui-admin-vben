@@ -106,6 +106,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 export function useTransactionGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
+      field: 'walletId',
+      title: '钱包编号',
+      minWidth: 100,
+    },
+    {
       field: 'id',
       title: '编号',
       minWidth: 100,

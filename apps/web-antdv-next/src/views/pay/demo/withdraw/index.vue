@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { fenToYuan } from '@vben/utils';
 
 import { message, Tag } from 'antdv-next';
@@ -33,6 +33,11 @@ function handleCreate() {
 
 /** 处理转账操作 */
 async function handleTransfer(row: DemoWithdrawApi.Withdraw) {
+  try {
+    await confirm('确认发起转账？');
+  } catch {
+    return;
+  }
   const hideLoading = message.loading({
     content: '转账中，请稍后...',
     duration: 0,
@@ -68,7 +73,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<DemoWithdrawApi.Withdraw>,
 });

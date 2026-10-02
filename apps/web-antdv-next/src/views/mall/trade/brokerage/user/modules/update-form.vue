@@ -55,6 +55,17 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
+    if (
+      !bindUser.value ||
+      Number(bindUser.value.id) !== Number(formData.value.bindUserId)
+    ) {
+      message.warning('请先查询并确认推广人');
+      return;
+    }
+    if (Number(formData.value.bindUserId) === Number(formData.value.id)) {
+      message.error('不能绑定自己为推广人');
+      return;
+    }
     modalApi.lock();
     try {
       await updateBindUser(formData.value);
@@ -76,6 +87,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      bindUser.value = undefined;
       formData.value = {
         id: data.id,
         bindUserId: data.bindUserId,
@@ -94,17 +106,18 @@ const [Modal, modalApi] = useVbenModal({
 const bindUser = ref<MallBrokerageUserApi.BrokerageUser | undefined>();
 
 /** 查询分销员 */
-async function handleSearchUser(id: number, userType: string) {
+async function handleSearchUser(id: number | string, userType: string) {
+  bindUser.value = undefined;
   if (isEmpty(id)) {
     message.warning(`请先输入${userType}编号后重试！！！`);
     return;
   }
-  if (formData.value?.bindUserId === formData.value?.id) {
+  if (Number(id) === Number(formData.value?.id)) {
     message.error('不能绑定自己为推广人');
     return;
   }
 
-  const userData = await getBrokerageUser(id);
+  const userData = await getBrokerageUser(Number(id));
   if (!userData) {
     message.warning(`${userType}不存在`);
     return;

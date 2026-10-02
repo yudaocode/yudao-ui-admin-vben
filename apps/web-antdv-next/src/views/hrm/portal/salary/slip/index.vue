@@ -6,7 +6,7 @@ import type { HrmPortalSalarySlipApi } from '#/api/hrm/portal/salary/slip';
 import { onActivated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Card, Empty, Spin, Tag } from 'antdv-next';
 
@@ -71,6 +71,12 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
+    <template #doc>
+      <DocAlert
+        title="【薪资】月度工资、工资条"
+        url="https://doc.iocoder.cn/hrm/salary/payroll/"
+      />
+    </template>
     <Spin :spinning="loading">
       <Card class="mb-4" title="我的工资条">
         <FilterForm />

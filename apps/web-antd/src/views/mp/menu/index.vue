@@ -355,6 +355,7 @@ function menuToBackend(menu: any) {
           v-if="showRightPanel"
         >
           <Editor
+            :key="activeIndex"
             :account-id="accountId"
             :is-parent="isParent"
             v-model="activeMenu"

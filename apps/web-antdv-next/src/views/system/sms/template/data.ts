@@ -214,6 +214,15 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    {
+      field: 'channelCode',
+      title: '渠道编码',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
+      },
+    },
     { type: 'checkbox', width: 40 },
     {
       field: 'id',

@@ -5,6 +5,7 @@ import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/perform
 import { nextTick, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
+import { DICT_TYPE } from '@vben/constants';
 import { getFileNameFromUrl, openWindow } from '@vben/utils';
 
 import {
@@ -139,7 +140,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
           </ElDescriptionsItem>
           <ElDescriptionsItem label="当前阶段">
             <DictTag
-              type="hrm_performance_stage_status"
+              :type="DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS"
               :value="assessment.stageType ?? 0"
             />
           </ElDescriptionsItem>
@@ -190,7 +191,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
           </ElDescriptionsItem>
           <ElDescriptionsItem label="申诉状态">
             <DictTag
-              type="hrm_performance_appeal_status"
+              :type="DICT_TYPE.HRM_PERFORMANCE_APPEAL_STATUS"
               :value="assessment.appealStatus ?? 0"
             />
           </ElDescriptionsItem>
