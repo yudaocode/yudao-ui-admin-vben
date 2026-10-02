@@ -97,8 +97,12 @@ function refreshColumns() {
 }
 
 /** 切换辅助核算类别 */
-function handleTypeChange(row?: FmsAuxiliaryTypeApi.AuxiliaryType) {
+async function handleTypeChange(row?: FmsAuxiliaryTypeApi.AuxiliaryType) {
+  const typeChanged = currentAuxiliaryType.value?.id !== row?.id;
   currentAuxiliaryType.value = row;
+  if (typeChanged) {
+    await gridApi.formApi.reset();
+  }
   refreshColumns();
   handleRefresh();
 }
@@ -107,7 +111,7 @@ function handleTypeChange(row?: FmsAuxiliaryTypeApi.AuxiliaryType) {
 async function getTypeList() {
   if (!accountSetId.value) {
     typeList.value = [];
-    handleTypeChange(undefined);
+    await handleTypeChange(undefined);
     return;
   }
   typeLoading.value = true;
@@ -121,7 +125,7 @@ async function getTypeList() {
       ) ||
       typeList.value.find((item) => item.id === routeAuxiliaryTypeId) ||
       typeList.value[0];
-    handleTypeChange(nextType);
+    await handleTypeChange(nextType);
   } finally {
     typeLoading.value = false;
   }

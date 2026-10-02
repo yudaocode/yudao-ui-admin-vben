@@ -339,6 +339,16 @@ export function useGridColumns(): VxeTableGridOptions<MesWmProductSalesApi.Produ
       minWidth: 100,
     },
     {
+      field: 'contactTelephone',
+      title: '联系方式',
+      minWidth: 120,
+    },
+    {
+      field: 'contactAddress',
+      title: '收货地址',
+      minWidth: 180,
+    },
+    {
       field: 'carrier',
       title: '承运商',
       minWidth: 120,

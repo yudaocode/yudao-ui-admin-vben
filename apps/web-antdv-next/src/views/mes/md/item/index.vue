@@ -76,7 +76,10 @@ async function handleDelete(row: MesMdItemApi.Item) {
 
 /** 导出物料 */
 async function handleExport() {
-  const data = await exportItem(await gridApi.formApi.getValues());
+  const data = await exportItem({
+    ...(await gridApi.formApi.getValues()),
+    itemTypeId: selectedItemTypeId.value,
+  });
   downloadFileFromBlobPart({ fileName: '物料产品.xls', source: data });
 }
 

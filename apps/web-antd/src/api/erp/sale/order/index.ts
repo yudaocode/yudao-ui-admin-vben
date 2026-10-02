@@ -8,6 +8,7 @@ export namespace ErpSaleOrderApi {
     id?: number; // 订单工单编号
     no: string; // 销售订单号
     customerId: number; // 客户编号
+    saleUserId?: number; // 销售人员编号
     accountId?: number; // 收款账户编号
     orderTime: Date; // 订单时间
     totalCount: number; // 合计数量

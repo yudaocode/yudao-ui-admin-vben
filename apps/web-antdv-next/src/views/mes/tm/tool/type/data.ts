@@ -208,6 +208,11 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolTypeApi.ToolType>
       },
     },
     {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
+    },
+    {
       field: 'createTime',
       title: '创建时间',
       width: 180,

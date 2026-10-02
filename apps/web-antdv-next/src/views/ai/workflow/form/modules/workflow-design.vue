@@ -31,7 +31,7 @@ const startNodeParamOptions = computed(() =>
 );
 const testResult = ref(null);
 const loading = ref(false);
-const error = ref(null);
+const errorMessage = ref<null | string>(null);
 
 const [Drawer, drawerApi] = useVbenDrawer({
   footer: false,
@@ -90,7 +90,7 @@ async function goRun() {
   try {
     const val = tinyflowRef.value?.getData();
     loading.value = true;
-    error.value = null;
+    errorMessage.value = null;
     testResult.value = null;
 
     // 查找start节点
@@ -127,8 +127,8 @@ async function goRun() {
       params: convertedParams,
     });
   } catch (error: any) {
-    error.value =
-      error.response?.data?.message || '运行失败，请检查参数和网络连接';
+    errorMessage.value =
+      error?.response?.data?.message || '运行失败，请检查参数和网络连接';
   } finally {
     loading.value = false;
   }
@@ -271,7 +271,9 @@ defineExpose({ validate });
         </legend>
         <div class="p-2">
           <div v-if="loading" class="text-primary">执行中...</div>
-          <div v-else-if="error" class="text-danger">{{ error }}</div>
+          <div v-else-if="errorMessage" class="text-danger">
+            {{ errorMessage }}
+          </div>
           <pre
             v-else-if="testResult"
             class="max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-white p-3 font-mono text-sm leading-5"

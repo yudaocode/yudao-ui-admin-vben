@@ -59,7 +59,6 @@ const [Form, formApi] = useVbenForm({
       componentProps: {
         placeholder: '请选择项目',
       },
-      rules: 'selectRequired',
     },
     {
       fieldName: 'malfunction',

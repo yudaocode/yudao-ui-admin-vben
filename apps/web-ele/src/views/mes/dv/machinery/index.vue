@@ -70,7 +70,10 @@ async function handleDelete(row: MesDvMachineryApi.Machinery) {
 
 /** 导出设备 */
 async function handleExport() {
-  const data = await exportMachinery(await gridApi.formApi.getValues());
+  const data = await exportMachinery({
+    ...(await gridApi.formApi.getValues()),
+    machineryTypeId: selectedMachineryTypeId.value,
+  });
   downloadFileFromBlobPart({ fileName: '设备台账.xls', source: data });
 }
 

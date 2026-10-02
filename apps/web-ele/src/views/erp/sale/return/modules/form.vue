@@ -122,6 +122,7 @@ function handleUpdateOrder(order: ErpSaleOrderApi.SaleOrder) {
     orderNo: order.no!,
     customerId: order.customerId!,
     accountId: order.accountId!,
+    saleUserId: order.saleUserId,
     remark: order.remark!,
     discountPercent: order.discountPercent!,
     fileUrl: order.fileUrl!,

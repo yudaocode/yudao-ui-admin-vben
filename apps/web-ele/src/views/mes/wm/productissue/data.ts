@@ -205,6 +205,16 @@ export function useGridColumns(): VxeTableGridOptions<MesWmProductIssueApi.Produ
       minWidth: 120,
     },
     {
+      field: 'clientCode',
+      title: '客户编号',
+      minWidth: 120,
+    },
+    {
+      field: 'clientName',
+      title: '客户名称',
+      minWidth: 120,
+    },
+    {
       field: 'requiredTime',
       title: '需求时间',
       width: 180,

@@ -54,6 +54,7 @@ async function handleExport() {
       pageNo: 1,
       pageSize: 100,
       ...buildLeaveQueryParams(formValues),
+      ...buildSortingField(gridApi.grid.getSortColumns()),
     } as PageParam);
     downloadFileFromBlobPart({ fileName: '请假记录.xls', source: data });
   } catch {

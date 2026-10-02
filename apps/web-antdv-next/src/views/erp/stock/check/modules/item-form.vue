@@ -195,7 +195,7 @@ function validate() {
       if (!item.productId) {
         throw new Error(`第 ${i + 1} 行：产品不能为空`);
       }
-      if (!item.actualCount || item.actualCount <= 0) {
+      if (item.actualCount === null || item.actualCount === undefined) {
         throw new Error(`第 ${i + 1} 行：实际库存不能为空`);
       }
     }

@@ -61,7 +61,10 @@ async function handleDelete(row: MesTmToolApi.Tool) {
 
 /** 导出工具 */
 async function handleExport() {
-  const data = await exportTool(await gridApi.formApi.getValues());
+  const data = await exportTool({
+    ...(await gridApi.formApi.getValues()),
+    toolTypeId: selectedToolTypeId.value,
+  });
   downloadFileFromBlobPart({ fileName: '工具.xls', source: data });
 }
 

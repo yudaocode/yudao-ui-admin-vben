@@ -16,7 +16,6 @@ import { Button } from 'antdv-next';
 
 import { z } from '#/adapter/form';
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { getRangePickerDefaultProps } from '#/utils';
 
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
@@ -186,14 +185,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.MES_DV_CHECK_PLAN_STATUS, 'number'),
         placeholder: '请选择状态',
-      },
-    },
-    {
-      fieldName: 'startDate',
-      label: '开始日期',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
       },
     },
   ];

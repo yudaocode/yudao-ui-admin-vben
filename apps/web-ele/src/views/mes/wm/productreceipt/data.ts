@@ -176,6 +176,26 @@ export function useGridColumns(): VxeTableGridOptions<MesWmProductReceiptApi.Pro
       minWidth: 140,
     },
     {
+      field: 'itemCode',
+      title: '产品物料编码',
+      minWidth: 120,
+    },
+    {
+      field: 'itemName',
+      title: '产品物料名称',
+      minWidth: 150,
+    },
+    {
+      field: 'specification',
+      title: '规格型号',
+      minWidth: 120,
+    },
+    {
+      field: 'unitMeasureName',
+      title: '计量单位',
+      minWidth: 100,
+    },
+    {
       field: 'receiptDate',
       title: '入库日期',
       width: 180,

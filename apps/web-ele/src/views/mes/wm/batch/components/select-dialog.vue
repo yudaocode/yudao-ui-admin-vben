@@ -29,13 +29,16 @@ const externalSalesOrderCode = ref<string>(); // 外部传入的默认销售订�
 
 const filterTip = computed(() => {
   const parts: string[] = [];
-  if (externalClientId.value !== null) {
+  if (externalClientId.value !== null && externalClientId.value !== undefined) {
     parts.push('客户');
   }
-  if (externalVendorId.value !== null) {
+  if (externalVendorId.value !== null && externalVendorId.value !== undefined) {
     parts.push('供应商');
   }
-  if (externalSalesOrderCode.value !== null) {
+  if (
+    externalSalesOrderCode.value !== null &&
+    externalSalesOrderCode.value !== undefined
+  ) {
     parts.push('销售订单');
   }
   return parts.length > 0 ? `已按${parts.join('/')}预过滤` : '';
@@ -231,12 +234,7 @@ defineExpose({ open: openModal });
 </script>
 
 <template>
-  <ElDialog
-    v-model="open"
-    title="批次选择"
-    width="80%"
-    :append-to-body="true"
-  >
+  <ElDialog v-model="open" title="批次选择" width="80%" :append-to-body="true">
     <ElAlert
       v-if="filterTip"
       :closable="false"

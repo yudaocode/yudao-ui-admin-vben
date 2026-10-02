@@ -149,7 +149,7 @@ async function handleGenerateWorkOrder(
   if (!current) {
     return;
   }
-  formData.value = undefined;
+  formData.value = { parentId: current.id };
   formType.value = 'create';
   subTabsName.value = 'bom';
   applySchema();
@@ -233,6 +233,7 @@ const [Modal, modalApi] = useVbenModal({
     } else if (data?.parentRow) {
       // 新增子工单时，预填父工单信息
       const parent = data.parentRow;
+      formData.value = { parentId: parent.id };
       await formApi.setValues({
         clientId: parent.clientId,
         orderSourceCode: parent.orderSourceCode,

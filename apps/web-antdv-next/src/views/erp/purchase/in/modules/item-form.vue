@@ -227,7 +227,7 @@ onMounted(async () => {
         v-if="!disabled"
         v-model:value="row.count"
         :min="0"
-        :precision="2"
+        :precision="3"
         @change="handleRowChange(row)"
       />
       <span v-else>{{ erpCountInputFormatter(row.count) || '-' }}</span>

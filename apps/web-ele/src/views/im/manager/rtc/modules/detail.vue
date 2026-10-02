@@ -103,7 +103,9 @@ defineExpose({ open });
       size="small"
     >
       <ElTableColumn label="用户编号" prop="userId" width="120" />
-      <ElTableColumn label="昵称" prop="userNickname" />
+      <ElTableColumn label="昵称" prop="userNickname">
+        <template #default="{ row }">{{ row.userNickname || '-' }}</template>
+      </ElTableColumn>
       <ElTableColumn label="参与角色" width="120">
         <template #default="{ row }">
           <DictTag

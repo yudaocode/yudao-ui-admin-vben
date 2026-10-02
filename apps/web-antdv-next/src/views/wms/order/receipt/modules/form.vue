@@ -294,8 +294,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = await buildSubmitData();
     try {
+      const data = await buildSubmitData();
       await (formType.value === 'update'
         ? updateReceiptOrder(data)
         : createReceiptOrder(data));

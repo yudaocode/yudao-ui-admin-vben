@@ -232,7 +232,7 @@ const [Modal, modalApi] = useVbenModal({
         </ElPopconfirm>
         <ElPopconfirm
           v-if="formType === 'finish'"
-          title="确认完成验收？"
+          title="确认验收通过？"
           @confirm="handleFinish(MesDvRepairResultEnum.PASS)"
         >
           <template #reference>
@@ -241,7 +241,7 @@ const [Modal, modalApi] = useVbenModal({
         </ElPopconfirm>
         <ElPopconfirm
           v-if="formType === 'finish'"
-          title="确认完成验收？"
+          title="确认验收不通过？"
           @confirm="handleFinish(MesDvRepairResultEnum.FAIL)"
         >
           <template #reference>

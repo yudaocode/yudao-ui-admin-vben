@@ -8,6 +8,7 @@ export namespace ErpSaleReturnApi {
     id?: number; // 销售退货编号
     no?: string; // 销售退货号
     customerId?: number; // 客户编号
+    saleUserId?: number; // 销售人员编号
     returnTime?: Date; // 退货时间
     totalCount?: number; // 合计数量
     totalPrice?: number; // 合计金额，单位：元

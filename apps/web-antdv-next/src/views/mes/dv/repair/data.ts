@@ -245,12 +245,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'machineryName',
-      label: '设备名称',
-      component: 'Input',
+      fieldName: 'machineryId',
+      label: '设备',
+      component: markRaw(DvMachinerySelect),
       componentProps: {
         allowClear: true,
-        placeholder: '请输入设备名称',
+        placeholder: '请选择设备',
       },
     },
     {

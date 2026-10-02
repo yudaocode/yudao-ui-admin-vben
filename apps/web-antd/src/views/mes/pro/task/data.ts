@@ -5,12 +5,17 @@ import type { MesProWorkOrderApi } from '#/api/mes/pro/workorder';
 
 import { markRaw } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import {
+  DICT_TYPE,
+  MesProWorkOrderSourceTypeEnum,
+  MesProWorkOrderTypeEnum,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getRangePickerDefaultProps } from '#/utils';
 import { MdClientSelect } from '#/views/mes/md/client/components';
 import { MdItemSelect } from '#/views/mes/md/item/components';
+import { MdVendorSelect } from '#/views/mes/md/vendor/components';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
 import { ProProcessSelect } from '#/views/mes/pro/process/components';
 import { RouteColorPicker } from '#/views/mes/pro/route/components';
@@ -208,6 +213,11 @@ export function useScheduleFormSchema(): VbenFormSchema[] {
       fieldName: 'orderSourceCode',
       label: '来源单据编号',
       component: 'Input',
+      dependencies: {
+        triggerFields: ['orderSourceType'],
+        show: (values) =>
+          values.orderSourceType === MesProWorkOrderSourceTypeEnum.ORDER,
+      },
       componentProps: {
         disabled: true,
       },
@@ -261,6 +271,20 @@ export function useScheduleFormSchema(): VbenFormSchema[] {
       component: markRaw(MdClientSelect),
       componentProps: {
         disabled: true,
+      },
+    },
+    {
+      fieldName: 'vendorId',
+      label: '供应商',
+      component: markRaw(MdVendorSelect),
+      componentProps: {
+        disabled: true,
+      },
+      dependencies: {
+        triggerFields: ['type'],
+        show: (values) =>
+          values.type === MesProWorkOrderTypeEnum.OUTSOURCE ||
+          values.type === MesProWorkOrderTypeEnum.PURCHASE,
       },
     },
     {

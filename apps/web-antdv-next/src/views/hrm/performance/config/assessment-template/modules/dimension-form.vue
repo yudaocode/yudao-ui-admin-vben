@@ -26,8 +26,11 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) return;
+    const values = await formApi.getValues();
     emit('confirm', {
-      ...(await formApi.getValues()),
+      ...values,
+      name: values.name?.trim(),
+      remark: values.remark?.trim(),
       quotas: quotas.value,
     } as HrmPerformanceAssessmentTemplateApi.AssessmentDimension);
     await modalApi.close();
