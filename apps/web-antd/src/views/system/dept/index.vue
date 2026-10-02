@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, deleteDeptList, getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
 
-import { useGridColumns } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -90,6 +90,9 @@ function handleRowCheckboxChange({
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
@@ -98,8 +101,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     proxyConfig: {
       ajax: {
-        query: async () => {
-          return await getDeptList();
+        query: async (_params, formValues) => {
+          return await getDeptList(formValues);
         },
       },
     },

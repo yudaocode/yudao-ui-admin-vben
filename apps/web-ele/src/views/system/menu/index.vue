@@ -14,7 +14,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 
-import { useGridColumns } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -64,6 +64,9 @@ function handleExpand() {
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
   gridOptions: {
     columns: useGridColumns(),
     height: 'auto',
@@ -73,8 +76,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     proxyConfig: {
       ajax: {
-        query: async (_params) => {
-          return await getMenuList();
+        query: async (_params, formValues) => {
+          return await getMenuList(formValues);
         },
       },
     },
@@ -84,6 +87,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
+      search: true,
     },
     treeConfig: {
       parentField: 'parentId',

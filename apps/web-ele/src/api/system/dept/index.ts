@@ -22,8 +22,10 @@ export async function getSimpleDeptList() {
 }
 
 /** 查询部门列表 */
-export async function getDeptList() {
-  return requestClient.get('/system/dept/list');
+export async function getDeptList(params?: Record<string, any>) {
+  return requestClient.get<SystemDeptApi.Dept[]>('/system/dept/list', {
+    params,
+  });
 }
 
 /** 查询部门详情 */

@@ -26,6 +26,12 @@ export namespace SystemUserApi {
   export interface UserSimple extends User {
     id: number;
   }
+  /** 用户导入结果 */
+  export interface UserImportRespVO {
+    createUsernames: string[];
+    updateUsernames: string[];
+    failureUsernames: Record<string, string>;
+  }
 }
 
 /** 查询用户管理列表 */
@@ -80,10 +86,13 @@ export function importUserTemplate() {
 
 /** 导入用户 */
 export function importUser(file: File, updateSupport: boolean) {
-  return requestClient.upload('/system/user/import', {
-    file,
-    updateSupport,
-  });
+  return requestClient.upload<SystemUserApi.UserImportRespVO>(
+    '/system/user/import',
+    {
+      file,
+      updateSupport,
+    },
+  );
 }
 
 /** 用户密码重置 */

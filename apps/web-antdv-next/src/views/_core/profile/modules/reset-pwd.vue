@@ -19,8 +19,8 @@ const [Form, formApi] = useVbenForm({
       label: '旧密码',
       rules: z
         .string({ message: '请输入密码' })
-        .min(5, '密码长度不能少于 5 个字符')
-        .max(20, '密码长度不能超过 20 个字符'),
+        .min(4, '密码长度不能少于 4 个字符')
+        .max(16, '密码长度不能超过 16 个字符'),
     },
     {
       component: 'InputPassword',
@@ -28,8 +28,8 @@ const [Form, formApi] = useVbenForm({
         rules(values) {
           return z
             .string({ message: '请输入新密码' })
-            .min(5, '密码长度不能少于 5 个字符')
-            .max(20, '密码长度不能超过 20 个字符')
+            .min(4, '密码长度不能少于 4 个字符')
+            .max(16, '密码长度不能超过 16 个字符')
             .refine(
               (value) => value !== values.oldPassword,
               '新旧密码不能相同',
@@ -47,8 +47,8 @@ const [Form, formApi] = useVbenForm({
         rules(values) {
           return z
             .string({ message: '请输入确认密码' })
-            .min(5, '密码长度不能少于 5 个字符')
-            .max(20, '密码长度不能超过 20 个字符')
+            .min(4, '密码长度不能少于 4 个字符')
+            .max(16, '密码长度不能超过 16 个字符')
             .refine(
               (value) => value === values.newPassword,
               '新密码和确认密码不一致',

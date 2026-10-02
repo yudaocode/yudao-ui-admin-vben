@@ -74,6 +74,15 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请输入模板编号',
       },
     },
+    {
+      fieldName: 'toMail',
+      label: '接收邮箱',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入接收邮箱',
+        clearable: true,
+      },
+    },
   ];
 }
 

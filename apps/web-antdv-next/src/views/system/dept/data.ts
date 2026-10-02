@@ -33,11 +33,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         api: async () => {
-          const data = await getDeptList();
-          if (
-            data.length === 0 ||
-            data.some((dept: SystemDeptApi.Dept) => dept.parentId === 0)
-          ) {
+          const data: Partial<SystemDeptApi.Dept>[] = await getDeptList();
+          if (data.length === 0 || data.some((dept) => dept.parentId === 0)) {
             data.unshift({
               id: 0,
               name: '顶级部门',
@@ -94,7 +91,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxLength: 11,
         placeholder: '请输入联系电话',
       },
-      rules: 'mobileRequired',
+      rules: 'mobile',
     },
     {
       fieldName: 'email',
@@ -163,6 +160,31 @@ export function useGridColumns(): VxeTableGridOptions<SystemDeptApi.Dept>['colum
       width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '部门名称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入部门名称',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择状态',
+      },
     },
   ];
 }

@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { useVbenModal } from '@vben/common-ui';
+import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElMessage, ElUpload } from 'element-plus';
+import { ElButton, ElUpload } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { importUser, importUserTemplate } from '#/api/system/user';
-import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
 
@@ -32,11 +31,20 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = await formApi.getValues();
     try {
-      await importUser(data.file, data.updateSupport);
+      const result = await importUser(data.file, data.updateSupport);
+      const text = [
+        `新增成功数量：${result.createUsernames.length}；${result.createUsernames.join('、')}`,
+        `更新成功数量：${result.updateUsernames.length}；${result.updateUsernames.join('、')}`,
+        `导入失败数量：${Object.keys(result.failureUsernames).length}；${Object.entries(
+          result.failureUsernames,
+        )
+          .map(([username, reason]) => `${username}：${reason}`)
+          .join('；')}`,
+      ].join('\n');
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      ElMessage.success($t('ui.actionMessage.operationSuccess'));
+      await alert(text, '导入结果');
     } finally {
       modalApi.unlock();
     }

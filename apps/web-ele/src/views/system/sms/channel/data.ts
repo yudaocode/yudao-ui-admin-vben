@@ -95,16 +95,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'code',
-      label: '渠道编码',
-      component: 'Select',
-      componentProps: {
-        clearable: true,
-        options: getDictOptions(DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE, 'string'),
-        placeholder: '请选择短信渠道',
-      },
-    },
-    {
       fieldName: 'status',
       label: '状态',
       component: 'Select',
