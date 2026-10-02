@@ -303,7 +303,7 @@ onMounted(() => {
         </Form>
         <Alert
           v-if="!financeParameter"
-          :message="
+          :title="
             accountSet.initialized
               ? '当前账套缺少财务参数，请检查初始化数据'
               : '当前账套尚未初始化，请先完成账套初始化'

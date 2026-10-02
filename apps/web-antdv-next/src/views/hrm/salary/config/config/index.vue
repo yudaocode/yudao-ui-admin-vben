@@ -103,7 +103,7 @@ onMounted(loadConfig);
     <Alert
       v-if="initialized"
       class="mb-4"
-      message="计薪初始化已完成，仅可调整对应社保自然月。"
+      title="计薪初始化已完成，仅可调整对应社保自然月。"
       show-icon
       type="info"
     />

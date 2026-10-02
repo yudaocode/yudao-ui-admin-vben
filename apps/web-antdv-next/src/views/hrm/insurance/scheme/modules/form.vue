@@ -20,6 +20,8 @@ import {
   InputNumber,
   Menu,
   message,
+  SpaceAddon,
+  SpaceCompact,
   Table,
 } from 'antdv-next';
 
@@ -450,7 +452,7 @@ const [Modal, modalApi] = useVbenModal({
       <BaseForm />
       <Alert
         class="mb-4"
-        message="比例模式：公司或个人缴纳金额 = 参保基数 × 对应比例；金额模式直接填写公司和个人缴纳金额。"
+        title="比例模式：公司或个人缴纳金额 = 参保基数 × 对应比例；金额模式直接填写公司和个人缴纳金额。"
         show-icon
         type="info"
       />
@@ -527,26 +529,30 @@ const [Modal, modalApi] = useVbenModal({
                 />
               </template>
               <template v-else-if="column.key === 'corporateRate'">
-                <InputNumber
-                  v-model:value="record.corporateRate"
-                  :controls="false"
-                  :max="100"
-                  :min="0"
-                  :precision="2"
-                  addon-after="%"
-                  class="w-full"
-                />
+                <SpaceCompact block>
+                  <InputNumber
+                    v-model:value="record.corporateRate"
+                    :controls="false"
+                    :max="100"
+                    :min="0"
+                    :precision="2"
+                    class="min-w-0 flex-1"
+                  />
+                  <SpaceAddon>%</SpaceAddon>
+                </SpaceCompact>
               </template>
               <template v-else-if="column.key === 'personalRate'">
-                <InputNumber
-                  v-model:value="record.personalRate"
-                  :controls="false"
-                  :max="100"
-                  :min="0"
-                  :precision="2"
-                  addon-after="%"
-                  class="w-full"
-                />
+                <SpaceCompact block>
+                  <InputNumber
+                    v-model:value="record.personalRate"
+                    :controls="false"
+                    :max="100"
+                    :min="0"
+                    :precision="2"
+                    class="min-w-0 flex-1"
+                  />
+                  <SpaceAddon>%</SpaceAddon>
+                </SpaceCompact>
               </template>
               <template v-else-if="column.key === 'corporateAmount'">
                 <InputNumber

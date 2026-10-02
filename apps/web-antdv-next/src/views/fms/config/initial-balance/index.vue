@@ -530,7 +530,7 @@ function handleBeforeUnload(event: BeforeUnloadEvent) {
       class="mb-4 shrink-0"
       :closable="false"
       show-icon
-      message="账套从一月启用，只需录入期初余额"
+      title="账套从一月启用，只需录入期初余额"
       type="info"
     />
     <Alert
@@ -538,7 +538,7 @@ function handleBeforeUnload(event: BeforeUnloadEvent) {
       class="mb-4 shrink-0"
       :closable="false"
       show-icon
-      message="账套已结账，初始余额不可修改"
+      title="账套已结账，初始余额不可修改"
       type="warning"
     />
     <Alert
@@ -546,7 +546,7 @@ function handleBeforeUnload(event: BeforeUnloadEvent) {
       class="mb-4 shrink-0"
       :closable="false"
       show-icon
-      message="当前修改尚未保存，切换科目类别或离开页面前请先保存"
+      title="当前修改尚未保存，切换科目类别或离开页面前请先保存"
       type="warning"
     />
 

@@ -143,7 +143,7 @@ defineExpose({ open, printHtml, previewHtml });
     class="[&_.ant-form-item]:!mb-3"
     title="凭证打印"
     width="500px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <Form ref="formRef" :model="formData" :rules="formRules" layout="vertical">
       <FormItem label="打印类型" name="paperType">

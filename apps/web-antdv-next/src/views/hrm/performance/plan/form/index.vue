@@ -612,7 +612,7 @@ onMounted(initForm);
         <Steps
           :current="currentStep"
           class="plan-form-steps w-full max-w-[900px] cursor-pointer"
-          label-placement="vertical"
+          title-placement="vertical"
           :items="steps.map((step) => ({ title: step.title }))"
           @change="handleStepClick"
         />

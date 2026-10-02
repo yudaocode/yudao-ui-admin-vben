@@ -39,6 +39,7 @@ import {
 
 import { VbenHelpTooltip, VbenLoading } from '@vben-core/shadcn-ui';
 
+import { useResizeObserver } from '@vueuse/core';
 import { VxeButton } from 'vxe-pc-ui';
 import { VxeGrid, VxeUI } from 'vxe-table';
 
@@ -63,6 +64,24 @@ const TOOLBAR_TOOLS = 'toolbar-tools';
 const TABLE_TITLE = 'table-title';
 
 const gridRef = useTemplateRef<VxeGridInstance>('gridRef');
+const formWrapperRef = useTemplateRef<HTMLElement>('formWrapperRef');
+
+// 搜索表单的字段组件是异步加载的，首屏渲染后表单会继续变高；
+// 表格的自适应高度按首次布局时的表单高度计算，需要在表单尺寸变化（含显示 / 隐藏）后
+// 强制重新计算（recalculate 不传 true 时不会重新测量高度），否则表格会被撑出卡片底部
+let lastFormHeight: number | undefined;
+let recalculateFrame = 0;
+useResizeObserver(formWrapperRef, ([entry]) => {
+  const height = entry?.contentRect.height;
+  if (height === undefined || height === lastFormHeight) {
+    return;
+  }
+  lastFormHeight = height;
+  cancelAnimationFrame(recalculateFrame);
+  recalculateFrame = requestAnimationFrame(() => {
+    gridRef.value?.recalculate(true);
+  });
+});
 
 const state = props.api?.useStore?.();
 
@@ -446,6 +465,7 @@ onUnmounted(() => {
       <template #form>
         <div
           v-if="formOptions"
+          ref="formWrapperRef"
           v-show="showSearchForm !== false"
           :class="
             cn(

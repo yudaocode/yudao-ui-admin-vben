@@ -41,7 +41,9 @@ const rankingOptions = computed<EChartsOption>(() => ({
   grid: { left: 32, right: 16, top: 20, bottom: 50 },
   xAxis: {
     type: 'category',
-    data: taskRankings.value.map((item) => item.userName || `用户 ${item.userId}`),
+    data: taskRankings.value.map(
+      (item) => item.userName || `用户 ${item.userId}`,
+    ),
     axisLabel: { interval: 0, width: 60, overflow: 'truncate' },
   },
   yAxis: { type: 'value', minInterval: 1 },
@@ -59,7 +61,9 @@ const { renderEcharts } = useEcharts(rankingChartRef);
 
 /** 获得任务状态占比 */
 function getStatusPercentage(count: number) {
-  return taskTotal.value === 0 ? 0 : Math.round((count / taskTotal.value) * 100);
+  return taskTotal.value === 0
+    ? 0
+    : Math.round((count / taskTotal.value) * 100);
 }
 
 /** 渲染任务完成排行图 */
@@ -130,7 +134,7 @@ onMounted(() => {
           class="flex-1"
           :percent="getStatusPercentage(item.count)"
           :show-info="false"
-          :stroke-width="8"
+          :size="{ height: 8 }"
         />
         <span class="w-7 text-right text-muted-foreground">
           {{ item.count }}

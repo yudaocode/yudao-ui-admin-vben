@@ -118,7 +118,7 @@ function resetImport() {
     v-model:open="dialogVisible"
     title="导入凭证"
     width="750px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <Steps
       :current="step"

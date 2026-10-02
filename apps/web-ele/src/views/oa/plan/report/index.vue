@@ -64,12 +64,12 @@ async function handlePeriodDateChange(date: unknown) {
 /** 切换上一个或下一个统计周期 */
 async function handlePeriodChange(step: number) {
   const values = await gridApi.formApi.getValues();
-  const unit =
-    Number(values.type) === OA_PLAN_TYPE.DAY
-      ? 'day'
-      : Number(values.type) === OA_PLAN_TYPE.WEEK
-        ? 'week'
-        : 'month';
+  let unit: 'day' | 'month' | 'week' = 'month';
+  if (Number(values.type) === OA_PLAN_TYPE.DAY) {
+    unit = 'day';
+  } else if (Number(values.type) === OA_PLAN_TYPE.WEEK) {
+    unit = 'week';
+  }
   await gridApi.formApi.setFieldValue(
     'periodDate',
     dayjs(values.periodDate as string).add(step, unit).format('YYYY-MM-DD'),
@@ -101,12 +101,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
             dayjs((formValues?.periodDate as string) || undefined),
             type,
           );
-          const endTime =
-            type === OA_PLAN_TYPE.DAY
-              ? beginTime
-              : type === OA_PLAN_TYPE.WEEK
-                ? beginTime.add(6, 'day')
-                : beginTime.endOf('month');
+          let endTime = beginTime.endOf('month');
+          if (type === OA_PLAN_TYPE.DAY) {
+            endTime = beginTime;
+          } else if (type === OA_PLAN_TYPE.WEEK) {
+            endTime = beginTime.add(6, 'day');
+          }
           return await getPlanReportPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -135,7 +135,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
+    <template #doc>
+      <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
+    </template>
+
     <CommentFormModal @success="handleRefresh" />
 
     <Grid table-title="工作计划报表">

@@ -16,7 +16,7 @@ const visible = ref(true); // 关闭后刷新页面恢复
   <Card
     v-if="visible"
     :title="title"
-    :body-style="collapsed ? { padding: '0' } : undefined"
+    :styles="{ body: collapsed ? { padding: '0' } : undefined }"
   >
     <template #extra>
       <div class="flex items-center gap-2">
@@ -28,7 +28,11 @@ const visible = ref(true); // 关闭后刷新页面恢复
         >
           <IconifyIcon :icon="collapsed ? 'ep:arrow-down' : 'ep:arrow-up'" />
         </Button>
-        <Button type="link" :aria-label="`关闭${title}`" @click="visible = false">
+        <Button
+          type="link"
+          :aria-label="`关闭${title}`"
+          @click="visible = false"
+        >
           <IconifyIcon icon="ep:close" />
         </Button>
       </div>

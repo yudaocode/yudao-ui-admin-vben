@@ -210,7 +210,7 @@ defineExpose({ open: handleOpen });
     :footer="null"
     title="选择员工"
     width="960px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <div class="mb-3 flex gap-3">
       <DeptTreeSelect

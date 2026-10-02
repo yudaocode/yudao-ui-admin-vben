@@ -72,7 +72,7 @@ function formatCheckAmount(amount?: number) {
     :type="passed ? 'success' : 'warning'"
     show-icon
   >
-    <template #message>
+    <template #title>
       {{ passed ? `${reportName}检查通过` : `${reportName}检查发现问题` }}
     </template>
     <template v-if="!passed" #description>

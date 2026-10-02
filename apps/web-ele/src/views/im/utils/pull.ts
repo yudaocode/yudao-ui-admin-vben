@@ -29,6 +29,11 @@ const PULL_OVERLAP_MS = 5000;
 /** 消息类 minId 拉取的单轮翻页上限，兜底防御异常游标死翻；消息量可能远大于状态事件，放宽到 1000 */
 const MIN_ID_PULL_MAX_PAGES = 1000;
 
+/** 是否为 null 或 undefined（游标字段缺省时为 undefined，服务端也可能返回 null） */
+function isNil(value: unknown): value is null | undefined {
+  return value === null || value === undefined;
+}
+
 /** 读取某模块的拉取游标；无则返回空游标（首次拉全量） */
 async function getPullCursor(db: DbClient, key: string): Promise<PullCursor> {
   return (await db.getSetting<PullCursor>(key)) ?? {};
@@ -54,16 +59,15 @@ export async function runIncrementalPull<T extends PullRecord>(
 ): Promise<void> {
   const storedCursor = await getPullCursor(db, cursorKey);
   const highWater = { ...storedCursor };
-  let cursor =
-    storedCursor.lastUpdateTime === null
-      ? {}
-      : {
-          lastUpdateTime: Math.max(
-            0,
-            storedCursor.lastUpdateTime - PULL_OVERLAP_MS,
-          ),
-          lastId: 0,
-        };
+  let cursor = isNil(storedCursor.lastUpdateTime)
+    ? {}
+    : {
+        lastUpdateTime: Math.max(
+          0,
+          storedCursor.lastUpdateTime - PULL_OVERLAP_MS,
+        ),
+        lastId: 0,
+      };
   for (let page = 0; page < PULL_MAX_PAGES; page++) {
     const list = await fetchPage({
       lastUpdateTime: cursor.lastUpdateTime,
@@ -77,12 +81,12 @@ export async function runIncrementalPull<T extends PullRecord>(
       }
       // 推进游标到本页最后一条并持久化：下次从这里接着拉
       const last = list[list.length - 1]!;
-      if (last.updateTime === null) {
+      if (isNil(last.updateTime)) {
         return;
       }
       cursor = { lastUpdateTime: last.updateTime, lastId: last.id };
       if (
-        highWater.lastUpdateTime === null ||
+        isNil(highWater.lastUpdateTime) ||
         cursor.lastUpdateTime > highWater.lastUpdateTime ||
         (cursor.lastUpdateTime === highWater.lastUpdateTime &&
           cursor.lastId > (highWater.lastId ?? 0))
@@ -140,14 +144,14 @@ export async function runMinIdPull<T extends { id?: number }>(options: {
     // 本批最大消息 id 作为下次游标；无有效 id 则本批 apply 后停（无法继续翻页）
     const validIds = list
       .map((record) => record.id)
-      .filter((id): id is number => id !== null);
+      .filter((id): id is number => !isNil(id));
     const nextMinId = validIds.length > 0 ? Math.max(...validIds) : undefined;
     // applyPage 返回 false：本页未落地（如入库失败），不推进游标并终止，避免漏消息
     if ((await applyPage(list, nextMinId)) === false) {
       return;
     }
     // 无有效 id，或游标没前进（后端契约是 id > minId，理论不会出现）：停，防御死翻
-    if (nextMinId === null || nextMinId <= minId) {
+    if (isNil(nextMinId) || nextMinId <= minId) {
       return;
     }
     minId = nextMinId;

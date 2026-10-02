@@ -8,7 +8,15 @@ import { useRoute } from 'vue-router';
 import { alert, confirm, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Layout, message, Switch } from 'antdv-next';
+import {
+  Button,
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+  message,
+  Switch,
+} from 'antdv-next';
 
 import { getChatConversationMy } from '#/api/ai/chat/conversation';
 import {

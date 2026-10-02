@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: String.raw`workflow/create/:id(\d+)/:type(update|create)`,
+        path: String.raw`workflow/create/:id(\d+)?/:type(update|create)?`,
         component: () => import('#/views/ai/workflow/form/index.vue'),
         name: 'AiWorkflowCreate',
         meta: {

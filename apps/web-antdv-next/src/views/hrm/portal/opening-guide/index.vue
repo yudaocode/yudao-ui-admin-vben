@@ -61,7 +61,7 @@ onMounted(async () => {
         </div>
         <Steps
           :current="0"
-          label-placement="vertical"
+          title-placement="vertical"
           :items="[
             {
               title: '进入员工档案',

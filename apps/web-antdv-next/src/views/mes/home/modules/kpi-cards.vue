@@ -64,7 +64,7 @@ const qualityRate = computed(() => {
             </div>
             <div class="text-muted-foreground mt-1 text-xs">
               <span>待排产 {{ summary.workOrderPrepareCount }}</span>
-              <Divider type="vertical" />
+              <Divider orientation="vertical" />
               <span>已完成 {{ summary.workOrderFinishedCount }}</span>
             </div>
           </div>
@@ -126,7 +126,7 @@ const qualityRate = computed(() => {
             <div class="text-muted-foreground mt-1 text-xs">
               <template v-if="hasQualityData">
                 <span>合格 {{ summary.todayQualifiedQuantity }}</span>
-                <Divider type="vertical" />
+                <Divider orientation="vertical" />
                 <span>不良 {{ summary.todayUnqualifiedQuantity }}</span>
               </template>
               <span v-else>暂无数据</span>
@@ -161,7 +161,7 @@ const qualityRate = computed(() => {
             </div>
             <div class="text-muted-foreground mt-1 text-xs">
               <span class="text-red-400">停机 {{ summary.machineryStop }}</span>
-              <Divider type="vertical" />
+              <Divider orientation="vertical" />
               <span class="text-orange-400">
                 维护 {{ summary.machineryMaintenance }}
               </span>

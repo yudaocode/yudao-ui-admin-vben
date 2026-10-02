@@ -335,7 +335,7 @@ async function handleDeleteTemplate(id?: number) {
     <Steps
       :current="currentStep"
       class="mx-auto mb-6 max-w-[680px]"
-      label-placement="vertical"
+      title-placement="vertical"
       :items="[{ title: '设置工资条模板' }, { title: '选择发放员工' }]"
     />
 

@@ -1302,7 +1302,10 @@ export const useGroupStore = defineStore('imGroupStore', {
       if (payload.newAvatar) {
         fields.avatar = payload.newAvatar;
       }
-      if (payload.newJoinApproval !== null) {
+      if (
+        payload.newJoinApproval !== null &&
+        payload.newJoinApproval !== undefined
+      ) {
         fields.joinApproval = payload.newJoinApproval;
       }
       if (Object.keys(fields).length > 0) {

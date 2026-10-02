@@ -98,11 +98,9 @@ async function handleStatusChange(row: OaWorkReportApi.WorkReport) {
     await confirm(
       isDraft ? '确认提交该工作汇报吗？' : '确认取消提交并恢复为草稿吗？',
     );
-    if (isDraft) {
-      await submitWorkReport(row.id!);
-    } else {
-      await cancelWorkReport(row.id!);
-    }
+    await (isDraft
+      ? submitWorkReport(row.id!)
+      : cancelWorkReport(row.id!));
     message.success(isDraft ? '提交成功' : '取消提交成功');
     handleRefresh();
   } catch {}
@@ -194,7 +192,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
+    <template #doc>
+      <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
+    </template>
+
     <FormModal @success="handleRefresh" />
 
     <div class="flex h-full flex-col">

@@ -24,6 +24,8 @@ import {
   message,
   Row,
   Select,
+  SpaceAddon,
+  SpaceCompact,
   TextArea,
 } from 'antdv-next';
 import dayjs from 'dayjs';
@@ -51,10 +53,17 @@ const formData = ref<OaTravelReimbursementApi.TravelReimbursement>(
 ); // 单据
 const formRules = reactive<Record<string, Rule[]>>({
   reason: [{ required: true, message: '出差事由不能为空', trigger: 'blur' }],
-  startTime: [{ required: true, message: '开始日期不能为空', trigger: 'change' }],
+  startTime: [
+    { required: true, message: '开始日期不能为空', trigger: 'change' },
+  ],
   endTime: [{ required: true, message: '结束日期不能为空', trigger: 'change' }],
   fileUrls: [
-    { type: 'array', required: true, message: '请上传报销附件', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '请上传报销附件',
+      trigger: 'change',
+    },
   ],
 });
 
@@ -119,9 +128,12 @@ const [ItemGrid, itemGridApi] = useVbenVxeGrid({
     footerMethod({ columns }) {
       // 费用表合计，与单据头部使用同一金额
       return [
-        columns.map((column, index) =>
-          index === 0 ? '合计' : column.field === 'price' ? totalPrice.value : '',
-        ),
+        columns.map((column, index) => {
+          if (index === 0) {
+            return '合计';
+          }
+          return column.field === 'price' ? totalPrice.value : '';
+        }),
       ];
     },
   } as VxeTableGridOptions<OaTravelReimbursementApi.TravelReimbursementItem>,
@@ -164,7 +176,7 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 1. 校验表单及明细
     await formRef.value?.validate();
-    if (!formData.value.items.length) {
+    if (formData.value.items.length === 0) {
       message.warning('请添加费用明细');
       return;
     }
@@ -277,23 +289,26 @@ const [Modal, modalApi] = useVbenModal({
               placeholder="请选择结束日期"
               show-time
               value-format="x"
-              @update:value="formData.endTime = fromTimestampPickerValue($event)"
+              @update:value="
+                formData.endTime = fromTimestampPickerValue($event)
+              "
             />
           </FormItem>
         </Col>
         <Col :span="12">
           <FormItem label="出差天数">
-            <Input :value="days" addon-after="天" disabled placeholder="自动计算" />
+            <SpaceCompact block>
+              <Input :value="days" disabled placeholder="自动计算" />
+              <SpaceAddon>天</SpaceAddon>
+            </SpaceCompact>
           </FormItem>
         </Col>
         <Col :span="12">
           <FormItem label="报销总金额">
-            <Input
-              :value="totalPrice"
-              addon-after="元"
-              disabled
-              placeholder="自动汇总"
-            />
+            <SpaceCompact block>
+              <Input :value="totalPrice" disabled placeholder="自动汇总" />
+              <SpaceAddon>元</SpaceAddon>
+            </SpaceCompact>
           </FormItem>
         </Col>
       </Row>

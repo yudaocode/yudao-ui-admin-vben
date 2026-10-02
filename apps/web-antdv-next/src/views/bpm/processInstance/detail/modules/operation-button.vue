@@ -1542,7 +1542,7 @@ defineExpose({ loadTodoTask });
                   type="warning"
                   size="small"
                   show-icon
-                  message="友情提醒：取消后，该审批流程将自动结束。"
+                  title="友情提醒：取消后，该审批流程将自动结束。"
                 />
                 <TextArea
                   v-model:value="cancelForm.cancelReason"

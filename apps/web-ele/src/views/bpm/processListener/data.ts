@@ -81,7 +81,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['type'],
-        trigger: (values) => {
+        trigger: (values, actions) => {
           const options =
             values.type === 'execution'
               ? EVENT_EXECUTION_OPTIONS
@@ -90,7 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
             values.event &&
             !options.some((opt) => opt.value === values.event)
           ) {
-            values.event = undefined;
+            actions.setFieldValue('event', undefined);
           }
         },
         componentProps: (values) => ({
@@ -122,13 +122,13 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['valueType'],
-        trigger: (values) => {
+        trigger: (values, actions) => {
           if (
             prevValueType &&
             values.valueType &&
             prevValueType !== values.valueType
           ) {
-            values.value = undefined;
+            actions.setFieldValue('value', undefined);
           }
           prevValueType = values.valueType;
         },

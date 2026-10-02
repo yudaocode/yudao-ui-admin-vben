@@ -257,7 +257,7 @@ watch(
       <Alert
         v-if="isPendingChange()"
         class="mb-4"
-        message="批量调整将在生效日期前保持待生效，不会提前修改所选员工的薪资档案。"
+        title="批量调整将在生效日期前保持待生效，不会提前修改所选员工的薪资档案。"
         show-icon
         type="warning"
       />

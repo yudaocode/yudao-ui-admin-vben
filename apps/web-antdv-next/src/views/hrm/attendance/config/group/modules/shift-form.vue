@@ -89,7 +89,7 @@ const [Modal, modalApi] = useVbenModal({
   <Modal class="w-[760px]">
     <Alert
       class="mx-4 mb-4"
-      message="打卡窗口需覆盖对应的上下班时间；结束时间早于开始时间时按次日计算，例如 18:00 至次日 04:59。"
+      title="打卡窗口需覆盖对应的上下班时间；结束时间早于开始时间时按次日计算，例如 18:00 至次日 04:59。"
       show-icon
       type="info"
     />

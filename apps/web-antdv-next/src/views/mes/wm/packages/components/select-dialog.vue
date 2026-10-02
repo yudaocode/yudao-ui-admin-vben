@@ -218,7 +218,7 @@ defineExpose({ open: openModal });
     <Alert
       v-if="childableOnly"
       class="mb-3"
-      message="仅展示可作为子箱的装箱单（无父箱 + 已完成）"
+      title="仅展示可作为子箱的装箱单（无父箱 + 已完成）"
       show-icon
       type="info"
     />

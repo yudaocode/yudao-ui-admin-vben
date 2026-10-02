@@ -168,7 +168,7 @@ onMounted(() => openNode(nodes.value[0]?.key || ''));
 
     <Alert
       :closable="false"
-      :message="`“${detail.root.name}”删除于 ${detail.root.deleteTime ? formatDateTime(detail.root.deleteTime) : '未知时间'}`"
+      :title="`“${detail.root.name}”删除于 ${detail.root.deleteTime ? formatDateTime(detail.root.deleteTime) : '未知时间'}`"
       class="!mb-3"
       type="info"
     />

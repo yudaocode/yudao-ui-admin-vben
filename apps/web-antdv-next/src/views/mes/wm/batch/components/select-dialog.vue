@@ -241,7 +241,7 @@ defineExpose({ open: openModal });
   >
     <Alert
       v-if="filterTip"
-      :message="filterTip"
+      :title="filterTip"
       type="info"
       show-icon
       class="!mb-3"

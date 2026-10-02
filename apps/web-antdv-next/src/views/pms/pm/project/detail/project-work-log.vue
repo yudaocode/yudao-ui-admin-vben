@@ -116,7 +116,7 @@ defineExpose({ refresh });
     <!-- 工时汇总 -->
     <Alert
       class="!mb-3"
-      :message="`当前范围累计登记 ${report.totalHours} 小时`"
+      :title="`当前范围累计登记 ${report.totalHours} 小时`"
       show-icon
       type="info"
     />

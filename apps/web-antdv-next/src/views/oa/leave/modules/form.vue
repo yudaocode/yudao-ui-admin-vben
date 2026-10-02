@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Input, message } from 'antdv-next';
+import { Input, message, SpaceAddon, SpaceCompact } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
@@ -110,7 +110,10 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-[800px]">
     <Form class="mx-4">
       <template #days>
-        <Input :value="days" addon-after="天" disabled class="w-full" />
+        <SpaceCompact block>
+          <Input :value="days" disabled />
+          <SpaceAddon>天</SpaceAddon>
+        </SpaceCompact>
       </template>
     </Form>
   </Modal>

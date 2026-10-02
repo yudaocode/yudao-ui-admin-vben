@@ -26,7 +26,9 @@ const javascript: OxlintConfig = {
     'array-callback-return': 'error',
     'block-scoped-var': 'error',
     'default-case-last': 'error',
-    eqeqeq: ['error', 'always'],
+    // 允许 `== null` / `!= null` 同时判断 null 与 undefined：
+    // 若设为 always，--fix 会把它们自动改成 `=== null`，导致漏判 undefined
+    eqeqeq: ['error', 'always', { null: 'ignore' }],
     'eslint/no-unreachable': 'error',
     // 抛出嵌套三元运算格式错误，禁止使用嵌套三元运算。
     'no-nested-ternary': 'error',

@@ -149,7 +149,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【流程】出差、费用报销" url="https://doc.iocoder.cn/oa/travel-reimbursement/" />
+    <template #doc>
+      <DocAlert title="【流程】出差、费用报销" url="https://doc.iocoder.cn/oa/travel-reimbursement/" />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

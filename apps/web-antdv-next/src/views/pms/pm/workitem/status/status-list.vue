@@ -246,7 +246,7 @@ const [Modal, modalApi] = useVbenModal({
     :title="`${getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, type) || '-'}状态设置`"
   >
     <Alert
-      :message="
+      :title="
         activeTab === 'status'
           ? '状态用于业务流转，初始状态用于新建工作项。'
           : '拖动状态到看板列；未放入看板的状态仍可用于工作项流转，但不会显示为看板列。'
