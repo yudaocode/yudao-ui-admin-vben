@@ -2,7 +2,7 @@
 import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElUpload } from 'element-plus';
+import { ElButton, ElMessage, ElUpload } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { importUser, importUserTemplate } from '#/api/system/user';
@@ -58,6 +58,16 @@ function handleChange(file: any) {
   }
 }
 
+/** 移除文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
+/** 超出文件数量 */
+function handleExceed() {
+  ElMessage.warning('只能选择一个文件，请先移除已选文件');
+}
+
 /** 下载模版 */
 async function handleDownload() {
   const data = await importUserTemplate();
@@ -74,6 +84,8 @@ async function handleDownload() {
             :limit="1"
             accept=".xls,.xlsx"
             :on-change="handleChange"
+            :on-remove="handleRemove"
+            :on-exceed="handleExceed"
             :auto-upload="false"
           >
             <ElButton type="primary"> 选择 Excel 文件 </ElButton>

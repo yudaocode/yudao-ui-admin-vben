@@ -190,9 +190,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'permission',
       label: '权限标识',
+      help: "Controller 方法上的权限字符，如：@PreAuthorize(`@ss.hasPermission('system:user:list')`)",
       component: 'Input',
       componentProps: {
-        placeholder: '请输入菜单描述',
+        placeholder: '请输入权限标识',
       },
       dependencies: {
         show: (values) => {

@@ -95,6 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
           const contracts = await getContractSimpleList(values.customerId);
           return {
             options: contracts.map((item) => ({
+              disabled: item.auditStatus !== 20,
               label: item.name,
               value: item.id,
             })),
@@ -172,7 +173,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入回款金额',
-        min: 0,
+        min: 0.01,
         precision: 2,
         controlsPosition: 'right',
         class: '!w-full',

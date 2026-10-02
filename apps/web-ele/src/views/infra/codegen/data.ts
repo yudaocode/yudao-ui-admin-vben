@@ -184,7 +184,10 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         showSearch: true,
         defaultExpandedKeys: [0],
       },
-      rules: 'selectRequired',
+      dependencies: {
+        triggerFields: ['scene'],
+        rules: (values) => (values.scene === 1 ? 'selectRequired' : null),
+      },
       renderComponentContent() {
         return {
           title({ label, icon }: { icon: string; label: string }) {

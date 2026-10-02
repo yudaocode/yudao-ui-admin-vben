@@ -68,7 +68,10 @@ async function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportSpu(await gridApi.formApi.getValues());
+  const data = await exportSpu({
+    ...(await gridApi.formApi.getValues()),
+    tabType: Number(tabType.value),
+  });
   downloadFileFromBlobPart({ fileName: '商品.xls', source: data });
 }
 

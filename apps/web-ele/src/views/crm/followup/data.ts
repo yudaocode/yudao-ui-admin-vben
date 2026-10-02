@@ -83,6 +83,10 @@ export function useFormSchema(
       fieldName: 'contactIds',
       label: '关联联系人',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['bizType'],
+        if: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER,
+      },
       componentProps: {
         api: async () => {
           if (!bizId.value) {
@@ -97,13 +101,17 @@ export function useFormSchema(
         },
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
       },
     },
     {
       fieldName: 'businessIds',
       label: '关联商机',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['bizType'],
+        if: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER,
+      },
       componentProps: {
         api: async () => {
           if (!bizId.value) {
@@ -118,7 +126,7 @@ export function useFormSchema(
         },
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
       },
     },
   ];

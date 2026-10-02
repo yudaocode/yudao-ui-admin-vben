@@ -84,7 +84,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择产品单位',
         allowClear: true,
       },
-      rules: 'required',
     },
     {
       component: 'InputNumber',

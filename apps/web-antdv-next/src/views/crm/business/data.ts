@@ -163,6 +163,14 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
         },
       },
     },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
+    },
   ];
 }
 

@@ -106,7 +106,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         class: '!w-full',
         placeholder: '请输入计划回款金额',
-        min: 0,
+        min: 0.01,
         precision: 2,
       },
     },
