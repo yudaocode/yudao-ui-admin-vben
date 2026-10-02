@@ -165,6 +165,7 @@ const [Modal, modalApi] = useVbenModal({
         };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
+        formApi.setState({ schema: useFormSchema('update', formApi) });
       } else {
         await updateRepair(data);
         formData.value = { ...formData.value, ...data };

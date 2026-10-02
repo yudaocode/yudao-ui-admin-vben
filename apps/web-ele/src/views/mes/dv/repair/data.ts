@@ -63,21 +63,22 @@ export function useFormSchema(
         }),
       },
       rules: 'required',
-      suffix: headerReadonly
-        ? undefined
-        : () =>
-            h(
-              ElButton,
-              {
-                onClick: async () => {
-                  const code = await generateAutoCode(
-                    MesAutoCodeRuleCode.DV_REPAIR_CODE,
-                  );
-                  await formApi?.setFieldValue('code', code);
+      suffix:
+        formType === 'create'
+          ? () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.DV_REPAIR_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
                 },
-              },
-              { default: () => '生成' },
-            ),
+                { default: () => '生成' },
+              )
+          : undefined,
     },
     {
       fieldName: 'name',

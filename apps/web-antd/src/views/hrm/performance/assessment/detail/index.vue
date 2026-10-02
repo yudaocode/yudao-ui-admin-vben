@@ -234,7 +234,7 @@ onMounted(getDetail);
             <span class="truncate text-xl font-semibold">{{
               detail.name || '-'
             }}</span>
-            <Tag v-if="detail.status !== null">
+            <Tag v-if="detail.status !== null && detail.status !== undefined">
               {{
                 getDictLabel(
                   DICT_TYPE.HRM_PERFORMANCE_PLAN_STATUS,
@@ -260,7 +260,9 @@ onMounted(getDetail);
           <div class="mt-1 text-lg font-semibold">
             {{ detail.resultLevel || '-' }}
             <span
-              v-if="detail.coefficient !== null"
+              v-if="
+                detail.coefficient !== null && detail.coefficient !== undefined
+              "
               class="text-sm font-normal"
             >
               （系数 {{ detail.coefficient }}）
@@ -285,14 +287,14 @@ onMounted(getDetail);
       </Descriptions.Item>
       <Descriptions.Item label="聘用形式">
         {{
-          detail.employeeType !== null
+          detail.employeeType !== null && detail.employeeType !== undefined
             ? getDictLabel(DICT_TYPE.HRM_EMPLOYEE_TYPE, detail.employeeType)
             : '-'
         }}
       </Descriptions.Item>
       <Descriptions.Item label="当前阶段">
         {{
-          detail.stageType !== null
+          detail.stageType !== null && detail.stageType !== undefined
             ? getDictLabel(
                 DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS,
                 detail.stageType,

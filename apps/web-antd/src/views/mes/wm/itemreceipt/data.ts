@@ -322,6 +322,7 @@ export function useLineFormSchema(
           });
         },
       },
+      rules: hasNotice ? 'selectRequired' : undefined,
       dependencies: {
         triggerFields: ['noticeId'],
         if: () => hasNotice,

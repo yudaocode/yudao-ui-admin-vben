@@ -43,7 +43,7 @@ function handleDetail(row: InfraApiErrorLogApi.ApiErrorLog) {
 /** 处理已处理 / 已忽略的操作 */
 async function handleProcess(id: number, processStatus: number) {
   await confirm(
-    `确认标记为${InfraApiErrorLogProcessStatusEnum.DONE ? '已处理' : '已忽略'}?`,
+    `确认标记为${processStatus === InfraApiErrorLogProcessStatusEnum.DONE ? '已处理' : '已忽略'}?`,
   );
   const hideLoading = message.loading({
     content: '正在处理中...',

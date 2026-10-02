@@ -59,6 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 1,
         placeholder: '达到该人数才能砍到低价',
       },
+      defaultValue: 2,
       rules: 'required',
     },
     {
@@ -70,6 +71,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 1,
         placeholder: '最大帮砍次数',
       },
+      defaultValue: 2,
       rules: 'required',
     },
     {

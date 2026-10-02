@@ -5,6 +5,7 @@ import type { MesMdProductBomApi } from '#/api/mes/md/item/productBom';
 
 import { h, markRaw } from 'vue';
 
+import { useAccess } from '@vben/access';
 import {
   CommonStatusEnum,
   DICT_TYPE,
@@ -266,6 +267,7 @@ export function useGridColumns(
     row: MesMdItemApi.Item,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions<MesMdItemApi.Item>['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'code',
@@ -324,6 +326,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['mes:md-item:update']),
           inactiveValue: CommonStatusEnum.DISABLE,
           activeValue: CommonStatusEnum.ENABLE,
         },

@@ -59,9 +59,8 @@ export function useFormSchema(
       },
       rules: 'required',
       suffix:
-        formType === 'detail'
-          ? undefined
-          : () =>
+        formType === 'create'
+          ? () =>
               h(
                 ElButton,
                 {
@@ -73,7 +72,8 @@ export function useFormSchema(
                   },
                 },
                 { default: () => '生成' },
-              ),
+              )
+          : undefined,
     },
     {
       fieldName: 'name',

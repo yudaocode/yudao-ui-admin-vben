@@ -348,7 +348,7 @@ const [Modal, modalApi] = useVbenModal({
           getSubject(accountSetId, data.row.id),
           getSubjectUsage(accountSetId, data.row.id),
         ]);
-        subjectCodeRule.value = financeParameter!.subjectCodeRule;
+        subjectCodeRule.value = financeParameter?.subjectCodeRule || '';
         formData.value = subject;
         formData.value.auxiliaryMappings = [];
         originalAuxiliaryTypeIds.value = [...(subject.auxiliaryTypeIds || [])];
@@ -364,7 +364,7 @@ const [Modal, modalApi] = useVbenModal({
           : undefined,
         getSubjectList(accountSetId, data.subjectType),
       ]);
-      subjectCodeRule.value = financeParameter!.subjectCodeRule;
+      subjectCodeRule.value = financeParameter?.subjectCodeRule || '';
       subjectCandidates.value = subjects;
       // 新建下级时，继承上级科目的核算配置
       if (data.parent) {

@@ -73,7 +73,7 @@ const [Grid] = useVbenVxeGrid({
               label: $t('common.detail'),
               type: 'link',
               icon: ACTION_ICON.VIEW,
-              auth: ['bpm:task:query'],
+              auth: ['bpm:process-instance-cc:query'],
               onClick: handleDetail.bind(null, row),
             },
           ]"

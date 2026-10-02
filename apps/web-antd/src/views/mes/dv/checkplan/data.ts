@@ -36,12 +36,13 @@ export function useFormSchema(
     },
     {
       fieldName: 'status',
+      label: '状态',
       component: 'Input',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
       defaultValue: MesDvCheckPlanStatusEnum.PREPARE,
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => !!values.id,
+      },
     },
     {
       fieldName: 'code',
@@ -98,7 +99,6 @@ export function useFormSchema(
         placeholder: '请选择开始日期',
         valueFormat: 'x',
       },
-      rules: 'required',
     },
     {
       fieldName: 'endDate',
@@ -109,7 +109,6 @@ export function useFormSchema(
         placeholder: '请选择结束日期',
         valueFormat: 'x',
       },
-      rules: 'required',
     },
     {
       fieldName: 'cycleType',

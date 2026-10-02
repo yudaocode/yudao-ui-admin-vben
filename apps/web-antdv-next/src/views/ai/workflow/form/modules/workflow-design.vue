@@ -241,7 +241,7 @@ defineExpose({ validate });
             :key="index"
           >
             <Select
-              v-model="param.key"
+              v-model:value="param.key"
               :options="startNodeParamOptions"
               class="w-48"
               placeholder="参数名"

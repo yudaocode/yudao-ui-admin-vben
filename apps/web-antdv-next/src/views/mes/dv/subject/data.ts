@@ -67,7 +67,6 @@ export function useFormSchema(
       componentProps: {
         placeholder: '请输入项目名称',
       },
-      rules: 'required',
     },
     {
       fieldName: 'type',
@@ -100,7 +99,6 @@ export function useFormSchema(
         placeholder: '请输入标准',
         rows: 2,
       },
-      rules: 'required',
     },
     {
       fieldName: 'status',
@@ -155,6 +153,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         options: getDictOptions(DICT_TYPE.MES_DV_SUBJECT_TYPE, 'number'),
         placeholder: '请选择项目类型',
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        placeholder: '请选择状态',
       },
     },
   ];

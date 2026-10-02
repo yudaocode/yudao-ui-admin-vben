@@ -34,7 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'processDefinitionId',
+      fieldName: 'processDefinitionKey',
       label: '所属流程',
       component: 'ApiSelect',
       componentProps: {
@@ -42,7 +42,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         api: getSimpleProcessDefinitionList,
         labelField: 'name',
-        valueField: 'id',
+        valueField: 'key',
       },
     },
     {

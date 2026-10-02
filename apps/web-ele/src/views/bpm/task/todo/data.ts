@@ -1,9 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
 import { getCategorySimpleList } from '#/api/bpm/category';
 import { getSimpleProcessDefinitionList } from '#/api/bpm/definition';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -42,19 +39,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getCategorySimpleList,
         labelField: 'name',
         valueField: 'code',
-      },
-    },
-    {
-      fieldName: 'status',
-      label: '流程状态',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS,
-          'number',
-        ),
-        placeholder: '请选择流程状态',
-        allowClear: true,
       },
     },
     {

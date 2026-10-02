@@ -6,7 +6,7 @@ import type { MesDvCheckPlanApi } from '#/api/mes/dv/checkplan';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { MesDvCheckPlanStatusEnum } from '@vben/constants';
+import { DICT_TYPE, MesDvCheckPlanStatusEnum } from '@vben/constants';
 
 import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
@@ -16,6 +16,7 @@ import {
   getCheckPlan,
   updateCheckPlan,
 } from '#/api/mes/dv/checkplan';
+import DictTag from '#/components/dict-tag/dict-tag.vue';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -69,7 +70,10 @@ const [Modal, modalApi] = useVbenModal({
           id: id as number,
           status: MesDvCheckPlanStatusEnum.PREPARE,
         };
-        await formApi.setFieldValue('id', id);
+        await formApi.setValues({
+          id,
+          status: MesDvCheckPlanStatusEnum.PREPARE,
+        });
         formType.value = 'update';
       } else {
         await updateCheckPlan(data);
@@ -109,7 +113,14 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 <template>
   <Modal :title="getTitle" class="w-4/5">
-    <Form class="mx-4" />
+    <Form class="mx-4">
+      <template #status="{ modelValue }">
+        <DictTag
+          :type="DICT_TYPE.MES_DV_CHECK_PLAN_STATUS"
+          :value="modelValue"
+        />
+      </template>
+    </Form>
     <ElTabs
       v-if="formType !== 'create' && formData?.id"
       v-model="subTabsName"

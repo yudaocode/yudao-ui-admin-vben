@@ -151,7 +151,7 @@ onMounted(async () => {
               type: 'danger',
               link: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['bpm:process-instance:cancel'],
+              auth: ['bpm:process-instance:cancel-by-admin'],
               ifShow: row.status === 1,
               onClick: handleCancel.bind(null, row),
             },

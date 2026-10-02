@@ -657,7 +657,7 @@ async function handleCancel() {
       props.processInstance.id,
       cancelForm.cancelReason,
     );
-    popOverVisible.value.return = false;
+    popOverVisible.value.cancel = false;
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
     cancelFormRef.value.resetFields();
     // 2 重新加载数据

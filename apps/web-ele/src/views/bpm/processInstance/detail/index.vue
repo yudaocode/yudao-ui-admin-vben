@@ -112,9 +112,11 @@ async function getApprovalDetail() {
     const data = await getApprovalDetailApi(param);
     if (!data) {
       ElMessage.error('查询不到审批详情信息！');
+      return;
     }
     if (!data.processDefinition || !data.processInstance) {
       ElMessage.error('查询不到流程信息！');
+      return;
     }
 
     processInstance.value = data.processInstance;

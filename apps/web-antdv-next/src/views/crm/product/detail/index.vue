@@ -5,17 +5,20 @@ import type { SystemOperateLogApi } from '#/api/system/operate-log';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { $t } from '@vben/locales';
 
-import { Button, Card, TabPane, Tabs } from 'antdv-next';
+import { Card, TabPane, Tabs } from 'antdv-next';
 
+import { TableAction } from '#/adapter/vxe-table';
 import { getOperateLogPage } from '#/api/crm/operateLog';
 import { BizTypeEnum } from '#/api/crm/permission';
 import { getProduct } from '#/api/crm/product';
 import { useDescription } from '#/components/description';
 import { OperateLog } from '#/components/operate-log';
 
+import Form from '../modules/form.vue';
 import { useDetailSchema } from './data';
 import Info from './modules/info.vue';
 
@@ -33,6 +36,16 @@ const [Descriptions] = useDescription({
   column: 4,
   schema: useDetailSchema(),
 });
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+/** 编辑产品 */
+function handleEdit() {
+  formModalApi.setData({ id: productId.value }).open();
+}
 
 /** 加载详情 */
 async function getProductDetail() {
@@ -66,10 +79,19 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height :title="product?.name" :loading="loading">
+    <FormModal @success="getProductDetail" />
     <template #extra>
-      <div class="flex items-center gap-2">
-        <Button @click="handleBack"> 返回 </Button>
-      </div>
+      <TableAction
+        :actions="[
+          {
+            label: $t('ui.actionTitle.edit'),
+            type: 'primary',
+            auth: ['crm:product:update'],
+            onClick: handleEdit,
+          },
+          { label: '返回', onClick: handleBack },
+        ]"
+      />
     </template>
     <Card class="min-h-[10%]">
       <Descriptions :data="product" />

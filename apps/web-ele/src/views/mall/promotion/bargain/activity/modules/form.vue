@@ -183,12 +183,14 @@ const [Modal, modalApi] = useVbenModal({
       const data = {
         ...values,
         // 用户每次砍价金额元转分
-        randomMinPrice: values.randomMinPrice
-          ? convertToInteger(values.randomMinPrice)
-          : undefined,
-        randomMaxPrice: values.randomMaxPrice
-          ? convertToInteger(values.randomMaxPrice)
-          : undefined,
+        randomMinPrice:
+          values.randomMinPrice !== null && values.randomMinPrice !== undefined
+            ? convertToInteger(values.randomMinPrice)
+            : undefined,
+        randomMaxPrice:
+          values.randomMaxPrice !== null && values.randomMaxPrice !== undefined
+            ? convertToInteger(values.randomMaxPrice)
+            : undefined,
         // 合并砍价商品配置（砍价活动只有一个商品）
         ...products[0],
       } as MallBargainActivityApi.BargainActivity;
@@ -238,12 +240,16 @@ const [Modal, modalApi] = useVbenModal({
       // 设置表单值时，价格字段从分转换为元
       await formApi.setValues({
         ...formData.value,
-        randomMinPrice: formData.value.randomMinPrice
-          ? formatToFraction(formData.value.randomMinPrice)
-          : undefined,
-        randomMaxPrice: formData.value.randomMaxPrice
-          ? formatToFraction(formData.value.randomMaxPrice)
-          : undefined,
+        randomMinPrice:
+          formData.value.randomMinPrice !== null &&
+          formData.value.randomMinPrice !== undefined
+            ? formatToFraction(formData.value.randomMinPrice)
+            : undefined,
+        randomMaxPrice:
+          formData.value.randomMaxPrice !== null &&
+          formData.value.randomMaxPrice !== undefined
+            ? formatToFraction(formData.value.randomMaxPrice)
+            : undefined,
       });
     } finally {
       modalApi.unlock();

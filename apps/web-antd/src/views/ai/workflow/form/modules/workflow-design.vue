@@ -231,7 +231,7 @@ defineExpose({ validate });
             v-for="(param, index) in params4Test"
             :key="index"
           >
-            <Select class="w-48" v-model="param.key" placeholder="参数名">
+            <Select class="w-48" v-model:value="param.key" placeholder="参数名">
               <Select.Option
                 v-for="(value, key) in paramsOfStartNode"
                 :key="key"

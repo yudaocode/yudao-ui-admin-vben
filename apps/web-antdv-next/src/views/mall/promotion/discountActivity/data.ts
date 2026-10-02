@@ -26,16 +26,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'status',
-      label: '活动状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择活动状态',
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
-      rules: 'required',
-    },
-    {
       fieldName: 'startTime',
       label: '开始时间',
       component: 'DatePicker',

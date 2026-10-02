@@ -10,7 +10,6 @@ import { useUserStore } from '@vben/stores';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { AreaCascader } from '#/components/area';
-import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -185,35 +184,45 @@ export function useGridFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'mobile',
-      label: '手机号',
+      label: '手机',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入手机号',
+        placeholder: '请输入手机',
         allowClear: true,
       },
     },
     {
-      fieldName: 'telephone',
-      label: '电话',
-      component: 'Input',
+      fieldName: 'industryId',
+      label: '所属行业',
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入电话',
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
+        placeholder: '请选择所属行业',
         allowClear: true,
       },
     },
     {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
+      fieldName: 'level',
+      label: '客户级别',
+      component: 'Select',
       componentProps: {
-        ...getRangePickerDefaultProps(),
-        placeholder: ['开始日期', '结束日期'],
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
+        placeholder: '请选择客户级别',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'source',
+      label: '客户来源',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
+        placeholder: '请选择客户来源',
         allowClear: true,
       },
     },
   ];
 }
-
 /** 导入客户的表单 */
 export function useImportFormSchema(): VbenFormSchema[] {
   return [

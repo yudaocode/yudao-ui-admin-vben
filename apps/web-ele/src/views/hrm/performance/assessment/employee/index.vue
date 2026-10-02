@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
+import { getDictLabel, useTabs } from '@vben/hooks';
 
 import {
   ElAvatar as Avatar,
@@ -32,6 +32,7 @@ defineOptions({ name: 'HrmPerformanceAssessmentEmployee' });
 
 const route = useRoute();
 const router = useRouter();
+const { closeCurrentTab } = useTabs();
 const employeeId = computed(() => Number(route.params.employeeId));
 
 const employeeInfo = ref<
@@ -58,6 +59,7 @@ function openDetail(id: number) {
 }
 
 function handleBack() {
+  closeCurrentTab();
   router.push({ name: 'HrmPerformanceAssessment' });
 }
 

@@ -5,7 +5,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 import { h } from 'vue';
 
 import { JsonViewer } from '@vben/common-ui';
-import { DICT_TYPE, InfraApiErrorLogProcessStatusEnum } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
@@ -64,7 +64,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
         placeholder: '请选择处理状态',
       },
-      defaultValue: InfraApiErrorLogProcessStatusEnum.INIT,
     },
   ];
 }

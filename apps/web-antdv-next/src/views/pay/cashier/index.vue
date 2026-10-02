@@ -86,7 +86,7 @@ async function getDetail() {
     goReturnUrl('cancel');
     return;
   }
-  const res = await getOrder(id.value);
+  const res = await getOrder(id.value, true);
   // 1.2 无法查询到支付信息
   if (!res) {
     message.error('支付订单不存在，请检查！');

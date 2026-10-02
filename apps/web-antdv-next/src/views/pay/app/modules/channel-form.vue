@@ -17,9 +17,9 @@ import { useChannelFormSchema } from '../data';
 const emit = defineEmits(['success']);
 const formData = ref<any>();
 const title = computed(() => {
-  return formData.value?.id === 0
-    ? $t('ui.actionTitle.create', ['渠道'])
-    : $t('ui.actionTitle.edit', ['渠道']);
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['渠道'])
+    : $t('ui.actionTitle.create', ['渠道']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -96,9 +96,7 @@ const [Modal, modalApi] = useVbenModal({
       };
     } else if (code.includes('wallet')) {
       formData.value.config = {
-        config: {
-          name: 'wallet-conf',
-        },
+        name: 'wallet-conf',
       };
     } else if (code.includes('wx')) {
       formData.value.config = {

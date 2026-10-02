@@ -128,7 +128,7 @@ async function customRequest(info: UploadRequestOption) {
         ...props.modelValue.list,
         {
           name,
-          url: res,
+          url: typeof res === 'string' ? res : res.url,
         },
       ],
     });

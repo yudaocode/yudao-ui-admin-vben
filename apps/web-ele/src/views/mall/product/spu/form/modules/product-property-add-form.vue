@@ -90,7 +90,6 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    modalApi.lock();
     const values = await formApi.getValues();
     // name 为数组，遍历数组，进行重复添加校验
     const names = values.name;
@@ -104,31 +103,35 @@ const [Modal, modalApi] = useVbenModal({
       }
     }
 
-    for (const name of names) {
-      const existProperty = attributeOptions.value.find(
-        (item: MallPropertyApi.Property) => item.name === name,
-      );
-      if (existProperty) {
-        // 情况一：如果属性已存在，则直接使用并结束
-        attributeList.value.push({
-          id: existProperty.id,
-          name,
-          values: [],
-        });
-      } else {
-        // 情况二：如果是不存在的属性，则需要执行新增
-        const propertyId = await createProperty({ name });
-        attributeList.value.push({
-          id: propertyId,
-          name,
-          values: [],
-        });
+    modalApi.lock();
+    try {
+      for (const name of names) {
+        const existProperty = attributeOptions.value.find(
+          (item: MallPropertyApi.Property) => item.name === name,
+        );
+        if (existProperty) {
+          // 情况一：如果属性已存在，则直接使用并结束
+          attributeList.value.push({
+            id: existProperty.id,
+            name,
+            values: [],
+          });
+        } else {
+          // 情况二：如果是不存在的属性，则需要执行新增
+          const propertyId = await createProperty({ name });
+          attributeList.value.push({
+            id: propertyId,
+            name,
+            values: [],
+          });
+        }
       }
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
+      await modalApi.close();
+      emit('success');
+    } finally {
+      modalApi.unlock();
     }
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    modalApi.unlock();
-    await modalApi.close();
-    emit('success');
   },
 });
 </script>

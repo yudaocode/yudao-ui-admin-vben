@@ -7,7 +7,7 @@ import { getRangePickerDefaultProps } from '#/utils';
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'name',
+      fieldName: 'processInstanceName',
       label: '流程名称',
       component: 'Input',
       componentProps: {

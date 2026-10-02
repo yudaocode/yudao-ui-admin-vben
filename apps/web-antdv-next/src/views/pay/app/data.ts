@@ -547,7 +547,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v2';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -569,7 +569,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v2';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -584,7 +584,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -605,7 +605,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -621,7 +621,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -641,7 +641,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -657,7 +657,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
     );
