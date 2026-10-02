@@ -8,7 +8,7 @@ import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import {
@@ -16,8 +16,8 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
+  ElInput,
   ElMessage,
-  ElMessageBox,
   ElTabPane,
   ElTabs,
 } from 'element-plus';
@@ -295,25 +295,42 @@ async function handleMoreCommand(
     return;
   }
   if (command === 'cancel-quit') {
+    let reason: string | undefined;
     try {
-      const { value } = await ElMessageBox.prompt(
-        `请输入取消员工“${employee.name}”离职安排的原因`,
-        '取消离职',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputType: 'textarea',
-          inputPlaceholder: '请输入取消原因',
-          inputValidator: (input) => !!input?.trim() || '取消原因不能为空',
+      reason = await prompt<string>({
+        title: '取消离职',
+        content: `请输入取消员工“${employee.name}”离职安排的原因`,
+        component: ElInput,
+        componentProps: {
+          type: 'textarea',
+          placeholder: '请输入取消原因',
+          rows: 3,
+          maxlength: 500,
         },
-      );
-      await cancelEmployeeQuit({
-        employeeId: employee.id!,
-        reason: value.trim(),
+        modelPropName: 'modelValue',
+        defaultValue: '',
+        beforeClose: ({ isConfirm, value }) => {
+          if (!isConfirm) return true;
+          const reason = value?.trim();
+          if (!reason || reason.length > 500) {
+            ElMessage.warning(
+              reason ? '取消原因不能超过 500 字' : '取消原因不能为空',
+            );
+            return false;
+          }
+          return true;
+        },
       });
-      ElMessage.success('已取消离职');
-      await handleRefresh();
-    } catch {}
+    } catch {
+      return;
+    }
+    if (!reason?.trim()) return;
+    await cancelEmployeeQuit({
+      employeeId: employee.id!,
+      reason: reason.trim(),
+    });
+    ElMessage.success('已取消离职');
+    await handleRefresh();
     return;
   }
   if (command === 'delete') {

@@ -33,28 +33,28 @@ function handleCreate() {
 }
 
 /** 回复评价 */
-function handleReply(row: MallCommentApi.Comment) {
-  prompt({
-    component: ElInput,
-    componentProps: {
-      type: 'textarea',
-      placeholder: '请输入回复内容',
-      rows: 4,
-    },
-    content: row.content
-      ? `用户评论：${row.content}\n请输入回复内容：`
-      : '请输入回复内容：',
-    title: '回复评论',
-    modelPropName: 'modelValue',
-  }).then(async (val) => {
-    if (val) {
-      await replyComment({
-        id: row.id!,
-        replyContent: val,
-      });
-      handleRefresh();
-    }
-  });
+async function handleReply(row: MallCommentApi.Comment) {
+  let val: string | undefined;
+  try {
+    val = await prompt<string>({
+      component: ElInput,
+      componentProps: {
+        type: 'textarea',
+        placeholder: '请输入回复内容',
+        rows: 4,
+      },
+      modelPropName: 'modelValue',
+      content: row.content
+        ? `用户评论：${row.content}\n请输入回复内容：`
+        : '请输入回复内容：',
+      title: '回复评论',
+    });
+  } catch {
+    return;
+  }
+  if (!val) return;
+  await replyComment({ id: row.id!, replyContent: val });
+  handleRefresh();
 }
 
 /** 更新状态 */

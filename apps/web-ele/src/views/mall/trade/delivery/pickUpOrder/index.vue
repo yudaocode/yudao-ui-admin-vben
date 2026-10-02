@@ -30,41 +30,25 @@ function handleRefresh() {
 
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
-  // 如果没有传核销码，则弹窗输入
-  if (pickUpVerifyCode) {
-    // 执行核销
-    const loadingInstance = ElLoading.service({
-      text: '订单核销中 ...',
-    });
+  if (!pickUpVerifyCode) {
     try {
-      await pickUpOrderByVerifyCode(pickUpVerifyCode);
-      ElMessage.success($t('ui.actionMessage.operationSuccess'));
-      handleRefresh();
-    } finally {
-      loadingInstance.close();
+      pickUpVerifyCode = await prompt<string>({
+        componentProps: { placeholder: '请输入核销码' },
+        content: '请输入核销码',
+        title: '核销订单',
+      });
+    } catch {
+      return;
     }
-  } else {
-    prompt<string>({
-      componentProps: { placeholder: '输入核销码' },
-      content: '输入核销码',
-      title: '核销订单',
-      icon: 'question',
-      overlayBlur: 3,
-    }).then(async (res) => {
-      if (res) {
-        // 执行核销
-        const loadingInstance = ElLoading.service({
-          text: '订单核销中 ...',
-        });
-        try {
-          await pickUpOrderByVerifyCode(res);
-          ElMessage.success($t('ui.actionMessage.operationSuccess'));
-          handleRefresh();
-        } finally {
-          loadingInstance.close();
-        }
-      }
-    });
+  }
+  if (!pickUpVerifyCode) return;
+  const loadingInstance = ElLoading.service({ text: '订单核销中 ...' });
+  try {
+    await pickUpOrderByVerifyCode(pickUpVerifyCode);
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
   }
 }
 

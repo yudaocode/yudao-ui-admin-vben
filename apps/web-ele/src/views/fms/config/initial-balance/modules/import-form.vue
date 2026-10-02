@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadUserFile } from 'element-plus';
+import type {
+  UploadFile,
+  UploadInstance,
+  UploadRawFile,
+  UploadUserFile,
+} from 'element-plus';
 
 import { ref } from 'vue';
 
@@ -7,7 +12,13 @@ import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElMessage, ElResult, ElUpload } from 'element-plus';
+import {
+  ElButton,
+  ElMessage,
+  ElResult,
+  ElUpload,
+  genFileId,
+} from 'element-plus';
 
 import {
   getInitialBalanceImportTemplate,
@@ -22,6 +33,7 @@ const formLoading = ref(false); // 导入的加载中
 const templateLoading = ref(false); // 模板下载的加载中
 const accountSetId = ref(0); // 账套编号
 const file = ref<File>(); // 待导入的文件
+const uploadRef = ref<UploadInstance>(); // 上传组件
 const fileList = ref<UploadUserFile[]>([]); // 上传组件的文件列表
 const result = ref<number>(); // 导入数量
 
@@ -49,8 +61,12 @@ function handleRemove() {
 }
 
 /** 文件数超出提示 */
-function handleExceed() {
-  ElMessage.warning('每次只能上传一个文件');
+function handleExceed(files: File[]) {
+  const file = files[0] as undefined | UploadRawFile;
+  if (!file) return;
+  uploadRef.value?.clearFiles();
+  file.uid = genFileId();
+  uploadRef.value?.handleStart(file);
 }
 
 /** 下载导入模板 */
@@ -116,6 +132,7 @@ function resetImport() {
       <div>
         <div class="mb-3 text-[15px] font-semibold">二、填写完成后上传模板</div>
         <ElUpload
+          ref="uploadRef"
           v-model:file-list="fileList"
           :auto-upload="false"
           :limit="1"

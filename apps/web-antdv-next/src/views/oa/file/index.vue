@@ -5,14 +5,20 @@ import type { OaFileNodeApi } from '#/api/oa/file/node';
 import { computed, ref } from 'vue';
 
 import { useAccess } from '@vben/access';
-import { Page, useVbenModal } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 import { downloadFileFromBlob } from '@vben/utils';
 
-import { Breadcrumb, BreadcrumbItem, Button, Divider, message } from 'antdv-next';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  Button,
+  Divider,
+  message,
+} from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { createFileFavorite, deleteFileFavorite } from '#/api/oa/file/favorite';
@@ -133,9 +139,9 @@ const canCreate = computed(
   () =>
     scope.value !== OA_FILE_SCOPE.RECYCLE &&
     !latestFormValues.value.category &&
-    (currentParentId.value !== OA_FILE_PARENT_ID_ROOT
-      ? currentLevel.value >= OA_FILE_PERMISSION_LEVEL.EDIT
-      : scope.value === OA_FILE_SCOPE.MY),
+    (currentParentId.value === OA_FILE_PARENT_ID_ROOT
+      ? scope.value === OA_FILE_SCOPE.MY
+      : currentLevel.value >= OA_FILE_PERMISSION_LEVEL.EDIT),
 );
 
 /** 打开新建文件夹、重命名、移动、复制表单 */
@@ -241,7 +247,10 @@ async function handleDownload(row: OaFileNodeApi.FileNode) {
       message.error('文件下载失败，请重试');
       return;
     }
-    downloadFileFromBlob({ fileName: data.name, source: await response.blob() });
+    downloadFileFromBlob({
+      fileName: data.name,
+      source: await response.blob(),
+    });
   } catch {
     message.error('文件下载失败，请重试');
   }
@@ -249,11 +258,9 @@ async function handleDownload(row: OaFileNodeApi.FileNode) {
 
 /** 收藏或取消收藏 */
 async function handleFavorite(row: OaFileNodeApi.FileNode) {
-  if (row.favorite) {
-    await deleteFileFavorite(row.id!);
-  } else {
-    await createFileFavorite(row.id!);
-  }
+  await (row.favorite
+    ? deleteFileFavorite(row.id!)
+    : createFileFavorite(row.id!));
   await handleSuccess();
 }
 
@@ -298,6 +305,7 @@ function getFileIcon(name: string) {
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【办公】企业云盘" url="https://doc.iocoder.cn/oa/file/" />
     <div class="flex h-full flex-col gap-4">
       <!-- 云盘概览，独立于列表筛选 -->
       <Storage ref="storageRef" />
@@ -316,11 +324,15 @@ function getFileIcon(name: string) {
               class="!flex !h-9 w-full !items-center !justify-start !gap-0 !px-3 [&>span]:!ml-0"
               @click="handleScope(item.value)"
             >
-              <IconifyIcon :icon="item.icon" class="mr-2 size-4 shrink-0" />{{ item.label }}
+              <IconifyIcon :icon="item.icon" class="mr-2 size-4 shrink-0" />{{
+                item.label
+              }}
             </Button>
           </div>
           <Divider class="!my-3" />
-          <div class="mb-2 text-[13px] leading-5 text-muted-foreground">文件分类</div>
+          <div class="mb-2 text-[13px] leading-5 text-muted-foreground">
+            文件分类
+          </div>
           <div class="flex flex-col gap-1">
             <Button
               v-for="item in categoryOptions"
@@ -440,8 +452,7 @@ function getFileIcon(name: string) {
                 },
                 {
                   label: '复制',
-                  ifShow:
-                    (row.level || 0) >= OA_FILE_PERMISSION_LEVEL.DOWNLOAD,
+                  ifShow: (row.level || 0) >= OA_FILE_PERMISSION_LEVEL.DOWNLOAD,
                   auth: ['oa:file:create'],
                   onClick: () => openForm('copy', row),
                 },

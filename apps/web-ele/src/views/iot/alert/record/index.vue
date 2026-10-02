@@ -2,14 +2,14 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AlertRecordApi } from '#/api/iot/alert/record';
 
-import { Page } from '@vben/common-ui';
+import { Page, prompt } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import {
   ElButton,
+  ElInput,
   ElLoading,
   ElMessage,
-  ElMessageBox,
   ElPopover,
 } from 'element-plus';
 
@@ -35,27 +35,30 @@ function handleRefresh() {
 
 /** 处理告警记录 */
 async function handleProcess(row: AlertRecordApi.AlertRecord) {
+  let processRemark: string | undefined;
   try {
-    const { value: processRemark } = await ElMessageBox.prompt(
-      '请输入处理原因：',
-      '处理告警记录',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputType: 'textarea',
-        inputPlaceholder: '请输入处理原因',
+    processRemark = await prompt<string>({
+      title: '处理告警记录',
+      content: '请输入处理原因：',
+      component: ElInput,
+      componentProps: {
+        type: 'textarea',
+        placeholder: '请输入处理原因',
+        rows: 3,
       },
-    );
-    const loadingInstance = ElLoading.service({ text: '正在处理...' });
-    try {
-      await processAlertRecord(row.id!, processRemark);
-      ElMessage.success('处理成功');
-      handleRefresh();
-    } finally {
-      loadingInstance.close();
-    }
+      modelPropName: 'modelValue',
+      defaultValue: '',
+    });
   } catch {
-    // 用户取消
+    return;
+  }
+  const loadingInstance = ElLoading.service({ text: '正在处理...' });
+  try {
+    await processAlertRecord(row.id!, processRemark ?? '');
+    ElMessage.success('处理成功');
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
   }
 }
 

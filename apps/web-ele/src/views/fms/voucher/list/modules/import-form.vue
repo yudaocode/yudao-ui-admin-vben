@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadUserFile } from 'element-plus';
+import type {
+  UploadFile,
+  UploadInstance,
+  UploadRawFile,
+  UploadUserFile,
+} from 'element-plus';
 
 import type { FmsVoucherApi } from '#/api/fms/voucher';
 
@@ -16,6 +21,7 @@ import {
   ElStep,
   ElSteps,
   ElUpload,
+  genFileId,
 } from 'element-plus';
 
 import { getVoucherImportTemplate, importVoucher } from '#/api/fms/voucher';
@@ -29,6 +35,7 @@ const step = ref(0); // 导入步骤
 const accountSetId = ref(0); // 账套编号
 const templateLoading = ref(false); // 导入模板的下载中
 const file = ref<File>(); // 待导入的文件
+const uploadRef = ref<UploadInstance>(); // 上传组件
 const fileList = ref<UploadUserFile[]>([]); // 上传组件的文件列表
 const result = ref<FmsVoucherApi.ImportResp>(); // 凭证导入结果
 
@@ -109,8 +116,12 @@ function resetImport() {
 }
 
 /** 处理上传文件数量超限 */
-function handleExceed() {
-  ElMessage.warning('每次只能上传一个文件');
+function handleExceed(files: File[]) {
+  const file = files[0] as undefined | UploadRawFile;
+  if (!file) return;
+  uploadRef.value?.clearFiles();
+  file.uid = genFileId();
+  uploadRef.value?.handleStart(file);
 }
 </script>
 
@@ -151,6 +162,7 @@ function handleExceed() {
           二、请选择需要导入的文件
         </div>
         <ElUpload
+          ref="uploadRef"
           v-model:file-list="fileList"
           :auto-upload="false"
           :limit="1"

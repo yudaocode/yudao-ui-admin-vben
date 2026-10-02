@@ -88,7 +88,8 @@ watch(
 function handleAdd() {
   const newRow = {
     id: undefined,
-    fromWarehouseId: undefined,
+    fromWarehouseId: warehouseOptions.value.find((item) => item.defaultStatus)
+      ?.id,
     toWarehouseId: undefined,
     productId: undefined,
     productUnitName: undefined, // 产品单位

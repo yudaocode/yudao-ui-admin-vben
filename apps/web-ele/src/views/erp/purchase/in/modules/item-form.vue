@@ -83,6 +83,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
+/** 为未选择仓库的明细回填默认仓库 */
+async function applyDefaultWarehouse(items: ErpPurchaseInApi.PurchaseInItem[]) {
+  if (props.disabled) return false;
+  const warehouse = warehouseOptions.value.find((item) => item.defaultStatus);
+  if (!warehouse) return false;
+  let changed = false;
+  for (const item of items) {
+    if (item.warehouseId !== null && item.warehouseId !== undefined) continue;
+    item.warehouseId = warehouse.id;
+    if (item.productId) {
+      item.stockCount =
+        (await getWarehouseStockCount({
+          productId: item.productId,
+          warehouseId: warehouse.id,
+        })) || 0;
+    }
+    changed = true;
+  }
+  return changed;
+}
+
 /** 监听外部传入的列数据 */
 watch(
   () => props.items,
@@ -90,6 +111,7 @@ watch(
     if (!items) {
       return;
     }
+    const changed = await applyDefaultWarehouse(items);
     items.forEach((item) => initRow(item));
     tableData.value = [...items];
     await nextTick(); // 特殊：保证 gridApi 已经初始化
@@ -97,6 +119,7 @@ watch(
     // 更新表格列配置（目的：原数量、已入库动态列）
     const columns = useFormItemColumns(tableData.value, props.disabled);
     await gridApi.grid.reloadColumn(columns || []);
+    if (changed) emit('update:items', [...tableData.value]);
   },
   {
     immediate: true,
@@ -200,6 +223,9 @@ defineExpose({
 onMounted(async () => {
   productOptions.value = await getProductSimpleList();
   warehouseOptions.value = await getWarehouseSimpleList();
+  if (await applyDefaultWarehouse(tableData.value)) {
+    emit('update:items', [...tableData.value]);
+  }
 });
 </script>
 

@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpAccountApi } from '#/api/mp/account';
 
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
@@ -55,6 +55,11 @@ async function handleDelete(row: MpAccountApi.Account) {
 
 /** 生成二维码 */
 async function handleGenerateQrCode(row: MpAccountApi.Account) {
+  try {
+    await confirm('是否确认生成公众号二维码？');
+  } catch {
+    return;
+  }
   const hideLoading = message.loading({
     content: '正在生成二维码中...',
     duration: 0,

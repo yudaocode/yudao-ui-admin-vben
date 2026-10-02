@@ -5,7 +5,7 @@ import type { OaMailProviderApi } from '#/api/oa/mail/provider';
 
 import { ref } from 'vue';
 
-import { alert, Page, useVbenModal } from '@vben/common-ui';
+import { alert, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 
 import { message, Tag } from 'antdv-next';
@@ -53,11 +53,7 @@ async function handleTest(row: OaMailAccountApi.MailAccount) {
   testingId.value = row.id;
   try {
     const result = await testMailAccountConnection(row.id!);
-    const text =
-      'IMAP：' +
-      (result.imap ? '连接成功' : '连接失败') +
-      '；SMTP：' +
-      (result.smtp ? '连接成功' : '连接失败');
+    const text = `IMAP：${result.imap ? '连接成功' : '连接失败'}；SMTP：${result.smtp ? '连接成功' : '连接失败'}`;
     await alert(text);
   } finally {
     testingId.value = undefined;
@@ -132,6 +128,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="我的账号">
@@ -168,7 +165,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '测试连接',
               type: 'link',
               loading: testingId === row.id,
-              disabled: row.status !== CommonStatusEnum.ENABLE || testingId !== undefined,
+              disabled:
+                row.status !== CommonStatusEnum.ENABLE ||
+                testingId !== undefined,
               onClick: handleTest.bind(null, row),
             },
             {

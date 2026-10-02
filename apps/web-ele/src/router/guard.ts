@@ -105,7 +105,8 @@ function setupAccessGuard(router: Router) {
       // add by 芋艿：由于 yudao 是 fetchUserInfo 统一加载用户 + 权限信息，所以将 fetchMenuListAsync
       const message = ElMessage({
         message: `${$t('common.loadingMenu')}...`,
-        type: 'success',
+        type: 'info',
+        duration: 0,
         plain: true,
       });
       try {

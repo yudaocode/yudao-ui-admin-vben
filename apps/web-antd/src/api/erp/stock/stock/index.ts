@@ -53,9 +53,7 @@ export function exportStock(params: any) {
   });
 }
 
-/** 获取库存数量 */
+/** 获取指定仓库的库存数量 */
 export function getWarehouseStockCount(params: ErpStockApi.StockQueryReqVO) {
-  return requestClient.get<number>('/erp/stock/get-count', {
-    params,
-  });
+  return getStockCount(params.productId, params.warehouseId);
 }

@@ -4,22 +4,14 @@ import type { PageParam } from '@vben/request';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
-import { computed, h, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import {
-  Button,
-  Dropdown,
-  Input,
-  Menu,
-  message,
-  Modal,
-  Tabs,
-} from 'ant-design-vue';
+import { Button, Dropdown, Input, Menu, message, Tabs } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -68,7 +60,6 @@ const checkedIds = ref<number[]>([]);
 const checkedEmployees = ref<HrmEmployeeApi.Employee[]>([]);
 const exportLoading = ref(false);
 const batchDeleteLoading = ref(false);
-const cancelQuitReason = ref('');
 
 const entryTotal = ref(0);
 const isEntrySurvey = computed(
@@ -295,28 +286,41 @@ async function handleMoreCommand(
     return;
   }
   if (command === 'cancel-quit') {
-    cancelQuitReason.value = '';
-    Modal.confirm({
-      title: '取消离职',
-      content: () =>
-        h(Input.TextArea, {
-          placeholder: `请输入取消员工“${employee.name}”离职安排的原因`,
+    let reason: string | undefined;
+    try {
+      reason = await prompt<string>({
+        title: '取消离职',
+        content: `请输入取消员工“${employee.name}”离职安排的原因`,
+        component: Input.TextArea,
+        componentProps: {
+          placeholder: '请输入取消原因',
           rows: 3,
-          onChange: (e: Event) => {
-            cancelQuitReason.value = (e.target as HTMLTextAreaElement).value;
-          },
-        }),
-      async onOk() {
-        const reason = cancelQuitReason.value.trim();
-        if (!reason) {
-          message.warning('取消原因不能为空');
-          throw new Error('empty');
-        }
-        await cancelEmployeeQuit({ employeeId: employee.id!, reason });
-        message.success('已取消离职');
-        await handleRefresh();
-      },
+          maxlength: 500,
+        },
+        modelPropName: 'value',
+        defaultValue: '',
+        beforeClose: ({ isConfirm, value }) => {
+          if (!isConfirm) return true;
+          const reason = value?.trim();
+          if (!reason || reason.length > 500) {
+            message.warning(
+              reason ? '取消原因不能超过 500 字' : '取消原因不能为空',
+            );
+            return false;
+          }
+          return true;
+        },
+      });
+    } catch {
+      return;
+    }
+    if (!reason?.trim()) return;
+    await cancelEmployeeQuit({
+      employeeId: employee.id!,
+      reason: reason.trim(),
     });
+    message.success('已取消离职');
+    await handleRefresh();
     return;
   }
   if (command === 'delete') {

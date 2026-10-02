@@ -17,6 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'type',
+      defaultValue: 'text',
       label: '消息类型',
       component: 'Select',
       componentProps: {

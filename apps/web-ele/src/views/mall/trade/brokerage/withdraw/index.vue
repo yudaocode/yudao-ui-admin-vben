@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBrokerageWithdrawApi } from '#/api/mall/trade/brokerage/withdraw';
 
-import { h } from 'vue';
-
 import { confirm, Page, prompt } from '@vben/common-ui';
 import {
   BrokerageWithdrawStatusEnum,
@@ -49,35 +47,28 @@ async function handleApprove(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
 }
 
 /** 审核驳回 */
-function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
-  prompt({
-    component: () => {
-      return h(ElInput, {
-        placeholder: '请输入驳回原因',
-        clearable: true,
-        rules: [{ required: true, message: '请输入驳回原因' }],
-      });
-    },
-    content: '请输入驳回原因',
-    title: '驳回',
-    modelPropName: 'value',
-  }).then(async (val) => {
-    if (val) {
-      const loadingInstance = ElLoading.service({
-        text: '审核驳回中...',
-      });
-      try {
-        await rejectBrokerageWithdraw({
-          id: row.id!,
-          auditReason: val,
-        });
-        ElMessage.success($t('ui.actionMessage.operationSuccess'));
-        handleRefresh();
-      } finally {
-        loadingInstance.close();
-      }
-    }
-  });
+async function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
+  let val: string | undefined;
+  try {
+    val = await prompt<string>({
+      component: ElInput,
+      componentProps: { placeholder: '请输入驳回原因' },
+      modelPropName: 'modelValue',
+      content: '请输入驳回原因',
+      title: '驳回',
+    });
+  } catch {
+    return;
+  }
+  if (!val) return;
+  const loadingInstance = ElLoading.service({ text: '审核驳回中...' });
+  try {
+    await rejectBrokerageWithdraw({ id: row.id!, auditReason: val });
+    ElMessage.success($t('ui.actionMessage.operationSuccess'));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
 }
 
 /** 重新转账 */

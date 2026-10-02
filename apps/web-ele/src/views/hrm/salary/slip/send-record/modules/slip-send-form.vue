@@ -5,14 +5,13 @@ import type { HrmSalarySlipTemplateApi } from '#/api/hrm/salary/slip/template';
 
 import { computed, ref } from 'vue';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { confirm, prompt, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import {
   ElButton,
   ElEmpty,
   ElMessage,
-  ElMessageBox,
   ElOption,
   ElSelect,
   ElStep,
@@ -291,13 +290,16 @@ async function handleSaveAsTemplate() {
   if (!sendTemplate.value) {
     return;
   }
-  let value: string;
+  let value: string | undefined;
   try {
-    ({ value } = await ElMessageBox.prompt('请输入新模板名称', '另存为模板'));
+    value = await prompt<string>({
+      content: '请输入新模板名称',
+      title: '另存为模板',
+    });
   } catch {
     return;
   }
-  const name = value.trim();
+  const name = value?.trim();
   if (!name) {
     ElMessage.warning('模板名称不能为空');
     return;

@@ -2,11 +2,11 @@
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, h, onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, prompt, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
 import {
@@ -16,12 +16,15 @@ import {
   Input,
   Menu,
   message,
-  Modal,
   TabPane,
   Tabs,
 } from 'antdv-next';
 
-import { cancelEmployeeQuit, getEmployee } from '#/api/hrm/employee';
+import {
+  cancelEmployeeQuit,
+  deleteEmployee,
+  getEmployee,
+} from '#/api/hrm/employee';
 import { getOperateLogPage } from '#/api/hrm/operate-log';
 import { OperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
@@ -56,7 +59,6 @@ const loading = ref(true);
 const activeTab = ref('post');
 const employee = ref<HrmEmployeeApi.Employee>({} as HrmEmployeeApi.Employee);
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
-const cancelQuitReason = ref('');
 
 const changeableEntryStatuses = [
   HrmEmployeeEntryStatus.ACTIVE,
@@ -201,33 +203,38 @@ function openQuit() {
 }
 
 async function handleCancelQuit() {
-  cancelQuitReason.value = '';
-  Modal.confirm({
-    title: '取消离职',
-    content: () =>
-      h(Input.TextArea, {
-        placeholder: '请输入取消离职原因',
+  let reason: string | undefined;
+  try {
+    reason = await prompt<string>({
+      title: '取消离职',
+      content: '请输入取消离职原因',
+      component: Input.TextArea,
+      componentProps: {
+        placeholder: '请输入取消原因',
         rows: 3,
         maxlength: 500,
-        onChange: (event: Event) => {
-          cancelQuitReason.value = (event.target as HTMLTextAreaElement).value;
-        },
-      }),
-    onOk: async () => {
-      const reason = cancelQuitReason.value.trim();
-      if (!reason) {
-        message.warning('取消原因不能为空');
-        throw new Error('empty');
-      }
-      if (reason.length > 500) {
-        message.warning('取消原因不能超过 500 字');
-        throw new Error('too long');
-      }
-      await cancelEmployeeQuit({ employeeId, reason });
-      message.success('已取消离职');
-      await getEmployeeData();
-    },
-  });
+      },
+      modelPropName: 'value',
+      defaultValue: '',
+      beforeClose: ({ isConfirm, value }) => {
+        if (!isConfirm) return true;
+        const reason = value?.trim();
+        if (!reason || reason.length > 500) {
+          message.warning(
+            reason ? '取消原因不能超过 500 字' : '取消原因不能为空',
+          );
+          return false;
+        }
+        return true;
+      },
+    });
+  } catch {
+    return;
+  }
+  if (!reason?.trim()) return;
+  await cancelEmployeeQuit({ employeeId, reason: reason.trim() });
+  message.success('已取消离职');
+  await getEmployeeData();
 }
 
 function getMoreActions() {
@@ -252,12 +259,42 @@ function getMoreActions() {
       icon: ACTION_ICON.EDIT,
     });
   }
+  if (
+    employee.value.entryStatus === HrmEmployeeEntryStatus.LEFT &&
+    hasAccessByCodes(['hrm:employee:update'])
+  ) {
+    actions.push({
+      command: 'quit',
+      label: '修改离职信息',
+      icon: ACTION_ICON.EDIT,
+    });
+  }
+  if (hasAccessByCodes(['hrm:employee:delete'])) {
+    actions.push({
+      command: 'delete',
+      label: '删除',
+      icon: ACTION_ICON.DELETE,
+    });
+  }
   return actions;
 }
 
 function handleMoreCommand(command: string) {
   if (command === 'quit') openQuit();
   if (command === 'cancel-quit') handleCancelQuit();
+  if (command === 'delete') handleDelete();
+}
+
+/** 删除员工档案后返回列表 */
+async function handleDelete() {
+  try {
+    await confirm(`确认删除员工“${employee.value.name}”的档案吗？`);
+  } catch {
+    return;
+  }
+  await deleteEmployee(employeeId);
+  message.success('删除成功');
+  close();
 }
 
 onMounted(() => {

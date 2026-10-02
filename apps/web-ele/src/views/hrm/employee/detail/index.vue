@@ -6,7 +6,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, prompt, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
 import {
@@ -15,13 +15,17 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
+  ElInput,
   ElMessage,
-  ElMessageBox,
   ElTabPane,
   ElTabs,
 } from 'element-plus';
 
-import { cancelEmployeeQuit, getEmployee } from '#/api/hrm/employee';
+import {
+  cancelEmployeeQuit,
+  deleteEmployee,
+  getEmployee,
+} from '#/api/hrm/employee';
 import { getOperateLogPage } from '#/api/hrm/operate-log';
 import { OperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
@@ -200,26 +204,39 @@ function openQuit() {
 }
 
 async function handleCancelQuit() {
+  let reason: string | undefined;
   try {
-    const { value } = await ElMessageBox.prompt(
-      '请输入取消离职原因',
-      '取消离职',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputType: 'textarea',
-        inputPlaceholder: '请输入取消原因',
-        inputValidator: (input) => {
-          const reason = input?.trim();
-          if (!reason) return '取消原因不能为空';
-          return reason.length <= 500 || '取消原因不能超过 500 字';
-        },
+    reason = await prompt<string>({
+      title: '取消离职',
+      content: '请输入取消离职原因',
+      component: ElInput,
+      componentProps: {
+        type: 'textarea',
+        placeholder: '请输入取消原因',
+        rows: 3,
+        maxlength: 500,
       },
-    );
-    await cancelEmployeeQuit({ employeeId, reason: value.trim() });
-    ElMessage.success('已取消离职');
-    await getEmployeeData();
-  } catch {}
+      modelPropName: 'modelValue',
+      defaultValue: '',
+      beforeClose: ({ isConfirm, value }) => {
+        if (!isConfirm) return true;
+        const reason = value?.trim();
+        if (!reason || reason.length > 500) {
+          ElMessage.warning(
+            reason ? '取消原因不能超过 500 字' : '取消原因不能为空',
+          );
+          return false;
+        }
+        return true;
+      },
+    });
+  } catch {
+    return;
+  }
+  if (!reason?.trim()) return;
+  await cancelEmployeeQuit({ employeeId, reason: reason.trim() });
+  ElMessage.success('已取消离职');
+  await getEmployeeData();
 }
 
 function getMoreActions() {
@@ -244,12 +261,42 @@ function getMoreActions() {
       icon: ACTION_ICON.EDIT,
     });
   }
+  if (
+    employee.value.entryStatus === HrmEmployeeEntryStatus.LEFT &&
+    hasAccessByCodes(['hrm:employee:update'])
+  ) {
+    actions.push({
+      command: 'quit',
+      label: '修改离职信息',
+      icon: ACTION_ICON.EDIT,
+    });
+  }
+  if (hasAccessByCodes(['hrm:employee:delete'])) {
+    actions.push({
+      command: 'delete',
+      label: '删除',
+      icon: ACTION_ICON.DELETE,
+    });
+  }
   return actions;
 }
 
 function handleMoreCommand(command: string) {
   if (command === 'quit') openQuit();
   if (command === 'cancel-quit') handleCancelQuit();
+  if (command === 'delete') handleDelete();
+}
+
+/** 删除员工档案后返回列表 */
+async function handleDelete() {
+  try {
+    await confirm(`确认删除员工“${employee.value.name}”的档案吗？`);
+  } catch {
+    return;
+  }
+  await deleteEmployee(employeeId);
+  ElMessage.success('删除成功');
+  close();
 }
 
 onMounted(() => {

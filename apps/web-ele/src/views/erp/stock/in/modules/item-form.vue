@@ -89,7 +89,7 @@ function handleAdd() {
   // TODO @芋艿
   const newRow = {
     id: undefined,
-    warehouseId: undefined,
+    warehouseId: warehouseOptions.value.find((item) => item.defaultStatus)?.id,
     productId: undefined,
     productUnitName: undefined, // 产品单位
     productBarCode: undefined, // 产品条码

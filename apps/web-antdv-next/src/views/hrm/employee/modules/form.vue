@@ -20,7 +20,10 @@ import { convertRecruitCandidateToEmployee } from '#/api/hrm/recruit/candidate';
 import { $t } from '#/locales';
 import {
   HRM_EMPLOYEE_NO_PROBATION_MONTHS,
+  HRM_EMPLOYEE_NON_FORMAL_STATUSES,
   HrmEmployeeEntryStatus,
+  HrmEmployeeStatus,
+  HrmEmployeeType,
 } from '#/views/hrm/utils/constants';
 import { UserSelect } from '#/views/system/user/components';
 
@@ -79,6 +82,11 @@ const [Form, formApi] = useVbenForm({
 const [EntryForm, entryFormApi] = useVbenForm({
   commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
+  async handleValuesChange(values, fieldsChanged) {
+    if (fieldsChanged.includes('type') && formType.value !== 'update') {
+      await handleTypeChange(values as HrmEmployeeApi.Employee);
+    }
+  },
   schema: [],
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
@@ -91,6 +99,34 @@ watch(personalSchema, (schema) => formApi.setState({ schema }), {
 watch(entrySchema, (schema) => entryFormApi.setState({ schema }), {
   immediate: true,
 });
+
+/** 切换聘用形式时清理互斥字段 */
+async function handleTypeChange(values: HrmEmployeeApi.Employee) {
+  if (values.type === HrmEmployeeType.FORMAL) {
+    if (values.probation === null || values.probation === undefined) {
+      await entryFormApi.setFieldValue(
+        'probation',
+        HRM_EMPLOYEE_NO_PROBATION_MONTHS,
+      );
+    }
+    if (
+      values.status !== HrmEmployeeStatus.REGULAR &&
+      values.status !== HrmEmployeeStatus.PROBATION
+    ) {
+      await entryFormApi.setFieldValue('status', undefined);
+    }
+    return;
+  }
+  await entryFormApi.setFieldValue('probation', undefined);
+  await entryFormApi.setFieldValue('regularTime', undefined);
+  if (
+    !(HRM_EMPLOYEE_NON_FORMAL_STATUSES as readonly number[]).includes(
+      values.status!,
+    )
+  ) {
+    await entryFormApi.setFieldValue('status', HrmEmployeeStatus.INTERN);
+  }
+}
 
 async function loadCreateFieldConfig() {
   const [activeFields, pendingEntryFields] = await Promise.all([

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-
-import { Tooltip } from 'antdv-next';
 
 const props = defineProps<{
   segments: {
@@ -22,6 +21,8 @@ const document = ref<null | {
   }[];
   title: string;
 }>(null); // 知识库文档列表
+
+const [Modal, modalApi] = useVbenModal({ showConfirmButton: false });
 
 /** 按照 document 聚合 segments */
 const documentList = computed(() => {
@@ -47,6 +48,7 @@ const documentList = computed(() => {
 /** 点击 document 处理 */
 function handleClick(doc: any) {
   document.value = doc;
+  modalApi.open();
 }
 </script>
 
@@ -75,26 +77,22 @@ function handleClick(doc: any) {
       </div>
     </div>
   </div>
-  <Tooltip placement="topLeft" :trigger="['click']">
-    <div></div>
-    <template #title>
-      <div class="mb-3 text-base font-bold">{{ document?.title }}</div>
-      <div class="max-h-[60vh] overflow-y-auto">
+  <Modal :title="document?.title" class="w-[600px]">
+    <div class="max-h-[60vh] overflow-y-auto">
+      <div
+        v-for="(segment, index) in document?.segments"
+        :key="index"
+        class="border-b-solid border-b-gray-200 p-3 last:border-b-0"
+      >
         <div
-          v-for="(segment, index) in document?.segments"
-          :key="index"
-          class="border-b-solid border-b-gray-200 p-3 last:border-b-0"
+          class="mb-2 block w-fit rounded-sm px-2 py-1 text-xs text-gray-400"
         >
-          <div
-            class="mb-2 block w-fit rounded-sm px-2 py-1 text-xs text-gray-400"
-          >
-            分段 {{ segment.id }}
-          </div>
-          <div class="mt-2 text-sm leading-[1.6] text-gray-600">
-            {{ segment.content }}
-          </div>
+          分段 {{ segment.id }}
+        </div>
+        <div class="mt-2 text-sm leading-[1.6] text-gray-600">
+          {{ segment.content }}
         </div>
       </div>
-    </template>
-  </Tooltip>
+    </div>
+  </Modal>
 </template>

@@ -166,13 +166,6 @@ export function getEmployee(id: number) {
   );
 }
 
-/** 查询指定员工列表 */
-export function getEmployeeList(ids: number[]) {
-  return requestClient.get<HrmEmployeeApi.Employee[]>('/hrm/employee/list', {
-    params: { ids: ids.join(',') },
-  });
-}
-
 /** 查询员工精简分页 */
 export function getEmployeeSimplePage(params: PageParam) {
   return requestClient.get<PageResult<HrmEmployeeApi.Employee>>(

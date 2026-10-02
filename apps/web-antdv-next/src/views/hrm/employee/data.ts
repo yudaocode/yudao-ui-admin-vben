@@ -908,6 +908,13 @@ export function useEmployeeEntryFormSchema(
       fieldName: 'jobNumber',
       label: '工号',
       component: 'Input',
+      dependencies: {
+        triggerFields: ['entryStatus'],
+        rules: (values) =>
+          values.entryStatus === HrmEmployeeEntryStatus.ACTIVE
+            ? z.string().trim().min(1, '在职员工工号不能为空')
+            : null,
+      },
       componentProps: { maxlength: 64, allowClear: true },
     },
     {
@@ -961,6 +968,7 @@ export function useEmployeeEntryFormSchema(
       defaultValue: HrmEmployeeType.FORMAL,
       componentProps: {
         options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_TYPE, 'number'),
+        disabled: formType === 'update',
         placeholder: '请选择聘用形式',
         allowClear: true,
       },
@@ -976,6 +984,7 @@ export function useEmployeeEntryFormSchema(
           values.type === HrmEmployeeType.INFORMAL ? 'required' : null,
       },
       componentProps: {
+        disabled: formType === 'update',
         options: nonFormalStatusOptions,
         placeholder: '请选择员工状态',
         allowClear: true,
@@ -991,7 +1000,12 @@ export function useEmployeeEntryFormSchema(
         rules: (values) =>
           values.type === HrmEmployeeType.FORMAL ? 'required' : null,
       },
-      componentProps: { min: 0, max: 24, class: 'w-full' },
+      componentProps: {
+        min: 0,
+        max: 6,
+        class: 'w-full',
+        disabled: formType === 'update',
+      },
     },
     {
       fieldName: 'entryTime',
@@ -999,6 +1013,12 @@ export function useEmployeeEntryFormSchema(
       component: 'DatePicker',
       rules: 'required',
       componentProps: {
+        ...(formType === 'confirm' || formType === 'rehire'
+          ? {
+              disabledDate: (date: dayjs.Dayjs) =>
+                date.valueOf() > dayjs().endOf('day').valueOf(),
+            }
+          : {}),
         showTime: true,
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',

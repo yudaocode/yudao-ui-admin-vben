@@ -6,6 +6,7 @@ import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
+import { cloneDeep } from '@vben/utils';
 
 import { Image, message, Typography } from 'ant-design-vue';
 
@@ -63,7 +64,7 @@ async function handleEdit(row: MpDraftApi.DraftArticle) {
       isCreating: false,
       accountId,
       mediaId: row.mediaId,
-      newsList: row.content.newsItem,
+      newsList: cloneDeep(row.content.newsItem),
     })
     .open();
 }

@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
 import { Page, prompt, SummaryCard } from '@vben/common-ui';
 import { DeliveryTypeEnum } from '@vben/constants';
@@ -29,26 +29,20 @@ function handleRefresh() {
 
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
-  // 如果没有传核销码，则弹窗输入
   if (!pickUpVerifyCode) {
-    await prompt({
-      component: () => {
-        return h(Input, {});
-      },
-      content: '请输入核销码',
-      title: '核销订单',
-      modelPropName: 'value',
-    }).then(async (val) => {
-      if (val) {
-        pickUpVerifyCode = val;
-      }
-    });
+    try {
+      pickUpVerifyCode = await prompt<string>({
+        component: Input,
+        componentProps: { placeholder: '请输入核销码' },
+        modelPropName: 'value',
+        content: '请输入核销码',
+        title: '核销订单',
+      });
+    } catch {
+      return;
+    }
   }
-  if (!pickUpVerifyCode) {
-    return;
-  }
-
-  // 执行核销
+  if (!pickUpVerifyCode) return;
   const hideLoading = message.loading({
     content: '订单核销中 ...',
     duration: 0,

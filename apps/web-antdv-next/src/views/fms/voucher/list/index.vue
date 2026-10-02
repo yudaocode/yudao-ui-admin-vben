@@ -292,7 +292,11 @@ async function handlePrintList() {
 
 /** 导出凭证 */
 async function handleExport() {
-  if (!lastQuery.value) return;
+  if (!lastQuery.value) {
+    message.warning('请先查询凭证');
+    return;
+  }
+  if (exportLoading.value) return;
   try {
     await confirm('是否确认导出凭证列表的数据项？');
     exportLoading.value = true;
@@ -311,7 +315,10 @@ async function handleExport() {
 
 /** 查询全部凭证 */
 async function getAllVoucherList() {
-  if (!lastQuery.value) return [];
+  if (!lastQuery.value) {
+    message.warning('请先查询凭证');
+    return [];
+  }
   return await getVoucherPrintList(lastQuery.value);
 }
 
@@ -499,7 +506,7 @@ onMounted(() => {
           "
           :trigger="['click']"
         >
-          <Button class="ml-3">
+          <Button class="ml-3" :loading="exportLoading">
             更多<span class="icon-[ep--arrow-down] ml-1"></span>
           </Button>
           <template #popupRender>
@@ -521,6 +528,7 @@ onMounted(() => {
               <Menu.Item
                 v-if="hasAccessByCodes(['fms:voucher:export'])"
                 key="export"
+                :disabled="exportLoading"
                 @click="handleMoreCommand('export')"
               >
                 导出
@@ -545,6 +553,12 @@ onMounted(() => {
               >
                 移动凭证
               </Menu.Item>
+              <Menu.Divider
+                v-if="
+                  fmsStore.isAccountSetWritable &&
+                  hasAccessByCodes(['fms:voucher:move', 'fms:voucher:tidy'])
+                "
+              />
               <Menu.Item
                 v-if="
                   fmsStore.isAccountSetWritable &&
@@ -635,7 +649,7 @@ onMounted(() => {
         </div>
       </template>
       <template #status="{ row }">
-        <Tag v-if="row.closingGenerated">结账生成</Tag>
+        <Tag v-if="row.closingGenerated" color="default">结账生成</Tag>
         <Tag
           v-else
           :color="

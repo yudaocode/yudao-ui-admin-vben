@@ -299,7 +299,11 @@ async function handlePrintList() {
 
 /** 导出凭证 */
 async function handleExport() {
-  if (!lastQuery.value) return;
+  if (!lastQuery.value) {
+    ElMessage.warning('请先查询凭证');
+    return;
+  }
+  if (exportLoading.value) return;
   try {
     await confirm('是否确认导出凭证列表的数据项？');
     exportLoading.value = true;
@@ -318,7 +322,10 @@ async function handleExport() {
 
 /** 查询全部凭证 */
 async function getAllVoucherList() {
-  if (!lastQuery.value) return [];
+  if (!lastQuery.value) {
+    ElMessage.warning('请先查询凭证');
+    return [];
+  }
   return await getVoucherPrintList(lastQuery.value);
 }
 
@@ -509,7 +516,7 @@ onMounted(() => {
           class="ml-3"
           trigger="click"
         >
-          <ElButton>
+          <ElButton :loading="exportLoading">
             更多<span class="icon-[ep--arrow-down] ml-1"></span>
           </ElButton>
           <template #dropdown>
@@ -528,6 +535,7 @@ onMounted(() => {
               </ElDropdownItem>
               <ElDropdownItem
                 v-if="hasAccessByCodes(['fms:voucher:export'])"
+                :disabled="exportLoading"
                 @click="handleMoreCommand('export')"
               >
                 导出

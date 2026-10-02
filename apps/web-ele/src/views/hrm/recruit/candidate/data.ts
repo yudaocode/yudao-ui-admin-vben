@@ -8,12 +8,12 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-import { getRecruitChannelSimpleList } from '#/api/hrm/recruit/channel';
 import { getRecruitEliminateReasonList } from '#/api/hrm/recruit/config';
-import { getRecruitPostSimpleList } from '#/api/hrm/recruit/post';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
+import ChannelSelect from '#/views/hrm/recruit/channel/components/channel-select.vue';
+import PostSelect from '#/views/hrm/recruit/post/components/post-select.vue';
 import {
   HrmEmployeeEntryStatus,
   HrmRecruitCandidateStatus,
@@ -100,12 +100,9 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'postId',
       label: '应聘职位',
-      component: 'ApiSelect',
+      component: markRaw(PostSelect),
       rules: 'required',
       componentProps: {
-        api: getRecruitPostSimpleList,
-        labelField: 'postName',
-        valueField: 'id',
         placeholder: '请选择应聘职位',
         clearable: false,
         filterable: true,
@@ -160,11 +157,8 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'channelId',
       label: '招聘渠道',
-      component: 'ApiSelect',
+      component: markRaw(ChannelSelect),
       componentProps: {
-        api: getRecruitChannelSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘渠道',
         clearable: true,
         filterable: true,
@@ -213,11 +207,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'postId',
       label: '应聘职位',
-      component: 'ApiSelect',
+      component: markRaw(PostSelect),
       componentProps: {
-        api: getRecruitPostSimpleList,
-        labelField: 'postName',
-        valueField: 'id',
         placeholder: '请选择应聘职位',
         clearable: true,
         filterable: true,
@@ -236,11 +227,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'channelId',
       label: '招聘渠道',
-      component: 'ApiSelect',
+      component: markRaw(ChannelSelect),
       componentProps: {
-        api: getRecruitChannelSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘渠道',
         clearable: true,
         filterable: true,
@@ -685,12 +673,9 @@ export function usePostBatchFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'postId',
       label: '应聘职位',
-      component: 'ApiSelect',
+      component: markRaw(PostSelect),
       rules: 'required',
       componentProps: {
-        api: getRecruitPostSimpleList,
-        labelField: 'postName',
-        valueField: 'id',
         placeholder: '请选择应聘职位',
         clearable: false,
         filterable: true,
@@ -711,12 +696,9 @@ export function useChannelBatchFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'channelId',
       label: '招聘渠道',
-      component: 'ApiSelect',
+      component: markRaw(ChannelSelect),
       rules: 'required',
       componentProps: {
-        api: getRecruitChannelSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘渠道',
         clearable: false,
         filterable: true,
