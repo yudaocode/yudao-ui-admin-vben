@@ -173,14 +173,10 @@ async function handleDelete(row: OaContactApi.Contact) {
   });
   try {
     // 移除本人持有的联系人；最后一人移除时由后端删除正文
-    if (
-      activeScene.value === OA_CONTACT_SCENE_TYPE.MINE &&
-      isContactOwner(row)
-    ) {
-      await deleteContact(row.id!);
-    } else {
-      await deleteReceivedContact(row.id!);
-    }
+    await (activeScene.value === OA_CONTACT_SCENE_TYPE.MINE &&
+    isContactOwner(row)
+      ? deleteContact(row.id!)
+      : deleteReceivedContact(row.id!));
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -275,12 +271,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const getPage =
-            activeScene.value === OA_CONTACT_SCENE_TYPE.MINE
-              ? getMyContactPage
-              : activeScene.value === OA_CONTACT_SCENE_TYPE.RECEIVED
-                ? getReceivedContactPage
-                : getSharedContactPage;
+          let getPage = getSharedContactPage;
+          if (activeScene.value === OA_CONTACT_SCENE_TYPE.MINE) {
+            getPage = getMyContactPage;
+          } else if (activeScene.value === OA_CONTACT_SCENE_TYPE.RECEIVED) {
+            getPage = getReceivedContactPage;
+          }
           return await getPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -310,7 +306,10 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+    <template #doc>
+      <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+    </template>
+
     <FormModal @success="handleCategoryChange" />
     <DetailModal />
     <ShareFormModal @success="handleRefresh" />
