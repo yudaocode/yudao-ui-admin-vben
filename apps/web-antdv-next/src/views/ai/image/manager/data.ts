@@ -1,8 +1,9 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AiImageApi } from '#/api/ai/image';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { DICT_TYPE } from '@vben/constants';
+import { AiImageStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
@@ -134,6 +135,8 @@ export function useGridColumns(
         attrs: { beforeChange: onPublicStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: (row: AiImageApi.Image) =>
+            row.status !== AiImageStatusEnum.SUCCESS,
           checkedValue: true,
           unCheckedValue: false,
         },

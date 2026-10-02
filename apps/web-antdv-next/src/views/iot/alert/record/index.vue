@@ -12,7 +12,7 @@ import { Button, message, Modal, Popover, TextArea } from 'antdv-next';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { loadReferenceList, useGridColumns, useGridFormSchema } from './data';
 
 /** 把设备消息序列化成可读字符串 */
 function stringifyDeviceMessage(deviceMessage: any) {
@@ -72,6 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          await loadReferenceList();
           return await getAlertRecordPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

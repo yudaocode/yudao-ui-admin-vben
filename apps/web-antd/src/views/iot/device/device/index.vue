@@ -74,8 +74,15 @@ const queryParams = ref<Partial<PageParam>>({
   groupId: undefined,
 }); // 搜索参数
 
+function clearCheckedRows() {
+  checkedIds.value = [];
+  gridApi.grid.clearCheckboxRow();
+  gridApi.grid.clearCheckboxReserve();
+}
+
 /** 搜索 */
 function handleSearch() {
+  clearCheckedRows();
   if (viewMode.value === 'list') {
     gridApi.formApi.setValues(queryParams.value);
   }
@@ -95,7 +102,11 @@ function handleReset() {
 
 /** 刷新表格 */
 function handleRefresh() {
-  gridApi.query();
+  if (viewMode.value === 'card') {
+    cardViewRef.value?.reload();
+  } else {
+    gridApi.query();
+  }
 }
 
 /** 视图切换 */
@@ -103,6 +114,7 @@ async function handleViewModeChange(mode: 'card' | 'list') {
   if (viewMode.value === mode) {
     return; // 如果已经是目标视图，不需要切换
   }
+  clearCheckedRows();
   viewMode.value = mode;
   // 等待视图更新后再触发查询
   await nextTick();
@@ -203,7 +215,13 @@ function handleRowCheckboxChange({
 }: {
   records: IotDeviceApi.Device[];
 }) {
-  checkedIds.value = records.map((item) => item.id!);
+  checkedIds.value = [
+    ...new Set(
+      [...records, ...gridApi.grid.getCheckboxReserveRecords()].map(
+        (item) => item.id!,
+      ),
+    ),
+  ];
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -239,7 +257,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<IotDeviceApi.Device>,
   gridEvents: {

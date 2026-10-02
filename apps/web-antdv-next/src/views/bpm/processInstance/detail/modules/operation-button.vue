@@ -310,6 +310,9 @@ async function openPopover(type: string) {
   Object.keys(popOverVisible.value).forEach((item) => {
     if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
   });
+  if (type === 'approve' || type === 'return') {
+    popOverVisible.value[type] = true;
+  }
   if (type === 'approve') {
     // 当前任务有节点表单时，等 form-create 的 fApi 就绪后再计算下一个节点；
     // 没有节点表单时，approveFormFApi 永远不会被赋值，跳过等待
@@ -863,14 +866,6 @@ function handleImagePreviewOpenChange(open: boolean) {
   imagePreviewOpen.value = open;
 }
 
-/** 处理弹窗可见性 */
-function handlePopoverVisible(visible: boolean) {
-  if (!visible) {
-    // 拦截关闭事件
-    popOverVisible.value.approve = true;
-  }
-}
-
 defineExpose({ loadTodoTask });
 </script>
 <template>
@@ -882,8 +877,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.approve"
         placement="top"
         :styles="{ root: { minWidth: '400px', zIndex: 300 } }"
-        :trigger="['click']"
-        @open-change="handlePopoverVisible"
+        :trigger="[]"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1457,7 +1451,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.return"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        :trigger="['click']"
+        :trigger="[]"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&

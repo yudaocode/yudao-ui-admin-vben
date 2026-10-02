@@ -15,8 +15,12 @@ import { getRangePickerDefaultProps } from '#/utils';
 /** 关联数据 */
 let productList: IotProductApi.Product[] = [];
 let deviceList: IotDeviceApi.Device[] = [];
-getSimpleProductList().then((data) => (productList = data));
-getSimpleDeviceList().then((data) => (deviceList = data));
+export async function loadReferenceList() {
+  [productList, deviceList] = await Promise.all([
+    getSimpleProductList(),
+    getSimpleDeviceList(),
+  ]);
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

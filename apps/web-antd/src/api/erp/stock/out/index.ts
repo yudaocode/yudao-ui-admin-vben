@@ -29,7 +29,7 @@ export namespace ErpStockOutApi {
     productBarCode?: string; // 产品条码
     count: number; // 数量
     productPrice: number; // 产品单价
-    totalPrice: number; // 总价
+    totalPrice?: number; // 总价
     stockCount?: number; // 库存数量
     remark?: string; // 备注
   }

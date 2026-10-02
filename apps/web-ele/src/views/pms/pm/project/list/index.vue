@@ -189,7 +189,10 @@ async function getGroupList() {
   const allGroup = groupList.value.find(
     (group) => group.type === PmsProjectGroupType.ALL,
   );
-  await gridApi.formApi.setFieldValue('groupId', allGroup?.id);
+  const { groupId } = await gridApi.formApi.getValues();
+  if (groupId === null || groupId === undefined) {
+    await gridApi.formApi.setFieldValue('groupId', allGroup?.id);
+  }
 }
 
 /** 打开项目详情 */
@@ -252,7 +255,8 @@ function openGroupManageDialog() {
 async function handleMoveGroup(projectId: number, groupId: number) {
   await moveProjectToGroup({ projectId, groupId });
   ElMessage.success('项目分组已更新');
-  await Promise.all([gridApi.query(), getGroupList()]);
+  await getGroupList();
+  await gridApi.query();
 }
 
 /** 星标或取消星标项目 */
@@ -313,7 +317,8 @@ async function handleProjectCommand(
 
 /** 项目发生变化后刷新列表与个人分组 */
 async function handleProjectChanged() {
-  await Promise.all([gridApi.query(), getGroupList(), getFavoriteList()]);
+  await getGroupList();
+  await Promise.all([gridApi.query(), getFavoriteList()]);
 }
 
 /** 应用当前项目范围：切换个人分组显隐与星标列，并刷新列表 */

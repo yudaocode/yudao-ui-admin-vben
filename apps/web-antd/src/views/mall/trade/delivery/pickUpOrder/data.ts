@@ -15,14 +15,17 @@ const userStore = useUserStore();
 const pickUpStoreList = ref<MallDeliveryPickUpStoreApi.DeliveryPickUpStore[]>(
   [],
 );
-getSimpleDeliveryPickUpStoreList().then((res) => {
-  pickUpStoreList.value = res;
-  // 移除自己无法核销的门店
-  const userId = userStore?.userInfo?.id;
-  pickUpStoreList.value = pickUpStoreList.value.filter((item) =>
-    item.verifyUserIds?.includes(userId),
+export async function loadPickUpStoreList() {
+  const stores = await getSimpleDeliveryPickUpStoreList();
+  const userId = userStore.userInfo?.id;
+  pickUpStoreList.value = stores.filter(
+    (item) =>
+      userId !== null &&
+      userId !== undefined &&
+      item.verifyUserIds?.includes(userId),
   );
-});
+  return pickUpStoreList.value;
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -42,11 +45,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: pickUpStoreList,
-        labelField: 'name',
-        valueField: 'id',
+        fieldNames: {
+          label: 'name',
+          value: 'id',
+        },
         placeholder: '请选择自提门店',
       },
-      defaultValue: pickUpStoreList.value[0]?.id,
     },
     {
       fieldName: 'no',

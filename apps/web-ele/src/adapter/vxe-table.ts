@@ -99,6 +99,35 @@ setupVbenVxeTable({
     });
 
     // 表格配置项可以用 cellRender: { name: 'CellLink' },
+    vxeUI.renderer.add('CellImages', {
+      renderTableDefault(renderOpts, params) {
+        const { props } = renderOpts;
+        const { column, row } = params;
+        const images = row[column.field];
+        if (!Array.isArray(images) || images.length === 0) {
+          return '';
+        }
+        return h(
+          'div',
+          { class: 'flex flex-wrap justify-center gap-2' },
+          images.map((src, index) =>
+            h(ElImage, {
+              src,
+              previewSrcList: images,
+              initialIndex: index,
+              previewTeleported: true,
+              fit: 'cover',
+              class: props?.class,
+              style: {
+                width: `${props?.width ?? 50}px`,
+                height: `${props?.height ?? 50}px`,
+              },
+            }),
+          ),
+        );
+      },
+    });
+
     vxeUI.renderer.add('CellLink', {
       renderTableDefault(renderOpts) {
         const { props } = renderOpts;
@@ -167,6 +196,10 @@ setupVbenVxeTable({
           activeValue: 1,
           inactiveValue: 0,
           ...props,
+          disabled:
+            typeof props?.disabled === 'function'
+              ? props.disabled(row)
+              : props?.disabled,
           modelValue: row[column.field],
           loading: row[loadingKey] ?? false,
           'onUpdate:modelValue': onChange,

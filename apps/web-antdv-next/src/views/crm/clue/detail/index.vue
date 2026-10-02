@@ -100,6 +100,7 @@ async function handleTransform(): Promise<boolean | undefined> {
   await transformClue(clueId.value);
   // 提示并返回成功
   message.success('转化客户成功');
+  await getClueDetail();
   return true;
 }
 

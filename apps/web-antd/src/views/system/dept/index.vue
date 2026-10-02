@@ -13,7 +13,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDept, deleteDeptList, getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { loadUserList, useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -102,6 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async (_params, formValues) => {
+          await loadUserList();
           return await getDeptList(formValues);
         },
       },

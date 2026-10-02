@@ -57,9 +57,10 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
 
     const res = await response.json();
 
-    if (res.code !== 0) {
-      message.error(`上传出错：${res.msg}`);
-      onError?.(new Error(res.msg));
+    if (res?.code !== 0) {
+      fileList.value = [];
+      message.error(`上传出错：${res?.msg || '上传失败'}`);
+      onError?.(new Error(res?.msg || '上传失败'));
       return;
     }
 
@@ -72,7 +73,8 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
     onSuccess?.(res);
     emit('uploaded');
   } catch (error: any) {
-    message.error(`上传失败: ${error.message}`);
+    fileList.value = [];
+    message.error(`上传失败: ${error?.message || '请重试'}`);
     onError?.(error);
   }
 };

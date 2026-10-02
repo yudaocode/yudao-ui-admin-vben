@@ -63,13 +63,6 @@ export function getSaleOrder(id: number) {
   );
 }
 
-/** 查询销售订单项列表 */
-export function getSaleOrderItemListByOrderId(orderId: number) {
-  return requestClient.get<ErpSaleOrderApi.SaleOrderItem[]>(
-    `/erp/sale-order/item/list-by-order-id?orderId=${orderId}`,
-  );
-}
-
 /** 新增销售订单 */
 export function createSaleOrder(data: ErpSaleOrderApi.SaleOrder) {
   return requestClient.post('/erp/sale-order/create', data);

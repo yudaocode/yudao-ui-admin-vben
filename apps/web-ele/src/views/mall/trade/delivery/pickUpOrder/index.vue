@@ -18,7 +18,7 @@ import {
   pickUpOrderByVerifyCode,
 } from '#/api/mall/trade/order';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { loadPickUpStoreList, useGridColumns, useGridFormSchema } from './data';
 
 // TODO @芋艿：风格和 antd 不一致；
 const summary = ref<MallOrderApi.OrderSummaryRespVO>();
@@ -26,13 +26,6 @@ const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
-}
-
-/** 获取订单统计数据 */
-async function getOrderSum() {
-  const query = await gridApi.formApi.getValues();
-  query.deliveryType = DeliveryTypeEnum.PICK_UP.type;
-  summary.value = await getOrderSummary(query);
 }
 
 /** 核销订单 */
@@ -169,12 +162,34 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          await getOrderSum();
+          const stores = await loadPickUpStoreList();
+          if (stores.length === 0) {
+            summary.value = {
+              orderCount: 0,
+              orderPayPrice: 0,
+              afterSaleCount: 0,
+              afterSalePrice: 0,
+            };
+            ElMessage.warning('当前登录人没绑定任何自提点');
+            return { list: [], total: 0 };
+          }
+          const selectedStore =
+            stores.find((store) => store.id === formValues.pickUpStoreIds) ??
+            stores[0]!;
+          await gridApi.formApi.setFieldValue(
+            'pickUpStoreIds',
+            selectedStore.id,
+          );
+          const query = {
+            ...formValues,
+            deliveryType: DeliveryTypeEnum.PICK_UP.type,
+            pickUpStoreIds: [selectedStore.id],
+          };
+          summary.value = await getOrderSummary(query);
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            deliveryType: DeliveryTypeEnum.PICK_UP.type,
-            ...formValues,
+            ...query,
           });
         },
       },

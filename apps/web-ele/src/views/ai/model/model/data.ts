@@ -10,7 +10,9 @@ import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 
 /** 关联数据 */
 let apiKeyList: AiModelApiKeyApi.ApiKey[] = [];
-getApiKeySimpleList().then((data) => (apiKeyList = data));
+export async function loadApiKeyList() {
+  apiKeyList = await getApiKeySimpleList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

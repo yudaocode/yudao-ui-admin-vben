@@ -27,6 +27,8 @@ type ItemSkuRow = WmsItemSkuApi.ItemSku & { rowKey: string };
 
 defineOptions({ name: 'WmsItem' });
 
+const categoryTreeRef = ref<InstanceType<typeof WmsItemCategoryTree>>();
+
 const currentRows = ref<ItemSkuRow[]>([]);
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -133,6 +135,12 @@ function hasValue(value: unknown) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      searchCategoryId.value = undefined;
+      categoryTreeRef.value?.reset();
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -183,7 +191,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <div class="flex h-full w-full">
       <Card class="mr-4 h-full w-1/6">
-        <WmsItemCategoryTree @node-click="handleCategoryNodeClick" />
+        <WmsItemCategoryTree
+          ref="categoryTreeRef"
+          @node-click="handleCategoryNodeClick"
+        />
       </Card>
       <div class="w-5/6">
         <Grid table-title="商品列表">

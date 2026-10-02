@@ -10,7 +10,7 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteModel, getModelPage } from '#/api/ai/model/model';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { loadApiKeyList, useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -59,6 +59,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          await loadApiKeyList();
           return await getModelPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

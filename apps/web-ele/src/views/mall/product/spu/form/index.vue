@@ -185,6 +185,9 @@ function handleTabChange(key: number | string) {
 
 /** 提交表单 */
 async function handleSubmit() {
+  if (formLoading.value) {
+    return;
+  }
   const forms = [
     ['info', infoFormApi],
     ['sku', skuFormApi],
@@ -237,7 +240,14 @@ async function handleSubmit() {
   values.sliderPicUrls = newSliderPicUrls;
 
   // 提交数据
-  await (spuId.value ? updateSpu(values) : createSpu(values));
+  formLoading.value = true;
+  try {
+    await (spuId.value ? updateSpu(values) : createSpu(values));
+    ElMessage.success('保存成功');
+    await closeCurrentTab();
+  } finally {
+    formLoading.value = false;
+  }
 }
 
 /** 获得详情 */
@@ -362,7 +372,12 @@ onMounted(async () => {
               <ElTabPane label="其它设置" name="other" />
             </ElTabs>
             <div>
-              <ElButton type="primary" v-if="!isDetail" @click="handleSubmit">
+              <ElButton
+                type="primary"
+                v-if="!isDetail"
+                :loading="formLoading"
+                @click="handleSubmit"
+              >
                 保存
               </ElButton>
               <ElButton v-else @click="() => closeCurrentTab()">

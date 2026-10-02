@@ -2,90 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiKnowledgeDocumentApi } from '#/api/ai/knowledge/document';
 
-import { AiModelTypeEnum, CommonStatusEnum, DICT_TYPE } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
-
-import { z } from '#/adapter/form';
-import { getModelSimpleList } from '#/api/ai/model/model';
-
-/** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
-  return [
-    {
-      component: 'Input',
-      fieldName: 'id',
-      dependencies: {
-        triggerFields: [''],
-        show: () => false,
-      },
-    },
-    {
-      component: 'Input',
-      fieldName: 'name',
-      label: '知识库名称',
-      rules: 'required',
-    },
-    {
-      fieldName: 'description',
-      label: '知识库描述',
-      component: 'Textarea',
-      componentProps: {
-        rows: 3,
-        placeholder: '请输入知识库描述',
-      },
-    },
-    {
-      component: 'ApiSelect',
-      fieldName: 'embeddingModelId',
-      label: '向量模型',
-      componentProps: {
-        api: () => getModelSimpleList(AiModelTypeEnum.EMBEDDING),
-        labelField: 'name',
-        valueField: 'id',
-        allowClear: true,
-        placeholder: '请选择向量模型',
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'topK',
-      label: '检索 topK',
-      component: 'InputNumber',
-      componentProps: {
-        class: '!w-full',
-        placeholder: '请输入检索 topK',
-        min: 0,
-        max: 10,
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'similarityThreshold',
-      label: '检索相似度阈值',
-      component: 'InputNumber',
-      componentProps: {
-        class: '!w-full',
-        placeholder: '请输入检索相似度阈值',
-        min: 0,
-        max: 1,
-        step: 0.01,
-        precision: 2,
-      },
-      rules: 'required',
-    },
-    {
-      fieldName: 'status',
-      label: '是否启用',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
-    },
-  ];
-}
+import { useAccess } from '@vben/access';
+import { CommonStatusEnum } from '@vben/constants';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -109,6 +27,7 @@ export function useGridColumns(
     row: AiKnowledgeDocumentApi.KnowledgeDocument,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'id',
@@ -149,6 +68,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['ai:knowledge:update']),
           checkedValue: CommonStatusEnum.ENABLE,
           unCheckedValue: CommonStatusEnum.DISABLE,
         },

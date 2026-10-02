@@ -30,10 +30,13 @@ defineOptions({ name: 'MpMessage' });
 const messageBoxVisible = ref(false);
 const messageBoxUserId = ref(0);
 
+const selectedAccountId = ref<number>();
+
 /** 公众号变化时查询数据 */
-function handleAccountChange(accountId: number) {
-  gridApi.formApi.setValues({ accountId });
-  gridApi.formApi.submitForm();
+async function handleAccountChange(accountId: number) {
+  selectedAccountId.value = accountId;
+  await gridApi.formApi.setValues({ accountId });
+  await gridApi.formApi.submitForm();
 }
 
 /** 打开消息发送窗口 */
@@ -44,6 +47,11 @@ function handleSend(userId: number) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      await gridApi.formApi.setFieldValue('accountId', selectedAccountId.value);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {

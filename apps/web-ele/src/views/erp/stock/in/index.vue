@@ -67,7 +67,7 @@ async function handleDelete(ids: number[]) {
 /** 审批/反审批操作 */
 async function handleUpdateStatus(row: ErpStockInApi.StockIn, status: number) {
   const loadingInstance = ElLoading.service({
-    text: `确定${status === 20 ? '审批' : '反审批'}该入库单吗？`,
+    text: `${status === 20 ? '审批' : '反审批'}中...`,
   });
   try {
     await updateStockInStatus(row.id!, status);

@@ -185,6 +185,9 @@ function handleTabChange(key: string) {
 
 /** 提交表单 */
 async function handleSubmit() {
+  if (formLoading.value) {
+    return;
+  }
   const forms = [
     ['info', infoFormApi],
     ['sku', skuFormApi],
@@ -237,7 +240,14 @@ async function handleSubmit() {
   values.sliderPicUrls = newSliderPicUrls;
 
   // 提交数据
-  await (spuId.value ? updateSpu(values) : createSpu(values));
+  formLoading.value = true;
+  try {
+    await (spuId.value ? updateSpu(values) : createSpu(values));
+    message.success('保存成功');
+    await closeCurrentTab();
+  } finally {
+    formLoading.value = false;
+  }
 }
 
 /** 获得详情 */
@@ -380,7 +390,12 @@ onMounted(async () => {
         @tab-change="handleTabChange"
       >
         <template #tabBarExtraContent>
-          <Button type="primary" v-if="!isDetail" @click="handleSubmit">
+          <Button
+            type="primary"
+            v-if="!isDetail"
+            :loading="formLoading"
+            @click="handleSubmit"
+          >
             保存
           </Button>
           <Button type="default" v-else @click="() => closeCurrentTab()">

@@ -55,7 +55,8 @@ export async function runIncrementalPull<T extends PullRecord>(
   const storedCursor = await getPullCursor(db, cursorKey);
   const highWater = { ...storedCursor };
   let cursor =
-    storedCursor.lastUpdateTime === null
+    storedCursor.lastUpdateTime === null ||
+    storedCursor.lastUpdateTime === undefined
       ? {}
       : {
           lastUpdateTime: Math.max(
@@ -77,12 +78,13 @@ export async function runIncrementalPull<T extends PullRecord>(
       }
       // 推进游标到本页最后一条并持久化：下次从这里接着拉
       const last = list[list.length - 1]!;
-      if (last.updateTime === null) {
+      if (last.updateTime === null || last.updateTime === undefined) {
         return;
       }
       cursor = { lastUpdateTime: last.updateTime, lastId: last.id };
       if (
         highWater.lastUpdateTime === null ||
+        highWater.lastUpdateTime === undefined ||
         cursor.lastUpdateTime > highWater.lastUpdateTime ||
         (cursor.lastUpdateTime === highWater.lastUpdateTime &&
           cursor.lastId > (highWater.lastId ?? 0))
@@ -140,14 +142,14 @@ export async function runMinIdPull<T extends { id?: number }>(options: {
     // 本批最大消息 id 作为下次游标；无有效 id 则本批 apply 后停（无法继续翻页）
     const validIds = list
       .map((record) => record.id)
-      .filter((id): id is number => id !== null);
+      .filter((id): id is number => id !== null && id !== undefined);
     const nextMinId = validIds.length > 0 ? Math.max(...validIds) : undefined;
     // applyPage 返回 false：本页未落地（如入库失败），不推进游标并终止，避免漏消息
     if ((await applyPage(list, nextMinId)) === false) {
       return;
     }
     // 无有效 id，或游标没前进（后端契约是 id > minId，理论不会出现）：停，防御死翻
-    if (nextMinId === null || nextMinId <= minId) {
+    if (nextMinId === null || nextMinId === undefined || nextMinId <= minId) {
       return;
     }
     minId = nextMinId;

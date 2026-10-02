@@ -214,6 +214,7 @@ export function useGridColumns(
       field: 'picUrls',
       title: '评论图片',
       minWidth: 120,
+      showOverflow: false,
       cellRender: {
         name: 'CellImages',
       },

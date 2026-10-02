@@ -176,6 +176,10 @@ setupVbenVxeTable({
           unCheckedChildren: $t('common.disabled'),
           unCheckedValue: 0,
           ...props,
+          disabled:
+            typeof props?.disabled === 'function'
+              ? props.disabled(row)
+              : props?.disabled,
           checked: row[column.field],
           loading: row[loadingKey] ?? false,
           'onUpdate:checked': onChange,

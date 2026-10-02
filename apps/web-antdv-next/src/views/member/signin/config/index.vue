@@ -72,7 +72,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<MemberSignInConfigApi.SignInConfig>,
 });

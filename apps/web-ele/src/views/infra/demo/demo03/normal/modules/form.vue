@@ -52,6 +52,10 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 校验子表单
+    if (!demo03CourseFormRef.value?.validate()) {
+      subTabsName.value = 'demo03Course';
+      return;
+    }
     const demo03GradeValid = await demo03GradeFormRef.value?.validate();
     if (!demo03GradeValid) {
       subTabsName.value = 'demo03Grade';

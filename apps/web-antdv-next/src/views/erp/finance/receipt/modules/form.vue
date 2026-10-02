@@ -197,7 +197,7 @@ const [Modal, modalApi] = useVbenModal({
       <template #items>
         <ItemForm
           ref="itemFormRef"
-          :items="formData?.items ?? []"
+          :items="formData?.items"
           :customer-id="formData?.customerId"
           :disabled="formType === 'detail'"
           :discount-price="formData?.discountPrice ?? 0"

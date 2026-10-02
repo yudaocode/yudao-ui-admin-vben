@@ -91,7 +91,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.AI_WRITE_TYPE },
+        props: { type: DICT_TYPE.AI_PLATFORM },
       },
     },
     {

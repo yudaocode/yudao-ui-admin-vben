@@ -97,20 +97,13 @@ watch(
 watch(
   () => [tableData.value, props.discountPrice],
   () => {
-    if (!tableData.value || tableData.value.length === 0) {
-      return;
-    }
-    const totalPrice = tableData.value.reduce(
-      (prev, curr) => prev + (curr.totalPrice || 0),
-      0,
-    );
     const paymentPrice = tableData.value.reduce(
       (prev, curr) => prev + (curr.paymentPrice || 0),
       0,
     );
     const finalPaymentPrice = paymentPrice - (props.discountPrice || 0);
     // 通知父组件更新
-    emit('update:totalPrice', totalPrice);
+    emit('update:totalPrice', paymentPrice);
     emit('update:paymentPrice', finalPaymentPrice);
   },
   { deep: true },

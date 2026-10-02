@@ -20,8 +20,11 @@ import { ElCard, ElLoading, ElMessage, ElTag } from 'element-plus';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { getDeliveryPickUpStore } from '#/api/mall/trade/delivery/pickUpStore';
-import * as TradeOrderApi from '#/api/mall/trade/order';
-import { getExpressTrackList } from '#/api/mall/trade/order';
+import {
+  getExpressTrackList,
+  getOrder,
+  pickUpOrder,
+} from '#/api/mall/trade/order';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
@@ -162,7 +165,7 @@ const [PriceFormModal, priceFormModalApi] = useVbenModal({
 async function getDetail() {
   loading.value = true;
   try {
-    const res = await TradeOrderApi.getOrder(orderId.value);
+    const res = await getOrder(orderId.value);
     if (res === null) {
       ElMessage.error('交易订单不存在');
       handleBack();
@@ -216,7 +219,7 @@ const handlePickUp = async () => {
     text: '正在处理中...',
   });
   try {
-    await TradeOrderApi.pickUpOrder(order.value.id!);
+    await pickUpOrder(order.value.id!);
     ElMessage.success('核销成功');
     await getDetail();
   } finally {

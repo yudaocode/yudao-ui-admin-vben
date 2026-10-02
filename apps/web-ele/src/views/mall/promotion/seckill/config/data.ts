@@ -118,6 +118,7 @@ export function useGridColumns(
       title: '秒杀轮播图',
       field: 'sliderPicUrls',
       minWidth: 100,
+      showOverflow: false,
       cellRender: {
         name: 'CellImages',
       },

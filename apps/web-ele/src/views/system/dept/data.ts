@@ -13,7 +13,9 @@ import { getSimpleUserList } from '#/api/system/user';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+export async function loadUserList() {
+  userList = await getSimpleUserList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

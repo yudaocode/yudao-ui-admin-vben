@@ -44,10 +44,14 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    modalApi.lock();
     // 提交表单
     const data =
       (await formApi.getValues()) as MemberSignInConfigApi.SignInConfig;
+    if (!((data.point ?? 0) > 0 || (data.experience ?? 0) > 0)) {
+      ElMessage.error('奖励积分与奖励经验至少配置一个');
+      return;
+    }
+    modalApi.lock();
     try {
       await (formData.value?.id
         ? updateSignInConfig(data)

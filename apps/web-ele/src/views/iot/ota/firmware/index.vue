@@ -13,7 +13,12 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteOtaFirmware, getOtaFirmwarePage } from '#/api/iot/ota/firmware';
 import { $t } from '#/locales';
 
-import { getProductName, useGridColumns, useGridFormSchema } from './data';
+import {
+  getProductName,
+  loadProductList,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import OtaFirmwareForm from './modules/form.vue';
 
 const { push } = useRouter();
@@ -73,6 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          await loadProductList();
           return await getOtaFirmwarePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

@@ -245,6 +245,7 @@ async function validateAllSteps() {
     await validateProcess();
   } catch {
     currentStep.value = 2;
+    message.warning('请设计并完善流程');
     return false;
   }
 

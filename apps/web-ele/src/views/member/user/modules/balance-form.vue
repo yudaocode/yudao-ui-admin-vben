@@ -43,9 +43,18 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    modalApi.lock();
     // 提交表单
     const data = await formApi.getValues();
+    const change = yuanToFen(data.changeBalance);
+    if (!Number.isFinite(change) || change <= 0) {
+      ElMessage.error('变动余额必须大于 0');
+      return;
+    }
+    if (yuanToFen(data.balance) + change * data.changeType < 0) {
+      ElMessage.error('变动后余额不能小于 0');
+      return;
+    }
+    modalApi.lock();
     try {
       await updateWalletBalance({
         userId: data.id!,

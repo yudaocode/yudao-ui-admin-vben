@@ -179,9 +179,13 @@ function handleRowChange(row: any) {
 
 /** 初始化行数据 */
 function initRow(row: ErpStockCheckApi.StockCheckItem) {
-  if (row.productPrice && row.count) {
-    row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-  }
+  row.totalPrice =
+    row.productPrice !== null &&
+    row.productPrice !== undefined &&
+    row.count !== null &&
+    row.count !== undefined
+      ? (erpPriceMultiply(row.productPrice, row.count) ?? 0)
+      : undefined;
 }
 
 /** 表单校验 */

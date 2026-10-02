@@ -16,10 +16,13 @@ export function useGridFormSchemaConversation(): VbenFormSchema[] {
   return [
     {
       fieldName: 'userId',
-      label: '用户编号',
-      component: 'Input',
+      label: '用户',
+      component: 'ApiSelect',
       componentProps: {
-        placeholder: '请输入用户编号',
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择用户',
         clearable: true,
       },
     },
@@ -129,7 +132,7 @@ export function useGridFormSchemaMessage(): VbenFormSchema[] {
     },
     {
       fieldName: 'userId',
-      label: '用户编号',
+      label: '用户',
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,

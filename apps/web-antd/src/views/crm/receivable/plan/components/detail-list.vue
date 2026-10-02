@@ -13,6 +13,7 @@ import {
   getReceivablePlanPageByCustomer,
 } from '#/api/crm/receivable/plan';
 import { $t } from '#/locales';
+import ReceivableForm from '#/views/crm/receivable/modules/form.vue';
 
 import Form from '../modules/form.vue';
 import { useDetailListColumns } from './data';
@@ -26,6 +27,15 @@ const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+const [ReceivableFormModal, receivableFormModalApi] = useVbenModal({
+  connectedComponent: ReceivableForm,
+  destroyOnClose: true,
+});
+
+function handleCreateReceivable(row: CrmReceivablePlanApi.Plan) {
+  receivableFormModalApi.setData({ plan: row }).open();
+}
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -102,6 +112,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <div>
     <FormModal @success="handleRefresh" />
+    <ReceivableFormModal @success="handleRefresh" />
     <Grid>
       <template #toolbar-tools>
         <TableAction
@@ -119,6 +130,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <template #actions="{ row }">
         <TableAction
           :actions="[
+            {
+              label: '创建回款',
+              type: 'link',
+              icon: ACTION_ICON.ADD,
+              auth: ['crm:receivable:create'],
+              disabled: !!row.receivableId,
+              onClick: handleCreateReceivable.bind(null, row),
+            },
             {
               label: $t('common.edit'),
               type: 'link',

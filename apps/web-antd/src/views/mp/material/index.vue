@@ -54,6 +54,11 @@ const getColumnsByType = () => {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      await gridApi.formApi.setFieldValue('accountId', accountId.value);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -73,8 +78,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
             pageSize: page.pageSize,
             type: type.value,
             permanent: true,
-            accountId: finalAccountId,
             ...formValues,
+            accountId: finalAccountId,
           });
         },
       },

@@ -87,8 +87,13 @@ function handleCancel(row: BpmProcessInstanceApi.ProcessInstance) {
     title: '取消流程',
     modelPropName: 'modelValue',
   }).then(async (reason) => {
-    if (reason) {
-      await cancelProcessInstanceByStartUser(row.id, reason);
+    const cancelReason = reason?.trim();
+    if (!cancelReason) {
+      ElMessage.warning('请输入取消原因');
+      return;
+    }
+    if (cancelReason) {
+      await cancelProcessInstanceByStartUser(row.id, cancelReason);
       ElMessage.success('取消成功');
       handleRefresh();
     }

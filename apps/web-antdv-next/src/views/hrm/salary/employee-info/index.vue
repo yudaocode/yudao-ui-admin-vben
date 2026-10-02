@@ -74,7 +74,9 @@ async function handleRefresh() {
 
 function handleStatusTabChange(key: number | string) {
   activeStatus.value = String(key);
-  handleRefresh();
+  gridApi.reload();
+  getStatusCounts();
+  checkedEmployeeIds.value = [];
 }
 
 function openDetail(employeeId?: number) {
@@ -111,6 +113,16 @@ function handleRowCheckboxChange({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleSubmit: async (values) => {
+      gridApi.formApi.setLatestSubmissionValues(values);
+      await Promise.all([gridApi.reload(values), getStatusCounts()]);
+    },
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      activeStatus.value = String(HrmEmployeeStatusTab.ACTIVE);
+      checkedEmployeeIds.value = [];
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
     submitOnEnter: true,
   },

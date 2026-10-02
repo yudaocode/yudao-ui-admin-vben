@@ -96,6 +96,7 @@ async function submitVideo() {
     });
     const res = await response.json();
     if (res?.code !== 0) {
+      handleRemove();
       message.error(`上传出错：${res?.msg || '上传响应格式错误'}`);
       return;
     }
@@ -107,7 +108,8 @@ async function submitVideo() {
     message.success('上传成功');
     emit('uploaded');
   } catch (error: any) {
-    message.error(`上传失败: ${error.message}`);
+    handleRemove();
+    message.error(`上传失败: ${error?.message || '请重试'}`);
   } finally {
     uploading.value = false;
   }

@@ -56,7 +56,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: z.number().default(CommonStatusEnum.ENABLE).optional(),
+      rules: z.number().default(CommonStatusEnum.ENABLE),
     },
     {
       fieldName: 'nickname',
@@ -518,8 +518,8 @@ export function usePointFormSchema(): VbenFormSchema[] {
         trigger(values, form) {
           form.setFieldValue(
             'pointResult',
-            values.point + values.changePoint * values.changeType ||
-              values.point,
+            Number(values.point || 0) +
+              Number(values.changePoint || 0) * values.changeType,
           );
         },
       },

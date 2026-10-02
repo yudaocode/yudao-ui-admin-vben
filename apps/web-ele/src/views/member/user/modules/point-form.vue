@@ -38,9 +38,18 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) {
       return;
     }
-    modalApi.lock();
     // 提交表单
     const data = await formApi.getValues();
+    const change = Number(data.changePoint);
+    if (!Number.isInteger(change) || change <= 0) {
+      ElMessage.error('变动积分必须为正整数');
+      return;
+    }
+    if (Number(data.point) + change * data.changeType < 0) {
+      ElMessage.error('变动后积分不能小于 0');
+      return;
+    }
+    modalApi.lock();
     try {
       await updateUserPoint({
         id: data.id,
