@@ -296,6 +296,7 @@ export function useGridColumns(): VxeTableGridOptions<MesDvRepairApi.Repair>['co
       },
     },
     { field: 'name', title: '维修单名称', minWidth: 150 },
+    { field: 'machineryCode', title: '设备编码', minWidth: 140 },
     { field: 'machineryName', title: '设备名称', minWidth: 150 },
     {
       field: 'requireDate',
@@ -303,6 +304,7 @@ export function useGridColumns(): VxeTableGridOptions<MesDvRepairApi.Repair>['co
       width: 180,
       formatter: 'formatDateTime',
     },
+    { field: 'confirmUserNickname', title: '验收人', minWidth: 120 },
     {
       field: 'finishDate',
       title: '完成日期',

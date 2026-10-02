@@ -98,9 +98,12 @@ function handleCloseValue(index: number, value: PropertyAndValues) {
 
 /** 删除属性 */
 function handleCloseProperty(item: PropertyAndValues) {
-  attributeList.value = attributeList.value.filter(
-    (attribute) => attribute.id !== item.id,
+  const index = attributeList.value.findIndex(
+    (attribute) => attribute.id === item.id,
   );
+  if (index !== -1) {
+    attributeList.value.splice(index, 1);
+  }
   emit('success', attributeList.value);
 }
 

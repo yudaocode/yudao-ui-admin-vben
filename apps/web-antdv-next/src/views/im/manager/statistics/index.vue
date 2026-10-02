@@ -11,11 +11,17 @@ import { DistributionChart, OverviewCards, TrendChart } from './components';
 
 defineOptions({ name: 'ImManagerStatistics' });
 
-const overview = ref<ImManagerStatisticsApi.Overview>();
+const overview = ref<Partial<ImManagerStatisticsApi.Overview>>({});
+const loading = ref(false);
 
 /** 加载概览数据 */
 async function loadOverview() {
-  overview.value = await getStatisticsOverview();
+  loading.value = true;
+  try {
+    overview.value = await getStatisticsOverview();
+  } finally {
+    loading.value = false;
+  }
 }
 
 onMounted(loadOverview);
@@ -24,7 +30,7 @@ onMounted(loadOverview);
 <template>
   <Page auto-content-height>
     <div class="space-y-4">
-      <OverviewCards v-if="overview" :overview="overview" />
+      <OverviewCards :overview="overview" :loading="loading" />
 
       <div class="grid grid-cols-2 gap-4 max-xl:grid-cols-1">
         <TrendChart type="message" />

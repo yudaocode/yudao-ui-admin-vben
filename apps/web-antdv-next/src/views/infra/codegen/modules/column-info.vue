@@ -59,25 +59,17 @@ defineExpose({
 
 /** 初始化 */
 const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型选项
+
 onMounted(async () => {
   dictTypeOptions.value = await getSimpleDictTypeList();
 });
 
 /** 字典类型过滤：支持 type 或 name，忽略大小写 */
 function filterDictTypeOption(input: string, option: any) {
-  if (!option?.key) {
-    return false;
-  }
   const searchValue = input.toLowerCase();
-  const dictType = dictTypeOptions.value.find(
-    (item) => item.type === option.key,
-  );
-  if (!dictType) {
-    return false;
-  }
   return (
-    dictType.type.toLowerCase().includes(searchValue) ||
-    dictType.name.toLowerCase().includes(searchValue)
+    (option?.type || '').toLowerCase().includes(searchValue) ||
+    (option?.name || '').toLowerCase().includes(searchValue)
   );
 }
 </script>

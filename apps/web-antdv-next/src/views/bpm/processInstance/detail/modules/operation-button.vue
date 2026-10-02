@@ -183,7 +183,12 @@ const copyForm = reactive({
 });
 const copyFormRule: Record<string, Rule[]> = reactive({
   copyUserIds: [
-    { required: true, message: '抄送人不能为空', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '抄送人不能为空',
+      trigger: 'change',
+    },
   ],
 });
 
@@ -226,7 +231,12 @@ const addSignForm = reactive({
 });
 const addSignFormRule: Record<string, Rule[]> = reactive({
   addSignUserIds: [
-    { required: true, message: '加签处理人不能为空', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '加签处理人不能为空',
+      trigger: 'change',
+    },
   ],
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });
@@ -827,7 +837,7 @@ const imagePreviewUrl = ref('');
 
 /** 判断文件是否为图片类型 */
 function isImageUrl(url: string) {
-  return /\.(bmp|gif|jpe?g|png|svg|webp)$/i.test(url);
+  return /\.(bmp|gif|jpe?g|png|svg|webp)$/i.test(url.split(/[?#]/)[0] || '');
 }
 
 /** 处理文件预览 */

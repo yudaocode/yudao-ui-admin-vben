@@ -10,7 +10,6 @@ import {
   MesDvMaintenRecordStatusEnum,
   MesDvSubjectTypeEnum,
 } from '@vben/constants';
-import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -100,12 +99,27 @@ export function useFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'machineryName',
-      label: '设备名称',
-      component: 'Input',
+      fieldName: 'planId',
+      label: '保养计划',
+      component: markRaw(DvCheckPlanSelect),
+      componentProps: { placeholder: '请选择保养计划' },
+    },
+    {
+      fieldName: 'machineryId',
+      label: '设备',
+      component: markRaw(DvMachinerySelect),
+      componentProps: { placeholder: '请选择设备' },
+    },
+    {
+      fieldName: 'userId',
+      label: '保养人',
+      component: 'ApiSelect',
       componentProps: {
         allowClear: true,
-        placeholder: '请输入设备名称',
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择保养人',
       },
     },
     {
@@ -114,16 +128,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-      },
-    },
-    {
-      fieldName: 'status',
-      label: '状态',
-      component: 'Select',
-      componentProps: {
-        allowClear: true,
-        options: getDictOptions(DICT_TYPE.MES_MAINTEN_RECORD_STATUS, 'number'),
-        placeholder: '请选择状态',
       },
     },
   ];
@@ -141,6 +145,8 @@ export function useGridColumns(): VxeTableGridOptions<MesDvMaintenRecordApi.Main
         default: 'machineryName',
       },
     },
+    { field: 'machineryBrand', title: '品牌', minWidth: 120 },
+    { field: 'machinerySpecification', title: '规格型号', minWidth: 150 },
     { field: 'planName', title: '计划名称', minWidth: 150 },
     {
       field: 'maintenTime',

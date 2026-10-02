@@ -45,7 +45,8 @@ const showClear = computed(
     !props.disabled &&
     hovering.value &&
     props.modelValue !== undefined &&
-    props.modelValue !== null,
+    props.modelValue !== null &&
+    props.modelValue !== undefined,
 );
 
 /** 根据工作站编号回显选择器 */
@@ -87,7 +88,9 @@ function handleClick(event: MouseEvent) {
     return;
   }
   const selectedIds = (
-    props.modelValue === null ? [] : [props.modelValue]
+    props.modelValue === null || props.modelValue === undefined
+      ? []
+      : [props.modelValue]
   ) as number[];
   dialogRef.value?.open(selectedIds, { multiple: false });
 }

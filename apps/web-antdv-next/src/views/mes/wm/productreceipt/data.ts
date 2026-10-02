@@ -16,7 +16,6 @@ import {
 import { Button } from 'antdv-next';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { getRangePickerDefaultProps } from '#/utils';
 import { MdItemSelect } from '#/views/mes/md/item/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
@@ -145,13 +144,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'receiptDate',
-      label: '入库日期',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
-        allowClear: true,
-      },
+      fieldName: 'workOrderId',
+      label: '生产工单',
+      component: markRaw(ProWorkOrderSelect),
+      componentProps: { placeholder: '请选择生产工单' },
+    },
+    {
+      fieldName: 'itemId',
+      label: '产品物料',
+      component: markRaw(MdItemSelect),
+      componentProps: { placeholder: '请选择产品物料' },
     },
   ];
 }

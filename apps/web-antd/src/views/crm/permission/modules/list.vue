@@ -190,7 +190,7 @@ watch(
   (data) => {
     isPool.value = false;
     if (data.length > 0) {
-      isPool.value = data.some(
+      isPool.value = !data.some(
         (item) => item.level === PermissionLevelEnum.OWNER,
       );
       validateOwnerUser.value = false;

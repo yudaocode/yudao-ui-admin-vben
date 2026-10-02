@@ -141,7 +141,8 @@ export function useFormSchema(): VbenFormSchema[] {
           placeholder: values.id ? '留空表示不修改' : '请输入授权码或密码',
           autocomplete: 'new-password',
         }),
-        rules: (values) => (values.id ? null : 'required'),
+        rules: (values) =>
+          values.id ? null : z.string().trim().min(1, '请输入授权码或密码'),
       },
     },
     {

@@ -79,6 +79,11 @@ function beforeUpload(file: UploadFile) {
   return false;
 }
 
+/** 移除文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
 /** 下载模版 */
 async function handleDownload() {
   const data = await importDeviceTemplate();
@@ -95,6 +100,7 @@ async function handleDownload() {
             :max-count="1"
             accept=".xls,.xlsx"
             :before-upload="beforeUpload"
+            :on-remove="handleRemove"
           >
             <Button type="primary"> 选择 Excel 文件 </Button>
           </Upload>

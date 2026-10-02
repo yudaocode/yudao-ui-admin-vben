@@ -99,16 +99,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
-    {
-      fieldName: 'status',
-      label: '是否启用',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择是否启用',
-        allowClear: true,
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
-    },
   ];
 }
 

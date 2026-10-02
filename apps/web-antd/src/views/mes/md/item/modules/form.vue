@@ -49,6 +49,12 @@ const [Form, formApi] = useVbenForm({
   wrapperClass: 'grid-cols-3',
   layout: 'horizontal',
   schema: [],
+  handleValuesChange(values) {
+    if (formData.value) {
+      formData.value.batchFlag = values.batchFlag;
+      formData.value.itemOrProduct = values.itemOrProduct;
+    }
+  },
   showDefaultActions: false,
 });
 

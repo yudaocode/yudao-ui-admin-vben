@@ -7,6 +7,8 @@ import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
+import { ElMessage } from 'element-plus';
+
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   createNextInsuranceMonthRecord,
@@ -99,6 +101,7 @@ async function handleDelete(
 ) {
   if (!row.id) return;
   await deleteInsuranceMonthRecord(row.id);
+  ElMessage.success('删除成功');
   await loadLatestRecord();
   await gridApi.query();
 }

@@ -9,9 +9,13 @@ import { ElCard } from 'element-plus';
 
 defineOptions({ name: 'ImManagerStatisticsOverviewCards' });
 
-const props = defineProps<{
-  overview: ImManagerStatisticsApi.Overview;
-}>();
+const props = withDefaults(
+  defineProps<{
+    loading?: boolean;
+    overview: Partial<ImManagerStatisticsApi.Overview>;
+  }>(),
+  { loading: false },
+);
 
 /** 计算环比 */
 function calcRatio(today: number, yesterday: number) {
@@ -65,7 +69,7 @@ const cards = computed(() => {
     {
       title: '今日消息',
       value: totalMsgToday,
-      suffix: `（P ${overview.privateMessageToday}/G ${overview.groupMessageToday}）`,
+      suffix: `（P ${overview.privateMessageToday || 0}/G ${overview.groupMessageToday || 0}）`,
       icon: 'lucide:message-circle',
       color: '#64748b',
       metaLabel: '环比昨日',
@@ -79,6 +83,7 @@ const cards = computed(() => {
 <template>
   <div class="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
     <ElCard
+      v-loading="loading"
       v-for="card in cards"
       :key="card.title"
       :body-style="{ padding: '16px' }"

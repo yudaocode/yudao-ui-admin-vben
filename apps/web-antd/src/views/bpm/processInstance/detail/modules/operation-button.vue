@@ -184,7 +184,12 @@ const copyForm = reactive({
 });
 const copyFormRule: Record<string, Rule[]> = reactive({
   copyUserIds: [
-    { required: true, message: '抄送人不能为空', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '抄送人不能为空',
+      trigger: 'change',
+    },
   ],
 });
 
@@ -227,7 +232,12 @@ const addSignForm = reactive({
 });
 const addSignFormRule: Record<string, Rule[]> = reactive({
   addSignUserIds: [
-    { required: true, message: '加签处理人不能为空', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '加签处理人不能为空',
+      trigger: 'change',
+    },
   ],
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });

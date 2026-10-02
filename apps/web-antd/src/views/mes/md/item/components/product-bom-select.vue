@@ -45,7 +45,8 @@ const showClear = computed(
     !props.disabled &&
     hovering.value &&
     props.modelValue !== undefined &&
-    props.modelValue !== null,
+    props.modelValue !== null &&
+    props.modelValue !== undefined,
 );
 
 /** 根据 BOM 子物料编号回显选择器 */

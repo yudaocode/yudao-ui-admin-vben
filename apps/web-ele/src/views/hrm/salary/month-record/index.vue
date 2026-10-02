@@ -13,6 +13,7 @@ import {
   ElButton,
   ElCard,
   ElEmpty,
+  ElMessage,
   ElTabPane,
   ElTabs,
 } from 'element-plus';
@@ -214,6 +215,7 @@ async function handleCreate() {
   createLoading.value = true;
   try {
     await createNextSalaryMonthRecord();
+    ElMessage.success('新建成功');
     await init();
   } finally {
     createLoading.value = false;
@@ -231,6 +233,7 @@ async function handleCreateNext() {
     return;
   }
   await createNextSalaryMonthRecord();
+  ElMessage.success('新建成功');
   await init();
 }
 
@@ -248,6 +251,7 @@ async function handleDelete() {
     return;
   }
   await deleteSalaryMonthRecord(record.value.id);
+  ElMessage.success('删除成功');
   await init();
 }
 

@@ -8,7 +8,16 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { Alert, Button, Card, Empty, Spin, TabPane, Tabs } from 'antdv-next';
+import {
+  Alert,
+  Button,
+  Card,
+  Empty,
+  message,
+  Spin,
+  TabPane,
+  Tabs,
+} from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -207,6 +216,7 @@ async function handleCreate() {
   createLoading.value = true;
   try {
     await createNextSalaryMonthRecord();
+    message.success('新建成功');
     await init();
   } finally {
     createLoading.value = false;
@@ -224,6 +234,7 @@ async function handleCreateNext() {
     return;
   }
   await createNextSalaryMonthRecord();
+  message.success('新建成功');
   await init();
 }
 
@@ -241,6 +252,7 @@ async function handleDelete() {
     return;
   }
   await deleteSalaryMonthRecord(record.value.id);
+  message.success('删除成功');
   await init();
 }
 

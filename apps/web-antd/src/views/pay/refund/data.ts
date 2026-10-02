@@ -207,7 +207,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'refundPrice',
       label: '退款金额',
       render: (val) =>
-        h(Tag, { color: 'danger' }, () => `￥${fenToYuan(val || 0)}`),
+        h(Tag, { color: 'error' }, () => `￥${fenToYuan(val || 0)}`),
     },
     {
       field: 'status',

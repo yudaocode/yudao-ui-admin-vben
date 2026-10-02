@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ImManagerPrivateMessageApi } from '#/api/im/manager/message/private';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -26,7 +26,7 @@ function handleDetail(row: ImManagerPrivateMessageApi.PrivateMessage) {
   detailRef.value?.open(row);
 }
 
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: usePrivateGridFormSchema(),
   },
@@ -35,17 +35,12 @@ const [Grid] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getManagerPrivateMessagePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            senderId: route.query.senderId
-              ? Number(route.query.senderId)
-              : undefined,
-            receiverId: route.query.receiverId
-              ? Number(route.query.receiverId)
-              : undefined,
             ...formValues,
           });
         },
@@ -60,6 +55,16 @@ const [Grid] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<ImManagerPrivateMessageApi.PrivateMessage>,
+});
+
+onMounted(async () => {
+  await gridApi.formApi.setValues({
+    senderId: route.query.senderId ? Number(route.query.senderId) : undefined,
+    receiverId: route.query.receiverId
+      ? Number(route.query.receiverId)
+      : undefined,
+  });
+  await gridApi.formApi.submit();
 });
 </script>
 

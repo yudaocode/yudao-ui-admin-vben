@@ -265,7 +265,7 @@ onMounted(() => {
             ref="permissionListRef"
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
-            :show-action="true"
+            :show-action="!permissionListRef?.isPool"
             @quit-team="handleBack"
           />
         </ElTabPane>

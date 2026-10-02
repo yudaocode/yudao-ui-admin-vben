@@ -167,9 +167,13 @@ export function useFormSchema(
         precision: 2,
         // 新建态下，发货数量变化时把 checkQuantity 也填上同值
         onChange: async (value: null | number | undefined) => {
-          if (value === null || !formApi) return;
+          if (value === null || value === undefined || !formApi) return;
           const values = await formApi.getValues();
-          if (!values.id && values.checkQuantity === null) {
+          if (
+            !values.id &&
+            (values.checkQuantity === null ||
+              values.checkQuantity === undefined)
+          ) {
             await formApi.setFieldValue('checkQuantity', value);
           }
         },
@@ -184,9 +188,13 @@ export function useFormSchema(
           placeholder: '请输入发货数量',
           precision: 2,
           onChange: async (value: null | number | undefined) => {
-            if (value === null || !formApi) return;
+            if (value === null || value === undefined || !formApi) return;
             const current = await formApi.getValues();
-            if (!current.id && current.checkQuantity === null) {
+            if (
+              !current.id &&
+              (current.checkQuantity === null ||
+                current.checkQuantity === undefined)
+            ) {
               await formApi.setFieldValue('checkQuantity', value);
             }
           },
@@ -203,9 +211,12 @@ export function useFormSchema(
         placeholder: '请输入检测数量',
         // 新建态下，检测数量变化时把 outQuantity 也填上同值
         onChange: async (value: null | number | undefined) => {
-          if (value === null || !formApi) return;
+          if (value === null || value === undefined || !formApi) return;
           const values = await formApi.getValues();
-          if (!values.id && values.outQuantity === null) {
+          if (
+            !values.id &&
+            (values.outQuantity === null || values.outQuantity === undefined)
+          ) {
             await formApi.setFieldValue('outQuantity', value);
           }
         },

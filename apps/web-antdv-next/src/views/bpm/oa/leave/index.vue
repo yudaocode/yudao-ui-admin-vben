@@ -153,6 +153,7 @@ onActivated(() => {
               label: '发起请假',
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['bpm:oa-leave:create'],
               onClick: handleCreate,
             },
           ]"
@@ -165,12 +166,14 @@ onActivated(() => {
               label: $t('common.detail'),
               type: 'link',
               icon: ACTION_ICON.VIEW,
+              auth: ['bpm:oa-leave:query'],
               onClick: handleDetail.bind(null, row),
             },
             {
               label: '审批进度',
               type: 'link',
               icon: ACTION_ICON.VIEW,
+              auth: ['bpm:oa-leave:query'],
               onClick: handleProgress.bind(null, row),
             },
             {
@@ -179,6 +182,7 @@ onActivated(() => {
               danger: true,
               icon: ACTION_ICON.DELETE,
               ifShow: row.status === BpmProcessInstanceStatus.RUNNING,
+              auth: ['bpm:process-instance:cancel'],
               onClick: handleCancel.bind(null, row),
             },
             {
@@ -186,6 +190,7 @@ onActivated(() => {
               type: 'link',
               icon: ACTION_ICON.ADD,
               ifShow: row.status !== BpmProcessInstanceStatus.RUNNING,
+              auth: ['bpm:oa-leave:create'],
               onClick: handleReCreate.bind(null, row),
             },
           ]"

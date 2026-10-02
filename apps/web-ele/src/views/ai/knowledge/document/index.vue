@@ -103,6 +103,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          if (!route.query.knowledgeId) {
+            return { list: [], total: 0 };
+          }
           return await getKnowledgeDocumentPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

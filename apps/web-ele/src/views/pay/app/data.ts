@@ -457,11 +457,10 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         label: '接口内容加密方式',
         fieldName: 'config.encryptType',
         component: 'RadioGroup',
-        rules: 'required',
         componentProps: {
           options: [
             {
-              value: 'NONE',
+              value: '',
               label: '无加密',
             },
             {
@@ -470,7 +469,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
             },
           ],
         },
-        defaultValue: 'NONE',
+        defaultValue: '',
       },
       {
         label: '接口内容加密密钥',

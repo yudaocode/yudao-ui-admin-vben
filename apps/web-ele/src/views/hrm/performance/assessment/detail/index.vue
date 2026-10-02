@@ -29,6 +29,7 @@ import {
   getPerformanceAssessmentArchiveProcessRecordList,
   getPerformanceAssessmentProcessRecordList,
 } from '#/api/hrm/performance/assessment';
+import { DictTag } from '#/components/dict-tag';
 import {
   HrmPerformanceAssessmentStageStatus,
   HrmPerformancePlanStatus,
@@ -319,8 +320,16 @@ onMounted(getDetail);
           v-for="stage in stageList"
           :key="stage.id"
           :title="stage.name || '-'"
-          :description="stage.handlerName || '系统'"
-        />
+        >
+          <template #description>
+            <div class="mt-1">{{ stage.handlerName || '系统' }}</div>
+            <DictTag
+              class="mt-1"
+              :type="DICT_TYPE.HRM_PERFORMANCE_ASSESSMENT_STAGE_STATUS"
+              :value="stage.status ?? 0"
+            />
+          </template>
+        </ElStep>
       </Steps>
       <Empty v-else-if="!loading" description="暂无考核流程" />
     </div>

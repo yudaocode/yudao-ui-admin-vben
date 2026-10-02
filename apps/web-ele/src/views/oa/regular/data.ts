@@ -8,6 +8,7 @@ import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
+import { z } from '#/adapter/form';
 import { DictTag } from '#/components/dict-tag';
 
 /** 新增/修改的表单 */
@@ -30,7 +31,7 @@ export function useFormSchema(): VbenFormSchema[] {
         showWordLimit: true,
         placeholder: '请输入标题',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'urgency',
@@ -75,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxlength: 255,
         placeholder: '请输入试用期心得',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'understanding',
@@ -86,7 +87,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxlength: 255,
         placeholder: '请输入岗位职责理解',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'growth',
@@ -97,7 +98,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxlength: 255,
         placeholder: '请输入试用期成长',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'deficiency',
@@ -108,7 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxlength: 255,
         placeholder: '请输入目前不足',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'improvement',
@@ -119,7 +120,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxlength: 255,
         placeholder: '请输入工作改进',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'suggestion',
@@ -130,7 +131,7 @@ export function useFormSchema(): VbenFormSchema[] {
         maxlength: 255,
         placeholder: '请输入产品意见建议',
       },
-      rules: 'required',
+      rules: z.string().trim().min(1, '请输入有效内容'),
     },
     {
       fieldName: 'days',

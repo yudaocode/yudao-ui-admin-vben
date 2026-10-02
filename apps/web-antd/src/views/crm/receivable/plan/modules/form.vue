@@ -32,7 +32,7 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
-  schema: useFormSchema(),
+  schema: [],
   showDefaultActions: false,
 });
 
@@ -62,6 +62,7 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
+    formApi.setState({ schema: useFormSchema(formApi) });
     // 加载数据
     const data = modalApi.getData() as CrmReceivablePlanApi.Plan;
     if (!data || !data.id) {

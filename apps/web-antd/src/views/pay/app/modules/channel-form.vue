@@ -87,7 +87,7 @@ const [Modal, modalApi] = useVbenModal({
         appCertContent: undefined,
         alipayPublicCertContent: undefined,
         rootCertContent: undefined,
-        encryptType: undefined,
+        encryptType: '',
         encryptKey: undefined,
       };
     } else if (code.includes('mock')) {

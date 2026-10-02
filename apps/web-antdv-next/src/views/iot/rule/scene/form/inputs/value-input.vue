@@ -148,7 +148,7 @@ function handleDateChange(value: any) {
 
 /** 处理数字变化事件 ；InputNumber 回调值类型为 ValueType（string | number） */
 function handleNumberChange(value: any) {
-  localValue.value = value === null ? '' : String(value);
+  localValue.value = value === null || value === undefined ? '' : String(value);
 }
 
 /** 根据外部值同步内部输入态 */

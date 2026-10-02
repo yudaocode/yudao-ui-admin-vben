@@ -8,10 +8,7 @@ import { CommonStatusEnum } from '@vben/constants';
 import { message, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteSupplyItem,
-  getSupplyItemPage,
-} from '#/api/oa/supply/item';
+import { deleteSupplyItem, getSupplyItemPage } from '#/api/oa/supply/item';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -121,7 +118,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <span
           :class="
             (row.minStockQuantity ?? 0) > 0 &&
-            (row.stockQuantity ?? 0) < (row.minStockQuantity ?? 0)
+            row.stockQuantity !== null &&
+            row.stockQuantity !== undefined &&
+            row.stockQuantity < (row.minStockQuantity ?? 0)
               ? 'text-red-500'
               : ''
           "
@@ -131,9 +130,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #statusTag="{ row }">
         <Tag
-          :color="
-            row.status === CommonStatusEnum.ENABLE ? 'success' : 'error'
-          "
+          :color="row.status === CommonStatusEnum.ENABLE ? 'success' : 'error'"
         >
           {{ row.status === CommonStatusEnum.ENABLE ? '正常' : '停用' }}
         </Tag>

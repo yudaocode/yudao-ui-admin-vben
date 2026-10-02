@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessment';
 
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, h, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -27,6 +27,7 @@ import {
   getPerformanceAssessmentArchiveProcessRecordList,
   getPerformanceAssessmentProcessRecordList,
 } from '#/api/hrm/performance/assessment';
+import { DictTag } from '#/components/dict-tag';
 import {
   HrmPerformanceAssessmentStageStatus,
   HrmPerformancePlanStatus,
@@ -320,7 +321,14 @@ onMounted(getDetail);
         :current="activeStage"
         :items="
           stageList.map((stage) => ({
-            description: stage.handlerName || '系统',
+            description: h('div', {}, [
+              h('div', { class: 'mt-1' }, stage.handlerName || '系统'),
+              h(DictTag, {
+                class: 'mt-1',
+                type: DICT_TYPE.HRM_PERFORMANCE_ASSESSMENT_STAGE_STATUS,
+                value: stage.status ?? 0,
+              }),
+            ]),
             title: stage.name || '-',
           }))
         "
