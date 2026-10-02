@@ -59,16 +59,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'status',
-      label: '售后状态',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.TRADE_AFTER_SALE_STATUS, 'number'),
-        placeholder: '请选择售后状态',
-        clearable: true,
-      },
-    },
-    {
       fieldName: 'way',
       label: '售后方式',
       component: 'Select',

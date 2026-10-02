@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { ElButton } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getReceivablePage } from '#/api/crm/receivable';
 import { useGridColumns } from '#/views/crm/receivable/data';
 
@@ -98,9 +98,17 @@ const [Grid] = useVbenVxeGrid({
       </ElButton>
     </template>
     <template #actions="{ row }">
-      <ElButton type="primary" link @click="handleProcessDetail(row)">
-        查看审批
-      </ElButton>
+      <TableAction
+        :actions="[
+          {
+            label: '查看审批',
+            type: 'primary',
+            link: true,
+            auth: ['crm:receivable:update'],
+            onClick: handleProcessDetail.bind(null, row),
+          },
+        ]"
+      />
     </template>
   </Grid>
 </template>

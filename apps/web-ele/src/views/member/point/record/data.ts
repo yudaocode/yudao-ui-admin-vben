@@ -8,8 +8,6 @@ import { getDictOptions } from '@vben/hooks';
 
 import { ElTag } from 'element-plus';
 
-import { getRangePickerDefaultProps } from '#/utils';
-
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -38,15 +36,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入积分标题',
-        clearable: true,
-      },
-    },
-    {
-      fieldName: 'createDate',
-      label: '获得时间',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
         clearable: true,
       },
     },

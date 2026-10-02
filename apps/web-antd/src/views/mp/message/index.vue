@@ -217,6 +217,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '消息',
               type: 'link',
               icon: ACTION_ICON.VIEW,
+              auth: ['mp:message:send'],
               onClick: () => handleSend(row.userId || 0),
             },
           ]"

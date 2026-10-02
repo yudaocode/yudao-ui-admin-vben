@@ -77,6 +77,7 @@ export function useFormSchema(): VbenFormSchema[] {
         controlsPosition: 'right',
         class: '!w-full',
       },
+      defaultValue: 1800,
       rules: 'required',
     },
     {
@@ -89,6 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
         controlsPosition: 'right',
         class: '!w-full',
       },
+      defaultValue: 43_200,
       rules: 'required',
     },
     {

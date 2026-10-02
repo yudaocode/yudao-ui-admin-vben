@@ -97,7 +97,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         showTime: false,
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         placeholder: '请选择预计成交日期',
         class: '!w-full',

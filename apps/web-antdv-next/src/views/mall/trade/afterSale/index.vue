@@ -59,9 +59,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getAfterSalePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
+            ...formValues,
             status:
               statusTab.value === '0' ? undefined : Number(statusTab.value),
-            ...formValues,
           });
         },
       },

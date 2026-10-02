@@ -97,7 +97,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: $t('ui.cropper.preview'),
               type: 'link',
               icon: ACTION_ICON.EDIT,
-              auth: ['ai:api-key:update'],
               disabled: !row.generatedContent,
               onClick: openPreview.bind(null, row),
             },

@@ -3,6 +3,7 @@ import type { CrmCustomerPoolConfigApi } from '#/api/crm/customer/poolConfig';
 
 import { onMounted } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { Page } from '@vben/common-ui';
 
 import { ElCard, ElMessage } from 'element-plus';
@@ -16,6 +17,8 @@ import { $t } from '#/locales';
 
 import { schema } from './data';
 
+const { hasAccessByCodes } = useAccess();
+
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     labelWidth: 120,
@@ -23,6 +26,9 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema,
   handleSubmit,
+  submitButtonOptions: {
+    show: hasAccessByCodes(['crm:customer-pool-config:update']),
+  },
 });
 
 /** 提交表单 */

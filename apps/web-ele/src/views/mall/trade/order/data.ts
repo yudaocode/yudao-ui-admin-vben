@@ -23,6 +23,16 @@ getSimpleDeliveryPickUpStoreList().then((data) => {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
+      fieldName: 'type',
+      label: '订单类型',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.TRADE_ORDER_TYPE, 'number'),
+        placeholder: '请选择订单类型',
+        clearable: true,
+      },
+    },
+    {
       fieldName: 'status',
       label: '订单状态',
       component: 'Select',

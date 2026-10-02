@@ -71,6 +71,7 @@ const [Grid] = useVbenVxeGrid({
               label: '查看成员',
               type: 'link',
               icon: ACTION_ICON.VIEW,
+              auth: ['promotion:combination-record:query'],
               onClick: handleViewUsers.bind(null, row),
             },
           ]"

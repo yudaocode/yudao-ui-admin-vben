@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { Button } from 'ant-design-vue';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getReceivablePage } from '#/api/crm/receivable';
 import { useGridColumns } from '#/views/crm/receivable/data';
 
@@ -98,7 +98,16 @@ const [Grid] = useVbenVxeGrid({
       </Button>
     </template>
     <template #actions="{ row }">
-      <Button type="link" @click="handleProcessDetail(row)">查看审批</Button>
+      <TableAction
+        :actions="[
+          {
+            label: '查看审批',
+            type: 'link',
+            auth: ['crm:receivable:update'],
+            onClick: handleProcessDetail.bind(null, row),
+          },
+        ]"
+      />
     </template>
   </Grid>
 </template>

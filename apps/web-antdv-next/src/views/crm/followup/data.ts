@@ -47,8 +47,8 @@ export function useFormSchema(
       label: '下次联系时间',
       component: 'DatePicker',
       componentProps: {
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
+        showTime: false,
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         placeholder: '请选择下次联系时间',
       },

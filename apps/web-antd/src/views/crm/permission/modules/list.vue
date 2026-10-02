@@ -252,7 +252,7 @@ watch(
               label: '退出团队',
               type: 'primary',
               danger: true,
-              ifShow: !validateOwnerUser,
+              ifShow: !validateOwnerUser && gridData.length > 0,
               onClick: handleQuit,
             },
           ]"

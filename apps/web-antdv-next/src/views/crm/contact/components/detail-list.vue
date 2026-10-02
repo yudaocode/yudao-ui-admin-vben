@@ -182,9 +182,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
             {
               label: '解除关联',
-              icon: ACTION_ICON.ADD,
+              icon: ACTION_ICON.DELETE,
               type: 'default',
-              auth: ['crm:contact:create-business'],
+              auth: ['crm:contact:delete-business'],
               ifShow: () => !!businessId,
               onClick: handleDeleteContactBusinessList,
             },

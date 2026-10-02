@@ -158,7 +158,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '查看商品',
               type: 'link',
               icon: ACTION_ICON.VIEW,
-              auth: ['product:category:update'],
+              auth: ['product:spu:query'],
               ifShow: row.parentId !== undefined && row.parentId > 0,
               onClick: handleViewSpu.bind(null, row.id!),
             },

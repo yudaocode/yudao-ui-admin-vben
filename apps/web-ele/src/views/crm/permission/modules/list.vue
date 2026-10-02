@@ -250,7 +250,7 @@ watch(
             {
               label: '退出团队',
               type: 'danger',
-              ifShow: !validateOwnerUser,
+              ifShow: !validateOwnerUser && gridData.length > 0,
               onClick: handleQuit,
             },
           ]"

@@ -45,16 +45,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'type',
-      label: '类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.PAY_TRANSFER_TYPE),
-        clearable: true,
-        placeholder: '请选择类型',
-      },
-    },
-    {
       fieldName: 'status',
       label: '转账状态',
       component: 'Select',

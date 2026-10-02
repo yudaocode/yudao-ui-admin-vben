@@ -72,6 +72,7 @@ const [Grid] = useVbenVxeGrid({
               type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
+              auth: ['promotion:combination-record:query'],
               onClick: handleViewUsers.bind(null, row),
             },
           ]"

@@ -266,6 +266,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'channelNotifyData',
       label: '支付通道异步回调内容',
+      render: (_val, data) => data?.extension?.channelNotifyData,
     },
   ];
 }
