@@ -49,6 +49,7 @@ watch(
 const inputRefs = ref<HTMLInputElement[]>([]);
 // 节点名称输入框显示状态
 const showInputs = ref<boolean[]>([]);
+
 // 监听显示状态变化
 watch(
   showInputs,
@@ -65,6 +66,7 @@ watch(
   },
   { deep: true },
 );
+
 // 修改节点名称
 function changeNodeName(index: number) {
   showInputs.value[index] = false;

@@ -270,7 +270,9 @@ function syncFromBusinessObject() {
     }
   }
 }
+
 onMounted(syncFromBusinessObject);
+
 watch(() => props.businessObject, syncFromBusinessObject, { deep: true });
 </script>
 <template>

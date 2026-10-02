@@ -87,6 +87,7 @@ const [EntryForm, entryFormApi] = useVbenForm({
 watch(personalSchema, (schema) => formApi.setState({ schema }), {
   immediate: true,
 });
+
 watch(entrySchema, (schema) => entryFormApi.setState({ schema }), {
   immediate: true,
 });

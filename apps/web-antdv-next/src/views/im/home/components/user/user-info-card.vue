@@ -66,6 +66,7 @@ function handleKeydown(e: KeyboardEvent) {
 }
 
 onMounted(() => window.addEventListener('keydown', handleKeydown));
+
 onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 
 /** 发消息：UserInfo 抛上来的"发消息"，由本组件接力做 openConversation + 跳消息 Tab + 关浮层 */

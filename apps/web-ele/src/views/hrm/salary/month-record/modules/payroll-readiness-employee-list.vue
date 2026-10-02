@@ -34,6 +34,7 @@ async function refreshData() {
 }
 
 watch(() => props.list, refreshData, { deep: true });
+
 onMounted(refreshData);
 </script>
 

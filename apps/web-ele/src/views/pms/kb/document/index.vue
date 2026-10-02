@@ -584,6 +584,7 @@ onMounted(() => {
 watch(libraryId, () => {
   getPageData();
 });
+
 watch([() => route.query.folderId, () => route.query.documentId], () => {
   getRouteContent();
 });

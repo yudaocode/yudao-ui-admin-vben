@@ -89,7 +89,9 @@ async function getDetail() {
 }
 
 onMounted(getDetail);
+
 watch([employeeId, year, month], getDetail);
+
 watch(
   filteredLeaveList,
   async (rows) => {

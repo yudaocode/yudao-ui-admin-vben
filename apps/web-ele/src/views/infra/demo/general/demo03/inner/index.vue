@@ -162,6 +162,7 @@ function setTableToolbarRef(el: any) {
 function setTableRef(el: any) {
   tableRef.value = el;
 }
+
 onMounted(() => {
   getList();
 });

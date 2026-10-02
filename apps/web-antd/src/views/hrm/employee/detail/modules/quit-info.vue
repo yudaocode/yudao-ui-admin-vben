@@ -30,7 +30,9 @@ async function getQuitInfo() {
     loading.value = false;
   }
 }
+
 onMounted(getQuitInfo);
+
 defineExpose({ getQuitInfo });
 </script>
 <template>

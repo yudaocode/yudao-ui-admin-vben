@@ -79,6 +79,7 @@ async function handleDelete(recordId?: number) {
 }
 
 onMounted(getList);
+
 defineExpose({ getList });
 </script>
 

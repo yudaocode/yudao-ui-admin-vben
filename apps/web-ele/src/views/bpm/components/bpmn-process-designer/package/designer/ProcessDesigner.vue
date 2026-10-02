@@ -507,6 +507,7 @@ onMounted(() => {
   initBpmnModeler();
   createNewDiagram(props.value);
 });
+
 onBeforeUnmount(() => {
   if (bpmnModeler) bpmnModeler.destroy();
   emit('destroy', bpmnModeler);

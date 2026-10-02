@@ -68,6 +68,7 @@ async function renderRankingChart() {
   await nextTick();
   await renderEcharts(rankingOptions.value);
 }
+
 watch(rankingOptions, renderRankingChart);
 
 /** 查询当前区块数据 */

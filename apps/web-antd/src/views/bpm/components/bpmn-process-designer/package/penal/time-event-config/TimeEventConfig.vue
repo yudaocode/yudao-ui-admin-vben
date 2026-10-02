@@ -71,6 +71,7 @@ function syncFromBusinessObject(): void {
     }
   }
 }
+
 onMounted(syncFromBusinessObject);
 
 // 切换类型

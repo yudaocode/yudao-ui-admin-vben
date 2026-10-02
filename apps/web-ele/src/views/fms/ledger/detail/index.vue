@@ -66,6 +66,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 watch(accountSetId, () => init());
+
 watch(subjectKeyword, (value) => subjectTreeRef.value?.filter(value));
 
 /** 初始化明细账页面 */

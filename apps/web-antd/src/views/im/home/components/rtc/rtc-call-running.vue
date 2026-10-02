@@ -69,6 +69,7 @@ const hasRemoteVideo = computed(
 
 const now = ref(Date.now()); // 通话时长；仅 1v1 语音视图需要展示，其它视图不启 tick
 let tick = 0;
+
 watch(
   () => props.isGroup || props.isVideo,
   (suppressTick) => {
@@ -86,6 +87,7 @@ watch(
   },
   { immediate: true },
 );
+
 onUnmounted(() => {
   if (tick) {
     clearInterval(tick);

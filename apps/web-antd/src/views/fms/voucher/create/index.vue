@@ -222,6 +222,7 @@ const creatorUserName = computed(
 ); // 制单人名称
 
 watch(accountSetId, () => init());
+
 watch(
   () => [route.query.id, route.query.copyFrom],
   () => init(),
@@ -1116,8 +1117,11 @@ onMounted(() => {
   init();
   addPageShortcutListener();
 });
+
 onActivated(addPageShortcutListener);
+
 onDeactivated(removePageShortcutListener);
+
 onBeforeUnmount(removePageShortcutListener);
 </script>
 

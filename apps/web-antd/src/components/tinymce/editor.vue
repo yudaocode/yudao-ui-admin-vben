@@ -94,6 +94,7 @@ const langName = computed(() => {
 
 /** 监听 mode、locale 进行主题、语言切换 */
 const init = ref(true);
+
 watch(
   () => [preferences.theme.mode, preferences.app.locale],
   async () => {
@@ -161,6 +162,7 @@ const initOptions = computed((): InitOptions => {
 
 /** 监听 options.readonly 是否只读 */
 const disabled = computed(() => props.options.readonly ?? false);
+
 watch(
   () => props.options,
   (options) => {

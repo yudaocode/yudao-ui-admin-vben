@@ -175,6 +175,7 @@ function openIteration(iteration: PmsIterationApi.Iteration) {
 
 /** 初始化 */
 watch(trendChartOptions, (options) => renderTrendChart(options));
+
 onMounted(() => renderTrendChart(trendChartOptions.value));
 
 onMounted(() => {

@@ -27,6 +27,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: { enabled: false },
   } as VxeTableGridOptions<HrmPerformanceAssessmentTemplateApi.AssessmentQuota>,
 });
+
 watch(
   modelValue,
   async (quotas) => {
@@ -35,6 +36,7 @@ watch(
   },
   { immediate: true },
 );
+
 function addQuota() {
   modelValue.value = [
     ...modelValue.value,

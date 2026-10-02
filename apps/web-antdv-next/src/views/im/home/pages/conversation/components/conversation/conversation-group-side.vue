@@ -154,12 +154,15 @@ const editGroupRemark = ref('');
 watch(namePopoverVisible, (v) => {
   if (v) editName.value = props.group?.name || '';
 });
+
 watch(noticePopoverVisible, (v) => {
   if (v) editNotice.value = props.group?.notice || '';
 });
+
 watch(remarkPopoverVisible, (v) => {
   if (v) editRemark.value = props.group?.remarkNickName || '';
 });
+
 watch(groupRemarkPopoverVisible, (v) => {
   if (v) editGroupRemark.value = props.group?.groupRemark || '';
 });

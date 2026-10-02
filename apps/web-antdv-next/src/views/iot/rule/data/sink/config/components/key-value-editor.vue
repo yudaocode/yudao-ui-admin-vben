@@ -50,6 +50,7 @@ function updateModelValue() {
 
 /** 监听项目变化 */
 watch(items, updateModelValue, { deep: true });
+
 watch(
   () => props.modelValue,
   (val) => {

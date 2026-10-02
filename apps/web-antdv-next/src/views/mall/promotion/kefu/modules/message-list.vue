@@ -239,6 +239,7 @@ watch(
     }
   },
 );
+
 /** 加载历史消息 */
 async function handleOldMessage() {
   loadHistory.value = true;

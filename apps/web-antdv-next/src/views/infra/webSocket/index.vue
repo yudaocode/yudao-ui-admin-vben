@@ -49,6 +49,7 @@ const messageList = ref(
   [] as { text: string; time: number; type?: string; userId?: string }[],
 ); // 消息列表
 const messageReverseList = computed(() => [...messageList.value].toReversed());
+
 watchEffect(() => {
   if (!data.value) {
     return;
@@ -177,6 +178,7 @@ function getMessageTypeText(type?: string) {
 
 /** 初始化 */
 const userList = ref<SystemUserApi.User[]>([]); // 用户列表
+
 onMounted(async () => {
   userList.value = await getSimpleUserList();
 });

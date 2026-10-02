@@ -60,6 +60,7 @@ async function saveFiles() {
     saving.value = false;
   }
 }
+
 onMounted(getFileListData);
 </script>
 <template>

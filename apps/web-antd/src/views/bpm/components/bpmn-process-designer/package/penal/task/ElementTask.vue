@@ -49,6 +49,7 @@ watch(
   },
   { immediate: true },
 );
+
 watch(
   () => props.type,
   () => {

@@ -21,6 +21,7 @@ import Form from './modules/form.vue';
 defineOptions({ name: 'MpUser' });
 
 const tagList = ref<MpTagApi.SimpleTag[]>([]);
+
 onMounted(async () => {
   tagList.value = await getSimpleTagList();
 });

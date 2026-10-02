@@ -103,6 +103,7 @@ const [SpecialClosingSettingsModal, specialClosingSettingsModalApi] =
   });
 
 watch(() => props.accountSetId, init, { immediate: true });
+
 watch(() => props.month, getSchemeList);
 
 /** 初始化方案数据 */

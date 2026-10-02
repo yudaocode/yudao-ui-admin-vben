@@ -92,6 +92,7 @@ defineExpose({ initHistory });
 const scrollbarRef = ref<InstanceType<any>>();
 const { arrivedState } = useScroll(scrollbarRef);
 const { bottom } = toRefs(arrivedState);
+
 watch(
   () => bottom.value,
   async (newVal) => {

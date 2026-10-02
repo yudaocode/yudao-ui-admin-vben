@@ -186,6 +186,7 @@ async function handleDelete(id: number) {
   ElMessage.success($t('ui.actionMessage.deleteSuccess', ['维修项目']));
   await gridApi.query();
 }
+
 watch(
   () => props.repairId,
   (value) => {

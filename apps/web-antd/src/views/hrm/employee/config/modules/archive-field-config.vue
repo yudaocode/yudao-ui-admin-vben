@@ -61,6 +61,7 @@ async function submitForm() {
 }
 
 onMounted(getList);
+
 defineExpose({ submitForm });
 </script>
 

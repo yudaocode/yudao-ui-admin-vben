@@ -31,6 +31,7 @@ async function getImageDetail(id: number) {
 }
 
 const { id } = toRefs(props);
+
 watch(
   id,
   async (newVal) => {

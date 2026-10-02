@@ -591,6 +591,7 @@ const { resume: resumeNoAnswerTimer, pause: pauseNoAnswerTimer } =
     RTC_NO_ANSWER_CALL_CHECK_INTERVAL_MS,
     { immediate: false },
   );
+
 watch(
   () => rtcStore.isActive,
   (active) => (active ? resumeNoAnswerTimer() : pauseNoAnswerTimer()),

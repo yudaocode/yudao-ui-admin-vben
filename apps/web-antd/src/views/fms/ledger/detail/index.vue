@@ -78,6 +78,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 watch(accountSetId, () => init());
+
 watch(subjectKeyword, (value) => {
   expandedSubjectKeys.value = value
     ? traverseTreeValues(displaySubjectTree.value, (node) => node.id!)

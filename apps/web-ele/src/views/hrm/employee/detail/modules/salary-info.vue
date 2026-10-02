@@ -18,6 +18,7 @@ import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
 const props = defineProps<{ employeeId: number }>();
 const loading = ref(false);
 const salaryInfo = ref<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>();
+
 onMounted(async () => {
   loading.value = true;
   try {

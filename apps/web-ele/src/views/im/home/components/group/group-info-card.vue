@@ -39,6 +39,7 @@ function handleKeydown(e: KeyboardEvent) {
 }
 
 onMounted(() => window.addEventListener('keydown', handleKeydown));
+
 onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 
 /** 进入群聊：取本地最新群信息（含 silent / 群备注），新建或激活会话 + 跳路由 */

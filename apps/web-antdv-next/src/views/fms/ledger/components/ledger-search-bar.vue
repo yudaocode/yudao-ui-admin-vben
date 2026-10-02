@@ -82,6 +82,7 @@ watch(
   () => props.subjectId,
   (value) => (query.subjectId = value),
 );
+
 watch(
   () => [props.startMonth, props.endMonth],
   ([startMonth, endMonth]) => {

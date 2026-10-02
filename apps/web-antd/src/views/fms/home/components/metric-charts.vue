@@ -111,6 +111,7 @@ async function renderStructure() {
 }
 
 watch(trendChartOptions, renderTrend);
+
 watch([structureChartOptions, structureChartData], renderStructure);
 
 /** 初始化 */

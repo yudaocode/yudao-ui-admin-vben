@@ -288,7 +288,9 @@ function close() {
 
 /** 初始化 */
 watch(distributionChartOptions, (options) => renderDistributionChart(options));
+
 watch(statusTrendChartOptions, (options) => renderStatusTrendChart(options));
+
 onMounted(() => {
   renderDistributionChart(distributionChartOptions.value);
   renderStatusTrendChart(statusTrendChartOptions.value);

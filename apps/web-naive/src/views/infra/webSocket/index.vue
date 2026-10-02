@@ -49,6 +49,7 @@ const messageList = ref(
   [] as { text: string; time: number; type?: string; userId?: string }[],
 ); // 消息列表
 const messageReverseList = computed(() => [...messageList.value].toReversed());
+
 watchEffect(() => {
   if (!data.value) {
     return;
@@ -179,6 +180,7 @@ async function initUserOptions() {
     };
   });
 }
+
 onMounted(async () => {
   await initUserOptions();
 });

@@ -199,6 +199,7 @@ async function handleDelete(id: number) {
   message.success($t('ui.actionMessage.deleteSuccess', ['明细']));
   await gridApi.query();
 }
+
 watch(
   () => props.recordId,
   (value) => {
