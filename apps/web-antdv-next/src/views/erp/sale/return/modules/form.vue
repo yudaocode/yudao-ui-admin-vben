@@ -129,7 +129,7 @@ function handleUpdateOrder(order: ErpSaleOrderApi.SaleOrder) {
   // 将订单项设置到退货单项
   order.items!.forEach((item: any) => {
     item.totalCount = item.count;
-    item.count = item.totalCount - item.returnCount;
+    item.count = (item.outCount ?? 0) - (item.returnCount ?? 0);
     item.orderItemId = item.id;
     item.id = undefined;
   });

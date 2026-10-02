@@ -67,7 +67,7 @@ async function getAdvancedFormValues() {
   }
   // 表单未挂载（折叠状态），从 formData 中获取
   return {
-    registerEnabled: formData.value?.registerEnabled,
+    registerEnabled: formData.value?.registerEnabled ?? false,
     icon: formData.value?.icon,
     picUrl: formData.value?.picUrl,
     description: formData.value?.description,

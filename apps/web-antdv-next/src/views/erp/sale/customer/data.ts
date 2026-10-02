@@ -166,11 +166,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'email',
-      label: '邮箱',
+      fieldName: 'telephone',
+      label: '联系电话',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入邮箱',
+        placeholder: '请输入联系电话',
         allowClear: true,
       },
     },

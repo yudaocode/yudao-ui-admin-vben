@@ -73,15 +73,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 打开弹窗 */
-function openModal(id: number) {
+async function openModal(id: number) {
   // 重置数据
   supplierId.value = id;
   open.value = true;
   selectedRows.value = [];
   // 查询列表
-  gridApi.formApi?.reset();
-  gridApi.formApi?.setValues({ supplierId: id });
-  gridApi.query();
+  await gridApi.formApi.reset();
+  await gridApi.formApi.setValues({ supplierId: id });
+  await gridApi.formApi.submit();
 }
 
 /** 确认选择 */

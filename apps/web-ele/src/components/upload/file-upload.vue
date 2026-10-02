@@ -43,6 +43,7 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   api: undefined,
   resultField: '',
   returnText: false,
+  returnTextType: 'text',
   showDescription: false,
 });
 const emit = defineEmits([
@@ -201,10 +202,26 @@ async function beforeUpload(file: File) {
   // 只有在验证通过后才增加计数器
   uploadNumber.value++;
   if (props.returnText) {
-    const fileContent = await file.text();
+    const fileContent =
+      props.returnTextType === 'base64'
+        ? await readFileAsBase64(file)
+        : await file.text();
     emit('returnText', fileContent);
   }
   return true;
+}
+
+/** 读取文件为 base64 */
+function readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      const result = String(reader.result ?? '');
+      resolve(result.slice(result.indexOf(',') + 1));
+    });
+    reader.addEventListener('error', () => reject(reader.error));
+    reader.readAsDataURL(file);
+  });
 }
 
 /** 自定义上传请求 */

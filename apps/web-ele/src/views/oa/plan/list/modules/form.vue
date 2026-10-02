@@ -47,12 +47,12 @@ const [Form, formApi] = useVbenForm({
 /** 按日、周、月计划初始化周期，用户仍可手动调整起止时间 */
 async function initPlanPeriod(type: number) {
   const beginTime = dayjs().second(0).millisecond(0);
-  const endTime =
-    type === OA_PLAN_TYPE.DAY
-      ? beginTime.add(1, 'day')
-      : type === OA_PLAN_TYPE.WEEK
-        ? beginTime.add(7, 'day')
-        : beginTime.add(1, 'month');
+  let endTime = beginTime.add(1, 'month');
+  if (type === OA_PLAN_TYPE.DAY) {
+    endTime = beginTime.add(1, 'day');
+  } else if (type === OA_PLAN_TYPE.WEEK) {
+    endTime = beginTime.add(7, 'day');
+  }
   syncingPeriod = true;
   try {
     await formApi.setValues({
@@ -75,6 +75,9 @@ const [Modal, modalApi] = useVbenModal({
     if (Number(data.endTime) <= Number(data.startTime)) {
       ElMessage.error('结束时间必须晚于开始时间');
       return;
+    }
+    if (!Array.isArray(data.fileUrls)) {
+      data.fileUrls = data.fileUrls ? [data.fileUrls] : [];
     }
     modalApi.lock();
     // 提交表单

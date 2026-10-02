@@ -54,7 +54,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
-        mode: 'tags',
+        mode: 'multiple',
       },
       rules: z.array(z.number()).min(1, '请选择成员').default([]),
     },

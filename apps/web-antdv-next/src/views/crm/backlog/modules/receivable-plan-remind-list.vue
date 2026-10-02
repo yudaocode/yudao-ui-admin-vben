@@ -11,6 +11,7 @@ import { Button } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getReceivablePlanPage } from '#/api/crm/receivable/plan';
+import { TableAction } from '#/components/table-action';
 import Form from '#/views/crm/receivable/modules/form.vue';
 import { useGridColumns } from '#/views/crm/receivable/plan/data';
 
@@ -25,7 +26,7 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 打开回款详情 */
 function handleDetail(row: CrmReceivablePlanApi.Plan) {
-  push({ name: 'CrmReceivableDetail', params: { id: row.id } });
+  push({ name: 'CrmReceivablePlanDetail', params: { id: row.id } });
 }
 
 /** 打开客户详情 */
@@ -38,7 +39,11 @@ function handleCreateReceivable(row: CrmReceivablePlanApi.Plan) {
   formModalApi.setData({ plan: row }).open();
 }
 
-const [Grid] = useVbenVxeGrid({
+function handleRefresh() {
+  gridApi.query();
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: [
       {
@@ -82,7 +87,7 @@ const [Grid] = useVbenVxeGrid({
 
 <template>
   <div>
-    <FormModal />
+    <FormModal @success="handleRefresh" />
     <Grid>
       <template #customerName="{ row }">
         <Button type="link" @click="handleCustomerDetail(row)">
@@ -93,9 +98,17 @@ const [Grid] = useVbenVxeGrid({
         <Button type="link" @click="handleDetail(row)">{{ row.period }}</Button>
       </template>
       <template #actions="{ row }">
-        <Button type="link" @click="handleCreateReceivable(row)">
-          创建回款
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: '创建回款',
+              auth: ['crm:receivable:create'],
+              disabled: !!row.receivableId,
+              type: 'link',
+              onClick: handleCreateReceivable.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
   </div>

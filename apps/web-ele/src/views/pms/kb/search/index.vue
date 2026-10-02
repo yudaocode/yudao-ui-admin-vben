@@ -99,7 +99,7 @@ watch(
   () => route.query,
   async () => {
     await gridApi.formApi.setValues(getRouteQueryValues());
-    gridApi.query();
+    await gridApi.formApi.submit();
   },
 );
 </script>

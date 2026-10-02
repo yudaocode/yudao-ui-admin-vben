@@ -64,16 +64,28 @@ export function useFormSchema(
       fieldName: 'picUrls',
       label: '图片',
       component: 'ImageUpload',
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
     },
     {
       fieldName: 'fileUrls',
       label: '附件',
       component: 'FileUpload',
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
     },
     {
       fieldName: 'contactIds',
       label: '关联联系人',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['bizType'],
+        if: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER,
+      },
       componentProps: {
         api: async () => {
           if (!bizId.value) {
@@ -95,6 +107,10 @@ export function useFormSchema(
       fieldName: 'businessIds',
       label: '关联商机',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['bizType'],
+        if: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER,
+      },
       componentProps: {
         api: async () => {
           if (!bizId.value) {

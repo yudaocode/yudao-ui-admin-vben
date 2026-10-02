@@ -270,7 +270,9 @@ async function openModal(
   });
   await resetQueryState();
   await gridApi.formApi.setFieldValue('status', CommonStatusEnum.ENABLE);
-  await gridApi.query();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }

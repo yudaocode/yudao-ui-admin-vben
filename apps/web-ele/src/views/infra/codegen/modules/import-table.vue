@@ -93,9 +93,9 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
   async onConfirm() {
-    modalApi.lock();
+    const { dataSourceConfigId } = await gridApi.formApi.getValues();
     // 1.1 获取表单值
-    if (formData?.dataSourceConfigId === undefined) {
+    if (!dataSourceConfigId) {
       ElMessage.error('请选择数据源');
       return;
     }
@@ -105,6 +105,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
 
+    formData.dataSourceConfigId = dataSourceConfigId;
+    modalApi.lock();
     // 2. 提交请求
     const loadingInstance = ElLoading.service({
       text: '导入中...',

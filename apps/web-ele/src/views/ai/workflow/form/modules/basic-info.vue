@@ -63,8 +63,8 @@ defineExpose({ validate });
         />
       </ElSelect>
     </ElFormItem>
-    <ElFormItem label="流程描述" prop="description" class="mb-5">
-      <ElInput v-model="modelData.description" type="textarea" clearable />
+    <ElFormItem label="流程描述" prop="remark" class="mb-5">
+      <ElInput v-model="modelData.remark" type="textarea" clearable />
     </ElFormItem>
   </ElForm>
 </template>

@@ -14,6 +14,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<CrmContactApi.Contact>();
+const customerLocked = ref(false);
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['联系人'])
@@ -28,7 +29,7 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
-  schema: useFormSchema(),
+  schema: useFormSchema(customerLocked),
   showDefaultActions: false,
 });
 
@@ -53,11 +54,13 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      customerLocked.value = false;
       formData.value = undefined;
       return;
     }
     // 加载数据
     const data = modalApi.getData() as CrmContactApi.Contact;
+    customerLocked.value = !data?.id && !!data?.customerId;
     if (!data) {
       return;
     }

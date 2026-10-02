@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
+import { fenToYuan, formatDateTime } from '@vben/utils';
 
 import { Tag } from 'ant-design-vue';
 
@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'merchantTransferId',
+      fieldName: 'merchantOrderId',
       label: '商户单号',
       component: 'Input',
       componentProps: {
@@ -115,7 +115,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '转账金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'merchantTransferId',
@@ -214,11 +214,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'price',
       label: '转账金额',
       render: (val) =>
-        h(
-          Tag,
-          { color: 'success' },
-          () => `￥${erpPriceInputFormatter(val || 0)}`,
-        ),
+        h(Tag, { color: 'success' }, () => `￥${fenToYuan(val || 0)}`),
     },
     {
       field: 'successTime',

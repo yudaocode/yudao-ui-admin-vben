@@ -64,8 +64,8 @@ defineExpose({ validate });
         </Select.Option>
       </Select>
     </Form.Item>
-    <Form.Item label="流程描述" name="description" class="mb-5">
-      <Input.TextArea v-model:value="modelData.description" allow-clear />
+    <Form.Item label="流程描述" name="remark" class="mb-5">
+      <Input.TextArea v-model:value="modelData.remark" allow-clear />
     </Form.Item>
   </Form>
 </template>

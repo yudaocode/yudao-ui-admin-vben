@@ -145,7 +145,8 @@ function filterDictTypeOption(input: string, option: any) {
     <!-- 字典类型 -->
     <template #dictType="{ row }">
       <Select
-        v-model:value="row.dictType"
+        :value="row.dictType"
+        @change="(value) => (row.dictType = value ?? '')"
         class="w-full"
         allow-clear
         show-search

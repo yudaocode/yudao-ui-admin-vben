@@ -29,7 +29,7 @@ const menuTree = ref<SystemMenuApi.Menu[]>([]); // 菜单树
 const menuLoading = ref(false); // 加载菜单列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
-const expandedKeys = ref<number[]>([]); // 展开的节点
+const menuTreeRef = ref<InstanceType<typeof Tree>>(); // 菜单树引用
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -103,6 +103,9 @@ async function loadMenuTree() {
   try {
     const data = await getSimpleMenusList();
     menuTree.value = handleTree(data) as SystemMenuApi.Menu[];
+    isExpanded.value = false;
+    await nextTick();
+    menuTreeRef.value?.collapseAll();
   } finally {
     menuLoading.value = false;
   }
@@ -122,7 +125,11 @@ function handleSelectAll() {
 /** 展开/折叠所有节点 */
 function handleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  expandedKeys.value = isExpanded.value ? getAllNodeIds(menuTree.value) : [];
+  if (isExpanded.value) {
+    menuTreeRef.value?.expandAll();
+  } else {
+    menuTreeRef.value?.collapseAll();
+  }
 }
 
 /** 递归获取所有节点 ID */
@@ -158,7 +165,7 @@ function getNodeClass(node: Recordable<any>) {
             :tree-data="menuTree"
             multiple
             bordered
-            :default-expanded-keys="expandedKeys"
+            ref="menuTreeRef"
             :get-node-class="getNodeClass"
             v-bind="slotProps.componentProps"
             value-field="id"

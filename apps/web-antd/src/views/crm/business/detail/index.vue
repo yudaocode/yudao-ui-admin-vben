@@ -87,7 +87,9 @@ function handleEdit() {
 
 /** 转移商机 */
 function handleTransfer() {
-  transferModalApi.setData({ bizType: BizTypeEnum.CRM_BUSINESS }).open();
+  transferModalApi
+    .setData({ id: businessId.value, bizType: BizTypeEnum.CRM_BUSINESS })
+    .open();
 }
 
 /** 更新商机状态操作 */
@@ -105,7 +107,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="business?.name" :loading="loading">
     <FormModal @success="getBusinessDetail" />
-    <TransferModal @success="getBusinessDetail" />
+    <TransferModal @success="handleBack" />
     <UpStatusModal @success="getBusinessDetail" />
     <template #extra>
       <div class="flex items-center gap-2">

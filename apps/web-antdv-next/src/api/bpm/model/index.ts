@@ -101,7 +101,7 @@ export async function updateModelState(id: number, state: number) {
 
 /** 创建流程模型 */
 export async function createModel(data: BpmModelApi.Model) {
-  return requestClient.post('/bpm/model/create', data);
+  return requestClient.post<string>('/bpm/model/create', data);
 }
 
 /** 导入流程模型 */

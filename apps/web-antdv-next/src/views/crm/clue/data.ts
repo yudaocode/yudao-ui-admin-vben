@@ -40,7 +40,6 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
         placeholder: '请选择客户来源',
       },
-      rules: 'required',
     },
     {
       fieldName: 'mobile',

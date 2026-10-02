@@ -84,7 +84,9 @@ const [Modal, modalApi] = useVbenModal({
       isExecute.value && !data.id
         ? await getStockTakingTaskLineSimpleList(data.taskId)
         : [];
-    formApi.setState({ schema: useResultFormSchema(formApi, taskLines) });
+    formApi.setState({
+      schema: useResultFormSchema(formApi, taskLines, isExecute.value),
+    });
     if (!data.id) {
       return;
     }

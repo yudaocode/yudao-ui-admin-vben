@@ -561,6 +561,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           },
           fileUploadProps: {
             accept: ['p12'],
+            returnTextType: 'base64',
           },
         }),
         rules: 'required',

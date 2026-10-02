@@ -55,13 +55,24 @@ function removeCodeMapKey(targetKey: any) {
 /** 复制代码 */
 async function copyCode() {
   const { copy } = useClipboard();
-  const file = previewFiles.value.find(
-    (item) => item.filePath === activeKey.value,
-  );
+  const file = findPreviewFile(activeKey.value);
   if (file) {
     await copy(file.code);
     ElMessage.success('复制成功');
   }
+}
+
+/** 查找预览文件 */
+function findPreviewFile(fileKey: string) {
+  return previewFiles.value.find((item) => {
+    const list = fileKey.split('.');
+    // 特殊处理 - 包合并
+    if (list.length > 2) {
+      const lang = list.pop();
+      return item.filePath === `${list.join('/')}.${lang}`;
+    }
+    return item.filePath === fileKey;
+  });
 }
 
 /** 文件节点点击事件 */
@@ -71,15 +82,7 @@ function handleNodeClick(node: FileNode) {
   }
 
   activeKey.value = node.key;
-  const file = previewFiles.value.find((item) => {
-    const list = activeKey.value.split('.');
-    // 特殊处理 - 包合并
-    if (list.length > 2) {
-      const lang = list.pop();
-      return item.filePath === `${list.join('/')}.${lang}`;
-    }
-    return item.filePath === activeKey.value;
-  });
+  const file = findPreviewFile(activeKey.value);
   if (!file) {
     return;
   }
@@ -268,7 +271,7 @@ const [Modal, modalApi] = useVbenModal({
             >
               <CodeEditor
                 class="h-full"
-                :value="codeMap.get(activeKey)"
+                :value="codeMap.get(key)"
                 mode="application/json"
                 :readonly="true"
                 :bordered="true"

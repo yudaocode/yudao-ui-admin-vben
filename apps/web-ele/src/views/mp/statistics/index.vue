@@ -61,9 +61,12 @@ async function getSummary(values: Record<string, any>) {
   // 处理日期
   const days = betweenDay(dateRange[0], dateRange[1]);
   const dates = Array.from(
-    { length: days },
+    { length: days + 1 },
     (_, index) =>
-      formatDate(addTime(dateRange[0], index), 'YYYY-MM-DD') as string,
+      formatDate(
+        addTime(dateRange[0], index * 24 * 60 * 60 * 1000),
+        'YYYY-MM-DD',
+      ) as string,
   );
 
   // 用户增减数据

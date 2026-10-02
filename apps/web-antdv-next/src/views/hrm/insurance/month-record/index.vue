@@ -74,7 +74,7 @@ function handleCreate() {
 async function handleCreateFirstSuccess(year: number) {
   await gridApi.formApi.setFieldValue('year', String(year));
   await loadLatestRecord();
-  await gridApi.query();
+  await gridApi.formApi.submit();
 }
 
 async function handleCreateNext() {
@@ -120,7 +120,7 @@ onMounted(async () => {
       String(latestRecord.value.year),
     );
   }
-  await gridApi.query();
+  await gridApi.formApi.submit();
 });
 </script>
 

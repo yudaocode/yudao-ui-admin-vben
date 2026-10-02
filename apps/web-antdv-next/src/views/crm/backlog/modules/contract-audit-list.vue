@@ -29,17 +29,17 @@ function handleContractDetail(row: CrmContractApi.Contract) {
 }
 /** 打开客户详情 */
 function handleCustomerDetail(row: CrmContractApi.Contract) {
-  push({ name: 'CrmCustomerDetail', params: { id: row.id } });
+  push({ name: 'CrmCustomerDetail', params: { id: row.customerId } });
 }
 
 /** 打开联系人详情 */
 function handleContactDetail(row: CrmContractApi.Contract) {
-  push({ name: 'CrmContactDetail', params: { id: row.id } });
+  push({ name: 'CrmContactDetail', params: { id: row.signContactId } });
 }
 
 /** 打开商机详情 */
 function handleBusinessDetail(row: CrmContractApi.Contract) {
-  push({ name: 'CrmBusinessDetail', params: { id: row.id } });
+  push({ name: 'CrmBusinessDetail', params: { id: row.businessId } });
 }
 
 const [Grid] = useVbenVxeGrid({

@@ -15,6 +15,14 @@ export function useFormSchema(): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
     {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
       fieldName: 'period',
       label: '期数',
       component: 'Input',
@@ -97,7 +105,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入计划回款金额',
-        min: 0,
+        min: 0.01,
         precision: 2,
         controlsPosition: 'right',
         class: '!w-full',

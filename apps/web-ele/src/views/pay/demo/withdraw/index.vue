@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { erpPriceInputFormatter } from '@vben/utils';
+import { fenToYuan } from '@vben/utils';
 
 import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
@@ -106,7 +106,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <ElTag v-else-if="row.type === 3">钱包余额</ElTag>
       </template>
       <template #price="{ row }">
-        <span>￥{{ erpPriceInputFormatter(row.price) }}</span>
+        <span>￥{{ fenToYuan(row.price) }}</span>
       </template>
       <template #status="{ row }">
         <ElTag v-if="row.status === 0 && !row.payTransferId" type="warning">

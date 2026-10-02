@@ -12,7 +12,12 @@ import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 
 /** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(
+  handlers: {
+    onBusinessChange?: (id?: number) => void;
+    onCustomerChange?: () => void;
+  } = {},
+): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
     {
@@ -63,6 +68,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       rules: 'required',
       componentProps: {
+        onChange: handlers.onCustomerChange,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -76,6 +82,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: [],
         placeholder: '请选择商机',
+        onChange: handlers.onBusinessChange,
       },
       dependencies: {
         triggerFields: ['customerId'],
@@ -200,6 +207,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        disabled: true,
         placeholder: '请输入产品总金额',
         controlsPosition: 'right',
         class: '!w-full',

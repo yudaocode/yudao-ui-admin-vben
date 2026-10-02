@@ -2,6 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
+import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
@@ -32,6 +33,10 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入用户名称',
       },
       rules: 'required',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
+      },
     },
     {
       label: '用户密码',
@@ -109,17 +114,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: z.number().default(1),
     },
     {
-      fieldName: 'status',
-      label: '用户状态',
-      component: 'RadioGroup',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
-      },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
-    },
-    {
       fieldName: 'remark',
       label: '备注',
       component: 'TextArea',
@@ -151,8 +145,8 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
         rules(values) {
           return z
             .string({ message: '请输入新密码' })
-            .min(5, '密码长度不能少于 5 个字符')
-            .max(20, '密码长度不能超过 20 个字符')
+            .min(4, '密码长度不能少于 4 个字符')
+            .max(16, '密码长度不能超过 16 个字符')
             .refine(
               (value) => value !== values.oldPassword,
               '新旧密码不能相同',
@@ -174,8 +168,8 @@ export function useResetPasswordFormSchema(): VbenFormSchema[] {
         rules(values) {
           return z
             .string({ message: '请输入确认密码' })
-            .min(5, '密码长度不能少于 5 个字符')
-            .max(20, '密码长度不能超过 20 个字符')
+            .min(4, '密码长度不能少于 4 个字符')
+            .max(16, '密码长度不能超过 16 个字符')
             .refine(
               (value) => value === values.newPassword,
               '新密码和确认密码不一致',
@@ -286,6 +280,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
         allowClear: true,
       },
     },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择状态',
+      },
+    },
   ];
 }
 
@@ -296,6 +300,7 @@ export function useGridColumns(
     row: SystemUserApi.User,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     { type: 'checkbox', width: 40 },
     {
@@ -332,6 +337,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['system:user:update']),
           checkedValue: CommonStatusEnum.ENABLE,
           unCheckedValue: CommonStatusEnum.DISABLE,
         },

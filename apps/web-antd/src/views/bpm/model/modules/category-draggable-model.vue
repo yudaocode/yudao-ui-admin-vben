@@ -92,6 +92,25 @@ const hasPermiExport = computed(() => {
   return hasAccessByCodes(['bpm:model:export']);
 });
 
+const hasPermiCreate = computed(() => hasAccessByCodes(['bpm:model:create']));
+const hasPermiPdQuery = computed(() =>
+  hasAccessByCodes(['bpm:process-definition:query']),
+);
+const hasPermiReport = computed(() =>
+  hasAccessByCodes(['bpm:process-instance:manager-query']),
+);
+const hasPermiClean = computed(() => hasAccessByCodes(['bpm:model:clean']));
+const hasPermiMore = computed(
+  () =>
+    hasPermiCreate.value ||
+    hasPermiExport.value ||
+    hasPermiPdQuery.value ||
+    hasPermiReport.value ||
+    hasPermiUpdate.value ||
+    hasPermiClean.value ||
+    hasPermiDelete.value,
+);
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -269,6 +288,10 @@ function isManagerUser(row: any) {
 }
 
 /** 模型操作 */
+function createModel() {
+  router.push({ name: 'BpmModelCreate' });
+}
+
 async function modelOperation(type: string, id: number) {
   await router.push({
     name: 'BpmModelUpdate',
@@ -444,6 +467,7 @@ function handleDefinitionList(row: any) {
 
 /** 跳转到流程报表页面 */
 function handleReport(row: any) {
+  if (!row.processDefinition) return;
   router.push({
     name: 'BpmProcessInstanceReport',
     query: {
@@ -530,6 +554,14 @@ function handleRenameSuccess() {
             :class="isModelSorting ? 'mr-4' : 'mr-8'"
           >
             <template v-if="!isModelSorting">
+              <Button
+                v-if="!categoryInfo.modelList.length && hasPermiCreate"
+                type="link"
+                size="small"
+                @click.stop="createModel"
+              >
+                新建模型
+              </Button>
               <Button
                 v-if="categoryInfo.modelList.length > 0"
                 type="link"
@@ -712,19 +744,31 @@ function handleRenameSuccess() {
                 >
                   发布
                 </Button>
-                <Dropdown placement="bottomRight" arrow>
+                <Dropdown v-if="hasPermiMore" placement="bottomRight" arrow>
                   <Button type="link" size="small" class="px-1">更多</Button>
                   <template #overlay>
                     <Menu
                       @click="(e) => handleModelCommand(e.key as string, row)"
                     >
-                      <Menu.Item key="handleCopy"> 复制 </Menu.Item>
+                      <Menu.Item
+                        v-if="hasPermiCreate"
+                        key="handleCopy"
+                        :disabled="!isManagerUser(row) && !hasPermiUpdate"
+                      >
+                        复制
+                      </Menu.Item>
                       <Menu.Item v-if="hasPermiExport" key="handleExport">
                         导出
                       </Menu.Item>
-                      <Menu.Item key="handleDefinitionList"> 历史 </Menu.Item>
+                      <Menu.Item
+                        v-if="hasPermiPdQuery"
+                        key="handleDefinitionList"
+                      >
+                        历史
+                      </Menu.Item>
 
                       <Menu.Item
+                        v-if="hasPermiReport && row.processDefinition"
                         key="handleReport"
                         :disabled="!isManagerUser(row)"
                       >
@@ -732,7 +776,7 @@ function handleRenameSuccess() {
                       </Menu.Item>
                       <Menu.Item
                         key="handleChangeState"
-                        v-if="row.processDefinition"
+                        v-if="hasPermiUpdate && row.processDefinition"
                         :disabled="!isManagerUser(row)"
                       >
                         {{
@@ -743,6 +787,7 @@ function handleRenameSuccess() {
                       </Menu.Item>
                       <Menu.Item
                         danger
+                        v-if="hasPermiClean"
                         key="handleClean"
                         :disabled="!isManagerUser(row)"
                       >
@@ -750,8 +795,9 @@ function handleRenameSuccess() {
                       </Menu.Item>
                       <Menu.Item
                         danger
+                        v-if="hasPermiDelete"
                         key="handleDelete"
-                        :disabled="!isManagerUser(row) && !hasPermiDelete"
+                        :disabled="!isManagerUser(row)"
                       >
                         删除
                       </Menu.Item>

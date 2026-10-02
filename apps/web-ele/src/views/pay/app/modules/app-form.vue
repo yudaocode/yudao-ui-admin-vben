@@ -58,17 +58,16 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
+    await formApi.reset();
+    formData.value = undefined;
     // 加载数据
-    // 新增时列表页传入的是 null，不能直接解构
-    const { id } = (modalApi.getData() ?? {}) as {
-      id?: number;
-    };
-    if (!id) {
+    const data = modalApi.getData() as { id?: number };
+    if (!data?.id) {
       return;
     }
     modalApi.lock();
     try {
-      formData.value = await getApp(id);
+      formData.value = await getApp(data.id);
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

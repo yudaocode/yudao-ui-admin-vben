@@ -111,8 +111,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<PmsIterationApi.Iteration>,
   gridEvents: {
-    cellClick: ({ row }: { row: PmsIterationApi.Iteration }) => {
-      openDetail(row);
+    cellClick: ({
+      row,
+      column,
+    }: {
+      column: { field?: string };
+      row: PmsIterationApi.Iteration;
+    }) => {
+      if (column.field !== 'actions') {
+        openDetail(row);
+      }
     },
   },
 });

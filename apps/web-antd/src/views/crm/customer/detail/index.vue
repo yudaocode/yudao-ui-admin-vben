@@ -96,7 +96,9 @@ function handleEdit() {
 
 /** 转移线索 */
 function handleTransfer() {
-  transferModalApi.setData({ id: customerId.value }).open();
+  transferModalApi
+    .setData({ id: customerId.value, bizType: BizTypeEnum.CRM_CUSTOMER })
+    .open();
 }
 
 /** 锁定客户 */
@@ -173,7 +175,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="customer?.name" :loading="loading">
     <FormModal @success="loadCustomerDetail" />
-    <TransferModal @success="loadCustomerDetail" />
+    <TransferModal @success="handleBack" />
     <DistributeModal @success="loadCustomerDetail" />
     <template #extra>
       <TableAction

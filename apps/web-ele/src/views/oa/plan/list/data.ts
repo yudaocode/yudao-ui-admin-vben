@@ -133,6 +133,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'fileUrls',
+      defaultValue: [],
       label: '附件',
       component: 'FileUpload',
       componentProps: {

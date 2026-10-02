@@ -61,7 +61,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     // 加载数据
     const data = modalApi.getData() as { accountId: number; row: MpTagApi.Tag };
-    if (!data || !data.row || !data.accountId) {
+    if (!data?.accountId) {
+      return;
+    }
+    await formApi.setValues({ accountId: data.accountId });
+    if (!data.row) {
       return;
     }
     modalApi.lock();

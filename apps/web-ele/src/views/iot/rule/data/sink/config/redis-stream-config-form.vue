@@ -1,10 +1,20 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 
+import {
+  IOT_REDIS_DATA_STRUCTURE_OPTIONS,
+  IotRedisDataStructureEnum,
+} from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { ElFormItem, ElInput, ElInputNumber } from 'element-plus';
+import {
+  ElFormItem,
+  ElInput,
+  ElInputNumber,
+  ElOption,
+  ElSelect,
+} from 'element-plus';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -12,16 +22,9 @@ const props = defineProps<{ modelValue: any }>();
 const emit = defineEmits(['update:modelValue']);
 const config = useVModel(props, 'modelValue', emit);
 
-/** 移除当前 Redis Stream API 类型未声明的旧扩展字段 */
-function removeUnsupportedFields() {
-  delete config.value.dataStructure;
-  delete config.value.hashField;
-  delete config.value.scoreField;
-}
-
 onMounted(() => {
   if (!isEmpty(config.value)) {
-    removeUnsupportedFields();
+    config.value.dataStructure ??= IotRedisDataStructureEnum.STREAM;
     return;
   }
   config.value = {
@@ -30,6 +33,7 @@ onMounted(() => {
     port: 6379,
     password: '',
     database: 0,
+    dataStructure: IotRedisDataStructureEnum.STREAM,
     topic: '',
   };
 });
@@ -107,5 +111,37 @@ onMounted(() => {
     label="主题"
   >
     <ElInput v-model="config.topic" placeholder="请输入主题" />
+  </ElFormItem>
+  <ElFormItem
+    prop="config.dataStructure"
+    label="数据结构"
+    :rules="[{ required: true, message: '请选择数据结构', trigger: 'change' }]"
+  >
+    <ElSelect
+      v-model="config.dataStructure"
+      placeholder="请选择数据结构"
+      class="w-full"
+    >
+      <ElOption
+        v-for="option in IOT_REDIS_DATA_STRUCTURE_OPTIONS"
+        :key="option.value"
+        :label="option.label"
+        :value="option.value"
+      />
+    </ElSelect>
+  </ElFormItem>
+  <ElFormItem
+    v-if="config.dataStructure === IotRedisDataStructureEnum.HASH"
+    prop="config.hashField"
+    label="Hash 字段"
+  >
+    <ElInput v-model="config.hashField" placeholder="留空时使用设备 ID" />
+  </ElFormItem>
+  <ElFormItem
+    v-if="config.dataStructure === IotRedisDataStructureEnum.ZSET"
+    prop="config.scoreField"
+    label="分数字段"
+  >
+    <ElInput v-model="config.scoreField" placeholder="留空时使用当前时间" />
   </ElFormItem>
 </template>

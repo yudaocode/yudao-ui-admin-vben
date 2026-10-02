@@ -94,11 +94,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
 /** 监听 propertyId 变化，重新查询 */
 watch(
   () => props.propertyId,
-  (newPropertyId) => {
+  async (newPropertyId) => {
     if (newPropertyId) {
       // 设置搜索表单中的 propertyId
-      gridApi.formApi.setValues({ propertyId: newPropertyId });
-      handleRefresh();
+      await gridApi.formApi.setValues({ propertyId: newPropertyId });
+      await gridApi.formApi.submit();
     }
   },
   { immediate: true },

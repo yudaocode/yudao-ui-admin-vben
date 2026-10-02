@@ -156,6 +156,7 @@ const filteredDictTypeOptions = computed(() => {
     <template #dictType="{ row }">
       <ElSelect
         v-model="row.dictType"
+        value-on-clear=""
         class="w-full"
         clearable
         filterable

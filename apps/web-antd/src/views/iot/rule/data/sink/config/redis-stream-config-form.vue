@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 
+import {
+  IOT_REDIS_DATA_STRUCTURE_OPTIONS,
+  IotRedisDataStructureEnum,
+} from '@vben/constants';
 import { isEmpty } from '@vben/utils';
 
 import { useVModel } from '@vueuse/core';
-import { Form, Input, InputNumber } from 'ant-design-vue';
+import { Form, Input, InputNumber, Select } from 'ant-design-vue';
 
 import { IotDataSinkTypeEnum } from '#/api/iot/rule/data/sink';
 
@@ -12,16 +16,9 @@ const props = defineProps<{ modelValue: any }>();
 const emit = defineEmits(['update:modelValue']);
 const config = useVModel(props, 'modelValue', emit);
 
-/** 移除当前 Redis Stream API 类型未声明的旧扩展字段 */
-function removeUnsupportedFields() {
-  delete config.value.dataStructure;
-  delete config.value.hashField;
-  delete config.value.scoreField;
-}
-
 onMounted(() => {
   if (!isEmpty(config.value)) {
-    removeUnsupportedFields();
+    config.value.dataStructure ??= IotRedisDataStructureEnum.STREAM;
     return;
   }
   config.value = {
@@ -30,6 +27,7 @@ onMounted(() => {
     port: 6379,
     password: '',
     database: 0,
+    dataStructure: IotRedisDataStructureEnum.STREAM,
     topic: '',
   };
 });
@@ -102,5 +100,31 @@ onMounted(() => {
     label="主题"
   >
     <Input v-model:value="config.topic" placeholder="请输入主题" />
+  </Form.Item>
+  <Form.Item
+    :name="['config', 'dataStructure']"
+    label="数据结构"
+    :rules="[{ required: true, message: '请选择数据结构', trigger: 'change' }]"
+  >
+    <Select
+      v-model:value="config.dataStructure"
+      :options="IOT_REDIS_DATA_STRUCTURE_OPTIONS"
+      placeholder="请选择数据结构"
+      class="w-full"
+    />
+  </Form.Item>
+  <Form.Item
+    v-if="config.dataStructure === IotRedisDataStructureEnum.HASH"
+    :name="['config', 'hashField']"
+    label="Hash 字段"
+  >
+    <Input v-model:value="config.hashField" placeholder="留空时使用设备 ID" />
+  </Form.Item>
+  <Form.Item
+    v-if="config.dataStructure === IotRedisDataStructureEnum.ZSET"
+    :name="['config', 'scoreField']"
+    label="分数字段"
+  >
+    <Input v-model:value="config.scoreField" placeholder="留空时使用当前时间" />
   </Form.Item>
 </template>

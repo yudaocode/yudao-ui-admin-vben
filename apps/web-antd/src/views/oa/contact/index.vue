@@ -9,7 +9,15 @@ import { computed, onMounted, ref } from 'vue';
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
-import { Avatar, Button, Card, Divider, Menu, message, Tag } from 'ant-design-vue';
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Menu,
+  message,
+  Tag,
+} from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -115,10 +123,10 @@ function handleCategorySelect({ key }: { key: number | string }) {
 }
 
 /** 切换联系人类型 */
-function handleSceneSelect({ key }: { key: number | string }) {
+async function handleSceneSelect({ key }: { key: number | string }) {
   activeScene.value = Number(key);
   // 处理状态仅在“共享与我”场景生效
-  gridApi.formApi.setValues({
+  await gridApi.formApi.setValues({
     scene: activeScene.value,
     handleStatus: undefined,
   });
@@ -126,7 +134,7 @@ function handleSceneSelect({ key }: { key: number | string }) {
   gridApi.setState({
     gridOptions: { columns: useGridColumns(activeScene.value) },
   });
-  handleRefresh();
+  await gridApi.formApi.submit();
 }
 
 /** 判断是否为联系人创建人 */
@@ -307,7 +315,10 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+      <DocAlert
+        title="【协作】公告、讨论、通讯录与笔记"
+        url="https://doc.iocoder.cn/oa/collaboration/communication/"
+      />
     </template>
 
     <FormModal @success="handleCategoryChange" />
@@ -367,7 +378,10 @@ onMounted(() => {
             />
           </template>
           <template #name="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.name }}
             </span>
           </template>

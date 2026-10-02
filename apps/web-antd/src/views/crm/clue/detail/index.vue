@@ -78,7 +78,9 @@ function handleEdit() {
 
 /** 转移线索 */
 function handleTransfer() {
-  transferModalApi.setData({ bizType: BizTypeEnum.CRM_CLUE }).open();
+  transferModalApi
+    .setData({ id: clueId.value, bizType: BizTypeEnum.CRM_CLUE })
+    .open();
 }
 
 /** 转化为客户 */
@@ -105,7 +107,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="clue?.name" :loading="loading">
     <FormModal @success="getClueDetail" />
-    <TransferModal @success="getClueDetail" />
+    <TransferModal @success="handleBack" />
     <template #extra>
       <TableAction
         :actions="[

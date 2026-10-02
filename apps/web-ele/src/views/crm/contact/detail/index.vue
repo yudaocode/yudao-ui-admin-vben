@@ -81,7 +81,9 @@ function handleEdit() {
 
 /** 转移联系人 */
 function handleTransfer() {
-  transferModalApi.setData({ id: contactId.value }).open();
+  transferModalApi
+    .setData({ id: contactId.value, bizType: BizTypeEnum.CRM_CONTACT })
+    .open();
 }
 
 /** 加载数据 */
@@ -94,7 +96,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="contact?.name" :loading="loading">
     <FormModal @success="getContactDetail" />
-    <TransferModal @success="getContactDetail" />
+    <TransferModal @success="handleBack" />
     <template #extra>
       <TableAction
         :actions="[

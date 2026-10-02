@@ -109,10 +109,10 @@ function handleCategorySelect(index: string) {
 }
 
 /** 切换联系人类型 */
-function handleSceneSelect(index: string) {
+async function handleSceneSelect(index: string) {
   activeScene.value = Number(index);
   // 处理状态仅在“共享与我”场景生效
-  gridApi.formApi.setValues({
+  await gridApi.formApi.setValues({
     scene: activeScene.value,
     handleStatus: undefined,
   });
@@ -120,7 +120,7 @@ function handleSceneSelect(index: string) {
   gridApi.setState({
     gridOptions: { columns: useGridColumns(activeScene.value) },
   });
-  handleRefresh();
+  await gridApi.formApi.submit();
 }
 
 /** 判断是否为联系人创建人 */
@@ -304,7 +304,10 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+      <DocAlert
+        title="【协作】公告、讨论、通讯录与笔记"
+        url="https://doc.iocoder.cn/oa/collaboration/communication/"
+      />
     </template>
 
     <FormModal @success="handleCategoryChange" />
@@ -321,11 +324,7 @@ onMounted(() => {
           class="mb-3 flex items-center justify-between border-b pb-3 font-semibold"
         >
           <span>分类</span>
-          <ElButton
-            link
-            type="primary"
-            @click="categoryListModalApi.open()"
-          >
+          <ElButton link type="primary" @click="categoryListModalApi.open()">
             管理分类
           </ElButton>
         </div>
@@ -386,7 +385,10 @@ onMounted(() => {
             />
           </template>
           <template #name="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.name }}
             </span>
           </template>

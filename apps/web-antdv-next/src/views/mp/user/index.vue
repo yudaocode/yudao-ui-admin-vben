@@ -1,12 +1,16 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpTagApi } from '#/api/mp/tag';
 import type { MpUserApi } from '#/api/mp/user';
+
+import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'antdv-next';
+import { message, Tag } from 'antdv-next';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleTagList } from '#/api/mp/tag';
 import { getUserPage, syncUser } from '#/api/mp/user';
 import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
@@ -15,6 +19,11 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpUser' });
+
+const tagList = ref<MpTagApi.SimpleTag[]>([]);
+onMounted(async () => {
+  tagList.value = await getSimpleTagList();
+});
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -118,6 +127,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
+      </template>
+      <template #tagIds="{ row }">
+        <Tag v-for="tagId in row.tagIds || []" :key="tagId" class="mr-1">
+          {{ tagList.find((tag) => tag.tagId === tagId)?.name || tagId }}
+        </Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

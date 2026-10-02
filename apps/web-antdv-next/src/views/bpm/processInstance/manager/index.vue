@@ -134,7 +134,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               danger: true,
               icon: ACTION_ICON.DELETE,
               ifShow: row.status === BpmProcessInstanceStatus.RUNNING,
-              auth: ['bpm:process-instance:cancel'],
+              auth: ['bpm:process-instance:cancel-by-admin'],
               onClick: handleCancel.bind(null, row),
             },
           ]"

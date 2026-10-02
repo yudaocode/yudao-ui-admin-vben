@@ -29,6 +29,7 @@ defineOptions({ name: 'WmsMovementOrderPrint' });
 
 const printData = ref<WmsMovementOrderApi.MovementOrder>({});
 const tableColumnCount = 5;
+const printing = ref(false);
 
 const printRows = computed<PrintRow[]>(() =>
   (printData.value.details || []).map((detail) => ({
@@ -38,9 +39,10 @@ const printRows = computed<PrintRow[]>(() =>
   })),
 );
 
-/** 等待条码和打印 DOM 完成绘制，避免浏览器打印到旧内容 */
-function waitForPaint() {
-  return new Promise<void>((resolve) => {
+async function waitForPrintReady() {
+  await nextTick();
+  await nextTick();
+  await new Promise<void>((resolve) => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => resolve());
     });
@@ -62,15 +64,26 @@ function getPrintDictLabel(dictType: string, value?: number) {
 
 /** 打印移库单：加载数据后只展示打印区域，再调用浏览器打印 */
 async function print(id: number) {
-  const order = await getMovementOrder(id);
-  const details =
-    order.details || (await getMovementOrderDetailListByOrderId(id));
-  printData.value = { ...order, details };
-  await nextTick();
-  await waitForPaint();
-  document.body.classList.add('wms-movement-order-printing');
-  window.addEventListener('afterprint', removePrintMode, { once: true });
-  window.print();
+  if (printing.value) {
+    return;
+  }
+  printing.value = true;
+  try {
+    printData.value = {};
+    await nextTick();
+    const order = await getMovementOrder(id);
+    const details =
+      order.details || (await getMovementOrderDetailListByOrderId(id));
+    printData.value = { ...order, details };
+
+    // 等待新条码 DOM 重建并完成绘制，避免打印到上一张条码
+    await waitForPrintReady();
+    document.body.classList.add('wms-movement-order-printing');
+    window.addEventListener('afterprint', removePrintMode, { once: true });
+    window.print();
+  } finally {
+    printing.value = false;
+  }
 }
 
 defineExpose({ print });

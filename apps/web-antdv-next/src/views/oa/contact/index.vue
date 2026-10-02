@@ -115,10 +115,10 @@ function handleCategorySelect({ key }: { key: number | string }) {
 }
 
 /** 切换联系人类型 */
-function handleSceneSelect({ key }: { key: number | string }) {
+async function handleSceneSelect({ key }: { key: number | string }) {
   activeScene.value = Number(key);
   // 处理状态仅在“共享与我”场景生效
-  gridApi.formApi.setValues({
+  await gridApi.formApi.setValues({
     scene: activeScene.value,
     handleStatus: undefined,
   });
@@ -126,7 +126,7 @@ function handleSceneSelect({ key }: { key: number | string }) {
   gridApi.setState({
     gridOptions: { columns: useGridColumns(activeScene.value) },
   });
-  handleRefresh();
+  await gridApi.formApi.submit();
 }
 
 /** 判断是否为联系人创建人 */
@@ -173,14 +173,10 @@ async function handleDelete(row: OaContactApi.Contact) {
   });
   try {
     // 移除本人持有的联系人；最后一人移除时由后端删除正文
-    if (
-      activeScene.value === OA_CONTACT_SCENE_TYPE.MINE &&
-      isContactOwner(row)
-    ) {
-      await deleteContact(row.id!);
-    } else {
-      await deleteReceivedContact(row.id!);
-    }
+    await (activeScene.value === OA_CONTACT_SCENE_TYPE.MINE &&
+    isContactOwner(row)
+      ? deleteContact(row.id!)
+      : deleteReceivedContact(row.id!));
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
     handleRefresh();
   } finally {
@@ -275,12 +271,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          const getPage =
-            activeScene.value === OA_CONTACT_SCENE_TYPE.MINE
-              ? getMyContactPage
-              : activeScene.value === OA_CONTACT_SCENE_TYPE.RECEIVED
-                ? getReceivedContactPage
-                : getSharedContactPage;
+          let getPage = getSharedContactPage;
+          if (activeScene.value === OA_CONTACT_SCENE_TYPE.MINE) {
+            getPage = getMyContactPage;
+          } else if (activeScene.value === OA_CONTACT_SCENE_TYPE.RECEIVED) {
+            getPage = getReceivedContactPage;
+          }
           return await getPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -367,7 +363,10 @@ onMounted(() => {
             />
           </template>
           <template #name="{ row }">
-            <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+            <span
+              class="cursor-pointer text-primary"
+              @click="handleDetail(row)"
+            >
               {{ row.name }}
             </span>
           </template>

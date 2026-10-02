@@ -30,7 +30,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         class: '!w-full',
-        min: 1,
+        min: 0.01,
         precision: 2,
         step: 0.01,
         placeholder: '请输入提现金额',
@@ -114,7 +114,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '提现金额',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'userName',

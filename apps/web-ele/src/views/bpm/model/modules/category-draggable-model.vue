@@ -93,6 +93,25 @@ const hasPermiExport = computed(() => {
   return hasAccessByCodes(['bpm:model:export']);
 });
 
+const hasPermiCreate = computed(() => hasAccessByCodes(['bpm:model:create']));
+const hasPermiPdQuery = computed(() =>
+  hasAccessByCodes(['bpm:process-definition:query']),
+);
+const hasPermiReport = computed(() =>
+  hasAccessByCodes(['bpm:process-instance:manager-query']),
+);
+const hasPermiClean = computed(() => hasAccessByCodes(['bpm:model:clean']));
+const hasPermiMore = computed(
+  () =>
+    hasPermiCreate.value ||
+    hasPermiExport.value ||
+    hasPermiPdQuery.value ||
+    hasPermiReport.value ||
+    hasPermiUpdate.value ||
+    hasPermiClean.value ||
+    hasPermiDelete.value,
+);
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useGridColumns(),
@@ -265,6 +284,10 @@ function isManagerUser(row: any) {
 }
 
 /** 模型操作 */
+function createModel() {
+  router.push({ name: 'BpmModelCreate' });
+}
+
 async function modelOperation(type: string, id: number) {
   await router.push({
     name: 'BpmModelUpdate',
@@ -435,6 +458,7 @@ function handleDefinitionList(row: any) {
 
 /** 跳转到流程报表页面 */
 function handleReport(row: any) {
+  if (!row.processDefinition) return;
   router.push({
     name: 'BpmProcessInstanceReport',
     query: {
@@ -523,6 +547,14 @@ function handleRenameSuccess() {
             :class="isModelSorting ? 'mr-4' : 'mr-8'"
           >
             <template v-if="!isModelSorting">
+              <ElButton
+                v-if="!categoryInfo.modelList.length && hasPermiCreate"
+                link
+                size="small"
+                @click.stop="createModel"
+              >
+                新建模型
+              </ElButton>
               <ElButton
                 v-if="categoryInfo.modelList.length > 0"
                 link
@@ -704,16 +736,23 @@ function handleRenameSuccess() {
                 >
                   发布
                 </ElButton>
-                <ElDropdown placement="bottom-end" trigger="click">
+                <ElDropdown
+                  v-if="hasPermiMore"
+                  placement="bottom-end"
+                  trigger="click"
+                >
                   <ElButton link size="small">更多</ElButton>
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item
+                        v-if="hasPermiCreate"
                         @click="handleModelCommand('handleCopy', row)"
+                        :disabled="!isManagerUser(row) && !hasPermiUpdate"
                       >
                         复制
                       </el-dropdown-item>
                       <el-dropdown-item
+                        v-if="hasPermiPdQuery"
                         @click="handleModelCommand('handleDefinitionList', row)"
                       >
                         历史
@@ -726,13 +765,14 @@ function handleRenameSuccess() {
                       </el-dropdown-item>
 
                       <el-dropdown-item
+                        v-if="hasPermiReport && row.processDefinition"
                         @click="handleModelCommand('handleReport', row)"
                         :disabled="!isManagerUser(row)"
                       >
                         报表
                       </el-dropdown-item>
                       <el-dropdown-item
-                        v-if="row.processDefinition"
+                        v-if="hasPermiUpdate && row.processDefinition"
                         @click="handleModelCommand('handleChangeState', row)"
                         :disabled="!isManagerUser(row)"
                       >
@@ -743,14 +783,16 @@ function handleRenameSuccess() {
                         }}
                       </el-dropdown-item>
                       <el-dropdown-item
+                        v-if="hasPermiClean"
                         @click="handleModelCommand('handleClean', row)"
                         :disabled="!isManagerUser(row)"
                       >
                         清理
                       </el-dropdown-item>
                       <el-dropdown-item
+                        v-if="hasPermiDelete"
                         @click="handleModelCommand('handleDelete', row)"
-                        :disabled="!isManagerUser(row) && !hasPermiDelete"
+                        :disabled="!isManagerUser(row)"
                       >
                         删除
                       </el-dropdown-item>

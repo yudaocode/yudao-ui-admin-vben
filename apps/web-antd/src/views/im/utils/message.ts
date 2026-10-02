@@ -150,7 +150,7 @@ export function parseTextSegments(
   // 「@张三丰」不能被「@张三」截胡，候选按 name 长度倒序
   const sortedMentions =
     mentions.length > 1
-      ? [...mentions].toSort((a, b) => b.name.length - a.name.length)
+      ? [...mentions].toSorted((a, b) => b.name.length - a.name.length)
       : mentions;
   const out: TipSegment[] = [];
   let buffer = '';

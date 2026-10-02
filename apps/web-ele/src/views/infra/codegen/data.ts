@@ -184,7 +184,10 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         showSearch: true,
         defaultExpandedKeys: [0],
       },
-      rules: 'selectRequired',
+      dependencies: {
+        triggerFields: ['scene'],
+        rules: (values) => (values.scene === 1 ? 'selectRequired' : null),
+      },
       renderComponentContent() {
         return {
           title({ label, icon }: { icon: string; label: string }) {
@@ -211,13 +214,6 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'businessName',
       label: '业务名',
       help: '业务名，即二级目录，例如 user、permission、dict 等等',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
-      fieldName: 'className',
-      label: '类名称',
-      help: '类名称（首字母大写），例如SysUser、SysMenu、SysDictData 等等',
       rules: 'required',
     },
     {

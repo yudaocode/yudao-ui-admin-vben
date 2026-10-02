@@ -145,7 +145,7 @@ export async function createProcessInstance(data: any) {
 
 /** 申请人主动取消流程实例 */
 export async function cancelProcessInstanceByStartUser(
-  id: number,
+  id: number | string,
   reason: string,
 ) {
   return requestClient.delete<boolean>(

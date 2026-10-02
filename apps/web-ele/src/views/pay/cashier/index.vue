@@ -42,6 +42,22 @@ const interval = ref<any>(undefined); // 定时任务，轮询是否完成支付
 const [Modal, modalApi] = useVbenModal({
   showConfirmButton: false,
   destroyOnClose: true,
+  confirmText: '确认支付',
+  async onConfirm() {
+    if (!barCode.value.visible) {
+      return;
+    }
+    if (!barCode.value.value) {
+      ElMessage.warning('请输入条形码');
+      return;
+    }
+    modalApi.lock();
+    try {
+      await submit(barCode.value.channelCode);
+    } finally {
+      modalApi.unlock();
+    }
+  },
 });
 
 /** 展示形式：二维码 */
@@ -106,7 +122,7 @@ function handlePay(channelCode: string) {
         value: '',
         visible: true,
       };
-      modalApi.open();
+      modalApi.setState({ showConfirmButton: true }).open();
       break;
     }
     case PayChannelEnum.WX_BAR.code: {
@@ -116,7 +132,7 @@ function handlePay(channelCode: string) {
         value: '',
         visible: true,
       };
-      modalApi.open();
+      modalApi.setState({ showConfirmButton: true }).open();
       break;
     }
     // 微信公众号、小程序支付，无法在 PC 网页中进行
@@ -217,7 +233,7 @@ function displayQrCode(channelCode: string, data: any) {
     url: data.displayContent,
     visible: true,
   };
-  modalApi.open();
+  modalApi.setState({ showConfirmButton: false }).open();
 }
 
 /** 提交支付后（App） */

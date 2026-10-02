@@ -19,6 +19,19 @@ import {
 
 import WorkItemSelect from '../components/work-item-select.vue';
 
+/** 工作项导入表单 */
+export function useWorkItemImportFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'file',
+      label: '工作项数据',
+      component: 'Upload',
+      rules: 'required',
+      help: '仅允许导入 xls、xlsx 格式文件',
+    },
+  ];
+}
+
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<PmsWorkItemApi.WorkItem>['columns'] {
   return [

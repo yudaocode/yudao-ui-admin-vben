@@ -19,7 +19,10 @@ const { push } = useRouter();
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportCustomer(await gridApi.formApi.getValues());
+  const data = await exportCustomer({
+    ...(await gridApi.formApi.getValues()),
+    pool: true,
+  });
   downloadFileFromBlobPart({ fileName: '客户公海.xls', source: data });
 }
 

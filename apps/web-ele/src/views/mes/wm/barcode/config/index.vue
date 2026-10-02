@@ -24,15 +24,16 @@ const [FormModal, formModalApi] = useVbenModal({
 
 /** 自动生成开关变更 */
 async function handleAutoGenerateChange(
+  newValue: boolean,
   row: MesWmBarcodeConfigApi.BarcodeConfig,
 ): Promise<boolean> {
-  const text = row.autoGenerateFlag ? '启用' : '停用';
+  const text = newValue ? '启用' : '停用';
   try {
     await confirm(`确认要${text}自动生成吗？`);
   } catch {
     return false;
   }
-  await updateBarcodeConfig(row);
+  await updateBarcodeConfig({ ...row, autoGenerateFlag: newValue });
   ElMessage.success(`${text}成功`);
   return true;
 }

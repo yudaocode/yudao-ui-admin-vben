@@ -2,7 +2,7 @@
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 import type { SystemOperateLogApi } from '#/api/system/operate-log';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
@@ -13,6 +13,7 @@ import {
   Button,
   Card,
   Dropdown,
+  Input,
   Menu,
   message,
   Modal,
@@ -203,12 +204,24 @@ async function handleCancelQuit() {
   cancelQuitReason.value = '';
   Modal.confirm({
     title: '取消离职',
-    content: '请输入取消离职原因',
+    content: () =>
+      h(Input.TextArea, {
+        placeholder: '请输入取消离职原因',
+        rows: 3,
+        maxlength: 500,
+        onChange: (event: Event) => {
+          cancelQuitReason.value = (event.target as HTMLTextAreaElement).value;
+        },
+      }),
     onOk: async () => {
       const reason = cancelQuitReason.value.trim();
       if (!reason) {
         message.warning('取消原因不能为空');
         throw new Error('empty');
+      }
+      if (reason.length > 500) {
+        message.warning('取消原因不能超过 500 字');
+        throw new Error('too long');
       }
       await cancelEmployeeQuit({ employeeId, reason });
       message.success('已取消离职');

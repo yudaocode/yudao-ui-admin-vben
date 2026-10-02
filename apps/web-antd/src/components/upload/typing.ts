@@ -28,6 +28,7 @@ export interface FileUploadProps {
   multiple?: boolean; // 是否支持多选
   resultField?: string; // support xxx.xxx.xx
   returnText?: boolean; // 是否返回文件文本内容
+  returnTextType?: 'base64' | 'text'; // 文件内容的读取方式
   showDescription?: boolean; // 是否显示下面的描述
   showDownloadIcon?: boolean; // 是否显示下载按钮
   value?: string | string[];

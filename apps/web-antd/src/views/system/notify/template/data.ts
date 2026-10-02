@@ -122,19 +122,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'type',
-      label: '模板类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(
-          DICT_TYPE.SYSTEM_NOTIFY_TEMPLATE_TYPE,
-          'number',
-        ),
-        allowClear: true,
-        placeholder: '请选择模板类型',
-      },
-    },
-    {
       fieldName: 'createTime',
       label: '创建时间',
       component: 'RangePicker',

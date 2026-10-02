@@ -68,18 +68,9 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择商品',
       },
       dependencies: {
-        triggerFields: ['productScope', 'productScopeValues'],
+        triggerFields: ['productScope'],
         show: (model) =>
           model.productScope === PromotionProductScopeEnum.SPU.scope,
-        trigger(values, form) {
-          // 当加载已有数据时，根据 productScopeValues 设置 productSpuIds
-          if (
-            values.productScope === PromotionProductScopeEnum.SPU.scope &&
-            values.productScopeValues
-          ) {
-            form.setFieldValue('productSpuIds', values.productScopeValues);
-          }
-        },
       },
       rules: 'required',
     },
@@ -91,25 +82,9 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择商品分类',
       },
       dependencies: {
-        triggerFields: ['productScope', 'productScopeValues'],
+        triggerFields: ['productScope'],
         show: (model) =>
           model.productScope === PromotionProductScopeEnum.CATEGORY.scope,
-        trigger(values, form) {
-          // 当加载已有数据时，根据 productScopeValues 设置 productCategoryIds
-          if (
-            values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
-            values.productScopeValues
-          ) {
-            const categoryIds = values.productScopeValues;
-            // 单选时使用数组不能反显，取第一个元素
-            form.setFieldValue(
-              'productCategoryIds',
-              Array.isArray(categoryIds) && categoryIds.length > 0
-                ? categoryIds[0]
-                : categoryIds,
-            );
-          }
-        },
       },
       rules: 'required',
     },

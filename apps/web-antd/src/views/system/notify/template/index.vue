@@ -5,7 +5,7 @@ import type { SystemNotifyTemplateApi } from '#/api/system/notify/template';
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
+import { isEmpty } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -13,7 +13,6 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteNotifyTemplate,
   deleteNotifyTemplateList,
-  exportNotifyTemplate,
   getNotifyTemplatePage,
 } from '#/api/system/notify/template';
 import { $t } from '#/locales';
@@ -35,12 +34,6 @@ const [SendModal, sendModalApi] = useVbenModal({
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
-}
-
-/** 导出表格 */
-async function handleExport() {
-  const data = await exportNotifyTemplate(await gridApi.formApi.getValues());
-  downloadFileFromBlobPart({ fileName: '站内信模板.xls', source: data });
 }
 
 /** 创建站内信模板 */
@@ -152,13 +145,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.ADD,
               auth: ['system:notify-template:create'],
               onClick: handleCreate,
-            },
-            {
-              label: $t('ui.actionTitle.export'),
-              type: 'primary',
-              icon: ACTION_ICON.DOWNLOAD,
-              auth: ['system:notify-template:export'],
-              onClick: handleExport,
             },
             {
               label: $t('ui.actionTitle.deleteBatch'),

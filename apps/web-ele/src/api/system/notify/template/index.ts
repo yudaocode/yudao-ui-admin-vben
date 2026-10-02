@@ -80,13 +80,6 @@ export function deleteNotifyTemplateList(ids: number[]) {
   );
 }
 
-/** 导出站内信模板 */
-export function exportNotifyTemplate(params: any) {
-  return requestClient.download('/system/notify-template/export-excel', {
-    params,
-  });
-}
-
 /** 发送站内信 */
 export function sendNotify(data: SystemNotifyTemplateApi.NotifySendReqVO) {
   return requestClient.post('/system/notify-template/send-notify', data);

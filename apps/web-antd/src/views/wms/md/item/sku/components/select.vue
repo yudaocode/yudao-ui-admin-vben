@@ -41,6 +41,7 @@ async function syncSingleSelection(row?: WmsItemSkuApi.ItemSku) {
   syncingSingleSelection.value = true;
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
   if (row) {
     await gridApi.grid.setCheckboxRow(row, true);
   }
@@ -51,11 +52,9 @@ async function syncSingleSelection(row?: WmsItemSkuApi.ItemSku) {
 /** 处理勾选变化，单选模式只保留最后一条可选 SKU */
 async function handleCheckboxChange({
   checked,
-  records,
   row,
 }: {
   checked: boolean;
-  records: WmsItemSkuApi.ItemSku[];
   row?: WmsItemSkuApi.ItemSku;
 }) {
   if (syncingSingleSelection.value) {
@@ -67,19 +66,30 @@ async function handleCheckboxChange({
     await syncSingleSelection(selected[0]);
     return;
   }
-  selectedRows.value = records.filter(
-    (item) => item.id === undefined || !disabledSelectedIds.value.has(item.id),
-  );
+  selectedRows.value = getSelectedRows();
 }
 
 /** 处理全选变化，过滤掉已禁选的 SKU */
-function handleCheckboxAll({ records }: { records: WmsItemSkuApi.ItemSku[] }) {
+function handleCheckboxAll() {
   if (syncingSingleSelection.value) {
     return;
   }
-  selectedRows.value = records.filter(
-    (item) => item.id === undefined || !disabledSelectedIds.value.has(item.id),
-  );
+  selectedRows.value = getSelectedRows();
+}
+
+/** 合并当前页和跨页保留的勾选 */
+function getSelectedRows(): WmsItemSkuApi.ItemSku[] {
+  const rows = [
+    ...gridApi.grid.getCheckboxReserveRecords(),
+    ...gridApi.grid.getCheckboxRecords(),
+  ] as WmsItemSkuApi.ItemSku[];
+  const selected = new Map<number, WmsItemSkuApi.ItemSku>();
+  for (const row of rows) {
+    if (row.id !== undefined && !disabledSelectedIds.value.has(row.id)) {
+      selected.set(row.id, row);
+    }
+  }
+  return [...selected.values()];
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -137,6 +147,7 @@ async function openModal(
       : new Set(selectedIds || []);
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
   await gridApi.formApi.reset();
   await gridApi.query();
 }
@@ -146,6 +157,7 @@ async function closeModal() {
   open.value = false;
   selectedRows.value = [];
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
 }
 
 /** 确认选择并返回新增的 SKU 列表 */

@@ -23,7 +23,10 @@ const [DetailModal, detailModalApi] = useVbenModal({
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportJobLog(await gridApi.formApi.getValues());
+  const data = await exportJobLog({
+    ...(await gridApi.formApi.getValues()),
+    jobId: query.id,
+  });
   downloadFileFromBlobPart({ fileName: '任务日志.xls', source: data });
 }
 

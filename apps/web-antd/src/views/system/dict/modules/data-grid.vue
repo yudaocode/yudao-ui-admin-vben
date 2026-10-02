@@ -40,7 +40,10 @@ function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportDictData(await gridApi.formApi.getValues());
+  const data = await exportDictData({
+    ...(await gridApi.formApi.getValues()),
+    dictType: props.dictType,
+  });
   downloadFileFromBlobPart({ fileName: '字典数据.xls', source: data });
 }
 

@@ -127,7 +127,12 @@ async function handleExport() {
       <!-- 查询条件 -->
       <div class="flex items-center gap-2">
         <ShortcutDateRangePicker @change="handleDateRangeChange">
-          <Button class="ml-4" @click="handleExport" :loading="exportLoading">
+          <Button
+            v-access:code="['statistics:trade:export']"
+            class="ml-4"
+            @click="handleExport"
+            :loading="exportLoading"
+          >
             <template #icon>
               <IconifyIcon icon="lucide:download" />
             </template>

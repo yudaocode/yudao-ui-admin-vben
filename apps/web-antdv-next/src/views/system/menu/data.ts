@@ -103,7 +103,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择菜单图标',
         prefix: 'carbon',
       },
-      rules: 'required',
       dependencies: {
         triggerFields: ['type'],
         show: (values) => {
@@ -183,9 +182,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'permission',
       label: '权限标识',
+      help: "Controller 方法上的权限字符，如：@PreAuthorize(`@ss.hasPermission('system:user:list')`)",
       component: 'Input',
       componentProps: {
-        placeholder: '请输入菜单描述',
+        placeholder: '请输入权限标识',
       },
       dependencies: {
         show: (values) => {
@@ -260,7 +260,9 @@ export function useFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['type'],
         show: (values) => {
-          return [SystemMenuTypeEnum.MENU].includes(values.type);
+          return [SystemMenuTypeEnum.DIR, SystemMenuTypeEnum.MENU].includes(
+            values.type,
+          );
         },
       },
     },
@@ -344,6 +346,31 @@ export function useGridColumns(): VxeTableGridOptions<SystemMenuApi.Menu>['colum
       width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '菜单名称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入菜单名称',
+        allowClear: true,
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        allowClear: true,
+        placeholder: '请选择状态',
+      },
     },
   ];
 }

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { HrmAttendanceClockApi } from '#/api/hrm/attendance/clock';
 
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 import { formatDate } from '@vben/utils';
@@ -26,6 +26,7 @@ defineOptions({ name: 'HrmAttendanceClockForm' });
 const emit = defineEmits(['success']);
 
 const formType = ref<'create' | 'update'>('create');
+const initializingForm = ref(false);
 const shiftLoading = ref(false);
 const shiftInfo = ref<HrmAttendanceClockApi.Shift>();
 const formEmployeeId = ref<number>();
@@ -65,6 +66,18 @@ const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
     labelWidth: 112,
+  },
+  handleValuesChange(values, changedFields) {
+    formEmployeeId.value = values.employeeId;
+    formAttendanceTime.value = values.attendanceTime;
+    if (
+      !initializingForm.value &&
+      changedFields.some((field) =>
+        ['attendanceTime', 'employeeId', 'type'].includes(field),
+      )
+    ) {
+      void loadShift(true);
+    }
   },
   layout: 'horizontal',
   schema: useClockFormSchema(),
@@ -133,6 +146,7 @@ const [Modal, modalApi] = useVbenModal({
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       shiftInfo.value = undefined;
+      shiftLoading.value = false;
       return;
     }
     const data = modalApi.getData() as {
@@ -140,49 +154,39 @@ const [Modal, modalApi] = useVbenModal({
       type: 'create' | 'update';
     };
     formType.value = data?.type ?? 'create';
+    initializingForm.value = true;
     shiftInfo.value = undefined;
-    await formApi.reset();
-    if (data?.type === 'update' && data.id) {
-      modalApi.lock();
-      try {
-        const detail = await getAttendanceClock(data.id);
+    try {
+      await formApi.reset();
+      if (data?.type === 'update' && data.id) {
+        modalApi.lock();
+        try {
+          const detail = await getAttendanceClock(data.id);
+          await formApi.setValues({
+            ...detail,
+            attendanceTime: detail.attendanceTime
+              ? String(dayjs(detail.attendanceTime).startOf('day').valueOf())
+              : undefined,
+            clockTime: detail.clockTime ? String(detail.clockTime) : undefined,
+            formType: 'update',
+          });
+          await loadShift(false);
+        } finally {
+          modalApi.unlock();
+        }
+      } else {
         await formApi.setValues({
-          ...detail,
-          attendanceTime: detail.attendanceTime
-            ? String(dayjs(detail.attendanceTime).startOf('day').valueOf())
-            : undefined,
-          clockTime: detail.clockTime ? String(detail.clockTime) : undefined,
-          formType: 'update',
+          formType: 'create',
+          type: HrmAttendanceClockType.ON_DUTY,
+          attendanceTime: String(dayjs().startOf('day').valueOf()),
         });
-        await loadShift(false);
-      } finally {
-        modalApi.unlock();
       }
-      return;
+    } finally {
+      await nextTick();
+      initializingForm.value = false;
     }
-    await formApi.setValues({
-      formType: 'create',
-      type: HrmAttendanceClockType.ON_DUTY,
-      attendanceTime: String(dayjs().startOf('day').valueOf()),
-    });
   },
 });
-
-watch(
-  () => formApi.form.values,
-  async (values, oldValues) => {
-    formEmployeeId.value = values.employeeId;
-    formAttendanceTime.value = values.attendanceTime;
-    if (
-      values.employeeId !== oldValues?.employeeId ||
-      values.attendanceTime !== oldValues?.attendanceTime ||
-      values.type !== oldValues?.type
-    ) {
-      await loadShift(values.type !== oldValues?.type);
-    }
-  },
-  { deep: true },
-);
 
 function buildClockTime(
   beginTime: Date | number | string,
@@ -194,7 +198,7 @@ function buildClockTime(
     return undefined;
   }
   let result = dayjs(
-    `${formatDate(attendanceTime, 'YYYY-MM-DD')} ${formatDate(clockTime, 'HH:mm:ss')}`,
+    `${formatDate(Number(attendanceTime), 'YYYY-MM-DD')} ${formatDate(Number(clockTime), 'HH:mm:ss')}`,
   );
   const begin = dayjs(beginTime);
   const end = dayjs(endTime);
@@ -212,16 +216,21 @@ function buildClockTime(
 
 async function loadShift(applyDefaultTime = false) {
   shiftInfo.value = undefined;
+  shiftLoading.value = false;
   const values = await formApi.getValues();
   if (!values.employeeId || !values.attendanceTime) {
     return;
   }
   shiftLoading.value = true;
   try {
-    shiftInfo.value = await getAttendanceClockShift({
+    const shift = await getAttendanceClockShift({
       employeeId: values.employeeId,
-      attendanceTime: formatDate(values.attendanceTime, 'YYYY-MM-DD HH:mm:ss'),
+      attendanceTime: formatDate(
+        Number(values.attendanceTime),
+        'YYYY-MM-DD HH:mm:ss',
+      ),
     });
+    shiftInfo.value = shift;
     if (applyDefaultTime && shiftInfo.value) {
       await formApi.setFieldValue(
         'clockTime',

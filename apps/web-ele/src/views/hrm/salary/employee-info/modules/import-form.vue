@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadRawFile } from 'element-plus';
+import type { UploadFile } from 'element-plus';
 
 import { ref } from 'vue';
 
@@ -76,16 +76,22 @@ const [ModalComp, modalApi] = useVbenModal({
   },
 });
 
-function beforeUpload(uploadFile: UploadRawFile) {
+function handleChange(uploadFile: UploadFile) {
+  file.value = undefined;
+  if (!uploadFile.raw) return;
   const fileExtension = uploadFile.name
     .slice(uploadFile.name.lastIndexOf('.') + 1)
     .toLowerCase();
   if (!['xls', 'xlsx'].includes(fileExtension)) {
     ElMessage.error('仅允许导入 xls、xlsx 格式文件');
-    return false;
+    fileList.value = [];
+    return;
   }
-  file.value = uploadFile;
-  return false;
+  file.value = uploadFile.raw;
+}
+
+function handleExceed() {
+  ElMessage.warning('最多只能选择一个文件，请移除后重新选择');
 }
 
 async function handleDownloadTemplate() {
@@ -109,7 +115,8 @@ async function handleDownloadTemplate() {
       <ElUpload
         v-model:file-list="fileList"
         :auto-upload="false"
-        :before-upload="beforeUpload"
+        :on-change="handleChange"
+        :on-exceed="handleExceed"
         :disabled="formLoading"
         :limit="1"
         accept=".xlsx,.xls"

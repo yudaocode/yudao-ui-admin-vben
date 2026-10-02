@@ -20,7 +20,7 @@ export function useDisagreeFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'Textarea',
-      fieldName: 'reason',
+      fieldName: 'auditReason',
       label: '拒绝原因',
       componentProps: {
         placeholder: '请输入拒绝原因',
@@ -126,7 +126,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
       field: 'refundPrice',
       title: '订单金额',
       width: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'user.nickname',
