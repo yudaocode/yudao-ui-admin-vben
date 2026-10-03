@@ -45,8 +45,7 @@ export function useInsuranceBaseFormSchema(
     {
       component: 'RadioGroup',
       componentProps: {
-        buttonStyle: 'solid',
-        optionType: 'button',
+        isButton: true,
         options: [
           {
             label: '设置参保基数和比例',

@@ -90,7 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '联系电话',
       component: 'Input',
       componentProps: {
-        maxLength: 11,
+        maxlength: 11,
         placeholder: '请输入联系电话',
       },
       rules: 'mobile',

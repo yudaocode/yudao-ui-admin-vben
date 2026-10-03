@@ -43,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         multiple: true,
         placeholder: '请选择部门',
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
         valueField: 'id',
       },
     },

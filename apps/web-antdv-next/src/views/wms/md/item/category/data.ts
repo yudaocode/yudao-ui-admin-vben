@@ -54,7 +54,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '分类编号',
       component: 'Input',
       componentProps: {
-        maxLength: 20,
+        maxlength: 20,
         placeholder: '请输入分类编号',
       },
       rules: z.string().min(1, '分类编号不能为空').max(20),

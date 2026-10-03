@@ -44,7 +44,7 @@ export function useFormSchema(
       label: '路线编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入工艺路线编码',
       },
       rules: z.string().min(1, '路线编码不能为空').max(64),
@@ -70,7 +70,7 @@ export function useFormSchema(
       label: '路线名称',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入工艺路线名称',
       },
       rules: z.string().min(1, '路线名称不能为空').max(100),
@@ -81,7 +81,7 @@ export function useFormSchema(
       component: 'Textarea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 500,
+        maxlength: 500,
         placeholder: '请输入工艺路线说明',
         rows: 3,
       },
@@ -92,7 +92,7 @@ export function useFormSchema(
       component: 'Textarea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },
@@ -287,7 +287,7 @@ export function useRouteProcessFormSchema(
       component: 'Textarea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },
@@ -456,7 +456,7 @@ export function useRouteProductFormSchema(
       component: 'Textarea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },
@@ -519,7 +519,7 @@ export function useRouteProductBomFormSchema(
       label: '备注',
       component: 'Textarea',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },

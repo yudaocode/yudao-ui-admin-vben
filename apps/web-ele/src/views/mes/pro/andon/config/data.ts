@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         autosize: { maxRows: 3, minRows: 1 },
-        maxLength: 200,
+        maxlength: 200,
         placeholder: '请输入呼叫原因',
       },
       rules: z.string().min(1, '呼叫原因不能为空').max(200),
@@ -93,7 +93,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '备注',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入备注',
       },
     },

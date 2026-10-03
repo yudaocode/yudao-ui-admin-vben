@@ -42,7 +42,7 @@ export function useFormSchema(
       label: '物料编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入物料编码',
       },
       rules: z.string().min(1, '物料编码不能为空').max(64),
@@ -68,7 +68,7 @@ export function useFormSchema(
       label: '物料名称',
       component: 'Input',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入物料名称',
       },
       rules: z.string().min(1, '物料名称不能为空').max(255),
@@ -78,7 +78,7 @@ export function useFormSchema(
       label: '规格型号',
       component: 'Input',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入规格型号',
       },
     },

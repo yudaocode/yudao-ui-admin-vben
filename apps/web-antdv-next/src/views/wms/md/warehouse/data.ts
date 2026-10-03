@@ -25,7 +25,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '仓库名称',
       component: 'Input',
       componentProps: {
-        maxLength: 50,
+        maxlength: 50,
         placeholder: '请输入仓库名称',
       },
       rules: z.string().min(1, '仓库名称不能为空').max(50),
@@ -35,7 +35,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '仓库编号',
       component: 'Input',
       componentProps: {
-        maxLength: 20,
+        maxlength: 20,
         placeholder: '请输入仓库编号',
       },
       rules: z.string().min(1, '仓库编号不能为空').max(20),
@@ -67,7 +67,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '备注',
       component: 'TextArea',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入备注',
         rows: 3,
       },

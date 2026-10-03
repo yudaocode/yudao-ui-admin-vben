@@ -102,7 +102,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         childrenField: 'children',
         placeholder: '请选择部门',
         clearable: true,
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
       },
     },
     {

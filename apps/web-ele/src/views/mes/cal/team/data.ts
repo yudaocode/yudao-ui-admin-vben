@@ -34,7 +34,7 @@ export function useFormSchema(
       label: '班组编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入班组编码',
       },
       rules: z.string().min(1, '班组编码不能为空').max(64),
@@ -60,7 +60,7 @@ export function useFormSchema(
       label: '班组名称',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入班组名称',
       },
       rules: z.string().min(1, '班组名称不能为空').max(100),
@@ -80,7 +80,7 @@ export function useFormSchema(
       component: 'Textarea',
       formItemClass: 'col-span-3',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 3,
       },

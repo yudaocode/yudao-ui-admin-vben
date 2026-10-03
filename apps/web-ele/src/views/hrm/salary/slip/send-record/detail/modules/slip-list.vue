@@ -102,7 +102,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
           valueField: 'id',
           childrenField: 'children',
           placeholder: '请选择部门',
-          treeDefaultExpandAll: true,
+          defaultExpandAll: true,
         },
       },
       {

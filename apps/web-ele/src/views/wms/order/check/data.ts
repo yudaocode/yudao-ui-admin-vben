@@ -374,7 +374,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入盘库单号',
       },
       fieldName: 'no',
@@ -413,7 +413,7 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'Textarea',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入备注',
       },
       fieldName: 'remark',

@@ -288,7 +288,7 @@ export function useFormSchema({
     {
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入移库单号',
       },
       fieldName: 'no',
@@ -328,7 +328,7 @@ export function useFormSchema({
     {
       component: 'TextArea',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入备注',
       },
       fieldName: 'remark',

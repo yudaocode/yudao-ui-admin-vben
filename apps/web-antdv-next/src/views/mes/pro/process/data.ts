@@ -39,7 +39,7 @@ export function useFormSchema(
       label: '工序编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入工序编码',
       },
       rules: z.string().min(1, '工序编码不能为空').max(64),
@@ -66,7 +66,7 @@ export function useFormSchema(
       label: '工序名称',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入工序名称',
       },
       rules: z.string().min(1, '工序名称不能为空').max(100),
@@ -88,7 +88,7 @@ export function useFormSchema(
       component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
-        maxLength: 500,
+        maxlength: 500,
         placeholder: '请输入工序说明',
         rows: 3,
       },
@@ -99,7 +99,7 @@ export function useFormSchema(
       component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 3,
       },
@@ -216,7 +216,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '步骤说明',
       component: 'TextArea',
       componentProps: {
-        maxLength: 500,
+        maxlength: 500,
         placeholder: '请输入步骤说明',
         rows: 3,
       },
@@ -226,7 +226,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '辅助设备',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入辅助设备',
       },
     },
@@ -235,7 +235,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '辅助材料',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入辅助材料',
       },
     },
@@ -244,7 +244,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '材料文档 URL',
       component: 'Input',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入材料文档 URL',
       },
     },
@@ -253,7 +253,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '备注',
       component: 'TextArea',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },

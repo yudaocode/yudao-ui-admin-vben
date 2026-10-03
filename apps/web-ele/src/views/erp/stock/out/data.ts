@@ -66,7 +66,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        autoSize: { minRows: 1, maxRows: 1 },
+        autosize: { minRows: 1, maxRows: 1 },
         disabled: formType === 'detail',
       },
       formItemClass: 'col-span-2',

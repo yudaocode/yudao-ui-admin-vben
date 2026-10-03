@@ -36,7 +36,7 @@ export function useGroupBaseFormSchema(): VbenFormSchema[] {
         multiple: true,
         placeholder: '请选择部门',
         treeCheckable: true,
-        treeDefaultExpandAll: true,
+        defaultExpandAll: true,
         valueField: 'id',
       },
       fieldName: 'deptIds',

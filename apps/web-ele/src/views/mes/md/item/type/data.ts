@@ -66,7 +66,7 @@ export function useFormSchema(
       label: '分类编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入分类编码',
       },
       rules: z.string().min(1, '分类编码不能为空').max(64),
