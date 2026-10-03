@@ -28,7 +28,7 @@ const [Grid] = useVbenVxeGrid({
         label: '状态',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: CONTACT_STATUS,
         },
         defaultValue: CONTACT_STATUS[0]!.value,
@@ -38,7 +38,7 @@ const [Grid] = useVbenVxeGrid({
         label: '归属',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: SCENE_TYPES,
         },
         defaultValue: SCENE_TYPES[0]!.value,

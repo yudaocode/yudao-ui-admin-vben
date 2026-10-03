@@ -55,7 +55,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择供应商',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSupplierSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -149,7 +149,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择结算账户',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getAccountSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -275,7 +275,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择产品',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -287,7 +287,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -297,7 +297,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择供应商',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSupplierSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -310,7 +310,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择创建人',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',

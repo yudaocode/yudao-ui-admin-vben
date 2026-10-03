@@ -10,7 +10,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel, useTabs } from '@vben/hooks';
+import { getDictLabel, getDictOptions, useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 
 import {
@@ -242,30 +242,33 @@ function useEmployeeFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'employeeType',
       label: '聘用形式',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
         allowClear: true,
-        dictType: DICT_TYPE.HRM_EMPLOYEE_TYPE,
+        options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_TYPE, 'number'),
         placeholder: '请选择',
       },
     },
     {
       fieldName: 'employeeStatus',
       label: '员工状态',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
         allowClear: true,
-        dictType: DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_STATUS, 'number'),
         placeholder: '请选择',
       },
     },
     {
       fieldName: 'stageType',
       label: '当前阶段',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
         allowClear: true,
-        dictType: DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS,
+        options: getDictOptions(
+          DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS,
+          'number',
+        ),
         placeholder: '请选择',
       },
     },

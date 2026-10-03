@@ -18,7 +18,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择产品',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择仓库',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getWarehouseSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -110,7 +110,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入产品清单',
-        allowClear: true,
+        clearable: true,
       },
     },
     {

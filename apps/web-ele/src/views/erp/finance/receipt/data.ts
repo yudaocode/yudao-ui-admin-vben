@@ -55,7 +55,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
         disabled: formType === 'detail',
         placeholder: '请选择客户',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -69,7 +69,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择财务人员',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -122,7 +122,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择收款账户',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getAccountSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -244,7 +244,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -254,7 +254,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择客户',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -267,7 +267,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择创建人',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -280,7 +280,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择财务人员',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -293,7 +293,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择收款账户',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getAccountSimpleList,
         labelField: 'name',
         valueField: 'id',

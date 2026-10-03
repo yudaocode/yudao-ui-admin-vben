@@ -13,7 +13,9 @@ import { getHrmMonthRange } from '#/views/hrm/utils/format';
 export function useDeptTreeSelectProps() {
   return {
     api: async () => handleTree(await getSimpleDeptList()),
-    fieldNames: { label: 'name', value: 'id', children: 'children' },
+    labelField: 'name',
+    valueField: 'id',
+    childrenField: 'children',
     multiple: true,
     placeholder: '请选择部门',
     defaultExpandAll: true,

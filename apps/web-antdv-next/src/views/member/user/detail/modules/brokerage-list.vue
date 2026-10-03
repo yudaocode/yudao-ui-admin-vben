@@ -46,7 +46,7 @@ const formSchema = (): any[] => {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

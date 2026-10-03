@@ -73,7 +73,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '时间间隔',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择时间间隔',
         options: getDictOptions(DICT_TYPE.DATE_INTERVAL, 'number'),
       },

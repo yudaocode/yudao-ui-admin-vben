@@ -498,13 +498,13 @@ onMounted(() => {
                 <ElCol :span="8">
                   <ElFormItem>
                     <ElSelect
-                      :value="key || undefined"
+                      :model-value="key || undefined"
                       @change="
                         (newKey) => updateFormFieldKey(formSetting, key, newKey)
                       "
                       placeholder="请选择表单字段"
                       :disabled="key !== ''"
-                      allow-clear
+                      clearable
                     >
                       <ElOption
                         v-for="(field, fIdx) in optionalUpdateFormFields"
@@ -644,8 +644,8 @@ onMounted(() => {
               <!-- 表单字段删除设置 -->
               <div class="flex flex-wrap gap-2">
                 <ElSelect
-                  v-model:value="formSetting.deleteFields"
-                  mode="multiple"
+                  v-model="formSetting.deleteFields"
+                  multiple
                   placeholder="请选择要删除的字段"
                   class="w-full"
                 >

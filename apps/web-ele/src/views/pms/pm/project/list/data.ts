@@ -45,7 +45,7 @@ export function useGridFormSchema(
       component: 'Select',
       // 从响应式数据读取，避免表单重建时丢失动态回填的选项。
       componentProps: () => ({
-        allowClear: true,
+        clearable: true,
         options: getGroups().map((group) => ({
           label: `${group.name}（${group.projectCount}）`,
           value: group.id!,

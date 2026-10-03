@@ -20,7 +20,9 @@ export function useDeptTreeSelectProps() {
     class: 'w-full',
     clearable: true,
     defaultExpandAll: true,
-    fieldNames: { label: 'name', value: 'id', children: 'children' },
+    labelField: 'name',
+    valueField: 'id',
+    childrenField: 'children',
     placeholder: '请选择部门',
   };
 }

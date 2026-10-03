@@ -58,7 +58,7 @@ const [Form, formApi] = useVbenForm({
         api: getSimpleUserList,
         labelField: 'nickname',
         placeholder: '请选择用户',
-        showSearch: true,
+        filterable: true,
         valueField: 'id',
       },
       rules: 'selectRequired',

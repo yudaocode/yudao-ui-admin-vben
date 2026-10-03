@@ -68,8 +68,8 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         disabled: true,
         placeholder: '请选择客户',
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -83,7 +83,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择销售人员',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -199,8 +199,8 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择结算账户',
         disabled: true,
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getAccountSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -350,7 +350,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择产品',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -362,7 +362,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -372,7 +372,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择客户',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -385,7 +385,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择仓库',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getWarehouseSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -398,7 +398,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择创建人',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -548,7 +548,7 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择产品',
         clearable: true,
-        showSearch: true,
+        filterable: true,
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -560,7 +560,7 @@ export function useOrderGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

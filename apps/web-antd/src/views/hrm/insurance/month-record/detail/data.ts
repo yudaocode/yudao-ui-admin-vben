@@ -5,6 +5,7 @@ import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/mon
 import { markRaw } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
+import { getDictOptions } from '@vben/hooks';
 
 import { AreaCascader } from '#/components/area';
 import InsuranceSchemeSelect from '#/views/hrm/insurance/scheme/components/insurance-scheme-select.vue';
@@ -128,9 +129,9 @@ export function useEmployeeRecordFormSchema(
     {
       fieldName: 'status',
       label: '状态',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
-        dictType: DICT_TYPE.HRM_INSURANCE_EMP_STATUS,
+        options: getDictOptions(DICT_TYPE.HRM_INSURANCE_EMP_STATUS, 'number'),
         disabled: true,
       },
     },

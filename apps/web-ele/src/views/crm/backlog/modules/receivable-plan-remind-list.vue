@@ -51,7 +51,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '合同状态',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: RECEIVABLE_REMIND_TYPE,
         },
         defaultValue: RECEIVABLE_REMIND_TYPE[0]!.value,

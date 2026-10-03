@@ -140,7 +140,7 @@ export function useIterationFormSchema(): VbenFormSchema[] {
       label: '开始时间',
       component: 'DatePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择开始时间',
         showTime: true,
         valueFormat: 'x',
@@ -164,7 +164,7 @@ export function useIterationFormSchema(): VbenFormSchema[] {
       label: '结束时间',
       component: 'DatePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择结束时间',
         showTime: true,
         valueFormat: 'x',
@@ -201,7 +201,7 @@ export function useIterationFormSchema(): VbenFormSchema[] {
         clearable: true,
         optionFilterProp: 'label',
         placeholder: '请选择项目成员',
-        showSearch: true,
+        filterable: true,
       },
       formItemClass: 'col-span-2',
     },

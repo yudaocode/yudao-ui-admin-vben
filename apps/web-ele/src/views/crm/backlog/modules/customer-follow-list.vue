@@ -28,7 +28,6 @@ const [Grid] = useVbenVxeGrid({
         label: '状态',
         component: 'RadioGroup',
         componentProps: {
-          allowClear: true,
           options: FOLLOWUP_STATUS,
         },
         defaultValue: false,

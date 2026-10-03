@@ -46,7 +46,7 @@ const [Grid] = useVbenVxeGrid({
         label: '合同状态',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: AUDIT_STATUS,
         },
         defaultValue: AUDIT_STATUS[0]!.value,

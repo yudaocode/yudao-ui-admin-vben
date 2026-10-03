@@ -39,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        clearable: true,
+        allowClear: true,
       },
     },
   ];

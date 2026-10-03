@@ -51,7 +51,7 @@ const [Grid] = useVbenVxeGrid({
         label: '到期状态',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: CONTRACT_EXPIRY_TYPE,
         },
         defaultValue: CONTRACT_EXPIRY_TYPE[0]!.value,

@@ -28,7 +28,7 @@ const [Grid] = useVbenVxeGrid({
         label: '归属',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: SCENE_TYPES,
         },
         defaultValue: SCENE_TYPES[0]!.value,
