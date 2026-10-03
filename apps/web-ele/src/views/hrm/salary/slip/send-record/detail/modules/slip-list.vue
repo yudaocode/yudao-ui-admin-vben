@@ -92,6 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '部门',
         component: 'ApiTreeSelect',
         componentProps: {
+          checkStrictly: true,
           clearable: true,
           api: async () => {
             const { getSimpleDeptList } = await import('#/api/system/dept');

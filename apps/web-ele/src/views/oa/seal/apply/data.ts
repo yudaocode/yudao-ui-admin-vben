@@ -281,6 +281,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '申请部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',

@@ -7,7 +7,6 @@ import { confirm, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 
-import dayjs from 'dayjs';
 import {
   ElButton,
   ElDescriptions,
@@ -17,12 +16,12 @@ import {
 } from 'element-plus';
 
 import { archiveProject, recycleProject } from '#/api/pms/pm/project';
+import { formatPmsDate } from '#/views/pms/pm/utils/format';
 
 import ProjectForm from '../list/modules/form.vue';
 
 defineOptions({ name: 'PmsProjectBasicInfo' });
 
-// TODO @AI：日期用 formatDateTime，不要页面里 dayjs.format。归档/回收站对齐 TableAction 或补 auth。empty catch 处理下。补 destroyOnClose。
 const props = defineProps<{
   editable: boolean;
   project: PmsProjectApi.Project;
@@ -40,27 +39,25 @@ const [ProjectFormModal, projectFormModalApi] = useVbenModal({
 /** 归档项目 */
 async function handleArchive() {
   try {
-    // 归档的二次确认
     await confirm('归档后将不能继续操作项目中的数据，确认归档该项目吗？');
-    // 执行项目归档
-    await archiveProject(props.project.id);
-    // 提示结果并进入归档项目列表
-    ElMessage.success('项目已归档');
-    await push({ name: 'PmsProjectArchive' });
-  } catch {}
+  } catch {
+    return;
+  }
+  await archiveProject(props.project.id);
+  ElMessage.success('项目已归档');
+  await push({ name: 'PmsProjectArchive' });
 }
 
 /** 将项目移入回收站 */
 async function handleRecycle() {
   try {
-    // 移入回收站的二次确认
     await confirm('确认将该项目移入回收站吗？');
-    // 将项目移入回收站
-    await recycleProject(props.project.id);
-    // 提示结果并进入项目回收站
-    ElMessage.success('项目已移入回收站');
-    await push({ name: 'PmsProjectRecycle' });
-  } catch {}
+  } catch {
+    return;
+  }
+  await recycleProject(props.project.id);
+  ElMessage.success('项目已移入回收站');
+  await push({ name: 'PmsProjectRecycle' });
 }
 </script>
 
@@ -92,17 +89,9 @@ async function handleRecycle() {
         {{ getDictLabel(DICT_TYPE.PMS_PROJECT_TYPE, project.type) || '-' }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="项目周期">
-        {{
-          project.startTime
-            ? dayjs(project.startTime).format('YYYY-MM-DD')
-            : '未设置'
-        }}
+        {{ project.startTime ? formatPmsDate(project.startTime) : '未设置' }}
         至
-        {{
-          project.endTime
-            ? dayjs(project.endTime).format('YYYY-MM-DD')
-            : '未设置'
-        }}
+        {{ project.endTime ? formatPmsDate(project.endTime) : '未设置' }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="可见范围">
         {{ project.openStatus ? '公开项目' : '私有项目' }}
@@ -124,7 +113,12 @@ async function handleRecycle() {
             归档后项目只允许查看，不能继续维护项目中的迭代和工作项。
           </div>
         </div>
-        <ElButton @click="handleArchive">归档</ElButton>
+        <ElButton
+          v-access:code="['pms:pm:project:update']"
+          @click="handleArchive"
+          >
+归档
+</ElButton>
       </div>
       <ElDivider />
       <div class="flex items-center justify-between gap-4">
@@ -136,7 +130,13 @@ async function handleRecycle() {
             项目进入回收站后不可访问；只有项目拥有者可以在回收站彻底删除。
           </div>
         </div>
-        <ElButton type="danger" @click="handleRecycle">移入回收站</ElButton>
+        <ElButton
+          v-access:code="['pms:pm:project:update']"
+          type="danger"
+          @click="handleRecycle"
+          >
+移入回收站
+</ElButton>
       </div>
     </template>
 

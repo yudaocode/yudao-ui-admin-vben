@@ -59,6 +59,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       label: '归属部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',

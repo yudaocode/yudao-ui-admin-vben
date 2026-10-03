@@ -7,7 +7,7 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 import { CouponTemplateTakeTypeEnum, DICT_TYPE } from '@vben/constants';
 
 import { useVModel } from '@vueuse/core';
-import { Button, Input } from 'ant-design-vue';
+import { Button, InputNumber } from 'ant-design-vue';
 
 import { getCouponTemplateList } from '#/api/mall/promotion/coupon/couponTemplate';
 import { DictTag } from '#/components/dict-tag';
@@ -128,11 +128,12 @@ onMounted(async () => {
         </div>
         <div class="flex shrink-0 items-center gap-2">
           <span class="text-gray-500">送</span>
-          <Input
+          <InputNumber
             v-model:value="item.giveCount"
             class="!w-20"
             placeholder=""
-            type="number"
+            :min="0"
+            :step="1"
             size="small"
           />
           <span class="text-gray-500">张</span>

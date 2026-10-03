@@ -18,6 +18,7 @@ import { UserSelect } from '#/views/system/user/components';
 /** 部门树选择配置 */
 export function useDeptTreeSelectProps() {
   return {
+    checkStrictly: true,
     api: async () => handleTree(await getSimpleDeptList()),
     labelField: 'name',
     valueField: 'id',

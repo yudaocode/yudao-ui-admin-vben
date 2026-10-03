@@ -441,15 +441,24 @@ export function useRegularFormSchema(): VbenFormSchema[] {
 
 /** 岗位异动共享表单 */
 export function usePositionChangeFormSchema(
-  changeType: 'demotion' | 'promotion' | 'regular' | 'transfer' = 'transfer',
+  changeType:
+    | 'demotion'
+    | 'full-time'
+    | 'promotion'
+    | 'regular'
+    | 'transfer' = 'transfer',
 ): VbenFormSchema[] {
-  const reasonOptions = HrmEmployeeChangeReasonOptions.filter((item) =>
-    changeType === 'demotion'
-      ? item.value >= HrmEmployeeChangeReason.VIOLATION
-      : item.value <= HrmEmployeeChangeReason.WORK_ARRANGEMENT,
-  );
+  const reasonOptions =
+    changeType === 'regular' || changeType === 'full-time'
+      ? HrmEmployeeChangeReasonOptions
+      : HrmEmployeeChangeReasonOptions.filter((item) =>
+          changeType === 'demotion'
+            ? item.value >= HrmEmployeeChangeReason.VIOLATION
+            : item.value <= HrmEmployeeChangeReason.WORK_ARRANGEMENT,
+        );
   const postLabel = {
     demotion: '降级后',
+    'full-time': '新',
     promotion: '晋升后',
     regular: '转正后',
     transfer: '新',
@@ -557,7 +566,7 @@ export function usePositionChangeFormSchema(
 /** 转为全职表单 */
 export function useFullTimeFormSchema(): VbenFormSchema[] {
   return [
-    ...usePositionChangeFormSchema('transfer').filter(
+    ...usePositionChangeFormSchema('full-time').filter(
       (item) =>
         ![
           'newDeptId',

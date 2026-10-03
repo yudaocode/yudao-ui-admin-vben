@@ -128,7 +128,6 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         valueFormat: 'x',
         format: 'YYYY-MM-DD',
       },
-      defaultValue: new Date(),
     },
     {
       fieldName: 'remindDays',

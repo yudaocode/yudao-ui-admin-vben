@@ -12,6 +12,7 @@ import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions, useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { handleTree } from '@vben/utils';
 
 import {
   ElButton as Button,
@@ -42,6 +43,7 @@ import {
   startPerformancePlanInterview,
   terminatePerformancePlan,
 } from '#/api/hrm/performance/plan';
+import { getSimpleDeptList } from '#/api/system/dept';
 import { OperateLog } from '#/components/operate-log';
 import { $t } from '#/locales';
 import {
@@ -230,9 +232,9 @@ function useEmployeeFormSchema(): VbenFormSchema[] {
       label: '部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         clearable: true,
-        api: () =>
-          import('#/api/system/dept').then((m) => m.getSimpleDeptList()),
+        api: async () => handleTree(await getSimpleDeptList()),
         class: 'w-full',
         labelField: 'name',
         valueField: 'id',

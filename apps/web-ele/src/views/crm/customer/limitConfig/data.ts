@@ -47,6 +47,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
       label: '规则适用部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => {
           const data = await getSimpleDeptList();
           return handleTree(data);

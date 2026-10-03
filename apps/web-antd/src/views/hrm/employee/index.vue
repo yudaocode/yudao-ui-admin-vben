@@ -66,7 +66,9 @@ const isEntrySurvey = computed(
   () => Number(route.query.surveyType) === HrmEmployeeSurveyType.ENTRY,
 );
 const statusCategory = computed(() =>
-  activeStatus.value === 'entry' ? undefined : Number(activeStatus.value),
+  activeStatus.value && activeStatus.value !== 'entry'
+    ? Number(activeStatus.value)
+    : undefined,
 );
 
 const statusTabOptions = computed(() => {
@@ -487,6 +489,13 @@ function applyHomeFilter() {
     category = HrmEmployeeStatusTab.PENDING_ENTRY;
   } else if (surveyType === HrmEmployeeSurveyType.PENDING_LEAVE) {
     category = HrmEmployeeStatusTab.PENDING_LEAVE;
+  }
+  if (
+    surveyType === HrmEmployeeSurveyType.REGULAR ||
+    surveyType === HrmEmployeeSurveyType.TRANSFER
+  ) {
+    activeStatus.value = '';
+    return;
   }
   activeStatus.value = isEntrySurvey.value ? 'entry' : String(category);
 }

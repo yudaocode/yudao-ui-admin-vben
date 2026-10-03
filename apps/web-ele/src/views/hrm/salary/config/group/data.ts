@@ -38,6 +38,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '部门范围',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         childrenField: 'children',
         labelField: 'name',
