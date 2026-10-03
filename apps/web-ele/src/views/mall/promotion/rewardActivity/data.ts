@@ -127,7 +127,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入备注',
         rows: 4,
-        allowClear: true,
+        clearable: true,
       },
     },
     {

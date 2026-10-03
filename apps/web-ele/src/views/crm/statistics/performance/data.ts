@@ -68,7 +68,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择员工',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

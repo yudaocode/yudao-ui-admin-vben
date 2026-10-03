@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -213,7 +213,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入回款编号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -225,7 +225,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

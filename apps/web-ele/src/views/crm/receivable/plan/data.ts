@@ -58,7 +58,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         valueField: 'id',
         onChange: () => formApi?.setFieldValue('contractId', undefined),
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
       },
       dependencies: {
         triggerFields: ['id'],
@@ -73,7 +73,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       componentProps: {
         options: [],
         placeholder: '请选择合同',
-        allowClear: true,
+        clearable: true,
       },
       dependencies: {
         triggerFields: ['customerId', 'id'],
@@ -176,7 +176,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -185,7 +185,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入合同编号',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

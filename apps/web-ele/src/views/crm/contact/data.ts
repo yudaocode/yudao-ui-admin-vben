@@ -235,7 +235,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入联系人姓名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -244,7 +244,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -253,7 +253,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入电话',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -262,7 +262,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入微信',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -271,7 +271,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入电子邮箱',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

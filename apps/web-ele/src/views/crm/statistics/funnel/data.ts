@@ -48,7 +48,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '时间间隔',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择时间间隔',
         options: getDictOptions(DICT_TYPE.DATE_INTERVAL, 'number'),
       },
@@ -60,7 +60,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getBusinessStatusTypeSimpleList,
-        allowClear: true,
+        clearable: true,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择商机组',
@@ -89,7 +89,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        allowClear: true,
+        clearable: true,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择员工',

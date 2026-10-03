@@ -30,7 +30,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入客户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -40,7 +40,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
         placeholder: '请选择客户来源',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -49,7 +49,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -65,7 +65,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
@@ -76,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入电话',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -85,7 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入邮箱',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -94,7 +94,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入微信',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -103,7 +103,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入QQ',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -113,7 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
         placeholder: '请选择客户行业',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -123,7 +123,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
         placeholder: '请选择客户级别',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -143,7 +143,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入详细地址',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -165,7 +165,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -180,7 +180,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -189,7 +189,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -199,7 +199,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
         placeholder: '请选择所属行业',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -209,7 +209,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
         placeholder: '请选择客户级别',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -219,7 +219,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
         placeholder: '请选择客户来源',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -236,7 +236,7 @@ export function useImportFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
         class: 'w-full',
       },
       dependencies: {

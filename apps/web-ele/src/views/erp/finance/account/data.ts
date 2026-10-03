@@ -97,7 +97,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -106,7 +106,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入编码',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -115,7 +115,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入备注',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

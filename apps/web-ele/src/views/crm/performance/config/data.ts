@@ -53,7 +53,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '目标类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: bizTypeOptions,
         placeholder: '请选择目标类型',
       },
@@ -63,7 +63,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '对象类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: objectTypeOptions,
         placeholder: '请选择对象类型',
       },
@@ -93,7 +93,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        allowClear: true,
+        clearable: true,
         filterable: true,
         labelField: 'nickname',
         valueField: 'id',

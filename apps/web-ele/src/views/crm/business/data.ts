@@ -30,7 +30,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入商机名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -46,7 +46,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
@@ -61,7 +61,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
       }),
       rules: 'required',
     },
@@ -83,7 +83,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择商机状态组',
-        allowClear: true,
+        clearable: true,
       },
       dependencies: {
         triggerFields: ['id'],
@@ -187,7 +187,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入商机名称',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
