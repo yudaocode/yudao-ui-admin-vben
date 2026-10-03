@@ -14,7 +14,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入任务名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择流程定义',
-        allowClear: true,
+        clearable: true,
         api: getSimpleProcessDefinitionList,
         labelField: 'name',
         valueField: 'key',
@@ -35,7 +35,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请输入流程分类',
-        allowClear: true,
+        clearable: true,
         api: getCategorySimpleList,
         labelField: 'name',
         valueField: 'code',

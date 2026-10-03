@@ -93,7 +93,7 @@ export function useQueryFormSchema(): VbenFormSchema[] {
       label: '分类名称',
       componentProps: {
         placeholder: '请输入分类名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -103,7 +103,7 @@ export function useQueryFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择开启状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

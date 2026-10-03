@@ -54,7 +54,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       componentProps: {
         disabled: formType === 'detail',
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getCustomerSimpleList,
         labelField: 'name',
@@ -68,7 +68,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择财务人员',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getSimpleUserList,
         labelField: 'nickname',
@@ -121,7 +121,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择收款账户',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getAccountSimpleList,
         labelField: 'name',
@@ -235,7 +235,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入收款单号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -253,7 +253,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getCustomerSimpleList,
         labelField: 'name',
@@ -266,7 +266,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择创建人',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getSimpleUserList,
         labelField: 'nickname',
@@ -279,7 +279,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择财务人员',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getSimpleUserList,
         labelField: 'nickname',
@@ -292,7 +292,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择收款账户',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
         api: getAccountSimpleList,
         labelField: 'name',
@@ -306,7 +306,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.ERP_AUDIT_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -315,7 +315,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入备注',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -324,7 +324,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入销售单号',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -415,7 +415,7 @@ export function useSaleOutGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入出库单号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -438,7 +438,7 @@ export function useSaleOutGridFormSchema(): VbenFormSchema[] {
           { label: '全部收款', value: 2 },
         ],
         placeholder: '请选择收款状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -510,7 +510,7 @@ export function useSaleReturnGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入退货单号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -533,7 +533,7 @@ export function useSaleReturnGridFormSchema(): VbenFormSchema[] {
           { label: '全部退款', value: 2 },
         ],
         placeholder: '请选择退款状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
