@@ -45,7 +45,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: () => getModelSimpleList(AiModelTypeEnum.EMBEDDING),
         labelField: 'name',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择向量模型',
       },
       rules: 'required',
@@ -99,7 +99,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入知识库名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -109,7 +109,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择是否启用',
-        allowClear: true,
+        clearable: true,
       },
     },
     {

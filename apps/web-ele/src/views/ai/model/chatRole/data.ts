@@ -52,7 +52,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: () => getModelSimpleList(AiModelTypeEnum.CHAT),
         labelField: 'name',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
       },
       dependencies: {
         triggerFields: ['formType'],
@@ -104,7 +104,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         multiple: true,
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -117,7 +117,7 @@ export function useFormSchema(): VbenFormSchema[] {
         multiple: true,
         labelField: 'name',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -128,7 +128,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择 MCP',
         options: getDictOptions(DICT_TYPE.AI_MCP_CLIENT_NAME, 'string'),
         multiple: true,
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -208,7 +208,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择是否公开',
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: true,
     },

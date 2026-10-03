@@ -65,7 +65,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.BPM_PROCESS_LISTENER_TYPE, 'string'),
         placeholder: '请选择类型',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -76,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: EVENT_OPTIONS,
         placeholder: '请选择事件',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
       dependencies: {
@@ -111,7 +111,7 @@ export function useFormSchema(): VbenFormSchema[] {
           'string',
         ),
         placeholder: '请选择值类型',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -150,7 +150,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入名字',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -160,7 +160,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择类型',
         options: getDictOptions(DICT_TYPE.BPM_PROCESS_LISTENER_TYPE, 'string'),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

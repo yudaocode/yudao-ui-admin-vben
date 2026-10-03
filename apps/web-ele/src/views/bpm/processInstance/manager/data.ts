@@ -18,7 +18,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择发起人',
-        allowClear: true,
+        clearable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -30,7 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入流程名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -39,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择流程定义',
-        allowClear: true,
+        clearable: true,
         api: getSimpleProcessDefinitionList,
         labelField: 'name',
         valueField: 'key',
@@ -51,7 +51,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请输入流程分类',
-        allowClear: true,
+        clearable: true,
         api: getCategorySimpleList,
         labelField: 'name',
         valueField: 'code',
@@ -67,7 +67,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           'number',
         ),
         placeholder: '请选择流程状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {

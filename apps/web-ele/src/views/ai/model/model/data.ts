@@ -32,7 +32,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择所属平台',
         options: getDictOptions(DICT_TYPE.AI_PLATFORM, 'string'),
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -60,7 +60,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getApiKeySimpleList,
         labelField: 'name',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -172,7 +172,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入模型名字',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -181,7 +181,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入模型标识',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -190,7 +190,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入模型平台',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

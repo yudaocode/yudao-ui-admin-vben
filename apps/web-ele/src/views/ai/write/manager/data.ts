@@ -24,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择用户',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -32,7 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '写作类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择写作类型',
         options: getDictOptions(DICT_TYPE.AI_WRITE_TYPE, 'number'),
       },
@@ -42,7 +42,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '平台',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择平台',
         options: getDictOptions(DICT_TYPE.AI_PLATFORM, 'string'),
       },
