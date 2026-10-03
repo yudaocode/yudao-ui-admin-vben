@@ -25,7 +25,7 @@ export function useHistoryGridFormSchema(): VbenFormSchema[] {
       label: '考核名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入考核名称',
       },
     },

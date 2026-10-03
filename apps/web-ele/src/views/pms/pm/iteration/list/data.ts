@@ -198,7 +198,7 @@ export function useIterationFormSchema(): VbenFormSchema[] {
       label: '负责人',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         optionFilterProp: 'label',
         placeholder: '请选择项目成员',
         showSearch: true,

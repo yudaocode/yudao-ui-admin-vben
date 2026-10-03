@@ -15,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板名称',
       },
     },
@@ -24,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '项目类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: [
           { label: '通用项目', value: PmsProjectType.GENERAL },
           { label: '敏捷开发项目', value: PmsProjectType.AGILE },
@@ -37,7 +37,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
       },

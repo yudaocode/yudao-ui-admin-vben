@@ -52,7 +52,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Input',
     componentProps: {
       placeholder: '请输入商品名称',
-      allowClear: true,
+      clearable: true,
     },
   },
   {

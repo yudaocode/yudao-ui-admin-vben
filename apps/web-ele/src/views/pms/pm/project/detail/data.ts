@@ -32,7 +32,7 @@ export function useGridFormSchema(
       label: '迭代名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '搜索迭代名称',
       },
     },

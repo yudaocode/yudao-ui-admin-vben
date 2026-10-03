@@ -83,7 +83,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '员工',
         component: 'Input',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           placeholder: '请输入员工姓名或工号',
         },
       },
@@ -92,7 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '部门',
         component: 'ApiTreeSelect',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           api: async () => {
             const { getSimpleDeptList } = await import('#/api/system/dept');
             const { handleTree } = await import('@vben/utils');
@@ -110,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '查看状态',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: getDictOptions(
             DICT_TYPE.HRM_SALARY_SLIP_READ_STATUS,
             'number',
@@ -123,7 +123,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         label: '备注',
         component: 'Input',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           placeholder: '请输入备注',
         },
       },

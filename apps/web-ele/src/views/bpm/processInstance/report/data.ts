@@ -86,7 +86,7 @@ export function useGridFormSchema(
       component: 'Input',
       componentProps: {
         placeholder: `请输入${item.title}`,
-        allowClear: true,
+        clearable: true,
       },
     }));
 

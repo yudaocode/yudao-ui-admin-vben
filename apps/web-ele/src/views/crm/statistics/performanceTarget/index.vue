@@ -74,7 +74,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        allowClear: true,
+        clearable: true,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择员工',

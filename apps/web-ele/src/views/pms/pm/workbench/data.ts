@@ -31,7 +31,7 @@ export function useGridFormSchema(
       label: '事项',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '搜索标题或编号',
       },
     },
@@ -40,7 +40,7 @@ export function useGridFormSchema(
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: [
           { label: '未开始', value: PmsWorkItemStatusType.PENDING },
           { label: '进行中', value: PmsWorkItemStatusType.PROCESSING },
@@ -54,7 +54,7 @@ export function useGridFormSchema(
       label: '优先级',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, 'number').map(
           (item) => ({
             label: item.label,

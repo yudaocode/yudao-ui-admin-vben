@@ -10,7 +10,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '项目名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入项目名称',
       },
     },

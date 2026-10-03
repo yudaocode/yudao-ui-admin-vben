@@ -18,7 +18,7 @@ export function useGridFormSchema(defaultValues: any): VbenFormSchema[] {
       label: '关键字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入文档标题或正文',
       },
       defaultValue: defaultValues.keyword,

@@ -37,7 +37,7 @@ const formSchema = (): any[] => {
           },
         ],
         placeholder: '请选择用户类型',
-        allowClear: true,
+        clearable: true,
       },
     },
     {

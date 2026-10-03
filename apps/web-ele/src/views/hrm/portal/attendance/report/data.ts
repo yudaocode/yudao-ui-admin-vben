@@ -18,7 +18,7 @@ export function useLeaveFormSchema(): VbenFormSchema[] {
       component: 'Select',
       rules: 'required',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.HRM_ATTENDANCE_LEAVE_TYPE, 'string'),
         placeholder: '请选择请假类型',
       },

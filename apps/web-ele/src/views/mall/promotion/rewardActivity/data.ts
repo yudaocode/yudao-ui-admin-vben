@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入活动名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -31,7 +31,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择活动状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -117,7 +117,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入活动名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {

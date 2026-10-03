@@ -14,7 +14,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入模板名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -24,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择模板状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -15,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -24,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择提现类型',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_WITHDRAW_TYPE, 'number'),
       },
     },
@@ -34,7 +34,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入账号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -43,7 +43,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入真实姓名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -52,7 +52,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择提现银行',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_BANK_NAME, 'string'),
       },
     },
@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.BROKERAGE_WITHDRAW_STATUS, 'number'),
       },
     },
