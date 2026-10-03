@@ -30,7 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入提示词',
-        clearable: true,
+        allowClear: true,
       },
     },
     {

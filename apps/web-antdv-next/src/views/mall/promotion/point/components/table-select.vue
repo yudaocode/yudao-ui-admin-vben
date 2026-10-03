@@ -52,7 +52,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     componentProps: {
       options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       placeholder: '请选择活动状态',
-      clearable: true,
+      allowClear: true,
     },
   },
 ]);

@@ -17,7 +17,7 @@ export function useGridFormSchema(
       component: 'DatePicker',
       defaultValue: formatDate(new Date(), 'YYYY'),
       componentProps: {
-        allowClear: false,
+        clearable: false,
         class: 'w-full',
         disabledDate,
         format: 'YYYY 年',

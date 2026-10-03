@@ -27,7 +27,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入文件路径',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
@@ -36,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入文件类型',
-        clearable: true,
+        allowClear: true,
       },
     },
     {

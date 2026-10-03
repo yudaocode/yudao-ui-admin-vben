@@ -15,7 +15,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       defaultValue: formatDate(new Date(), 'YYYY'),
       componentProps: {
-        allowClear: false,
+        clearable: false,
         class: 'w-full',
         format: 'YYYY 年',
         picker: 'year',

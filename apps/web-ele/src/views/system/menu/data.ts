@@ -50,7 +50,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择上级菜单',
-        filterTreeNode(input: string, node: Recordable<any>) {
+        filterNodeMethod(input: string, node: Recordable<any>) {
           if (!input || input.length === 0) {
             return true;
           }
@@ -58,7 +58,7 @@ export function useFormSchema(): VbenFormSchema[] {
           if (!name) return false;
           return name.includes(input) || $t(name).includes(input);
         },
-        showSearch: true,
+        filterable: true,
         defaultExpandedKeys: [0],
         checkStrictly: true,
       },

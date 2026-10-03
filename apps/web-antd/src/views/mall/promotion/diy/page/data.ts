@@ -53,7 +53,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入页面名称',
-        clearable: true,
+        allowClear: true,
       },
     },
     {
