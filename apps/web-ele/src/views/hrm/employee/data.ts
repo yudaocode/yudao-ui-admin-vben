@@ -1665,6 +1665,7 @@ export function useContractFormSchema(): VbenFormSchema[] {
       formItemClass: 'col-span-2',
       componentProps: {
         maxNumber: 5,
+        multiple: true,
         maxSize: 20,
         accept: ['pdf', 'doc', 'docx'],
         directory: 'hrm/employee/contract',

@@ -125,6 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getWorkstationPage({
@@ -180,6 +181,7 @@ async function openModal(
     columns: useWorkstationSelectGridColumns(multiple.value),
   });
   await resetQueryState();
+  await nextTick();
   const formValues = await gridApi.formApi.getValues();
   gridApi.formApi.setLatestSubmissionValues(formValues);
   await gridApi.reload(formValues);

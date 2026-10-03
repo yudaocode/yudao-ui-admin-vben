@@ -171,6 +171,7 @@ export function useFormSchema(): VbenFormSchema[] {
       formItemClass: 'col-span-2',
       componentProps: {
         maxNumber: 5,
+        multiple: true,
         maxSize: 20,
         accept: ['doc', 'docx', 'pdf'],
         directory: 'hrm/recruit/candidate/resume',

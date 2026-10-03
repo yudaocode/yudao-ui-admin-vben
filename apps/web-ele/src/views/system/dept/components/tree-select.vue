@@ -47,12 +47,14 @@ function handleSelect(data: SystemDeptApi.Dept) {
 }
 
 /** 重置选中状态（供外部重置按钮调用） */
-function reset() {
+function reset(emitEvent = true) {
   searchValue.value = '';
   currentNodeId = undefined;
   treeRef.value?.setCurrentKey(undefined);
   deptTree.value = handleTree(deptList.value);
-  emit('select', undefined);
+  if (emitEvent) {
+    emit('select', undefined);
+  }
 }
 
 defineExpose({ reset });

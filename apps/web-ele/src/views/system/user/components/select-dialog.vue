@@ -206,6 +206,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getUserPage({
@@ -250,7 +251,7 @@ async function resetQueryState() {
   await gridApi.grid.clearCheckboxReserve();
   await gridApi.grid.clearRadioRow();
   await gridApi.formApi.reset();
-  deptTreeRef.value?.reset();
+  deptTreeRef.value?.reset(false);
 }
 
 /** 打开用户选择弹窗 */
@@ -270,6 +271,7 @@ async function openModal(
   });
   await resetQueryState();
   await gridApi.formApi.setFieldValue('status', CommonStatusEnum.ENABLE);
+  await nextTick();
   const formValues = await gridApi.formApi.getValues();
   gridApi.formApi.setLatestSubmissionValues(formValues);
   await gridApi.reload(formValues);

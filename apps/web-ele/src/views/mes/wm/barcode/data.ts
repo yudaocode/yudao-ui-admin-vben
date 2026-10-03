@@ -694,7 +694,7 @@ export function useBarcodeDetailSchema(): DescriptionItemSchema[] {
       field: 'format',
       label: '条码格式',
       render: (value) =>
-        value === null
+        value === null || value === undefined
           ? '-'
           : h(DictTag, { type: DICT_TYPE.MES_WM_BARCODE_FORMAT, value }),
     },
@@ -702,7 +702,7 @@ export function useBarcodeDetailSchema(): DescriptionItemSchema[] {
       field: 'bizType',
       label: '业务类型',
       render: (value) =>
-        value === null
+        value === null || value === undefined
           ? '-'
           : h(DictTag, { type: DICT_TYPE.MES_WM_BARCODE_BIZ_TYPE, value }),
     },
@@ -725,7 +725,7 @@ export function useBarcodeDetailSchema(): DescriptionItemSchema[] {
       field: 'status',
       label: '状态',
       render: (value) =>
-        value === null
+        value === null || value === undefined
           ? '-'
           : h(DictTag, { type: DICT_TYPE.COMMON_STATUS, value }),
     },

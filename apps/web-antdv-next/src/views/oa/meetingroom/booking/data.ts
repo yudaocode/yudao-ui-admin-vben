@@ -162,6 +162,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'FileUpload',
       componentProps: {
         maxNumber: 5,
+        multiple: true,
       },
       formItemClass: 'col-span-2',
       defaultValue: [],

@@ -41,6 +41,7 @@ const completedReviewStages = computed(() =>
   (detail.value.reviewStages || []).filter(
     (stage) =>
       stage.id !== null &&
+      stage.id !== undefined &&
       stage.status === HrmPerformanceAssessmentStageStatus.PROCESSED,
   ),
 );

@@ -80,7 +80,7 @@ const willGoApproval = computed(() => {
   }
   // members 未到位时无法判定 admin，保守按非审批处理，宁可漏报「等待审批」也不误报给真实管理员
   const myRole = members.value.find((member) => member.userId === myId)?.role;
-  if (myRole === null) {
+  if (myRole === null || myRole === undefined) {
     return false;
   }
   return myRole !== ImGroupMemberRole.ADMIN;

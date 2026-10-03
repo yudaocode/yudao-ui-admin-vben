@@ -178,6 +178,7 @@ export function useFormSchema(options: {
       component: 'FileUpload',
       componentProps: {
         maxNumber: 10,
+        multiple: true,
         maxSize: 10,
       },
       formItemClass: 'col-span-2',

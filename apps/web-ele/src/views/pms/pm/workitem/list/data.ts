@@ -428,6 +428,7 @@ export function useWorkItemFormSchema(
       componentProps: {
         accept: ['doc', 'xls', 'ppt', 'txt', 'pdf'],
         maxNumber: 5,
+        multiple: true,
         maxSize: 5,
       },
       defaultValue: [],

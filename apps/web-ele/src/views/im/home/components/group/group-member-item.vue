@@ -33,6 +33,7 @@ const avatarSize = computed(() => Math.ceil(props.height * 0.75));
 const roleLabel = computed(() => {
   if (
     props.member.role === null ||
+    props.member.role === undefined ||
     props.member.role === ImGroupMemberRole.NORMAL
   ) {
     return '';

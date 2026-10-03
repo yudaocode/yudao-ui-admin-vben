@@ -95,6 +95,7 @@ export function useAnnouncementFormSchema(): VbenFormSchema[] {
       componentProps: {
         accept: ['doc', 'xls', 'ppt', 'txt', 'pdf'],
         maxNumber: 5,
+        multiple: true,
         maxSize: 5,
       },
       rules: z.array(z.string()).default([]),

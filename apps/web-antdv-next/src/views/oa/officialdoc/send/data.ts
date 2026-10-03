@@ -95,7 +95,10 @@ export function useFormSchema(options: {
       component: 'Select',
       rules: 'required',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.OA_OFFICIAL_DOC_SECRET_LEVEL, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.OA_OFFICIAL_DOC_SECRET_LEVEL,
+          'number',
+        ),
         placeholder: '请选择密级',
       },
     },
@@ -192,6 +195,7 @@ export function useFormSchema(options: {
       formItemClass: 'col-span-2',
       componentProps: {
         maxNumber: 10,
+        multiple: true,
       },
     },
     {

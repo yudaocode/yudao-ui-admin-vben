@@ -47,11 +47,13 @@ function handleSelect(selectedNodeKeys: any[], info: any) {
 }
 
 /** 重置选中状态（供外部重置按钮调用） */
-function reset() {
+function reset(emitEvent = true) {
   searchValue.value = '';
   selectedKeys.value = [];
   deptTree.value = handleTree(deptList.value);
-  emit('select', undefined);
+  if (emitEvent) {
+    emit('select', undefined);
+  }
 }
 
 defineExpose({ reset });
