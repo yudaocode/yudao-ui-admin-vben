@@ -98,10 +98,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert
-      title="【行政】会议室、车辆管理"
-      url="https://doc.iocoder.cn/oa/administration/meeting-vehicle/"
-    />
+    <template #doc>
+      <DocAlert
+        title="【行政】会议室、车辆管理"
+        url="https://doc.iocoder.cn/oa/administration/meeting-vehicle/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
     <ScheduleDialog ref="scheduleDialogRef" />
 

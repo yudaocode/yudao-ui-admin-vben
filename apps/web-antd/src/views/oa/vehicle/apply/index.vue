@@ -158,7 +158,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【行政】会议室、车辆管理" url="https://doc.iocoder.cn/oa/administration/meeting-vehicle/" />
+    <template #doc>
+      <DocAlert
+        title="【行政】会议室、车辆管理"
+        url="https://doc.iocoder.cn/oa/administration/meeting-vehicle/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <DetailModal />
     <ReturnFormModal @success="handleReturnSuccess" />
@@ -200,7 +206,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
               : 'default'
           "
         >
-          {{ getDictLabel(DICT_TYPE.OA_VEHICLE_RETURN_STATUS, row.returnStatus) }}
+          {{
+            getDictLabel(DICT_TYPE.OA_VEHICLE_RETURN_STATUS, row.returnStatus)
+          }}
         </Tag>
       </template>
       <template #actions="{ row }">

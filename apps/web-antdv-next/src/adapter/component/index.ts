@@ -123,6 +123,12 @@ const Select = defineAsyncComponent(
   () => import('antdv-next/dist/select/index'),
 );
 const Space = defineAsyncComponent(() => import('antdv-next/dist/space/index'));
+const SpaceAddon = defineAsyncComponent(() =>
+  import('antdv-next/dist/space/index').then((res) => res.SpaceAddon),
+);
+const SpaceCompact = defineAsyncComponent(() =>
+  import('antdv-next/dist/space/index').then((res) => res.SpaceCompact),
+);
 const Switch = defineAsyncComponent(
   () => import('antdv-next/dist/switch/index'),
 );
@@ -181,6 +187,74 @@ const withDefaultPlaceholder = (
           { ...componentProps, placeholder, ...props, ...attrs, ref: innerRef },
           slots,
         );
+    },
+  });
+};
+
+/**
+ * antdv-next 已废弃 Input / InputNumber 的 addonBefore、addonAfter，
+ * 这里统一转换为 Space.Compact + Space.Addon，Schema 中的写法保持不变
+ */
+const withSpaceCompactAddon = (component: Component, block: boolean) => {
+  return defineComponent({
+    name: component.name,
+    inheritAttrs: false,
+    setup: (_props, { attrs, expose, slots }) => {
+      const innerRef = ref();
+      expose(
+        new Proxy(
+          {},
+          {
+            get: (_target, key) => innerRef.value?.[key],
+            has: (_target, key) => key in (innerRef.value || {}),
+          },
+        ),
+      );
+      const renderAddon = (content: any) =>
+        h(SpaceAddon, null, {
+          default: () => (typeof content === 'function' ? content() : content),
+        });
+      return () => {
+        const {
+          addonAfter,
+          addonBefore,
+          'addon-after': kebabAddonAfter,
+          'addon-before': kebabAddonBefore,
+          class: className,
+          style,
+          ...restAttrs
+        } = attrs as Recordable<any>;
+        const {
+          addonAfter: addonAfterSlot,
+          addonBefore: addonBeforeSlot,
+          ...restSlots
+        } = slots;
+        const before = addonBefore ?? kebabAddonBefore ?? addonBeforeSlot;
+        const after = addonAfter ?? kebabAddonAfter ?? addonAfterSlot;
+        if (before === undefined && after === undefined) {
+          return h(component, { ...attrs, ref: innerRef }, slots);
+        }
+        const isBlock = block || /\bw-full\b/.test(String(className ?? ''));
+        return h(
+          SpaceCompact,
+          { block: isBlock, class: className, style },
+          {
+            default: () => [
+              before === undefined ? null : renderAddon(before),
+              h(
+                component,
+                {
+                  ...restAttrs,
+                  class: isBlock ? 'min-w-0 flex-1' : undefined,
+                  ref: innerRef,
+                },
+                restSlots,
+              ),
+              after === undefined ? null : renderAddon(after),
+            ],
+          },
+        );
+      };
     },
   });
 };
@@ -384,7 +458,7 @@ function cropImage(file: File, aspectRatio: string | undefined) {
               width: 548,
               zIndex: 9999,
               keyboard: false,
-              maskClosable: false,
+              mask: { closable: false },
               closable: false,
               cancelText: $t('common.cancel'),
               okText: $t('ui.crop.confirm'),
@@ -735,8 +809,11 @@ async function initComponentAdapter() {
       inputComponent: Input,
       modelValueProp: 'value',
     }),
-    Input: withDefaultPlaceholder(Input, 'input'),
-    InputNumber: withDefaultPlaceholder(InputNumber, 'input'),
+    Input: withDefaultPlaceholder(withSpaceCompactAddon(Input, true), 'input'),
+    InputNumber: withDefaultPlaceholder(
+      withSpaceCompactAddon(InputNumber, false),
+      'input',
+    ),
     InputPassword: withDefaultPlaceholder(InputPassword, 'input'),
     Mentions: withDefaultPlaceholder(Mentions, 'input'),
     // 自定义主要按钮

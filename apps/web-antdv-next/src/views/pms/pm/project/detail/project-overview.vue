@@ -274,7 +274,7 @@ onMounted(() => {
             class="mt-1.5"
             :percent="iteration.progress || 0"
             :show-info="false"
-            :stroke-width="6"
+            :size="{ height: 6 }"
           />
         </div>
       </div>
@@ -312,7 +312,7 @@ onMounted(() => {
         <DescriptionsItem label="项目进度" :span="2">
           <Progress
             :percent="formatProjectCompletionRate(project)"
-            :stroke-width="8"
+            :size="{ height: 8 }"
           />
         </DescriptionsItem>
         <DescriptionsItem label="项目描述" :span="2">
@@ -349,7 +349,7 @@ onMounted(() => {
         <Progress
           :percent="item.progress"
           :show-info="false"
-          :stroke-width="6"
+          :size="{ height: 6 }"
         />
       </div>
     </Card>

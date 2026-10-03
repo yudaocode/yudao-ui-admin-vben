@@ -110,7 +110,13 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
+    <template #doc>
+      <DocAlert
+        title="【流程】考勤、请假、加班、转正与离职"
+        url="https://doc.iocoder.cn/oa/attendance-application/"
+      />
+    </template>
+
     <div class="flex h-full flex-col gap-4">
       <!-- 今日打卡 -->
       <ElCard class="shrink-0">
@@ -126,11 +132,7 @@ onMounted(() => {
               </span>
             </div>
           </div>
-          <ElButton
-            type="primary"
-            :loading="clockLoading"
-            @click="handleClock"
-          >
+          <ElButton type="primary" :loading="clockLoading" @click="handleClock">
             {{ clockButtonText }}
           </ElButton>
         </div>

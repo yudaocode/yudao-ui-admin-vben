@@ -153,10 +153,11 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       },
       dependencies: {
         triggerFields: ['totalPrice', 'otherPrice'],
-        componentProps: (values) => {
+        componentProps: (values, actions) => {
           const totalPrice = values.totalPrice || 0;
           const otherPrice = values.otherPrice || 0;
-          values.discountedPrice = totalPrice - otherPrice;
+
+          actions.setFieldValue('discountedPrice', totalPrice - otherPrice);
           return {};
         },
       },

@@ -305,7 +305,12 @@ function getFileIcon(name: string) {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【办公】企业云盘" url="https://doc.iocoder.cn/oa/file/" />
+    <template #doc>
+      <DocAlert
+        title="【办公】企业云盘"
+        url="https://doc.iocoder.cn/oa/file/"
+      />
+    </template>
     <div class="flex h-full flex-col gap-4">
       <!-- 云盘概览，独立于列表筛选 -->
       <Storage ref="storageRef" />

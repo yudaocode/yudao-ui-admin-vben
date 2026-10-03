@@ -123,7 +123,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+    <template #doc>
+      <DocAlert
+        title="【协作】公告、讨论、通讯录与笔记"
+        url="https://doc.iocoder.cn/oa/collaboration/communication/"
+      />
+    </template>
+
     <DetailModal @read="handleRead" />
 
     <Grid table-title="公告列表">

@@ -8,7 +8,14 @@ import { useRouter } from 'vue-router';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, Layout, TabPane, Tabs } from 'antdv-next';
+import {
+  Button,
+  Input,
+  Layout,
+  LayoutContent,
+  TabPane,
+  Tabs,
+} from 'antdv-next';
 
 import { createChatConversationMy } from '#/api/ai/chat/conversation';
 import { deleteMy, getCategoryList, getMyPage } from '#/api/ai/model/chatRole';

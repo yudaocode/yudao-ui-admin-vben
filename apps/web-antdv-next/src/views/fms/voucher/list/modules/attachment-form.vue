@@ -69,7 +69,7 @@ async function submitForm() {
     v-model:open="dialogVisible"
     title="凭证附件"
     width="570px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <FileUpload
       v-if="editable || attachmentUrls.length"

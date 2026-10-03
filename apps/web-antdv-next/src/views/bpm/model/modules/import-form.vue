@@ -71,7 +71,7 @@ function resetForm() {
       <Alert
         class="!mb-4"
         description="导入会完整保留流程配置，并将新模型归属到当前租户。请确认人员、部门、表单、子流程等关联在当前租户有效后再发布。"
-        message="导入说明"
+        title="导入说明"
         show-icon
         type="info"
       />

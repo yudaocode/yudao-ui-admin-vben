@@ -14,7 +14,10 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入 IP 地址',
       },
-      rules: z.string().ip({ message: '请输入正确的 IP 地址' }),
+
+      rules: z.union([z.ipv4(), z.ipv6()], {
+        message: '请输入正确的 IP 地址',
+      }),
     },
     {
       fieldName: 'result',

@@ -467,7 +467,7 @@ onMounted(() => {
           ></div>
           <Popover
             placement="top"
-            :overlay-style="{ width: '260px' }"
+            :styles="{ root: { width: '260px' } }"
             trigger="hover"
           >
             <template #content>

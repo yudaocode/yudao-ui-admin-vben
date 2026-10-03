@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
   <Modal class="w-3/4" title="自定义模板">
     <div class="mb-3">
       <Alert
-        message="输入 @ 可选择插入流程选项和表单选项"
+        title="输入 @ 可选择插入流程选项和表单选项"
         type="info"
         show-icon
       />

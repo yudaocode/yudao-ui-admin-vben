@@ -72,7 +72,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <Alert
       class="!mb-3"
       :closable="false"
-      message="恢复时会保留此前单独删除的子项；彻底删除后无法恢复。"
+      title="恢复时会保留此前单独删除的子项；彻底删除后无法恢复。"
       show-icon
       type="warning"
     />

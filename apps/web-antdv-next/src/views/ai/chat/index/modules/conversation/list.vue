@@ -8,7 +8,7 @@ import { h, onMounted, ref, toRefs, watch } from 'vue';
 import { confirm, prompt, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, SvgGptIcon } from '@vben/icons';
 
-import { Avatar, Button, Empty, Input, message } from 'antdv-next';
+import { Avatar, Button, Empty, Input, LayoutSider, message } from 'antdv-next';
 
 import {
   createChatConversationMy,

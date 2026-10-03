@@ -78,7 +78,7 @@ watch(
 
 <template>
   <ContentWrap class="m-2">
-    <Spin :spinning="detailLoading" tip="加载中...">
+    <Spin :spinning="detailLoading" description="加载中...">
       <Descriptions :data="formData ?? {}">
         <template #statusTag="{ data }">
           <Tag v-if="data?.status === BpmProcessInstanceStatus.NOT_START">

@@ -57,10 +57,10 @@ const queryParams = reactive({
   pageSize: 20,
 });
 const emptyText = computed(() => {
-  if (!accounts.value.length) {
+  if (accounts.value.length === 0) {
     return '请先添加并启用邮箱账号';
   }
-  if (!folders.value.length) {
+  if (folders.value.length === 0) {
     return '请点击同步，获取邮箱邮件';
   }
   return folders.value.some((folder) => folder.key === queryParams.folderKey)
@@ -267,8 +267,7 @@ function handleComposeSuccess() {
 onMounted(async () => {
   accounts.value = await getMailAccountList(CommonStatusEnum.ENABLE);
   queryParams.accountId = (
-    accounts.value.find((account) => account.defaultStatus) ||
-    accounts.value[0]
+    accounts.value.find((account) => account.defaultStatus) || accounts.value[0]
   )?.id;
   await handleAccountChange();
 });
@@ -276,7 +275,13 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
+    <template #doc>
+      <DocAlert
+        title="【办公】企业邮箱"
+        url="https://doc.iocoder.cn/oa/mail/"
+      />
+    </template>
+
     <div class="h-full overflow-x-auto border border-border bg-card">
       <div class="flex h-full min-w-[1080px]">
         <!-- 左栏：账号及文件夹 -->

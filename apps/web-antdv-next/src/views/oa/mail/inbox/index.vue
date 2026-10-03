@@ -275,7 +275,12 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
+    <template #doc>
+      <DocAlert
+        title="【办公】企业邮箱"
+        url="https://doc.iocoder.cn/oa/mail/"
+      />
+    </template>
     <div class="h-full overflow-x-auto border border-border bg-card">
       <div class="flex h-full min-w-[1080px]">
         <!-- 左栏：账号及文件夹 -->
@@ -312,7 +317,7 @@ onMounted(async () => {
         />
         <!-- 右栏：详情操作及安全正文，写信在当前区域展开 -->
         <section class="min-w-0 flex-1">
-          <Spin :spinning="detailLoading" wrapper-class-name="h-full">
+          <Spin :spinning="detailLoading" :classes="{ root: 'h-full' }">
             <MailMessageForm
               v-if="composeData"
               :key="composeKey"

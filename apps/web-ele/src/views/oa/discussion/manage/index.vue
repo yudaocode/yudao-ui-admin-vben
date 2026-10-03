@@ -11,10 +11,7 @@ import { useUserStore } from '@vben/stores';
 import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteDiscussion,
-  getDiscussionManagePage,
-} from '#/api/oa/discussion';
+import { deleteDiscussion, getDiscussionManagePage } from '#/api/oa/discussion';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -108,7 +105,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【协作】公告、讨论、通讯录与笔记" url="https://doc.iocoder.cn/oa/collaboration/communication/" />
+    <template #doc>
+      <DocAlert
+        title="【协作】公告、讨论、通讯录与笔记"
+        url="https://doc.iocoder.cn/oa/collaboration/communication/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="讨论列表">

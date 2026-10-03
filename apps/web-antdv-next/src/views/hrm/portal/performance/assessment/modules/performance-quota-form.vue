@@ -231,7 +231,7 @@ async function submitQuota() {
       <Alert
         v-if="detail.targetConfirmationResult === 0"
         class="mb-4"
-        :message="`目标已退回：${detail.targetConfirmationComment || '请调整后重新提交'}`"
+        :title="`目标已退回：${detail.targetConfirmationComment || '请调整后重新提交'}`"
         show-icon
         type="warning"
       />

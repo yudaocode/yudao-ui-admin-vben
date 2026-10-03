@@ -373,7 +373,7 @@ onMounted(() => {
 
           <Alert
             v-if="isArchived"
-            message="当前工资表已归档，仅可查询。"
+            title="当前工资表已归档，仅可查询。"
             show-icon
             type="info"
             :style="{ marginTop: '16px' }"

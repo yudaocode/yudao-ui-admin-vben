@@ -91,7 +91,7 @@ watch(copied, (val) => {
           id="inputId"
           v-model:value="compContent"
           :auto-size="true"
-          :bordered="false"
+          variant="borderless"
           placeholder="生成的内容……"
         />
       </div>

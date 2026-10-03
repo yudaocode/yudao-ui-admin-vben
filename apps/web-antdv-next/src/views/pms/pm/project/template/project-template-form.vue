@@ -699,7 +699,7 @@ onBeforeUnmount(destroySortables);
           <Alert
             :closable="false"
             description="项目创建时会根据这里的事项类型初始化可用能力；取消事项类型会同步移除其状态和看板"
-            message="事项类型是模板的全局关系；项目创建后不提供项目级维护"
+            title="事项类型是模板的全局关系；项目创建后不提供项目级维护"
             type="info"
           />
         </div>
@@ -726,7 +726,7 @@ onBeforeUnmount(destroySortables);
           <Alert
             :closable="false"
             class="flex-1"
-            message="拖拽调整状态顺序；每种事项类型必须且只能配置一个初始状态"
+            title="拖拽调整状态顺序；每种事项类型必须且只能配置一个初始状态"
             type="info"
           />
           <Button type="primary" @click="addStatus">
@@ -842,7 +842,7 @@ onBeforeUnmount(destroySortables);
           <Alert
             :closable="false"
             class="flex-1"
-            message="拖拽调整看板列顺序；同一状态只能归属一个看板列"
+            title="拖拽调整看板列顺序；同一状态只能归属一个看板列"
             type="info"
           />
           <Button type="primary" @click="addBoard">

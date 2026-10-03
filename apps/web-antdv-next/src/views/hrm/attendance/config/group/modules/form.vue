@@ -566,7 +566,7 @@ const [Modal, modalApi] = useVbenModal({
       <div class="section-title">扣款规则</div>
       <Alert
         class="mb-4"
-        message="扣款金额右侧单位随规则变化：按分钟为元/分钟，按次数为元/次，每月固定为元/月，旷工按元/天。"
+        title="扣款金额右侧单位随规则变化：按分钟为元/分钟，按次数为元/次，每月固定为元/月，旷工按元/天。"
         show-icon
         type="info"
       />

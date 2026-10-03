@@ -128,7 +128,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【办公】企业邮箱" url="https://doc.iocoder.cn/oa/mail/" />
+    <template #doc>
+      <DocAlert
+        title="【办公】企业邮箱"
+        url="https://doc.iocoder.cn/oa/mail/"
+      />
+    </template>
     <FormModal @success="handleRefresh" />
 
     <Grid table-title="我的账号">

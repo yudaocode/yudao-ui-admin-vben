@@ -419,7 +419,7 @@ watch(
                 class="mt-2.5"
                 :percent="formatProjectCompletionRate(project)"
                 :show-info="false"
-                :stroke-width="5"
+                :size="{ height: 5 }"
               />
               <div v-if="project.completedTrends" class="pr-10">
                 <FavoriteTrendChart

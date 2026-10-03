@@ -10,10 +10,7 @@ import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { message, Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getRegularApplyPage,
-  submitRegularApply,
-} from '#/api/oa/regular';
+import { getRegularApplyPage, submitRegularApply } from '#/api/oa/regular';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
@@ -106,7 +103,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
+    <template #doc>
+      <DocAlert
+        title="【流程】考勤、请假、加班、转正与离职"
+        url="https://doc.iocoder.cn/oa/attendance-application/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

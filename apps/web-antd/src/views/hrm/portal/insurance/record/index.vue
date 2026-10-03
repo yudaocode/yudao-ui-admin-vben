@@ -85,7 +85,13 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible" auto-content-height>
-    <DocAlert title="【社保】社保管理" url="https://doc.iocoder.cn/hrm/insurance/" />
+    <template #doc>
+      <DocAlert
+        title="【社保】社保管理"
+        url="https://doc.iocoder.cn/hrm/insurance/"
+      />
+    </template>
+
     <Grid table-title="社保管理">
       <template #schemeName="{ row }">
         <div>{{ row.schemeName || '-' }}</div>

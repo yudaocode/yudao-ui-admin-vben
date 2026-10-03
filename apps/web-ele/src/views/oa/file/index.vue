@@ -141,9 +141,9 @@ const canCreate = computed(
   () =>
     scope.value !== OA_FILE_SCOPE.RECYCLE &&
     !latestFormValues.value.category &&
-    (currentParentId.value !== OA_FILE_PARENT_ID_ROOT
-      ? currentLevel.value >= OA_FILE_PERMISSION_LEVEL.EDIT
-      : scope.value === OA_FILE_SCOPE.MY),
+    (currentParentId.value === OA_FILE_PARENT_ID_ROOT
+      ? scope.value === OA_FILE_SCOPE.MY
+      : currentLevel.value >= OA_FILE_PERMISSION_LEVEL.EDIT),
 );
 
 /** 打开新建文件夹、重命名、移动、复制表单 */
@@ -249,7 +249,10 @@ async function handleDownload(row: OaFileNodeApi.FileNode) {
       ElMessage.error('文件下载失败，请重试');
       return;
     }
-    downloadFileFromBlob({ fileName: data.name, source: await response.blob() });
+    downloadFileFromBlob({
+      fileName: data.name,
+      source: await response.blob(),
+    });
   } catch {
     ElMessage.error('文件下载失败，请重试');
   }
@@ -257,11 +260,9 @@ async function handleDownload(row: OaFileNodeApi.FileNode) {
 
 /** 收藏或取消收藏 */
 async function handleFavorite(row: OaFileNodeApi.FileNode) {
-  if (row.favorite) {
-    await deleteFileFavorite(row.id!);
-  } else {
-    await createFileFavorite(row.id!);
-  }
+  await (row.favorite
+    ? deleteFileFavorite(row.id!)
+    : createFileFavorite(row.id!));
   await handleSuccess();
 }
 
@@ -305,7 +306,13 @@ function getFileIcon(name: string) {
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【办公】企业云盘" url="https://doc.iocoder.cn/oa/file/" />
+    <template #doc>
+      <DocAlert
+        title="【办公】企业云盘"
+        url="https://doc.iocoder.cn/oa/file/"
+      />
+    </template>
+
     <div class="flex h-full flex-col gap-4">
       <!-- 云盘概览，独立于列表筛选 -->
       <Storage ref="storageRef" />
@@ -325,16 +332,23 @@ function getFileIcon(name: string) {
               class="!ml-0 !flex !h-9 w-full !items-center !justify-start !gap-0 !px-3 [&>span]:!ml-0"
               @click="handleScope(item.value)"
             >
-              <IconifyIcon :icon="item.icon" class="mr-2 size-4 shrink-0" />{{ item.label }}
+              <IconifyIcon :icon="item.icon" class="mr-2 size-4 shrink-0" />{{
+                item.label
+              }}
             </ElButton>
           </div>
           <ElDivider class="!my-3" />
-          <div class="mb-2 text-[13px] leading-5 text-muted-foreground">文件分类</div>
+          <div class="mb-2 text-[13px] leading-5 text-muted-foreground">
+            文件分类
+          </div>
           <div class="flex flex-col gap-1">
             <ElButton
               v-for="item in categoryOptions"
               :key="item.value"
-              :text="(latestFormValues.category || OA_FILE_CATEGORY.ALL) !== item.value"
+              :text="
+                (latestFormValues.category || OA_FILE_CATEGORY.ALL) !==
+                item.value
+              "
               :type="
                 (latestFormValues.category || OA_FILE_CATEGORY.ALL) ===
                 item.value
@@ -459,8 +473,7 @@ function getFileIcon(name: string) {
                 },
                 {
                   label: '复制',
-                  ifShow:
-                    (row.level || 0) >= OA_FILE_PERMISSION_LEVEL.DOWNLOAD,
+                  ifShow: (row.level || 0) >= OA_FILE_PERMISSION_LEVEL.DOWNLOAD,
                   auth: ['oa:file:create'],
                   onClick: () => openForm('copy', row),
                 },

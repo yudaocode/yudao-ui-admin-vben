@@ -230,7 +230,7 @@ defineExpose({ open: openModal });
   >
     <Alert
       v-if="typeTip"
-      :message="typeTip"
+      :title="typeTip"
       type="info"
       show-icon
       class="!mb-3"

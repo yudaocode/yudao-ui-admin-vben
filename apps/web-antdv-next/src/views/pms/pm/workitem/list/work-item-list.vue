@@ -585,7 +585,7 @@ onMounted(() => {
           </Space>
         </template>
         <template #progress="{ row }">
-          <Progress :percent="row.progress" :stroke-width="8" />
+          <Progress :percent="row.progress" :size="{ height: 8 }" />
         </template>
         <template #actions="{ row }">
           <TableAction

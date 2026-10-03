@@ -8,10 +8,7 @@ import { CommonStatusEnum } from '@vben/constants';
 import { message, Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteSupplyItem,
-  getSupplyItemPage,
-} from '#/api/oa/supply/item';
+import { deleteSupplyItem, getSupplyItemPage } from '#/api/oa/supply/item';
 import { $t } from '#/locales';
 
 import { useGridColumns, useGridFormSchema } from './data';
@@ -100,7 +97,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【行政】办公用品、用印管理" url="https://doc.iocoder.cn/oa/administration/supply-seal/" />
+    <template #doc>
+      <DocAlert
+        title="【行政】办公用品、用印管理"
+        url="https://doc.iocoder.cn/oa/administration/supply-seal/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <StockFormModal @success="handleRefresh" />
 
@@ -132,9 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #statusTag="{ row }">
         <Tag
-          :color="
-            row.status === CommonStatusEnum.ENABLE ? 'success' : 'error'
-          "
+          :color="row.status === CommonStatusEnum.ENABLE ? 'success' : 'error'"
         >
           {{ row.status === CommonStatusEnum.ENABLE ? '正常' : '停用' }}
         </Tag>

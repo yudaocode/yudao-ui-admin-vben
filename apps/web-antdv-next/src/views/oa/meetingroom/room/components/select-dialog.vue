@@ -9,10 +9,7 @@ import { Button, message, Modal } from 'antdv-next';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBookableMeetingRoomPage } from '#/api/oa/meetingroom/room';
 
-import {
-  useRoomSelectGridColumns,
-  useRoomSelectGridFormSchema,
-} from '../data';
+import { useRoomSelectGridColumns, useRoomSelectGridFormSchema } from '../data';
 import ScheduleDialog from './schedule-dialog.vue';
 
 defineOptions({ name: 'OaMeetingRoomSelectDialog' });
@@ -32,7 +29,11 @@ function handleRadioChange(row: OaMeetingRoomApi.MeetingRoom) {
 }
 
 /** 处理行双击：直接确认选择 */
-async function handleCellDblclick({ row }: { row: OaMeetingRoomApi.MeetingRoom }) {
+async function handleCellDblclick({
+  row,
+}: {
+  row: OaMeetingRoomApi.MeetingRoom;
+}) {
   selectedRows.value = [row];
   await gridApi.grid.setRadioRow(row);
   handleConfirm();
@@ -141,7 +142,7 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
     v-model:open="open"
     title="选择会议室"
     width="1050px"
-    :destroy-on-close="true"
+    :destroy-on-hidden="true"
     @ok="handleConfirm"
     @cancel="closeModal"
   >

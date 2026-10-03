@@ -10,10 +10,7 @@ import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
 import { ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getOvertimeApplyPage,
-  submitOvertimeApply,
-} from '#/api/oa/overtime';
+import { getOvertimeApplyPage, submitOvertimeApply } from '#/api/oa/overtime';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
@@ -111,7 +108,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
-    <DocAlert title="【流程】考勤、请假、加班、转正与离职" url="https://doc.iocoder.cn/oa/attendance-application/" />
+    <template #doc>
+      <DocAlert
+        title="【流程】考勤、请假、加班、转正与离职"
+        url="https://doc.iocoder.cn/oa/attendance-application/"
+      />
+    </template>
+
     <FormModal @success="handleRefresh" />
     <DetailModal />
 

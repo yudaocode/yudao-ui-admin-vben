@@ -145,7 +145,7 @@ const [Modal, modalApi] = useVbenModal({
       type="info"
       show-icon
       :closable="false"
-      message="查看者可以查看账套数据，会计可以维护账套数据，主管可以管理账套及成员"
+      title="查看者可以查看账套数据，会计可以维护账套数据，主管可以管理账套及成员"
     />
     <div class="my-3 flex items-center justify-between">
       <div>

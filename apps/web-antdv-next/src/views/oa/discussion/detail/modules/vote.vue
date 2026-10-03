@@ -40,7 +40,7 @@ const votedOptionIds = computed(
       ?.filter((item) => item.voted)
       .map((item) => item.id!) || [],
 ); // 已投票选项编号
-const voteStatus = computed<string>(() => {
+const voteStatus = computed<'ended' | 'notStarted' | 'ongoing'>(() => {
   const now = Date.now();
   const startTime = new Date(detail.value?.voteStartTime || 0).getTime();
   const endTime = new Date(detail.value?.voteEndTime || 0).getTime();
@@ -49,19 +49,19 @@ const voteStatus = computed<string>(() => {
   }
   return now > endTime ? 'ended' : 'ongoing';
 }); // 投票状态
-const voteStatusText = computed(() =>
-  voteStatus.value === 'notStarted'
-    ? '未开始'
-    : voteStatus.value === 'ended'
-      ? '已结束'
-      : '进行中',
-); // 投票状态文本
-const voteStatusTagColor = computed(() =>
-  voteStatus.value === 'ongoing'
-    ? 'success'
-    : voteStatus.value === 'ended'
-      ? 'default'
-      : 'warning',
+const VOTE_STATUS_TEXT = {
+  ended: '已结束',
+  notStarted: '未开始',
+  ongoing: '进行中',
+} as const;
+const VOTE_STATUS_TAG_COLOR = {
+  ended: 'default',
+  notStarted: 'warning',
+  ongoing: 'success',
+} as const;
+const voteStatusText = computed(() => VOTE_STATUS_TEXT[voteStatus.value]); // 投票状态文本
+const voteStatusTagColor = computed(
+  () => VOTE_STATUS_TAG_COLOR[voteStatus.value],
 ); // 投票状态标签颜色
 const voteDisabled = computed(() => {
   if (voteStatus.value !== 'ongoing') {
@@ -91,13 +91,14 @@ async function submitVote() {
     return;
   }
   // 校验投票选项
-  const optionIds = detail.value.voteMultiple
-    ? selectedOptionIds.value.filter(
-        (optionId) => !votedOptionIds.value.includes(optionId),
-      )
-    : selectedOptionId.value
-      ? [selectedOptionId.value]
-      : [];
+  let optionIds: number[] = [];
+  if (detail.value.voteMultiple) {
+    optionIds = selectedOptionIds.value.filter(
+      (optionId) => !votedOptionIds.value.includes(optionId),
+    );
+  } else if (selectedOptionId.value) {
+    optionIds = [selectedOptionId.value];
+  }
   if (optionIds.length === 0) {
     message.warning('请选择投票选项');
     return;
@@ -137,7 +138,8 @@ watch(
       </div>
     </template>
     <div class="text-muted-foreground mb-3 text-[13px]">
-      {{ formatDate(detail.voteStartTime) }} 至 {{ formatDate(detail.voteEndTime) }}
+      {{ formatDate(detail.voteStartTime) }} 至
+      {{ formatDate(detail.voteEndTime) }}
     </div>
     <CheckboxGroup v-if="detail.voteMultiple" v-model:value="selectedOptionIds">
       <div v-for="option in detail.voteOptions" :key="option.id" class="mb-3.5">
@@ -150,16 +152,18 @@ watch(
         <Progress
           :percent="getVotePercentage(option)"
           :stroke-color="option.color || undefined"
-          :stroke-width="8"
+          :size="{ height: 8 }"
         />
         <Popover
           v-if="option.voterUserNames?.length"
           trigger="click"
           title="投票人"
-          :overlay-style="{ width: '240px' }"
+          :styles="{ root: { width: '240px' } }"
         >
           <template #content>
-            <div class="break-words">{{ option.voterUserNames.join('、') }}</div>
+            <div class="break-words">
+              {{ option.voterUserNames.join('、') }}
+            </div>
           </template>
           <Button type="link" size="small">查看投票人</Button>
         </Popover>
@@ -173,16 +177,18 @@ watch(
         <Progress
           :percent="getVotePercentage(option)"
           :stroke-color="option.color || undefined"
-          :stroke-width="8"
+          :size="{ height: 8 }"
         />
         <Popover
           v-if="option.voterUserNames?.length"
           trigger="click"
           title="投票人"
-          :overlay-style="{ width: '240px' }"
+          :styles="{ root: { width: '240px' } }"
         >
           <template #content>
-            <div class="break-words">{{ option.voterUserNames.join('、') }}</div>
+            <div class="break-words">
+              {{ option.voterUserNames.join('、') }}
+            </div>
           </template>
           <Button type="link" size="small">查看投票人</Button>
         </Popover>

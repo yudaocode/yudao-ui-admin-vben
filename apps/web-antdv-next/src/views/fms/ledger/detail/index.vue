@@ -242,7 +242,7 @@ onMounted(() => {
       <div class="flex min-h-0 flex-1 gap-4">
         <Card
           class="h-full w-64 shrink-0"
-          :body-style="{ height: '100%', overflow: 'auto' }"
+          :styles="{ body: { height: '100%', overflow: 'auto' } }"
         >
           <Input
             v-model:value="subjectKeyword"

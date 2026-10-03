@@ -62,7 +62,13 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible" auto-content-height>
-    <DocAlert title="【绩效】绩效考核、绩效档案" url="https://doc.iocoder.cn/hrm/performance/assessment/" />
+    <template #doc>
+      <DocAlert
+        title="【绩效】绩效考核、绩效档案"
+        url="https://doc.iocoder.cn/hrm/performance/assessment/"
+      />
+    </template>
+
     <Grid table-title="绩效档案">
       <template #resultLevel="{ row }">
         <ElTag v-if="row.resultLevel" type="success">

@@ -271,7 +271,7 @@ watch(editable, (value) => {
           <Alert
             v-if="monthRecord.id && !editable"
             class="mt-4"
-            message="当前社保表已归档，仅可查询。"
+            title="当前社保表已归档，仅可查询。"
             show-icon
             type="info"
           />

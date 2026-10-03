@@ -58,7 +58,7 @@ defineExpose({ refresh });
       type="warning"
       :style="{ marginTop: '8px' }"
     >
-      <template #message>
+      <template #title>
         有
         {{ readiness.noSalaryGroupEmployeeCount }}
         名员工未加入任何薪资组，无法参与工资核算。
@@ -73,7 +73,7 @@ defineExpose({ refresh });
       type="warning"
       :style="{ marginTop: '8px' }"
     >
-      <template #message>
+      <template #title>
         有 {{ readiness.noSalaryEmployeeCount }}
         名员工没有生效薪资档案，将优先继承上月工资；无上月工资时按 0 核算。
         <Button type="link" @click="noSalaryModalApi.open()">查看员工</Button>
