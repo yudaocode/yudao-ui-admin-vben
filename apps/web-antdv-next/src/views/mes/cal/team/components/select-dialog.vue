@@ -17,14 +17,21 @@ const multiple = ref(true); // 是否多选
 const selectedRows = ref<MesCalTeamApi.Team[]>([]); // 已选班组列表
 const preSelectedIds = ref<number[]>([]); // 预选班组编号列表
 
+function getSelectedRows(): MesCalTeamApi.Team[] {
+  return [
+    ...gridApi.grid.getCheckboxReserveRecords(),
+    ...gridApi.grid.getCheckboxRecords(),
+  ];
+}
+
 /** 处理勾选变化 */
-function handleCheckboxChange({ records }: { records: MesCalTeamApi.Team[] }) {
-  selectedRows.value = records;
+function handleCheckboxChange() {
+  selectedRows.value = getSelectedRows();
 }
 
 /** 处理全选变化 */
-function handleCheckboxAll({ records }: { records: MesCalTeamApi.Team[] }) {
-  selectedRows.value = records;
+function handleCheckboxAll() {
+  selectedRows.value = getSelectedRows();
 }
 
 /** 双击行：多选切换勾选，单选直接确认 */
@@ -33,8 +40,7 @@ function handleCellDblclick({ row }: { row: MesCalTeamApi.Team }) {
     const records = gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
     const checked = records.some((item) => item.id === row.id);
     gridApi.grid.setCheckboxRow(row, !checked);
-    selectedRows.value =
-      gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
+    selectedRows.value = getSelectedRows();
     return;
   }
   selectedRows.value = [row];
@@ -52,8 +58,7 @@ function applyPreSelection() {
       gridApi.grid.setCheckboxRow(row, true);
     }
   }
-  selectedRows.value =
-    gridApi.grid.getCheckboxRecords() as MesCalTeamApi.Team[];
+  selectedRows.value = getSelectedRows();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -96,10 +101,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 重置查询和选择状态 */
-async function resetQueryState() {
+async function resetQueryState(resetForm = true) {
   selectedRows.value = [];
   await gridApi.grid.clearCheckboxRow();
-  await gridApi.formApi.reset();
+  await gridApi.grid.clearCheckboxReserve();
+  if (resetForm) {
+    await gridApi.formApi.reset();
+  }
 }
 
 /** 打开班组选择弹窗 */
@@ -119,8 +127,8 @@ async function openModal(
 
 /** 关闭班组选择弹窗 */
 async function closeModal() {
+  await resetQueryState(false);
   open.value = false;
-  await resetQueryState();
 }
 
 /** 确认选择班组 */

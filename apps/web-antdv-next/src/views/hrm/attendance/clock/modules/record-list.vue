@@ -45,6 +45,8 @@ function isManualClock(row: HrmAttendanceClockApi.AttendanceClock) {
 
 function handleRefresh() {
   checkedIds.value = [];
+  gridApi.grid.clearCheckboxRow();
+  gridApi.grid.clearCheckboxReserve();
   gridApi.query();
 }
 
@@ -110,7 +112,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     }: {
       records: HrmAttendanceClockApi.AttendanceClock[];
     }) => {
-      checkedIds.value = records
+      checkedIds.value = [
+        ...gridApi.grid.getCheckboxReserveRecords(),
+        ...records,
+      ]
         .filter((row: HrmAttendanceClockApi.AttendanceClock) =>
           isManualClock(row),
         )
@@ -122,7 +127,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     }: {
       records: HrmAttendanceClockApi.AttendanceClock[];
     }) => {
-      checkedIds.value = records
+      checkedIds.value = [
+        ...gridApi.grid.getCheckboxReserveRecords(),
+        ...records,
+      ]
         .filter((row: HrmAttendanceClockApi.AttendanceClock) =>
           isManualClock(row),
         )
