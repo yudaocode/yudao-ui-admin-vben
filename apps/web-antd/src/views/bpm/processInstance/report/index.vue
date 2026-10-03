@@ -5,7 +5,7 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { h, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, prompt } from '@vben/common-ui';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
 import { message, Textarea } from 'ant-design-vue';
 
@@ -138,6 +138,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="流程实例报表" url="https://doc.iocoder.cn/bpm/" />
+    </template>
     <Grid table-title="流程实例列表">
       <template #actions="{ row }">
         <TableAction

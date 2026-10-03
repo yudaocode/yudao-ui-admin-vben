@@ -166,7 +166,7 @@ function buildSubjectTreeNodes(
   }));
 }
 
-/** 按编码或名称过滤科目，命中节点保留全部下级 */
+/** 按编码或名称过滤科目，保留命中节点及其祖先 */
 function filterSubjectTree(
   nodes: SubjectTreeNode[],
   keyword: string,
@@ -175,9 +175,11 @@ function filterSubjectTree(
   const lowerKeyword = keyword.toLowerCase();
   const walk = (items: SubjectTreeNode[]): SubjectTreeNode[] =>
     items.flatMap((item) => {
-      if (item.label.toLowerCase().includes(lowerKeyword)) return [item];
       const children = item.children ? walk(item.children) : [];
-      return children.length > 0 ? [{ ...item, children }] : [];
+      return item.label.toLowerCase().includes(lowerKeyword) ||
+        children.length > 0
+        ? [{ ...item, children }]
+        : [];
     });
   return walk(nodes);
 }

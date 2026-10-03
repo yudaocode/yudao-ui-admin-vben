@@ -181,16 +181,6 @@ export async function getProcessInstanceCopyPage(params: PageParam) {
   );
 }
 
-/** 更新流程实例 */
-export async function updateProcessInstance(
-  data: BpmProcessInstanceApi.ProcessInstance,
-) {
-  return requestClient.put<BpmProcessInstanceApi.ProcessInstance>(
-    '/bpm/process-instance/update',
-    data,
-  );
-}
-
 /** 获取审批详情 */
 export async function getApprovalDetail(params: any) {
   return requestClient.get<BpmProcessInstanceApi.ApprovalDetailRespVO>(

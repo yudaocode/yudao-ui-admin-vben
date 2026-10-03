@@ -35,3 +35,11 @@ export function deletePermanentMaterial(id: number) {
     params: { id },
   });
 }
+
+/** 上传图文正文中的图片 */
+export function uploadNewsImage(file: File, accountId: number) {
+  return requestClient.upload<string>('/mp/material/upload-news-image', {
+    file,
+    accountId,
+  });
+}

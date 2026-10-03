@@ -12,7 +12,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart, getAllPageItems } from '@vben/utils';
+import { downloadFileFromBlobPart } from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -98,8 +98,7 @@ const loading = ref(true); // 看板数据加载中
 const boardSaving = ref(false); // 看板拖拽保存中
 const showFilterPopover = ref(false); // 高级筛选是否展示
 const viewMode = ref<'board' | 'list'>(props.defaultViewMode || 'list'); // 当前展示模式
-const searchKeyword = ref(''); // 当前页前端搜索关键字
-const searchableWorkItemList = ref<PmsWorkItemApi.WorkItem[]>([]); // 列表前端搜索数据
+const searchKeyword = ref(''); // 搜索关键字
 const board = ref<BoardColumn[]>([]); // 工作项看板
 const statusOptions = ref<PmsWorkItemStatusApi.WorkItemStatus[]>([]); // 看板状态列表
 const memberOptions = ref<PmsProjectMemberApi.ProjectMember[]>([]); // 负责人筛选选项
@@ -167,22 +166,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          // 前端搜索时不分页，直接展示全量缓存的匹配结果
-          if (normalizedSearchKeyword.value) {
-            const list = searchableWorkItemList.value.filter((item) =>
-              matchSearchKeyword(item),
-            );
-            return { list, total: list.length };
-          }
           queryParams.pageNo = page.currentPage;
           queryParams.pageSize = page.pageSize;
-          const [data, searchableItems] = await Promise.all([
-            getWorkItemPage(queryParams),
-            getAllPageItems<PmsWorkItemApi.WorkItem>((pageNo, pageSize) =>
-              getWorkItemPage({ ...queryParams, pageNo, pageSize }),
-            ),
-          ]);
-          searchableWorkItemList.value = searchableItems;
+          const data = await getWorkItemPage({
+            ...queryParams,
+            name: searchKeyword.value.trim() || undefined,
+          });
           // 查询状态选项，供列表快捷修改和看板展示使用
           statusOptions.value = await getWorkItemStatusList(
             props.projectId,
@@ -202,12 +191,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<PmsWorkItemApi.WorkItem>,
 });
 
-/** 监听前端搜索关键字，切换分页并刷新表格 */
-watch(normalizedSearchKeyword, (keyword) => {
+/** 搜索关键字改变后从第一页查询 */
+watch(normalizedSearchKeyword, () => {
   if (viewMode.value !== 'list') {
     return;
   }
-  gridApi.setGridOptions({ pagerConfig: { enabled: !keyword } });
   gridApi.reload();
 });
 
@@ -242,7 +230,7 @@ async function getWorkItemList() {
 function handleQuery() {
   queryParams.pageNo = 1;
   if (viewMode.value === 'list') {
-    gridApi.query();
+    gridApi.reload();
   } else {
     getWorkItemList();
   }
@@ -288,7 +276,9 @@ function resetQuery() {
   queryParams.priorities = [];
   queryParams.iterationIds = [];
   queryParams.excludedIterationIds = [];
-  queryParams.assigneeUserIds = [];
+  queryParams.assigneeUserIds = route.query.assigneeUserId
+    ? [Number(route.query.assigneeUserId)]
+    : [];
   queryParams.labelIds = [];
   queryParams.lifecycleStatus = PmsWorkItemLifecycleStatus.ACTIVE;
   searchKeyword.value = '';
@@ -340,14 +330,8 @@ function openCreateForm() {
     .open();
 }
 
-/** 刷新工作项数据，前端搜索时同步全量缓存 */
+/** 刷新工作项数据 */
 async function refreshWorkItems() {
-  if (viewMode.value === 'list' && normalizedSearchKeyword.value) {
-    searchableWorkItemList.value =
-      await getAllPageItems<PmsWorkItemApi.WorkItem>((pageNo, pageSize) =>
-        getWorkItemPage({ ...queryParams, pageNo, pageSize }),
-      );
-  }
   await getWorkItemList();
 }
 
@@ -513,7 +497,10 @@ async function handleBoardSort(statusGroup: BoardStatusGroup) {
 
 /** 导出工作项 */
 async function handleExport() {
-  const data = await exportWorkItemList(queryParams);
+  const data = await exportWorkItemList({
+    ...queryParams,
+    name: searchKeyword.value.trim() || undefined,
+  });
   downloadFileFromBlobPart({
     fileName: `${workItemTypeName.value}.xlsx`,
     source: data,

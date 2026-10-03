@@ -193,7 +193,7 @@ async function getWorkItemList() {
 function handleQuery() {
   queryParams.pageNo = 1;
   if (viewMode.value === 'list') {
-    gridApi.query();
+    gridApi.reload();
   } else {
     getWorkItemList();
   }

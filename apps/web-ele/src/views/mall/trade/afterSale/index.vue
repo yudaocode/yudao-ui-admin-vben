@@ -39,7 +39,7 @@ function handleOpenOrderDetail(row: MallAfterSaleApi.AfterSale) {
 /** 切换售后状态 */
 function handleChangeStatus(key: number | string) {
   statusTab.value = key.toString();
-  gridApi.query();
+  gridApi.reload();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

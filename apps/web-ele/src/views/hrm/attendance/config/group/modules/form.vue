@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { FormInstance } from 'element-plus';
+
 import type { HrmAttendanceGroupApi } from '#/api/hrm/attendance/group';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -53,6 +55,8 @@ defineOptions({ name: 'HrmAttendanceGroupForm' });
 const emit = defineEmits(['success']);
 
 const macPattern = /^((([0-9a-f]{2}:){5})|(([0-9a-f]{2}-){5}))[0-9a-f]{2}$/i;
+
+const deductionFormRef = ref<FormInstance>();
 
 const formType = ref<'create' | 'update'>('create');
 const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
@@ -327,24 +331,15 @@ function validateCardSettings() {
   return true;
 }
 
-watch(
-  () => formData.value.openPointCard,
-  (enabled) => {
-    if (!enabled) formData.value.points = [];
-  },
-);
-
-watch(
-  () => formData.value.openWifiCard,
-  (enabled) => {
-    if (!enabled) formData.value.wifis = [];
-  },
-);
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await baseFormApi.validate();
     if (!valid) return;
+    try {
+      await deductionFormRef.value?.validate();
+    } catch {
+      return;
+    }
     if (
       !formData.value.deptIds?.length &&
       !formData.value.employeeIds?.length
@@ -400,7 +395,12 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="dialogTitle" class="w-[1120px]">
-    <ElForm :model="formData" class="mx-4" label-width="120px">
+    <ElForm
+      ref="deductionFormRef"
+      :model="formData"
+      class="mx-4"
+      label-width="120px"
+    >
       <div class="section-title">基本信息</div>
       <BaseForm />
 

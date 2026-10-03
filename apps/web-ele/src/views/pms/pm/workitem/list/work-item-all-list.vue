@@ -97,7 +97,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     toolbarConfig: {
-      enabled: false,
+      refresh: true,
     },
   } as VxeTableGridOptions<PmsWorkItemApi.WorkItem>,
 });

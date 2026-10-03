@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择用户',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -39,7 +39,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

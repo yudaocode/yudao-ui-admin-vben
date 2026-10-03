@@ -29,7 +29,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择请假类型',
         options: getDictOptions(DICT_TYPE.BPM_OA_LEAVE_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -80,7 +80,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择请假类型',
         options: getDictOptions(DICT_TYPE.BPM_OA_LEAVE_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -89,7 +89,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -98,7 +98,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择审批结果',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(
           DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS,
           'number',
@@ -111,7 +111,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入原因',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
