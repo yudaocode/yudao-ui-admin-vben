@@ -68,7 +68,10 @@ watch(
         </Descriptions.Item>
         <Descriptions.Item label="调整原因">
           <DictTag
-            v-if="salaryEmployee.changeReason !== null"
+            v-if="
+              salaryEmployee.changeReason !== null &&
+              salaryEmployee.changeReason !== undefined
+            "
             :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
             :value="salaryEmployee.changeReason"
           />
@@ -76,7 +79,10 @@ watch(
         </Descriptions.Item>
         <Descriptions.Item label="档案状态">
           <DictTag
-            v-if="salaryEmployee.changeType !== null"
+            v-if="
+              salaryEmployee.changeType !== null &&
+              salaryEmployee.changeType !== undefined
+            "
             :type="DICT_TYPE.HRM_SALARY_CHANGE_TYPE"
             :value="salaryEmployee.changeType"
           />

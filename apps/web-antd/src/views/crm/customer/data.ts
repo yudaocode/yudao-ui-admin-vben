@@ -367,7 +367,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '距离进入公海天数',
       minWidth: 140,
       formatter: ({ cellValue }) =>
-        cellValue === null ? '-' : `${cellValue} 天`,
+        cellValue === null || cellValue === undefined ? '-' : `${cellValue} 天`,
     },
     {
       field: 'ownerUserName',

@@ -119,21 +119,27 @@ export function useGridColumns(): VxeGridProps['columns'] {
       title: '是否计税',
       width: 100,
       formatter: ({ cellValue }) =>
-        cellValue === null ? '-' : formatHrmYesNo(cellValue),
+        cellValue === null || cellValue === undefined
+          ? '-'
+          : formatHrmYesNo(cellValue),
     },
     {
       field: 'threshold',
       title: '起征点',
       width: 120,
       formatter: ({ cellValue }) =>
-        cellValue === null ? '-' : `${cellValue}元/月`,
+        cellValue === null || cellValue === undefined
+          ? '-'
+          : `${cellValue}元/月`,
     },
     {
       field: 'decimalScale',
       title: '个税结果保留小数位',
       width: 170,
       formatter: ({ cellValue }) =>
-        cellValue === null ? '-' : `保留${cellValue}位小数`,
+        cellValue === null || cellValue === undefined
+          ? '-'
+          : `保留${cellValue}位小数`,
     },
     {
       field: 'usedGroupCount',

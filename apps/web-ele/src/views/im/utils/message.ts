@@ -633,7 +633,9 @@ export const getQuoteFromMessage = (content: string): null | QuoteMessage => {
 export const parseRecallMessageId = (content: string): number => {
   try {
     const parsed = JSON.parse(content);
-    return parsed?.messageId === null ? 0 : Number(parsed.messageId);
+    return parsed?.messageId === null || parsed?.messageId === undefined
+      ? 0
+      : Number(parsed.messageId);
   } catch {
     return 0;
   }

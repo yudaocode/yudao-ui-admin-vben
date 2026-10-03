@@ -174,7 +174,7 @@ onMounted(() => {
         </ElDescriptionsItem>
         <ElDescriptionsItem v-if="isVisible('sex')" label="性别">
           <DictTag
-            v-if="employee.sex !== null"
+            v-if="employee.sex != null"
             :type="DICT_TYPE.SYSTEM_USER_SEX"
             :value="employee.sex"
           />
@@ -200,7 +200,10 @@ onMounted(() => {
           label="最高学历"
         >
           <DictTag
-            v-if="employee.highestEducation !== null"
+            v-if="
+              employee.highestEducation !== null &&
+              employee.highestEducation !== undefined
+            "
             :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
             :value="employee.highestEducation"
           />

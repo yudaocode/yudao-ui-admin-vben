@@ -76,7 +76,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #education="{ row }">
         <DictTag
-          v-if="row.education !== null"
+          v-if="row.education != null"
           :type="DICT_TYPE.HRM_EMPLOYEE_EDUCATION"
           :value="row.education"
         />

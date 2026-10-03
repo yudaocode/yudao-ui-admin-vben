@@ -42,7 +42,7 @@ onMounted(refreshData);
   <Grid class="w-full">
     <template #status="{ row }">
       <DictTag
-        v-if="row.status !== null"
+        v-if="row.status != null"
         :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
         :value="row.status"
       />

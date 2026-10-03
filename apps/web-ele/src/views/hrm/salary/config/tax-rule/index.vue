@@ -72,14 +72,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
         title: '起征点',
         width: 120,
         formatter: ({ cellValue }) =>
-          cellValue === null ? '-' : `${cellValue}元/月`,
+          cellValue === null || cellValue === undefined
+            ? '-'
+            : `${cellValue}元/月`,
       },
       {
         field: 'decimalScale',
         title: '个税结果保留小数位',
         width: 170,
         formatter: ({ cellValue }) =>
-          cellValue === null ? '-' : `保留${cellValue}位小数`,
+          cellValue === null || cellValue === undefined
+            ? '-'
+            : `保留${cellValue}位小数`,
       },
       {
         field: 'usedGroupCount',
@@ -144,7 +148,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         }}
       </template>
       <template #taxEnabled="{ row }">
-        <template v-if="row.taxEnabled === null">-</template>
+        <template v-if="row.taxEnabled == null"> - </template>
         <ElTag v-else :color="row.taxEnabled ? 'success' : 'default'">
           {{ formatHrmYesNo(row.taxEnabled) }}
         </ElTag>

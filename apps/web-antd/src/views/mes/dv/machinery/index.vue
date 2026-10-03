@@ -25,6 +25,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
+const machineryTypeTreeRef = ref<InstanceType<typeof MachineryTypeTree>>();
 const selectedMachineryTypeId = ref<number>(); // 选中设备类型编号
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -102,6 +103,12 @@ function handleTypeNodeClick(
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      selectedMachineryTypeId.value = undefined;
+      machineryTypeTreeRef.value?.reset(false);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -144,7 +151,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <ImportModal @success="handleRefresh" />
     <div class="flex h-full w-full">
       <div class="mr-4 h-full w-1/6">
-        <MachineryTypeTree @node-click="handleTypeNodeClick" />
+        <MachineryTypeTree
+          ref="machineryTypeTreeRef"
+          @node-click="handleTypeNodeClick"
+        />
       </div>
       <div class="w-5/6">
         <Grid table-title="设备台账列表">

@@ -71,7 +71,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #expireRemind="{ row }">
         <DictTag
-          v-if="row.expireRemind !== null"
+          v-if="row.expireRemind != null"
           :type="DICT_TYPE.INFRA_BOOLEAN_STRING"
           :value="row.expireRemind"
         />

@@ -64,11 +64,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 重置选中状态 */
-function reset() {
+function reset(emitEvent = true) {
   selectedId.value = undefined;
   searchKeyword.value = '';
   gridApi.grid.clearCurrentRow();
-  emit('nodeClick', undefined);
+  if (emitEvent) {
+    emit('nodeClick', undefined);
+  }
   gridApi.query();
 }
 

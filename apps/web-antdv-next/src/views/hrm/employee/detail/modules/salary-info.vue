@@ -41,14 +41,20 @@ onMounted(async () => {
       </DescriptionsItem>
       <DescriptionsItem label="调整类型">
         <DictTag
-          v-if="salaryInfo.changeType !== null"
+          v-if="
+            salaryInfo.changeType !== null &&
+            salaryInfo.changeType !== undefined
+          "
           :type="DICT_TYPE.HRM_SALARY_CHANGE_TYPE"
           :value="salaryInfo.changeType"
         />
       </DescriptionsItem>
       <DescriptionsItem label="调整原因">
         <DictTag
-          v-if="salaryInfo.changeReason !== null"
+          v-if="
+            salaryInfo.changeReason !== null &&
+            salaryInfo.changeReason !== undefined
+          "
           :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
           :value="salaryInfo.changeReason"
         />
