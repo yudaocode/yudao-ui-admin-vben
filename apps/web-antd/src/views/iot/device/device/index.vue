@@ -150,6 +150,14 @@ function openModel(id: number) {
   });
 }
 
+function openLog(id: number) {
+  router.push({
+    name: 'IoTDeviceDetail',
+    params: { id },
+    query: { tab: 'log' },
+  });
+}
+
 /** 新增设备 */
 function handleCreate() {
   deviceFormModalApi.setData(null).open();
@@ -492,7 +500,7 @@ onMounted(async () => {
               label: '日志',
               type: 'link',
               auth: ['iot:device:query'],
-              onClick: openModel.bind(null, row.id!),
+              onClick: openLog.bind(null, row.id!),
             },
             {
               label: $t('common.edit'),

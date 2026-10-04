@@ -4,6 +4,8 @@ import { createApp, defineComponent, Fragment, h, nextTick } from 'vue';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import CreatePage from '../index.vue';
+
 const mocks = vi.hoisted(() => ({
   getCategorySimpleList: vi.fn(),
   getProcessDefinitionList: vi.fn(),
@@ -125,8 +127,6 @@ vi.mock('antdv-next', () => {
   };
 });
 
-import CreatePage from '../index.vue';
-
 const categories = [
   { code: 'sales', name: '销售流程' },
   { code: 'hr', name: '人事流程' },
@@ -167,7 +167,8 @@ describe('bPM process instance create page', () => {
     });
     expect(host.querySelectorAll('[data-tab]').length).toBe(2);
     expect(
-      host.querySelector('[data-testid="process-tabs"]')?.dataset.activeKey,
+      host.querySelector<HTMLElement>('[data-testid="process-tabs"]')?.dataset
+        .activeKey,
     ).toBe('sales');
   });
 
@@ -184,7 +185,8 @@ describe('bPM process instance create page', () => {
     expect(host.textContent).toContain('请假审批');
     expect(host.textContent).not.toContain('合同审批');
     expect(
-      host.querySelector('[data-testid="process-tabs"]')?.dataset.activeKey,
+      host.querySelector<HTMLElement>('[data-testid="process-tabs"]')?.dataset
+        .activeKey,
     ).toBe('hr');
   });
 

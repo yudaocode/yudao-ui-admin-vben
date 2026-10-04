@@ -257,7 +257,9 @@ export function useImportFormSchema(): VbenFormSchema[] {
       label: '是否覆盖',
       component: 'Switch',
       componentProps: {
+        activeText: '是',
         activeValue: true,
+        inactiveText: '否',
         inactiveValue: false,
       },
       rules: z.boolean().default(false),

@@ -115,7 +115,7 @@ const processNodeTree = ref<SimpleFlowNode | undefined>();
 provide('processNodeTree', processNodeTree);
 
 // 创建错误提示弹窗
-const [ErrorModal, errorModalApi] = useVbenModal({
+const [ErrorModal, errorModalApi] = useVbenModal<SimpleFlowNode[]>({
   fullscreenButton: false,
 });
 

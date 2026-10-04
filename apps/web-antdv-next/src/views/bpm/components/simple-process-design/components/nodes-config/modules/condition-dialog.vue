@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ConditionGroup } from '../../../consts';
+import type { ConditionGroup, FormTriggerSetting } from '../../../consts';
 
 import { ref } from 'vue';
 
@@ -29,7 +29,7 @@ const conditionData = ref<{
 // 条件组件的引用
 const conditionRef = ref();
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal<FormTriggerSetting>({
   title: '条件配置',
   destroyOnClose: true,
   draggable: true,
@@ -38,10 +38,13 @@ const [Modal, modalApi] = useVbenModal({
       // 获取传递的数据
       const conditionObj = modalApi.getData();
       if (conditionObj) {
-        conditionData.value.conditionType = conditionObj.conditionType;
+        conditionData.value.conditionType =
+          conditionObj.conditionType ?? ConditionType.RULE;
         conditionData.value.conditionExpression =
           conditionObj.conditionExpression;
-        conditionData.value.conditionGroups = conditionObj.conditionGroups;
+        conditionData.value.conditionGroups =
+          conditionObj.conditionGroups ??
+          cloneDeep(DEFAULT_CONDITION_GROUP_VALUE);
       }
     }
   },
@@ -65,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
 /**
  * 打开条件配置弹窗，不暴露 modalApi 给父组件
  */
-function openModal(conditionObj: any) {
+function openModal(conditionObj: FormTriggerSetting) {
   modalApi.setData(conditionObj).open();
 }
 

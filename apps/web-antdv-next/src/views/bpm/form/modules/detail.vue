@@ -10,7 +10,7 @@ import { setConfAndFields2 } from '#/components/form-create';
 
 const formConfig = ref<any>({});
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal<{ id?: number }>({
   footer: false,
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {

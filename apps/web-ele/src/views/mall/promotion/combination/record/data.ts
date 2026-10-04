@@ -95,6 +95,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 80,
     },
     {
+      field: 'startTime',
+      title: '开团时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
+    },
+    {
       field: 'createTime',
       title: '参团时间',
       minWidth: 180,
@@ -157,6 +163,12 @@ export function useUserGridColumns(): VxeTableGridOptions['columns'] {
       formatter: ({ cellValue }) => {
         return cellValue === 0 ? '团长' : '团员';
       },
+    },
+    {
+      field: 'startTime',
+      title: '开团时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
     },
     {
       field: 'createTime',

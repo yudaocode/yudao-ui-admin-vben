@@ -19,7 +19,7 @@ async function handleSendCoupon(row: MallCouponTemplateApi.CouponTemplate) {
   try {
     await sendCoupon({
       templateId: row.id,
-      userIds: modalApi.getData().userIds,
+      userIds: modalApi.getData()!.userIds,
     });
     ElMessage.success('发送成功');
     await modalApi.close();
@@ -59,7 +59,7 @@ const [Grid] = useVbenVxeGrid({
   } as VxeGridProps<MallCouponTemplateApi.CouponTemplate>,
 });
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal<{ userIds: number[] }>({
   showCancelButton: false,
   showConfirmButton: false,
 });

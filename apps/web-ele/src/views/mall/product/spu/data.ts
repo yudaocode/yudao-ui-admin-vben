@@ -13,9 +13,6 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let categoryList: any[] = [];
-getCategoryList({}).then((data) => {
-  categoryList = handleTree(data, 'id', 'parentId', 'children');
-});
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -37,6 +34,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: '请选择商品分类',
         clearable: true,
         api: async () => {
+          categoryList = handleTree(
+            await getCategoryList({}),
+            'id',
+            'parentId',
+            'children',
+          );
           return categoryList;
         },
         labelField: 'name',
