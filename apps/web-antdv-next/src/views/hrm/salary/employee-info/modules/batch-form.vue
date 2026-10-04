@@ -211,8 +211,9 @@ watch(
               class="w-full"
               multiple
               placeholder="请选择调薪部门"
+              show-search
+              tree-node-filter-prop="name"
               tree-default-expand-all
-              tree-checkable
               @change="formRef?.validateFields(['employeeIds'])"
             />
           </FormItem>

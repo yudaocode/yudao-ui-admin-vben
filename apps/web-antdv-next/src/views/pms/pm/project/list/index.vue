@@ -462,7 +462,12 @@ watch(
                     >
                       项目设置
                     </Menu.Item>
-                    <template v-if="project.memberStatus">
+                    <template
+                      v-if="
+                        project.memberStatus &&
+                        hasAccessByCodes(['pms:pm:project-group:update'])
+                      "
+                    >
                       <Menu.Item disabled>移动到分组</Menu.Item>
                       <Menu.Item
                         v-for="group in movableGroupList"
@@ -592,7 +597,13 @@ watch(
               >
                 项目设置
               </Menu.Item>
-              <template v-if="isParticipatedScene && row.memberStatus">
+              <template
+                v-if="
+                  isParticipatedScene &&
+                  row.memberStatus &&
+                  hasAccessByCodes(['pms:pm:project-group:update'])
+                "
+              >
                 <Menu.Item disabled>移动到分组</Menu.Item>
                 <Menu.Item
                   v-for="group in movableGroupList"

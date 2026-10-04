@@ -141,7 +141,6 @@ onMounted(async () => {
             multiple
             placeholder="请选择部门"
             tree-default-expand-all
-            tree-checkable
           />
         </div>
       </template>

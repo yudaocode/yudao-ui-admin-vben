@@ -207,6 +207,7 @@ watch(
               clearable
               class="w-full"
               default-expand-all
+              filterable
               multiple
               node-key="id"
               placeholder="请选择调薪部门"

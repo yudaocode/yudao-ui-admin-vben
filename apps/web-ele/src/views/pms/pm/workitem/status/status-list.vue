@@ -22,6 +22,7 @@ import {
 } from 'element-plus';
 import draggable from 'vuedraggable';
 
+import { ACTION_ICON, TableAction } from '#/adapter/vxe-table';
 import {
   createWorkItemStatus,
   getWorkItemBoardConfig,
@@ -40,7 +41,6 @@ import StatusDeleteForm from './modules/delete-form.vue';
 
 defineOptions({ name: 'PmsWorkItemStatusList' });
 
-// TODO @AI：拖拽看板可以保留自定义；新增状态字段能否抽 schema？操作对齐 TableAction。
 const emit = defineEmits(['success']);
 
 interface WorkItemBoard extends PmsWorkItemStatusApi.WorkItemBoard {
@@ -305,14 +305,18 @@ const [Modal, modalApi] = useVbenModal({
               >
                 初始
               </ElRadio>
-              <ElButton
-                :disabled="element.id === defaultStatusId"
-                link
-                type="danger"
-                @click="handleDelete(element)"
-              >
-                删除
-              </ElButton>
+              <TableAction
+                :actions="[
+                  {
+                    label: '删除',
+                    type: 'danger',
+                    link: true,
+                    icon: ACTION_ICON.DELETE,
+                    disabled: element.id === defaultStatusId,
+                    onClick: handleDelete.bind(null, element),
+                  },
+                ]"
+              />
             </div>
           </template>
         </draggable>
@@ -355,9 +359,17 @@ const [Modal, modalApi] = useVbenModal({
                   maxlength="50"
                   placeholder="请输入看板列名称"
                 />
-                <ElButton link type="danger" @click="handleDeleteBoard(index)">
-                  删除列
-                </ElButton>
+                <TableAction
+                  :actions="[
+                    {
+                      label: '删除列',
+                      type: 'danger',
+                      link: true,
+                      icon: ACTION_ICON.DELETE,
+                      onClick: handleDeleteBoard.bind(null, index),
+                    },
+                  ]"
+                />
               </div>
               <draggable
                 v-model="element.statuses"

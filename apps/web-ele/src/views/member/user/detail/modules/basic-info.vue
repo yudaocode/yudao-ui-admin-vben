@@ -44,7 +44,7 @@ const [Descriptions] = useDescription({
       render: (val) =>
         h(DictTag, {
           type: DICT_TYPE.SYSTEM_USER_SEX,
-          value: val,
+          value: val ?? 0,
         }),
     },
     {

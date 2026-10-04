@@ -65,9 +65,6 @@ import ProjectForm from './modules/form.vue';
 
 defineOptions({ name: 'PmsProjectList' });
 
-// TODO @AI：项目操作包含分组子菜单，后续需要在保留交互能力的前提下对齐 TableAction。
-/** 星标项目趋势小图（v-for 内逐卡片渲染） */
-
 const { hasAccessByCodes } = useAccess();
 const { push, replace } = useRouter(); // 路由
 const route = useRoute(); // 当前路由
@@ -463,7 +460,12 @@ watch(
                   >
                     项目设置
                   </ElDropdownItem>
-                  <template v-if="project.memberStatus">
+                  <template
+                    v-if="
+                      project.memberStatus &&
+                      hasAccessByCodes(['pms:pm:project-group:update'])
+                    "
+                  >
                     <ElDropdownItem disabled>移动到分组</ElDropdownItem>
                     <ElDropdownItem
                       v-for="group in movableGroupList"
@@ -600,7 +602,13 @@ watch(
               >
                 项目设置
               </ElDropdownItem>
-              <template v-if="isParticipatedScene && row.memberStatus">
+              <template
+                v-if="
+                  isParticipatedScene &&
+                  row.memberStatus &&
+                  hasAccessByCodes(['pms:pm:project-group:update'])
+                "
+              >
                 <ElDropdownItem disabled>移动到分组</ElDropdownItem>
                 <ElDropdownItem
                   v-for="group in movableGroupList"
