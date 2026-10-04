@@ -3,6 +3,7 @@
 import type {
   UploadFile,
   UploadProgressEvent,
+  UploadRawFile,
   UploadRequestOptions,
 } from 'element-plus';
 
@@ -244,7 +245,7 @@ async function customRequest(options: UploadRequestOptions) {
     const res = await api?.(options.file, progressEvent);
 
     // 处理上传成功后的逻辑
-    handleUploadSuccess(res, options.file as File);
+    handleUploadSuccess(res, options.file);
 
     options.onSuccess!(res);
     ElMessage.success($t('ui.upload.uploadSuccess'));
@@ -260,9 +261,9 @@ async function customRequest(options: UploadRequestOptions) {
  * @param res 上传响应结果
  * @param file 上传的文件
  */
-function handleUploadSuccess(res: any, file: File) {
+function handleUploadSuccess(res: any, file: UploadRawFile) {
   // 删除临时文件
-  const index = fileList.value?.findIndex((item) => item.name === file.name);
+  const index = fileList.value?.findIndex((item) => item.uid === file.uid);
   if (index !== -1) {
     fileList.value?.splice(index!, 1);
   }
@@ -273,7 +274,7 @@ function handleUploadSuccess(res: any, file: File) {
     name: file.name,
     url: fileUrl,
     status: UploadResultStatus.SUCCESS,
-    uid: file.name + Date.now(),
+    uid: file.uid,
   });
 
   // 检查是否所有文件都上传完成

@@ -112,9 +112,12 @@ export function useFormSchema(
       componentProps: {
         // 选择到货通知单后，自动回填供应商和采购订单号
         onChange: async (notice?: MesWmArrivalNoticeApi.ArrivalNotice) => {
+          if (!notice) {
+            return;
+          }
           await formApi?.setValues({
-            purchaseOrderCode: notice?.purchaseOrderCode,
-            vendorId: notice?.vendorId,
+            purchaseOrderCode: notice.purchaseOrderCode,
+            vendorId: notice.vendorId,
           });
         },
         status: MesWmArrivalNoticeStatusEnum.PENDING_RECEIPT,

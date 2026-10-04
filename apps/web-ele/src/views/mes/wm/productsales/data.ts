@@ -125,12 +125,15 @@ export function useFormSchema(
         disabled: isHeaderReadonly(formType),
         // 选择发货通知单后，自动回填销售订单号、客户、收货人信息
         onChange: async (notice?: MesWmSalesNoticeApi.SalesNotice) => {
+          if (!notice) {
+            return;
+          }
           await formApi?.setValues({
-            clientId: notice?.clientId,
-            contactAddress: notice?.recipientAddress,
-            contactName: notice?.recipientName,
-            contactTelephone: notice?.recipientTelephone,
-            salesOrderCode: notice?.salesOrderCode,
+            clientId: notice.clientId,
+            contactAddress: notice.recipientAddress,
+            contactName: notice.recipientName,
+            contactTelephone: notice.recipientTelephone,
+            salesOrderCode: notice.salesOrderCode,
           });
         },
         status: MesWmSalesNoticeStatusEnum.APPROVED,

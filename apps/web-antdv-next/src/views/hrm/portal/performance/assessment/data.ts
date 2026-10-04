@@ -328,7 +328,8 @@ export function useAppealFormSchema(fileUpload: Component): VbenFormSchema[] {
       defaultValue: [],
       componentProps: {
         directory: 'hrm/performance/appeal',
-        maxNumber: 1,
+        maxNumber: 5,
+        multiple: true,
         maxSize: 20,
       },
     },

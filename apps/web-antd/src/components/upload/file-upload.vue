@@ -221,7 +221,7 @@ async function customRequest(info: UploadRequestOption) {
     const res = await api?.(info.file as File, progressEvent);
 
     // 处理上传成功后的逻辑
-    handleUploadSuccess(res, info.file as File);
+    handleUploadSuccess(res, info.file as File & { uid: string });
 
     info.onSuccess!(res);
     message.success($t('ui.upload.uploadSuccess'));
@@ -237,9 +237,9 @@ async function customRequest(info: UploadRequestOption) {
  * @param res 上传响应结果
  * @param file 上传的文件
  */
-function handleUploadSuccess(res: any, file: File) {
+function handleUploadSuccess(res: any, file: File & { uid: string }) {
   // 删除临时文件
-  const index = fileList.value?.findIndex((item) => item.name === file.name);
+  const index = fileList.value?.findIndex((item) => item.uid === file.uid);
   if (index !== -1) {
     fileList.value?.splice(index!, 1);
   }
@@ -250,11 +250,14 @@ function handleUploadSuccess(res: any, file: File) {
     name: file.name,
     url: fileUrl,
     status: UploadResultStatus.DONE,
-    uid: file.name + Date.now(),
+    uid: file.uid,
   });
 
   // 检查是否所有文件都上传完成
   if (uploadList.value.length >= uploadNumber.value) {
+    fileList.value = fileList.value?.filter(
+      (item) => !uploadList.value.some((uploaded) => uploaded.uid === item.uid),
+    );
     fileList.value?.push(...uploadList.value);
     uploadList.value = [];
     uploadNumber.value = 0;

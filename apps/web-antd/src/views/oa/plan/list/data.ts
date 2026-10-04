@@ -137,7 +137,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '附件',
       component: 'FileUpload',
       componentProps: {
-        maxNumber: 1,
+        maxNumber: 5,
+        multiple: true,
       },
       formItemClass: 'col-span-2',
     },

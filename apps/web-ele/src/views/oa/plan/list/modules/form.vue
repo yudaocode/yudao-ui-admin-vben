@@ -76,9 +76,6 @@ const [Modal, modalApi] = useVbenModal({
       ElMessage.error('结束时间必须晚于开始时间');
       return;
     }
-    if (!Array.isArray(data.fileUrls)) {
-      data.fileUrls = data.fileUrls ? [data.fileUrls] : [];
-    }
     modalApi.lock();
     // 提交表单
     try {
@@ -108,6 +105,7 @@ const [Modal, modalApi] = useVbenModal({
     syncingPeriod = true;
     try {
       formData.value = await getPlan(data.id);
+      formData.value.fileUrls ??= [];
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {
