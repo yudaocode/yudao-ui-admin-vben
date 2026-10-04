@@ -15,15 +15,15 @@ import { IconifyIcon } from '@vben/icons';
 import { handleTree } from '@vben/utils';
 
 import {
-  ElButton as Button,
-  ElCard as Card,
-  ElDropdown as Dropdown,
+  ElButton,
+  ElCard,
+  ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElMessage as message,
-  ElTabPane as TabPane,
-  ElTabs as Tabs,
-  ElTag as Tag,
+  ElMessage,
+  ElTabPane,
+  ElTabs,
+  ElTag,
 } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -180,7 +180,7 @@ async function handleAction(
   else if (action === 'interview') await startPerformancePlanInterview(planId);
   else if (action === 'archive') await archivePerformancePlan(planId);
   else await terminatePerformancePlan(planId);
-  message.success($t('ui.actionMessage.operationSuccess'));
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
   if (action === 'terminate') {
     close();
     return;
@@ -191,7 +191,7 @@ async function handleAction(
 async function handleDelete() {
   await confirm('确认删除该 KPI 考核？');
   await deletePerformancePlan(planId);
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   close();
 }
 
@@ -204,7 +204,7 @@ async function handleRemoveEmployees() {
     planId,
     employeeIds: checkedEmployeeIds.value,
   });
-  message.success('参评员工移除成功');
+  ElMessage.success('参评员工移除成功');
   checkedEmployeeIds.value = [];
   await getData();
 }
@@ -417,7 +417,7 @@ watch(isEditable, (editable) => {
 
 onMounted(async () => {
   if (!Number.isSafeInteger(planId) || planId <= 0) {
-    message.warning('参数错误，KPI 考核不能为空！');
+    ElMessage.warning('参数错误，KPI 考核不能为空！');
     close();
     return;
   }
@@ -448,9 +448,9 @@ onMounted(async () => {
             },
           ]"
         />
-        <Button v-else type="primary" @click="openSettings">
+        <ElButton v-else type="primary" @click="openSettings">
           查看考核设置
-        </Button>
+        </ElButton>
         <TableAction
           v-if="
             plan.status === HrmPerformancePlanStatus.RUNNING &&
@@ -465,11 +465,11 @@ onMounted(async () => {
             },
           ]"
         />
-        <Dropdown v-if="showMoreActions">
-          <Button>
+        <ElDropdown v-if="showMoreActions">
+          <ElButton>
             更多
             <IconifyIcon class="ml-1" icon="lucide:chevron-down" />
-          </Button>
+          </ElButton>
           <template #dropdown>
             <ElDropdownMenu>
               <ElDropdownItem
@@ -501,18 +501,18 @@ onMounted(async () => {
               </ElDropdownItem>
             </ElDropdownMenu>
           </template>
-        </Dropdown>
+        </ElDropdown>
       </div>
     </Header>
 
-    <Card class="mt-4">
-      <Tabs v-model="activeTab">
-        <TabPane label="详细资料" name="details">
+    <ElCard class="mt-4">
+      <ElTabs v-model="activeTab">
+        <ElTabPane label="详细资料" name="details">
           <Info :plan="plan" />
-        </TabPane>
-        <TabPane :label="`参评员工（${employeeTotal}）`" name="employees">
+        </ElTabPane>
+        <ElTabPane :label="`参评员工（${employeeTotal}）`" name="employees">
           <div v-if="stageCountList.length" class="mb-3 flex flex-wrap gap-2">
-            <Tag
+            <ElTag
               v-for="item in stageCountList"
               :key="item.stageType"
               color="processing"
@@ -523,7 +523,7 @@ onMounted(async () => {
                   item.stageType,
                 ) || '未知阶段'
               }}（{{ item.count }}）
-            </Tag>
+            </ElTag>
           </div>
           <EmployeeGrid>
             <template #toolbar-tools>
@@ -556,11 +556,11 @@ onMounted(async () => {
               </a>
             </template>
           </EmployeeGrid>
-        </TabPane>
-        <TabPane label="操作日志" name="operateLog">
+        </ElTabPane>
+        <ElTabPane label="操作日志" name="operateLog">
           <OperateLog :log-list="logList" />
-        </TabPane>
-      </Tabs>
-    </Card>
+        </ElTabPane>
+      </ElTabs>
+    </ElCard>
   </Page>
 </template>

@@ -6,7 +6,13 @@ import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/perform
 import { computed, onActivated, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { confirm, DocAlert, Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import {
+  confirm,
+  DocAlert,
+  Page,
+  useVbenDrawer,
+  useVbenModal,
+} from '@vben/common-ui';
 
 import { Card, message, Pagination } from 'ant-design-vue';
 
@@ -212,7 +218,7 @@ async function confirmResult(id?: number) {
   }
 }
 
-function openAppeal(id?: number) {
+function openAppealForm(id?: number) {
   appealModalApi.setData({ assessmentId: id }).open();
 }
 
@@ -232,7 +238,7 @@ function openResultAudit(assessmentId?: number, stageId?: number) {
   resultAuditModalApi.setData({ assessmentId, stageId }).open();
 }
 
-function openAppealHandle(assessmentId?: number, stageId?: number) {
+function openAppealHandleForm(assessmentId?: number, stageId?: number) {
   appealHandleModalApi.setData({ assessmentId, stageId }).open();
 }
 
@@ -318,7 +324,10 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
-    <DocAlert title="【绩效】绩效考核、绩效档案" url="https://doc.iocoder.cn/hrm/performance/assessment/" />
+    <DocAlert
+      title="【绩效】绩效考核、绩效档案"
+      url="https://doc.iocoder.cn/hrm/performance/assessment/"
+    />
     <Card>
       <PerformanceTaskTabs
         v-model:active-status="activeStatus"
@@ -335,8 +344,8 @@ onActivated(async () => {
         :active-tab="activeTab"
         :list="list"
         :loading="loading"
-        @appeal="openAppeal"
-        @appeal-handle="openAppealHandle"
+        @appeal="openAppealForm"
+        @appeal-handle="openAppealHandleForm"
         @detail="openDetail"
         @quota="openQuota"
         @result-audit="openResultAudit"

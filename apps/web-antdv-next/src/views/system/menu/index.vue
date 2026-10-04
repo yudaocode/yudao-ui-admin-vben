@@ -5,7 +5,7 @@ import type { SystemMenuApi } from '#/api/system/menu';
 import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { CommonStatusEnum, SystemMenuTypeEnum } from '@vben/constants';
+import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { message } from 'antdv-next';
@@ -149,22 +149,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #name="{ row }">
-        <div class="flex w-full items-center gap-1">
-          <div class="size-5 flex-shrink-0">
-            <IconifyIcon
-              v-if="row.type === SystemMenuTypeEnum.BUTTON"
-              icon="carbon:square-outline"
-              class="size-full"
-            />
-            <IconifyIcon
-              v-else-if="row.icon"
-              :icon="row.icon || 'carbon:circle-dash'"
-              class="size-full"
-            />
-          </div>
-          <span class="flex-auto">{{ $t(row.name) }}</span>
-          <div class="items-center justify-end"></div>
-        </div>
+        <span>{{ $t(row.name) }}</span>
+      </template>
+      <template #icon="{ row }">
+        <IconifyIcon v-if="row.icon" :icon="row.icon" class="mx-auto size-5" />
       </template>
       <template #actions="{ row }">
         <TableAction

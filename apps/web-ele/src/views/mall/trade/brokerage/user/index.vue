@@ -199,7 +199,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               link: true,
               auth: ['trade:brokerage-user:clear-bind-user'],
-              ifShow: row.bindUserId > 0,
+              ifShow: !!row.bindUserId,
               onClick: handleClearBindUser.bind(null, row),
             },
           ]"

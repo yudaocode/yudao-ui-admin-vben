@@ -36,11 +36,14 @@ function toOptionalNumber(
 }
 
 /** 是否不限年龄：勾选后禁用范围输入，并清空已填年龄 */
-const ageUnlimited = () => !!props.values?.ageUnlimited;
+function ageUnlimited() {
+  return !!props.values?.ageUnlimited;
+}
 
-async function handleUnlimitedChange(checked: boolean) {
-  await props.formApi?.setFieldValue('ageUnlimited', checked);
-  if (!checked) {
+async function handleUnlimitedChange(checked: boolean | number | string) {
+  const next = !!checked;
+  await props.formApi?.setFieldValue('ageUnlimited', next);
+  if (!next) {
     return;
   }
   // 对齐源表单：勾选不限后清空最小/最大年龄

@@ -6,6 +6,8 @@ import { computed, ref } from 'vue';
 import { useVbenDrawer } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
+import { ElButton } from 'element-plus';
+
 import { getInsuranceMonthEmployeeRecord } from '#/api/hrm/insurance/month-record/employee';
 import { DictTag } from '#/components/dict-tag';
 import { formatHrmDate } from '#/views/hrm/utils/format';
@@ -87,7 +89,7 @@ function handleEdit() {
           <span class="text-muted-foreground">性别：</span>
           <DictTag
             v-if="detail?.sex != null"
-            type="system_user_sex"
+            :type="DICT_TYPE.SYSTEM_USER_SEX"
             :value="detail.sex"
           />
           <span v-else>--</span>

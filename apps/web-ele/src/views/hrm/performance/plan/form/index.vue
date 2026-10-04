@@ -12,12 +12,12 @@ import { IconifyIcon } from '@vben/icons';
 
 import dayjs from 'dayjs';
 import {
-  ElButton as Button,
-  ElCard as Card,
+  ElButton,
+  ElCard,
+  ElForm,
+  ElMessage,
   ElStep,
-  ElForm as Form,
-  ElMessage as message,
-  ElSteps as Steps,
+  ElSteps,
 } from 'element-plus';
 
 import { getPerformanceResultTemplateSimpleList } from '#/api/hrm/performance/config/result-template';
@@ -364,7 +364,7 @@ async function handleStepClick(index: number) {
       await validateStep(stepIndex);
     } catch {
       currentStep.value = stepIndex;
-      message.warning(`请完善${steps[stepIndex]?.title}`);
+      ElMessage.warning(`请完善${steps[stepIndex]?.title}`);
       return;
     }
   }
@@ -453,7 +453,7 @@ async function submitForm() {
   try {
     await validateAllSteps();
   } catch (error) {
-    message.warning(
+    ElMessage.warning(
       error instanceof Error ? error.message : '请完善 KPI 考核信息',
     );
     return;
@@ -481,11 +481,11 @@ async function submitForm() {
     );
     if (formData.value.id) {
       await updatePerformancePlan(formData.value);
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } else {
       const id = await createPerformancePlan(formData.value);
       formData.value.id = id;
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     }
     close();
   } finally {
@@ -502,13 +502,13 @@ async function initForm() {
     if (route.query.type !== 'update' && !viewMode.value) return;
     const id = Number(route.query.id);
     if (!Number.isInteger(id) || id <= 0) {
-      message.error('KPI 考核编号不正确');
+      ElMessage.error('KPI 考核编号不正确');
       close();
       return;
     }
     const data = await getPerformancePlan(id);
     if (!data) {
-      message.error('KPI 考核不存在');
+      ElMessage.error('KPI 考核不存在');
       close();
       return;
     }
@@ -517,7 +517,7 @@ async function initForm() {
       data.status !== HrmPerformancePlanStatus.DRAFT &&
       data.status !== HrmPerformancePlanStatus.NOT_STARTED
     ) {
-      message.error('当前状态不允许修改 KPI 考核');
+      ElMessage.error('当前状态不允许修改 KPI 考核');
       close();
       return;
     }
@@ -574,7 +574,7 @@ onMounted(initForm);
 
 <template>
   <Page auto-content-height>
-    <Card shadow="never">
+    <ElCard shadow="never">
       <div class="mb-6 flex items-center justify-between">
         <div class="flex min-w-0 items-center gap-2">
           <IconifyIcon
@@ -587,35 +587,39 @@ onMounted(initForm);
           }}</span>
         </div>
         <div class="flex gap-2">
-          <Button @click="close">返回</Button>
-          <Button
+          <ElButton @click="close">返回</ElButton>
+          <ElButton
             v-if="currentStep > 0"
             :disabled="formLoading"
             @click="handlePreviousStep"
           >
             上一步
-          </Button>
-          <Button
+          </ElButton>
+          <ElButton
             v-if="currentStep < steps.length - 1"
             :disabled="formLoading"
             type="primary"
             @click="handleNextStep"
           >
             下一步
-          </Button>
-          <Button
+          </ElButton>
+          <ElButton
             v-else-if="planEditable"
             :loading="formLoading"
             type="primary"
             @click="submitForm"
           >
             保存
-          </Button>
+          </ElButton>
         </div>
       </div>
 
       <div class="mb-8 flex justify-center">
-        <Steps :active="currentStep" align-center class="w-full max-w-[900px]">
+        <ElSteps
+          :active="currentStep"
+          align-center
+          class="w-full max-w-[900px]"
+        >
           <ElStep
             v-for="(step, index) in steps"
             :key="step.title"
@@ -623,10 +627,10 @@ onMounted(initForm);
             class="cursor-pointer"
             @click="handleStepClick(index)"
           />
-        </Steps>
+        </ElSteps>
       </div>
 
-      <Form :disabled="!planEditable" label-width="128px">
+      <ElForm :disabled="!planEditable" label-width="128px">
         <BasicForm
           v-show="currentStep === 0"
           v-model="formData"
@@ -650,7 +654,7 @@ onMounted(initForm);
           :disabled="!planEditable"
           :result-template-list="resultTemplateList"
         />
-      </Form>
-    </Card>
+      </ElForm>
+    </ElCard>
   </Page>
 </template>

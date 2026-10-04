@@ -8,15 +8,15 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import {
-  ElAlert as Alert,
-  ElButton as Button,
-  ElCol as Col,
-  ElEmpty as Empty,
-  ElInputNumber as InputNumber,
-  ElMessage as message,
-  ElRow as Row,
-  ElSelect as Select,
-  ElTag as Tag,
+  ElAlert,
+  ElButton,
+  ElCol,
+  ElEmpty,
+  ElInputNumber,
+  ElMessage,
+  ElRow,
+  ElSelect,
+  ElTag,
 } from 'element-plus';
 
 import {
@@ -74,7 +74,7 @@ const scoreCalculationOptions = getDictOptions(
 function validate() {
   const errorMessage = validateAssessmentConfig(model.value);
   if (errorMessage) {
-    message.warning(errorMessage);
+    ElMessage.warning(errorMessage);
     return false;
   }
   return true;
@@ -112,11 +112,11 @@ defineExpose({ validate });
 </script>
 
 <template>
-  <Row :gutter="20">
-    <Col :span="8">
+  <ElRow :gutter="20">
+    <ElCol :span="8">
       <div class="mb-4">
         <div class="mb-1 text-sm">总分计算</div>
-        <Select
+        <ElSelect
           v-model="model.scoreCalculation"
           :disabled="props.disabled"
           :options="scoreCalculationOptions"
@@ -124,11 +124,11 @@ defineExpose({ validate });
           placeholder="请选择"
         />
       </div>
-    </Col>
-    <Col :span="8">
+    </ElCol>
+    <ElCol :span="8">
       <div class="mb-4">
         <div class="mb-1 text-sm">评分上限类型</div>
-        <Select
+        <ElSelect
           v-model="model.upperLimitType"
           :disabled="props.disabled"
           class="w-full"
@@ -138,11 +138,11 @@ defineExpose({ validate });
           ]"
         />
       </div>
-    </Col>
-    <Col :span="8">
+    </ElCol>
+    <ElCol :span="8">
       <div class="mb-4">
         <div class="mb-1 text-sm">评分上限</div>
-        <InputNumber
+        <ElInputNumber
           v-model="model.upperLimitScore"
           :disabled="props.disabled"
           :min="0"
@@ -151,9 +151,9 @@ defineExpose({ validate });
           placeholder="请输入评分上限"
         />
       </div>
-    </Col>
-  </Row>
-  <Alert
+    </ElCol>
+  </ElRow>
+  <ElAlert
     :style="{ marginBottom: '16px' }"
     message="总分 = 评分 × 维度权重 × 指标权重，再累加；维度权重合计须为 100%，不可编辑维度的指标权重合计须为 100%，可编辑维度不可超过 100%。"
     show-icon
@@ -181,16 +181,16 @@ defineExpose({ validate });
           </span>
         </span>
       </div>
-      <Button
+      <ElButton
         :disabled="props.disabled"
         type="primary"
         @click="openDimensionForm()"
       >
         新增考核维度
-      </Button>
+      </ElButton>
     </div>
 
-    <Empty v-if="!model.dimensions?.length" description="暂无考核维度" />
+    <ElEmpty v-if="!model.dimensions?.length" description="暂无考核维度" />
     <div
       v-for="(dimension, dimensionIndex) in model.dimensions"
       :key="dimensionIndex"
@@ -202,33 +202,35 @@ defineExpose({ validate });
         <div>
           <div class="flex items-center gap-3">
             <span class="font-semibold">{{ dimension.name }}</span>
-            <Tag>{{ formatQuotaType(dimension.quotaType) }}</Tag>
+            <ElTag>{{ formatQuotaType(dimension.quotaType) }}</ElTag>
             <span class="text-sm">
               维度权重
               <span class="text-orange-500">{{ dimension.weight || 0 }}%</span>
             </span>
-            <Tag v-if="dimension.allowEdit" color="success">允许员工填写</Tag>
+            <ElTag v-if="dimension.allowEdit" color="success">
+              允许员工填写
+            </ElTag>
           </div>
           <div v-if="dimension.remark" class="mt-1 text-xs text-gray-500">
             {{ dimension.remark }}
           </div>
         </div>
         <div class="shrink-0">
-          <Button
+          <ElButton
             :disabled="props.disabled"
             link
             @click="openDimensionForm(dimensionIndex)"
           >
             编辑
-          </Button>
-          <Button
+          </ElButton>
+          <ElButton
             :disabled="props.disabled"
             danger
             link
             @click="removeDimension(dimensionIndex)"
           >
             删除
-          </Button>
+          </ElButton>
         </div>
       </div>
       <div class="p-4">

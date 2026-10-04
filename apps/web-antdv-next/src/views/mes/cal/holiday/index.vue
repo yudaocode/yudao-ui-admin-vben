@@ -63,6 +63,10 @@ function handleDayClick(date: unknown) {
     message.warning('没有假期设置权限');
     return;
   }
+  if (!hasAccessByCodes(['mes:cal-holiday:query'])) {
+    message.warning('没有假期查询权限');
+    return;
+  }
   holidayFormModalApi.setData({ day: current.format('YYYY-MM-DD') }).open();
 }
 

@@ -168,11 +168,11 @@ export function useFormSchema(): VbenFormSchema[] {
         clearable: true,
         fetchSuggestions(queryString: string, cb: any) {
           const options = componentKeys.map((v) => ({ value: v }));
-          const createFilter = (qs: string) => {
+          function createFilter(qs: string) {
             return (restaurant: any) => {
               return restaurant.value.toLowerCase().includes(qs.toLowerCase());
             };
-          };
+          }
           const filter = createFilter(queryString);
           const results = queryString
             ? options.filter((option) => filter(option))
@@ -307,6 +307,12 @@ export function useGridColumns(
       fixed: 'left',
       slots: { default: 'name' },
       treeNode: true,
+    },
+    {
+      field: 'icon',
+      title: '图标',
+      width: 80,
+      slots: { default: 'icon' },
     },
     {
       field: 'type',

@@ -35,8 +35,20 @@ const salaryUnitOptions = getDictOptions(
   'number',
 );
 
+/** 清空数值时统一提交 undefined，保留零值 */
+function toOptionalNumber(
+  value: null | number | string | undefined,
+): number | undefined {
+  if (value === null || value === undefined || value === '') {
+    return undefined;
+  }
+  return typeof value === 'number' ? value : Number(value);
+}
+
 /** 是否面议：勾选后禁用范围输入，并清空已填薪资 */
-const salaryNegotiable = () => !!props.values?.salaryNegotiable;
+function salaryNegotiable() {
+  return !!props.values?.salaryNegotiable;
+}
 
 async function handleNegotiableChange(checked: boolean | number | string) {
   const next = !!checked;
@@ -62,7 +74,9 @@ async function handleNegotiableChange(checked: boolean | number | string) {
         :precision="2"
         class="!w-0 flex-1"
         placeholder="最低薪资"
-        @update:model-value="(v) => emit('update:modelValue', v ?? undefined)"
+        @update:model-value="
+          (v) => emit('update:modelValue', toOptionalNumber(v))
+        "
       />
       <span class="text-muted-foreground shrink-0">至</span>
       <ElInputNumber
@@ -75,7 +89,7 @@ async function handleNegotiableChange(checked: boolean | number | string) {
         class="!w-0 flex-1"
         placeholder="最高薪资"
         @update:model-value="
-          (v) => formApi?.setFieldValue('maxSalary', v ?? undefined)
+          (v) => formApi?.setFieldValue('maxSalary', toOptionalNumber(v))
         "
       />
       <ElSelect

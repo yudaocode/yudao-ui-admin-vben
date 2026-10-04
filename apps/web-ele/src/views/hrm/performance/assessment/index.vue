@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import { ElMessage as message } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -34,7 +34,7 @@ async function handleDelete(employeeIds: number[]) {
   if (employeeIds.length === 0) return;
   await confirm($t('ui.actionMessage.deleteConfirm'));
   await deletePerformanceArchiveEmployeeRecords(employeeIds);
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   gridApi.query();
 }
 

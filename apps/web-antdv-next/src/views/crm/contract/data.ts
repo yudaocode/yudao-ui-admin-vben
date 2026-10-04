@@ -151,7 +151,6 @@ export function useFormSchema(
         labelField: 'nickname',
         valueField: 'id',
       },
-      defaultValue: userStore.userInfo?.id,
     },
     {
       fieldName: 'signContactId',

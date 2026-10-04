@@ -25,7 +25,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 const route = useRoute();
-const tabType = ref('0');
+const tabType = ref(0);
 const tabsData = ref([
   {
     name: '出售中',
@@ -187,7 +187,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 function onChangeTab(key: number | string) {
-  tabType.value = key.toString();
+  tabType.value = Number(key);
   gridApi.query();
 }
 
@@ -220,7 +220,7 @@ onMounted(async () => {
             v-for="item in tabsData"
             :key="item.type"
             :label="`${item.name} (${item.count})`"
-            :name="String(item.type)"
+            :name="item.type"
           />
         </ElTabs>
       </template>
@@ -268,7 +268,7 @@ onMounted(async () => {
               link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['product:spu:delete'],
-              ifShow: () => tabType === '4',
+              ifShow: () => tabType === 4,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),

@@ -308,6 +308,12 @@ export function useGridColumns(
       treeNode: true,
     },
     {
+      field: 'icon',
+      title: '图标',
+      width: 80,
+      slots: { default: 'icon' },
+    },
+    {
       field: 'type',
       title: '菜单类型',
       minWidth: 100,

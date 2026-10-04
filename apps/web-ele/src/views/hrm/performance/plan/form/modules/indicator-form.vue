@@ -3,7 +3,7 @@ import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
 import { computed, ref } from 'vue';
 
-import { ElFormItem, ElEmpty as Empty } from 'element-plus';
+import { ElEmpty, ElFormItem } from 'element-plus';
 
 import { getPerformanceAssessmentTemplate } from '#/api/hrm/performance/config/assessment-template';
 import ConfigEditor from '#/views/hrm/performance/config/assessment-template/components/config-editor.vue';
@@ -70,7 +70,7 @@ defineExpose({ validate });
           </ElFormItem>
         </template>
       </ConfigEditor>
-      <Empty
+      <ElEmpty
         v-if="!model.assessmentTemplateId"
         description="请选择考核指标模板"
       />

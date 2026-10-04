@@ -3,6 +3,7 @@ import type { EchartsUIType } from '@vben/plugins/echarts';
 
 import { onMounted, ref } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
@@ -24,7 +25,7 @@ const loadMemberTerminalStatisticsList = async () => {
   loading.value = true;
   try {
     const list = await getMemberTerminalStatisticsList();
-    const dictDataList = getDictOptions('terminal', 'number');
+    const dictDataList = getDictOptions(DICT_TYPE.TERMINAL, 'number');
     const chartData = dictDataList.map((dictData: any) => {
       const userCount = list.find(
         (item: any) => item.terminal === dictData.value,

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import { DICT_TYPE } from '@vben/constants';
 import { getDictObj } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { formatFileSize, openSafeUrl } from '@vben/utils';
@@ -115,7 +116,7 @@ const rtcCallTipText = computed(() => {
     rtcPayload.endReason !== ImRtcCallEndReason.HANGUP
   ) {
     const reason = getDictObj(
-      'im_rtc_call_end_reason',
+      DICT_TYPE.IM_RTC_CALL_END_REASON,
       String(rtcPayload.endReason),
     )?.label;
     if (reason) {

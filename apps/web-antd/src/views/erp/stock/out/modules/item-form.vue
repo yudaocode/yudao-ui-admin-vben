@@ -183,9 +183,6 @@ function validate() {
       if (!item.count || item.count <= 0) {
         throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
       }
-      if (!item.productPrice || item.productPrice <= 0) {
-        throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
-      }
     }
   }
 }

@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage as message } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -45,7 +45,7 @@ function handleEdit(
 async function handleDelete(id: number) {
   await confirm($t('ui.actionMessage.deleteConfirm'));
   await deletePerformanceResultTemplate(id);
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   handleRefresh();
 }
 
@@ -54,7 +54,7 @@ async function handleDeleteBatch() {
   await confirm($t('ui.actionMessage.deleteConfirm'));
   await deletePerformanceResultTemplateList(checkedIds.value);
   checkedIds.value = [];
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   handleRefresh();
 }
 

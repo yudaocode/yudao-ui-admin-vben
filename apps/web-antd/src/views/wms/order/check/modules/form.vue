@@ -209,8 +209,7 @@ function normalizeDetail(
   detailSeq += 1;
   const row: DetailRow = {
     ...detail,
-    actualPrice:
-      detail.actualPrice ?? multiplyPrice(detail.checkQuantity, detail.price),
+    actualPrice: multiplyPrice(detail.checkQuantity, detail.price),
     seq: detailSeq,
   };
   refreshDetailCalculatedFields(row);

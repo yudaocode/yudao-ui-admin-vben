@@ -10,16 +10,16 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, useTabs } from '@vben/hooks';
 
 import {
-  ElAvatar as Avatar,
-  ElButton as Button,
-  ElDescriptions as Descriptions,
+  ElAvatar,
+  ElButton,
+  ElDescriptions,
   ElDescriptionsItem,
+  ElEmpty,
   ElStep,
+  ElSteps,
   ElTabPane,
   ElTabs,
-  ElEmpty as Empty,
-  ElSteps as Steps,
-  ElTag as Tag,
+  ElTag,
 } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -223,26 +223,26 @@ onMounted(getDetail);
 <template>
   <Page auto-content-height>
     <div class="mb-5 flex items-center gap-3">
-      <Button link @click="close">返回</Button>
+      <ElButton link @click="close">返回</ElButton>
       <span class="text-xl font-semibold">员工考核详情</span>
     </div>
 
     <div class="mb-6 flex items-center justify-between gap-6">
       <div class="flex min-w-0 items-center gap-3">
-        <Avatar :size="48">{{ detail.employeeName?.slice(0, 1) }}</Avatar>
+        <ElAvatar :size="48">{{ detail.employeeName?.slice(0, 1) }}</ElAvatar>
         <div class="min-w-0">
           <div class="flex items-center gap-2">
             <span class="truncate text-xl font-semibold">{{
               detail.name || '-'
             }}</span>
-            <Tag v-if="detail.status !== null && detail.status !== undefined">
+            <ElTag v-if="detail.status !== null && detail.status !== undefined">
               {{
                 getDictLabel(
                   DICT_TYPE.HRM_PERFORMANCE_PLAN_STATUS,
                   detail.status,
                 )
               }}
-            </Tag>
+            </ElTag>
           </div>
           <div class="mt-1 text-gray-500">
             {{ detail.employeeName || '-' }} · {{ detail.jobNumber || '-' }}
@@ -273,7 +273,7 @@ onMounted(getDetail);
       </div>
     </div>
 
-    <Descriptions border :column="4" class="mb-6">
+    <ElDescriptions border :column="4" class="mb-6">
       <ElDescriptionsItem label="考核周期">
         {{ formatHrmPerformanceCycleType(detail.cycleType) }}
       </ElDescriptionsItem>
@@ -309,13 +309,13 @@ onMounted(getDetail);
       <ElDescriptionsItem label="考核时间">
         {{ formatHrmDateRange(detail.startTime, detail.endTime) }}
       </ElDescriptionsItem>
-    </Descriptions>
+    </ElDescriptions>
 
     <div class="mb-6">
       <div class="mb-4 border-l-4 border-primary pl-3 text-base font-semibold">
         考核流程
       </div>
-      <Steps v-if="stageList.length" :current="activeStage" class="mb-4">
+      <ElSteps v-if="stageList.length" :current="activeStage" class="mb-4">
         <ElStep
           v-for="stage in stageList"
           :key="stage.id"
@@ -330,8 +330,8 @@ onMounted(getDetail);
             />
           </template>
         </ElStep>
-      </Steps>
-      <Empty v-else-if="!loading" description="暂无考核流程" />
+      </ElSteps>
+      <ElEmpty v-else-if="!loading" description="暂无考核流程" />
     </div>
 
     <ElTabs v-model="activeTab">
@@ -350,7 +350,7 @@ onMounted(getDetail);
           >
             考核评语
           </div>
-          <Descriptions border :column="3">
+          <ElDescriptions border :column="3">
             <ElDescriptionsItem label="自评说明">
               {{ detail.selfComment || '-' }}
             </ElDescriptionsItem>
@@ -360,7 +360,7 @@ onMounted(getDetail);
             <ElDescriptionsItem label="结果说明">
               {{ detail.resultComment || '-' }}
             </ElDescriptionsItem>
-          </Descriptions>
+          </ElDescriptions>
         </template>
       </ElTabPane>
       <ElTabPane label="考核记录" name="record">

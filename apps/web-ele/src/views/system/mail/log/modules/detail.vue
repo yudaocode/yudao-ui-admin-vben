@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { getMailLog } from '#/api/system/mail/log';
 import { useDescription } from '#/components/description';
 
 import { useDetailSchema } from '../data';
@@ -30,7 +31,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = data;
+      formData.value = undefined;
+      formData.value = await getMailLog(data.id);
     } finally {
       modalApi.unlock();
     }

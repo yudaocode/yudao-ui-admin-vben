@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DiyComponent, DiyComponentLibrary } from '../util';
 
-import { reactive, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
@@ -19,28 +19,28 @@ const props = defineProps<{
   list: DiyComponentLibrary[];
 }>();
 
-const groups = reactive<any[]>([]); // 组件分组
-const extendGroups = reactive<string[]>([]); // 展开的折叠面板
+const groups = ref<any[]>([]); // 组件分组
+const extendGroups = ref<string[]>([]); // 展开的折叠面板
 
 /** 监听 list 属性，按照 DiyComponentLibrary 的 name 分组 */
 watch(
   () => props.list,
   () => {
     // 清除旧数据
-    extendGroups.length = 0;
-    groups.length = 0;
+    extendGroups.value = [];
+    groups.value = [];
     // 重新生成数据
     props.list.forEach((group) => {
       // 是否展开分组
       if (group.extended) {
-        extendGroups.push(group.name);
+        extendGroups.value.push(group.name);
       }
       // 查找组件
       const components = group.components
         .map((name) => componentConfigs[name] as DiyComponent<any>)
         .filter(Boolean);
       if (components.length > 0) {
-        groups.push({
+        groups.value.push({
           name: group.name,
           components,
         });

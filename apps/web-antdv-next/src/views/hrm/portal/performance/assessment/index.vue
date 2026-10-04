@@ -218,7 +218,7 @@ async function confirmResult(id?: number) {
   }
 }
 
-function openAppeal(id?: number) {
+function openAppealForm(id?: number) {
   appealModalApi.setData({ assessmentId: id }).open();
 }
 
@@ -238,7 +238,7 @@ function openResultAudit(assessmentId?: number, stageId?: number) {
   resultAuditModalApi.setData({ assessmentId, stageId }).open();
 }
 
-function openAppealHandle(assessmentId?: number, stageId?: number) {
+function openAppealHandleForm(assessmentId?: number, stageId?: number) {
   appealHandleModalApi.setData({ assessmentId, stageId }).open();
 }
 
@@ -346,8 +346,8 @@ onActivated(async () => {
         :active-tab="activeTab"
         :list="list"
         :loading="loading"
-        @appeal="openAppeal"
-        @appeal-handle="openAppealHandle"
+        @appeal="openAppealForm"
+        @appeal-handle="openAppealHandleForm"
         @detail="openDetail"
         @quota="openQuota"
         @result-audit="openResultAudit"

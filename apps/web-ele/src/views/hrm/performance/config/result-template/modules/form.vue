@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { useVbenForm, useVbenModal } from '@vben/common-ui';
 
-import { ElFormItem, ElMessage as message } from 'element-plus';
+import { ElFormItem, ElMessage } from 'element-plus';
 
 import {
   createPerformanceResultTemplate,
@@ -48,7 +48,7 @@ const [Modal, modalApi] = useVbenModal({
         : updatePerformanceResultTemplate(data));
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } finally {
       modalApi.unlock();
     }
