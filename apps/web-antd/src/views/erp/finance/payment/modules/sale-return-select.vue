@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpPurchaseReturnApi } from '#/api/erp/purchase/return';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { message, Modal } from 'ant-design-vue';
 
@@ -29,6 +29,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 520,
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getPurchaseReturnPage({
@@ -79,8 +80,10 @@ async function openModal(id: number) {
   open.value = true;
   selectedRows.value = [];
   // 查询列表
+  await nextTick();
   await gridApi.formApi.reset();
   await gridApi.formApi.setValues({ supplierId: id });
+  await nextTick();
   await gridApi.formApi.submit();
 }
 

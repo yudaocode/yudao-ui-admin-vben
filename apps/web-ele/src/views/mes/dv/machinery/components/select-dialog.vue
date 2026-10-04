@@ -135,6 +135,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getMachineryPage({
@@ -169,7 +170,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 async function resetQueryState() {
   selectedMachineryTypeId.value = undefined;
   selectedRows.value = [];
-  typeTreeRef.value?.reset();
+  typeTreeRef.value?.reset(false);
   await gridApi.grid.clearCheckboxRow();
   await gridApi.grid.clearCheckboxReserve();
   await gridApi.grid.clearRadioRow();
@@ -189,7 +190,10 @@ async function openModal(
     columns: useMachinerySelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }

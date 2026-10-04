@@ -75,6 +75,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) =>
           await getTeamPage({
@@ -120,7 +121,10 @@ async function openModal(
   preSelectedIds.value = selectedIds || [];
   await nextTick();
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   applyPreSelection();
 }

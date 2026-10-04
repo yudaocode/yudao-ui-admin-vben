@@ -149,6 +149,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxConfig: { highlight: true, range: true, reserve: true },
     radioConfig: { highlight: true, trigger: 'row' },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getMaterialStockPage({
@@ -215,7 +216,10 @@ async function openModal(
     columns: useSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }
