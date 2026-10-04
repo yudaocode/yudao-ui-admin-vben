@@ -15,9 +15,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let pickUpStoreList: MallDeliveryPickUpStoreApi.DeliveryPickUpStore[] = [];
-getSimpleDeliveryPickUpStoreList().then((data) => {
-  pickUpStoreList = data;
-});
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  pickUpStoreList = await getSimpleDeliveryPickUpStoreList();
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

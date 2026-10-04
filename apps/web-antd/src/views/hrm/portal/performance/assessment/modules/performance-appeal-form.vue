@@ -29,12 +29,16 @@ const [Modal, modalApi] = useVbenModal({
     if (!valid) return;
     const values = await formApi.getValues();
     if (!values.assessmentId) return;
+    let appealFileUrls = values.appealFileUrls as string | string[];
+    if (!Array.isArray(appealFileUrls)) {
+      appealFileUrls = appealFileUrls ? [appealFileUrls] : [];
+    }
     modalApi.lock();
     try {
       await submitPerformanceAssessmentAppeal({
         assessmentId: values.assessmentId as number,
         appealReason: values.appealReason as string,
-        appealFileUrls: (values.appealFileUrls || []) as string[],
+        appealFileUrls,
         reviewStageIds: values.reviewStageIds as number[],
       });
       message.success('绩效申诉已提交');

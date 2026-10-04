@@ -3,12 +3,13 @@ import type { FormRules } from 'element-plus';
 
 import type { PmsProjectTemplateApi } from '#/api/pms/pm/project/template';
 
-import { computed, nextTick, onBeforeUnmount, ref, toRaw } from 'vue';
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { cloneDeep } from '@vben/utils';
 
 import {
   ElAlert,
@@ -396,7 +397,7 @@ function warnAndSwitchTab(tab: ProjectTemplateTab, text: string) {
 
 /** 构建提交数据，并同步状态所属的看板列编码 */
 function buildSubmitData() {
-  const data = structuredClone(toRaw(formData.value));
+  const data = cloneDeep(formData.value);
   const statusBoardMap = new Map<string, string>();
   data.boards.forEach((board) => {
     board.statusCodes.forEach((statusCode) =>

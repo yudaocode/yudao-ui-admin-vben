@@ -60,9 +60,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
     },
     {
-      field: 'headId',
+      field: 'headNickname',
       title: '开团团长',
       minWidth: 100,
+      formatter: ({ cellValue }) => cellValue || '-',
     },
     {
       field: 'picUrl',

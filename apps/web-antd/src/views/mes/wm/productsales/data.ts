@@ -275,7 +275,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'salesDate',
+      fieldName: 'shipmentDate',
       label: '出库日期',
       component: 'RangePicker',
       componentProps: {

@@ -11,7 +11,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let channelList: SystemSmsChannelApi.SmsChannel[] = [];
-getSimpleSmsChannelList().then((data) => (channelList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  channelList = await getSimpleSmsChannelList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 
+import { onMounted } from 'vue';
+
 import { Page } from '@vben/common-ui';
 
 import { message } from 'antdv-next';
@@ -14,6 +16,7 @@ import {
 import { $t } from '#/locales';
 
 import {
+  refreshGridRelatedData,
   useGridColumnsConversation,
   useGridFormSchemaConversation,
 } from '../data';
@@ -47,6 +50,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getChatConversationPage({
@@ -66,6 +70,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<AiChatConversationApi.ChatConversation>,
+});
+
+/** 初始化列表关联数据 */
+onMounted(async () => {
+  await refreshGridRelatedData();
+  gridApi.query();
 });
 </script>
 

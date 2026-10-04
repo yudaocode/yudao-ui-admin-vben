@@ -1,7 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProWorkRecordApi } from '#/api/mes/pro/workrecord';
-import type { SystemUserApi } from '#/api/system/user';
 
 import { markRaw } from 'vue';
 
@@ -11,10 +10,6 @@ import { getDictOptions } from '@vben/hooks';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import { MdWorkstationSelect } from '#/views/mes/md/workstation/components';
-
-/** 关联数据 */
-let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -73,10 +68,7 @@ export function useGridColumns(): VxeTableGridOptions<MesProWorkRecordApi.WorkRe
       field: 'userId',
       title: '用户',
       width: 140,
-      formatter: ({ row }) =>
-        row.userNickname ||
-        userList.find((user) => user.id === row.userId)?.nickname ||
-        '',
+      formatter: ({ row }) => row.userNickname || '',
     },
     {
       field: 'workstationCode',

@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiMindmapApi } from '#/api/ai/mindmap';
 
+import { onMounted } from 'vue';
+
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -11,7 +13,11 @@ import { deleteMindMap, getMindMapPage } from '#/api/ai/mindmap';
 import { $t } from '#/locales';
 
 import Right from '../index/modules/right.vue';
-import { useGridColumns, useGridFormSchema } from './data';
+import {
+  refreshGridRelatedData,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 
 const [Drawer, drawerApi] = useVbenDrawer({
   header: false,
@@ -52,6 +58,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getMindMapPage({
@@ -71,6 +78,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<AiMindmapApi.MindMap>,
+});
+
+/** 初始化列表关联数据 */
+onMounted(async () => {
+  await refreshGridRelatedData();
+  gridApi.query();
 });
 </script>
 

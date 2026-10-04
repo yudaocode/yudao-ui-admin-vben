@@ -18,7 +18,11 @@ export type FormType = 'create' | 'detail' | 'update';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  userList = await getSimpleUserList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(
