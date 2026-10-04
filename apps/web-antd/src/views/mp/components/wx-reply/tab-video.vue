@@ -33,7 +33,9 @@ const emit = defineEmits<{
 
 const accessStore = useAccessStore();
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
-const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
+const HEADERS = computed(() => ({
+  Authorization: `Bearer ${accessStore.accessToken}`,
+}));
 
 const reply = computed<Reply>({
   get: () => props.modelValue,
@@ -68,7 +70,7 @@ async function customRequest(options: any) {
   try {
     const response = await fetch(UPLOAD_URL, {
       method: 'POST',
-      headers: HEADERS,
+      headers: HEADERS.value,
       body: formData,
     });
 

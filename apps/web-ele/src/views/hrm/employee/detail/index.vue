@@ -58,6 +58,7 @@ const { hasAccessByCodes } = useAccess();
 const employeeId = Number(route.params.id);
 const loading = ref(true);
 const activeTab = ref('post');
+const postInfoRef = ref<InstanceType<typeof PostInfo>>();
 const employee = ref<HrmEmployeeApi.Employee>({} as HrmEmployeeApi.Employee);
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
 
@@ -203,6 +204,17 @@ function openQuit() {
   quitModalApi.setData(employee.value).open();
 }
 
+async function handleEmployeeChangeSuccess() {
+  await Promise.all([
+    getEmployeeData(),
+    postInfoRef.value?.refreshChangeRecordList(),
+  ]);
+}
+
+async function handleEmployeeQuitSuccess() {
+  await Promise.all([getEmployeeData(), postInfoRef.value?.refreshQuitInfo()]);
+}
+
 async function handleCancelQuit() {
   let reason: string | undefined;
   try {
@@ -236,7 +248,7 @@ async function handleCancelQuit() {
   if (!reason?.trim()) return;
   await cancelEmployeeQuit({ employeeId, reason: reason.trim() });
   ElMessage.success('已取消离职');
-  await getEmployeeData();
+  await handleEmployeeQuitSuccess();
 }
 
 function getMoreActions() {
@@ -312,10 +324,10 @@ onMounted(() => {
 <template>
   <Page auto-content-height :loading="loading">
     <FormModal @success="getEmployeeData" />
-    <RegularModal @success="getEmployeeData" />
-    <PositionChangeModal @success="getEmployeeData" />
-    <FullTimeModal @success="getEmployeeData" />
-    <QuitModal @success="getEmployeeData" />
+    <RegularModal @success="handleEmployeeChangeSuccess" />
+    <PositionChangeModal @success="handleEmployeeChangeSuccess" />
+    <FullTimeModal @success="handleEmployeeChangeSuccess" />
+    <QuitModal @success="handleEmployeeQuitSuccess" />
 
     <Header :employee="employee" :loading="loading">
       <div class="flex flex-wrap gap-2">
@@ -391,6 +403,7 @@ onMounted(() => {
     <ElTabs v-model="activeTab">
       <ElTabPane label="岗位信息" name="post">
         <PostInfo
+          ref="postInfoRef"
           :employee="employee"
           :employee-id="employeeId"
           @edit-quit="openQuit"

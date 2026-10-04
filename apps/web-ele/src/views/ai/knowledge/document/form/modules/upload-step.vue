@@ -28,10 +28,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:modelValue']);
-// @ts-expect-error unused
-const formRef = ref(); // 表单引用
-// @ts-expect-error unused
-const uploadRef = ref(); // 上传组件引用
 const parent = inject('parent', null); // 获取父组件实例
 const { uploadUrl, httpRequest } = useUpload(); // 使用上传组件的钩子
 const fileList = ref<UploadProps['fileList']>([]); // 文件列表
@@ -193,14 +189,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <ElForm ref="formRef" :model="modelData" label-width="0" class="mt-5">
+  <ElForm :model="modelData" label-width="0" class="mt-5">
     <ElFormItem class="mb-5">
       <div class="w-full">
         <div
           class="w-full rounded-md border-2 border-dashed border-gray-200 p-5 text-center hover:border-blue-500"
         >
           <ElUpload
-            ref="uploadRef"
             class="upload-demo"
             :action="uploadUrl"
             v-model:file-list="fileList"

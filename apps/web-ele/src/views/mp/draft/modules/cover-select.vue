@@ -24,7 +24,10 @@ const emit = defineEmits<{
 }>();
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-permanent`; // 上传永久素材的地址
-const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
+const accessStore = useAccessStore();
+const HEADERS = computed(() => ({
+  Authorization: `Bearer ${accessStore.accessToken}`,
+}));
 const newsItem = computed<MpDraftApi.NewsItem>({
   get() {
     return props.modelValue;

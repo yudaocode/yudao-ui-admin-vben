@@ -91,7 +91,7 @@ async function submitVideo() {
   try {
     const response = await fetch(UPLOAD_URL, {
       body: formData,
-      headers: HEADERS,
+      headers: HEADERS.value,
       method: 'POST',
     });
     const res = await response.json();

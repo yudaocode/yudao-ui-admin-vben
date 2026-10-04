@@ -301,7 +301,7 @@ function menuToBackend(menu: any) {
     </template>
 
     <!-- 搜索工作栏 -->
-    <AccountForm class="-mb-15px w-240px" @values-change="onAccountChanged" />
+    <AccountForm class="-mb-15px w-240px" />
 
     <ContentWrap>
       <div

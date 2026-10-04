@@ -205,6 +205,9 @@ function validate() {
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
     if (item) {
+      if (!item.productId) {
+        throw new Error(`第 ${i + 1} 行：产品不能为空`);
+      }
       if (!item.warehouseId) {
         throw new Error(`第 ${i + 1} 行：仓库不能为空`);
       }

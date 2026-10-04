@@ -188,7 +188,19 @@ export function useItemFormSchema(): VbenFormSchema[] {
         min: 1,
         max: 2048,
       },
-      rules: 'required',
+      rules: z
+        .any()
+        .refine(
+          (value) => value !== undefined && value !== null,
+          '宽度不能为空',
+        )
+        .refine(
+          (value) =>
+            value === undefined ||
+            value === null ||
+            (Number.isInteger(value) && value >= 1 && value <= 2048),
+          '宽度需在 1 - 2048 像素之间',
+        ),
     },
     {
       fieldName: 'height',
@@ -198,7 +210,19 @@ export function useItemFormSchema(): VbenFormSchema[] {
         min: 1,
         max: 2048,
       },
-      rules: 'required',
+      rules: z
+        .any()
+        .refine(
+          (value) => value !== undefined && value !== null,
+          '高度不能为空',
+        )
+        .refine(
+          (value) =>
+            value === undefined ||
+            value === null ||
+            (Number.isInteger(value) && value >= 1 && value <= 2048),
+          '高度需在 1 - 2048 像素之间',
+        ),
     },
     {
       fieldName: 'sort',

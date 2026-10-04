@@ -38,50 +38,52 @@ const selectedDeptIds = ref<number[]>([]); // 选中的部门 ID 列表
 const deptData = ref<SystemDeptApi.Dept[]>([]); // 部门数据
 const treeRef = ref(); // Tree 组件引用
 
-const [Modal, modalApi] = useVbenModal({
-  async onConfirm() {
-    // 获取选中的部门ID（selectedDeptIds 由 handleCheck 实时维护，
-    // 严格/非严格模式下均与树勾选状态一致，无需依赖 treeRef 是否已挂载）
-    const selectedIds: number[] = selectedDeptIds.value;
+const [Modal, modalApi] = useVbenModal<{ selectedList?: SystemDeptApi.Dept[] }>(
+  {
+    async onConfirm() {
+      // 获取选中的部门ID（selectedDeptIds 由 handleCheck 实时维护，
+      // 严格/非严格模式下均与树勾选状态一致，无需依赖 treeRef 是否已挂载）
+      const selectedIds: number[] = selectedDeptIds.value;
 
-    const deptArray = deptData.value.filter((dept) =>
-      selectedIds.includes(dept.id!),
-    );
-    emit('confirm', deptArray);
-    // 关闭并提示
-    await modalApi.close();
-  },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      deptTree.value = [];
-      selectedDeptIds.value = [];
-      return;
-    }
-    // 加载数据
-    const data = modalApi.getData();
-    if (!data) {
-      return;
-    }
-    modalApi.lock();
-    try {
-      deptData.value = await getSimpleDeptList();
-      deptTree.value = handleTree(deptData.value);
-      // 等待 DOM 更新后再设置选中的节点
-      await nextTick();
-      // 设置已选择的部门
-      if (data.selectedList?.length) {
-        const selectedIds = data.selectedList
-          .map((dept: SystemDeptApi.Dept) => dept.id)
-          .filter((id: number) => id !== undefined);
-        selectedDeptIds.value = selectedIds;
-        treeRef.value.setCheckedKeys(selectedIds);
+      const deptArray = deptData.value.filter((dept) =>
+        selectedIds.includes(dept.id!),
+      );
+      emit('confirm', deptArray);
+      // 关闭并提示
+      await modalApi.close();
+    },
+    async onOpenChange(isOpen: boolean) {
+      if (!isOpen) {
+        deptTree.value = [];
+        selectedDeptIds.value = [];
+        return;
       }
-    } finally {
-      modalApi.unlock();
-    }
+      // 加载数据
+      const data = modalApi.getData();
+      if (!data) {
+        return;
+      }
+      modalApi.lock();
+      try {
+        deptData.value = await getSimpleDeptList();
+        deptTree.value = handleTree(deptData.value);
+        // 等待 DOM 更新后再设置选中的节点
+        await nextTick();
+        // 设置已选择的部门
+        if (data.selectedList?.length) {
+          const selectedIds = data.selectedList
+            .map((dept: SystemDeptApi.Dept) => dept.id)
+            .filter((id): id is number => id !== undefined);
+          selectedDeptIds.value = selectedIds;
+          treeRef.value.setCheckedKeys(selectedIds);
+        }
+      } finally {
+        modalApi.unlock();
+      }
+    },
+    destroyOnClose: true,
   },
-  destroyOnClose: true,
-});
+);
 
 /** 处理选中状态变化 */
 function handleCheck(

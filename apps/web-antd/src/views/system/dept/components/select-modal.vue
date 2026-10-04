@@ -49,54 +49,56 @@ function buildDeptTreeNode(dept: SystemDeptApi.Dept): DataNode {
   };
 }
 
-const [Modal, modalApi] = useVbenModal({
-  async onConfirm() {
-    // 获取选中的部门 ID
-    const selectedIds: number[] = Array.isArray(selectedDeptIds.value)
-      ? selectedDeptIds.value
-      : selectedDeptIds.value.checked || [];
-    const deptArray = deptData.value.filter((dept) =>
-      selectedIds.includes(dept.id!),
-    );
-    emit('confirm', deptArray);
-    // 关闭并提示
-    await modalApi.close();
-  },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      deptTree.value = [];
-      selectedDeptIds.value = [];
-      return;
-    }
-    // 加载数据
-    const data = modalApi.getData();
-    if (!data) {
-      return;
-    }
-    modalApi.lock();
-    try {
-      deptData.value = await getSimpleDeptList();
-      deptTree.value = handleTree(deptData.value).map((node) =>
-        buildDeptTreeNode(node),
+const [Modal, modalApi] = useVbenModal<{ selectedList?: SystemDeptApi.Dept[] }>(
+  {
+    async onConfirm() {
+      // 获取选中的部门 ID
+      const selectedIds: number[] = Array.isArray(selectedDeptIds.value)
+        ? selectedDeptIds.value
+        : selectedDeptIds.value.checked || [];
+      const deptArray = deptData.value.filter((dept) =>
+        selectedIds.includes(dept.id!),
       );
-      // // 设置已选择的部门
-      if (data.selectedList?.length) {
-        const selectedIds = data.selectedList
-          .map((dept: SystemDeptApi.Dept) => dept.id)
-          .filter((id: number) => id !== undefined);
-        selectedDeptIds.value = props.checkStrictly
-          ? {
-              checked: selectedIds,
-              halfChecked: [],
-            }
-          : selectedIds;
+      emit('confirm', deptArray);
+      // 关闭并提示
+      await modalApi.close();
+    },
+    async onOpenChange(isOpen: boolean) {
+      if (!isOpen) {
+        deptTree.value = [];
+        selectedDeptIds.value = [];
+        return;
       }
-    } finally {
-      modalApi.unlock();
-    }
+      // 加载数据
+      const data = modalApi.getData();
+      if (!data) {
+        return;
+      }
+      modalApi.lock();
+      try {
+        deptData.value = await getSimpleDeptList();
+        deptTree.value = handleTree(deptData.value).map((node) =>
+          buildDeptTreeNode(node),
+        );
+        // // 设置已选择的部门
+        if (data.selectedList?.length) {
+          const selectedIds = data.selectedList
+            .map((dept: SystemDeptApi.Dept) => dept.id)
+            .filter((id): id is number => id !== undefined);
+          selectedDeptIds.value = props.checkStrictly
+            ? {
+                checked: selectedIds,
+                halfChecked: [],
+              }
+            : selectedIds;
+        }
+      } finally {
+        modalApi.unlock();
+      }
+    },
+    destroyOnClose: true,
   },
-  destroyOnClose: true,
-});
+);
 
 /** 处理选中状态变化 */
 function handleCheck() {

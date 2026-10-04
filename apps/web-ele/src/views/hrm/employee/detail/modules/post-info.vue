@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
+import { ref } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 
 import { ElCard, ElDescriptions, ElDescriptionsItem } from 'element-plus';
@@ -13,6 +15,13 @@ import QuitInfo from './quit-info.vue';
 
 defineProps<{ employee: HrmEmployeeApi.Employee; employeeId: number }>();
 const emit = defineEmits<{ editQuit: []; refresh: [] }>();
+const changeRecordListRef = ref<InstanceType<typeof ChangeRecordList>>();
+const quitInfoRef = ref<InstanceType<typeof QuitInfo>>();
+
+defineExpose({
+  refreshChangeRecordList: () => changeRecordListRef.value?.refresh(),
+  refreshQuitInfo: () => quitInfoRef.value?.getQuitInfo(),
+});
 </script>
 <template>
   <!-- 对齐源 ContentWrap：首块无标题，块间距 15px -->
@@ -88,10 +97,15 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
   </ElCard>
   <ElCard header="异动记录" :style="{ marginBottom: '15px' }">
     <ChangeRecordList
+      ref="changeRecordListRef"
       :employee="employee"
       :employee-id="employeeId"
       @success="emit('refresh')"
     />
   </ElCard>
-  <QuitInfo :employee-id="employeeId" @edit="emit('editQuit')" />
+  <QuitInfo
+    ref="quitInfoRef"
+    :employee-id="employeeId"
+    @edit="emit('editQuit')"
+  />
 </template>

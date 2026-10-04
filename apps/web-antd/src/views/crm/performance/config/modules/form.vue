@@ -4,8 +4,9 @@ import type { CrmPerformanceConfigApi } from '#/api/crm/performance/config';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { erpPriceInputFormatter } from '@vben/utils';
 
-import { message } from 'ant-design-vue';
+import { Form as AntForm, Input, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import {
@@ -20,6 +21,10 @@ import { $t } from '#/locales';
 import { monthFields, useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+const yearTargetPrice = ref(0);
+const yearTargetPriceText = computed(() =>
+  erpPriceInputFormatter(yearTargetPrice.value),
+);
 const formData = ref<CrmPerformanceConfigApi.PerformanceConfig>();
 const getTitle = computed(() => {
   return formData.value?.id
@@ -28,6 +33,12 @@ const getTitle = computed(() => {
 });
 
 const [Form, formApi] = useVbenForm({
+  handleValuesChange(values) {
+    yearTargetPrice.value = monthFields.reduce(
+      (sum, item) => sum + Number(values[item.prop] || 0),
+      0,
+    );
+  },
   commonConfig: {
     componentProps: {
       class: 'w-full',
@@ -128,5 +139,10 @@ function buildSubmitData(values: Record<string, any>) {
 <template>
   <Modal :title="getTitle" class="w-3/5">
     <Form class="mx-4" />
+    <AntForm class="mx-4" :label-col="{ style: { width: '100px' } }">
+      <AntForm.Item label="年度目标">
+        <Input :value="yearTargetPriceText" disabled />
+      </AntForm.Item>
+    </AntForm>
   </Modal>
 </template>

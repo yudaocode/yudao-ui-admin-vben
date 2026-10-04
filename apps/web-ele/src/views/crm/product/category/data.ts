@@ -22,6 +22,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级分类',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         clearable: true,
         api: async () => {
           const data = await getProductCategoryList();

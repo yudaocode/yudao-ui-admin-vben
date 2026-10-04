@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-// import { isHexColor } from '@/utils/color' // TODO @芋艿：【可优化】增加 cssClass 的处理 https://gitee.com/yudaocode/yudao-ui-admin-vben/blob/v2.4.1/src/components/DictTag/src/DictTag.vue#L60 @xingyu：这个要适配掉 ele 版本里么？
 import { getDictObj } from '@vben/hooks';
+import { isValidColor, TinyColor } from '@vben/utils';
 
 import { ElTag } from 'element-plus';
 
@@ -13,7 +13,11 @@ interface DictTagProps {
 }
 
 type TagType = '' | 'danger' | 'info' | 'primary' | 'success' | 'warning';
-type TagProps = { type?: Exclude<TagType, ''> };
+type TagProps = {
+  color?: string;
+  style?: { color: string };
+  type?: Exclude<TagType, ''>;
+};
 
 const props = defineProps<DictTagProps>();
 
@@ -48,7 +52,7 @@ function getTagType(colorType?: string): TagType {
 
 /** 获取字典标签 */
 const dictTag = computed(() => {
-  const defaultDict: { colorType: TagType; label: string } = {
+  const defaultDict: { color?: string; colorType: TagType; label: string } = {
     label: '',
     colorType: '',
   };
@@ -66,13 +70,19 @@ const dictTag = computed(() => {
   return {
     label: dict.label || '',
     colorType: getTagType(dict.colorType),
+    color: isValidColor(dict.cssClass)
+      ? new TinyColor(dict.cssClass).toHexString()
+      : undefined,
   };
 });
 
 /** 获取标签属性 */
-const tagProps = computed<TagProps>(() =>
-  dictTag.value.colorType ? { type: dictTag.value.colorType } : {},
-);
+const tagProps = computed<TagProps>(() => ({
+  ...(dictTag.value.colorType ? { type: dictTag.value.colorType } : {}),
+  ...(dictTag.value.color
+    ? { color: dictTag.value.color, style: { color: '#fff' } }
+    : {}),
+}));
 </script>
 
 <template>

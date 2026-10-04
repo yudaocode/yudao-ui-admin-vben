@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { MpMsgType } from '@vben/constants';
+import { IconifyIcon } from '@vben/icons';
+
+import { ElLink } from 'element-plus';
 
 import {
   WxLocation,
@@ -47,7 +50,7 @@ withDefaults(
     </div>
 
     <div v-else-if="item.type === MpMsgType.Link" class="flex-1">
-      <el-link
+      <ElLink
         type="success"
         :underline="false"
         target="_blank"
@@ -56,9 +59,11 @@ withDefaults(
         <div
           class="mb-3 text-base text-[rgba(0,0,0,0.85)] hover:text-[#1890ff]"
         >
-          <i class="el-icon-link"></i>{{ item.title }}
+          <IconifyIcon icon="ep:link" class="mr-1 inline-block" />{{
+            item.title
+          }}
         </div>
-      </el-link>
+      </ElLink>
       <div
         class="h-auto overflow-hidden text-[rgba(0,0,0,0.45)]"
         style="height: unset"

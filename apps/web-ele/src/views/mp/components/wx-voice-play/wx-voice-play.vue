@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { IconifyIcon } from '@vben/icons';
 
 import BenzAMRRecorder from 'benz-amr-recorder'; // 因为微信语音是 amr 格式，所以需要用到 amr 解码器：https://www.npmjs.com/package/benz-amr-recorder
-import { ElTag } from 'element-plus';
+import { ElIcon, ElTag } from 'element-plus';
 
 /** 微信消息 - 语音 */
 defineOptions({ name: 'WxVoicePlayer' });
@@ -70,7 +70,7 @@ function amrStop() {
     class="flex h-[50px] w-[120px] cursor-pointer items-center justify-center rounded-[10px] bg-[#eaeaea] p-[5px]"
     @click="playVoice"
   >
-    <el-icon>
+    <ElIcon>
       <IconifyIcon
         v-if="playing !== true"
         icon="lucide:circle-play"
@@ -80,7 +80,7 @@ function amrStop() {
       <span v-if="duration" class="ml-[5px] text-[11px]">
         {{ duration }} 秒
       </span>
-    </el-icon>
+    </ElIcon>
     <div v-if="content">
       <ElTag type="success" size="small">语音识别</ElTag>
       {{ content }}

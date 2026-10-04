@@ -48,6 +48,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: { refresh: true },
   } as VxeTableGridOptions<HrmEmployeeChangeRecordApi.EmployeeChangeRecord>,
 });
+defineExpose({ refresh: () => gridApi.query() });
 </script>
 
 <template>

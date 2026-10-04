@@ -111,6 +111,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       label: '产品分类',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getProductCategoryList()),
         labelField: 'name',
         valueField: 'id',

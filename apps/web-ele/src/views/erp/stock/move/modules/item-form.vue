@@ -153,7 +153,7 @@ async function handleProductChange(productId: any, row: any) {
   row.stockCount = row.fromWarehouseId
     ? (await getStockCount(productId, row.fromWarehouseId)) || 0
     : (await getStockCount(productId)) || 0;
-  row.productPrice = product.purchasePrice || 0;
+  row.productPrice = product.minPrice ?? 0;
   row.count = row.count || 1;
   handleRowChange(row);
 }

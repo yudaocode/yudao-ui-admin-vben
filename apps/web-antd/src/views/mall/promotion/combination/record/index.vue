@@ -1,15 +1,26 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MallCombinationRecordApi } from '#/api/mall/promotion/combination/combinationRecord';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { onMounted, ref } from 'vue';
+
+import { DocAlert, Page, SummaryCard, useVbenModal } from '@vben/common-ui';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCombinationRecordPage } from '#/api/mall/promotion/combination/combinationRecord';
+import {
+  getCombinationRecordPage,
+  getCombinationRecordSummary,
+} from '#/api/mall/promotion/combination/combinationRecord';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import CombinationUserList from './modules/list.vue';
 
 defineOptions({ name: 'PromotionCombinationRecord' });
+
+const summary = ref<MallCombinationRecordApi.RecordSummary>();
+onMounted(async () => {
+  summary.value = await getCombinationRecordSummary();
+});
 
 const [UserListModal, userListModalApi] = useVbenModal({
   connectedComponent: CombinationUserList,
@@ -60,6 +71,15 @@ const [Grid] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mall/promotion-combination/"
       />
     </template>
+
+    <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <SummaryCard title="参与人数" :value="summary?.userCount ?? 0" />
+      <SummaryCard title="成团数量" :value="summary?.successCount ?? 0" />
+      <SummaryCard
+        title="虚拟成团数量"
+        :value="summary?.virtualGroupCount ?? 0"
+      />
+    </div>
 
     <UserListModal />
 

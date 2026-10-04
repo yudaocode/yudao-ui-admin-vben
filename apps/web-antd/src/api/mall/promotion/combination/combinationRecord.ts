@@ -23,9 +23,9 @@ export namespace MallCombinationRecordApi {
 
   /** 拼团记录概要信息 */
   export interface RecordSummary {
-    pendingCount: number; // 待成团数量
-    successCount: number; // 已成团数量
-    failCount: number; // 已失败数量
+    userCount: number; // 参与人数
+    successCount: number; // 成团数量
+    virtualGroupCount: number; // 虚拟成团数量
   }
 }
 

@@ -51,7 +51,7 @@ const customRequest: UploadProps['httpRequest'] = async function (options) {
   try {
     const response = await fetch(UPLOAD_URL, {
       body: formData,
-      headers: HEADERS,
+      headers: HEADERS.value,
       method: 'POST',
     });
 
