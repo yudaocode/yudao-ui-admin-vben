@@ -41,6 +41,8 @@ export function useFormSchema(): VbenFormSchema[] {
         api: async () => handleTree(await getSimpleDeptList()),
         childrenField: 'children',
         labelField: 'name',
+        showSearch: true,
+        treeNodeFilterProp: 'label',
         multiple: true,
         placeholder: '请选择部门',
         treeDefaultExpandAll: true,

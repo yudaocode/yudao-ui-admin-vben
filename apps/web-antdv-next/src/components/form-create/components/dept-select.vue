@@ -208,7 +208,6 @@ onMounted(async () => {
     :multiple="multiple"
     :disabled="disabled"
     :placeholder="placeholder || '请选择部门'"
-    :tree-checkable="multiple"
     :show-search="true"
     :filter-tree-node="filterTreeNode"
     :allow-clear="true"

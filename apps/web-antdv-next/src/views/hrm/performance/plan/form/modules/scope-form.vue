@@ -140,6 +140,8 @@ onMounted(async () => {
             class="w-full"
             multiple
             placeholder="请选择部门"
+            show-search
+            tree-node-filter-prop="name"
             tree-default-expand-all
           />
         </div>
