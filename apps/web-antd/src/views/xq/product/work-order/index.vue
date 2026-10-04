@@ -199,9 +199,7 @@ async function onFilterPlatformChange(id?: string) {
 }
 
 function hasPendingRpa(list: XqWorkOrderApi.WorkOrder[]) {
-  return list.some(
-    (t) => t.rpaCopyStatus === 'queued' || t.rpaCopyStatus === 'running',
-  );
+  return list.some((t) => t.rpaCopyStatus === 'running');
 }
 
 function stopRpaPoll() {
@@ -284,9 +282,8 @@ function isImageReady(row: XqWorkOrderApi.WorkOrder) {
 function stageText(row: XqWorkOrderApi.WorkOrder) {
   if (row.status === 20) return '已上架';
   if (row.status !== 10) return '已关闭';
-  if (row.rpaCopyStatus === 'queued' || row.rpaCopyStatus === 'running') {
-    return '文案生成中';
-  }
+  if (row.rpaCopyStatus === 'running') return '文案生成中';
+  if (row.rpaCopyStatus === 'queued') return '待手动跑RPA';
   if (row.rpaCopyStatus === 'fail') return '文案失败';
   if (!isCopyReady(row)) return '待文案';
   if (!isImageReady(row)) return '待图片';
@@ -297,9 +294,8 @@ function stageColor(row: XqWorkOrderApi.WorkOrder) {
   if (row.status === 20) return 'success';
   if (row.status !== 10) return 'default';
   if (row.rpaCopyStatus === 'fail') return 'error';
-  if (row.rpaCopyStatus === 'queued' || row.rpaCopyStatus === 'running') {
-    return 'processing';
-  }
+  if (row.rpaCopyStatus === 'running') return 'processing';
+  if (row.rpaCopyStatus === 'queued') return 'warning';
   if (!isCopyReady(row)) return 'processing';
   if (!isImageReady(row)) return 'warning';
   return 'orange';
@@ -339,15 +335,11 @@ async function batchGenerateCopy() {
   batching.value = true;
   try {
     const list = await batchGenerateXqWorkOrderCopy(ids);
-    const queued = (list || []).filter(
-      (t) => t.rpaCopyStatus === 'queued' || t.rpaCopyStatus === 'running',
-    ).length;
     message.success(
-      `已触发文案 RPA ${list?.length ?? ids.length} 条（入队 ${queued}）。列表将自动刷新状态`,
+      `已写入个人待跑 ${list?.length ?? ids.length} 条，请手动启动「文案生成」RPA 拉取 SKU`,
     );
     clearSelection();
     await loadTasks();
-    if (queued > 0) startRpaPoll();
   } catch (error: any) {
     message.error(error?.message || '批量生成失败');
   } finally {

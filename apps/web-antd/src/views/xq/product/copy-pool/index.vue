@@ -74,6 +74,7 @@ const shops = ref<XqListingApi.Shop[]>([]);
 const form = reactive({
   contentTitle: '',
   sellingPoints: Array.from({ length: FEATURE_COUNT }, () => ''),
+  description: '',
   highlightStyle: '',
 });
 
@@ -89,6 +90,15 @@ const unassignedSelected = computed(() =>
 const activeTask = computed(
   () => tasks.value.find((t) => t.id === activeId.value) || null,
 );
+
+function promptImageUrl(p: ImagePromptItem, i: number) {
+  return (
+    p.imageUrl ||
+    sourceImages.value[p.index ?? i] ||
+    sourceImages.value[i] ||
+    ''
+  );
+}
 
 const imagePrompts = computed<ImagePromptItem[]>(() => {
   const raw = activeTask.value?.imagePromptJson;
@@ -148,18 +158,16 @@ function clearSelection() {
 function statusText(row: XqWorkOrderApi.WorkOrder) {
   if (row.imageUserId) return '已分配美工';
   if (row.rpaCopyStatus === 'fail') return '文案失败';
-  if (row.rpaCopyStatus === 'queued' || row.rpaCopyStatus === 'running') {
-    return '生成中';
-  }
+  if (row.rpaCopyStatus === 'running') return '生成中';
+  if (row.rpaCopyStatus === 'queued') return '待手动跑RPA';
   return '待分配美工';
 }
 
 function statusColor(row: XqWorkOrderApi.WorkOrder) {
   if (row.imageUserId) return 'success';
   if (row.rpaCopyStatus === 'fail') return 'error';
-  if (row.rpaCopyStatus === 'queued' || row.rpaCopyStatus === 'running') {
-    return 'processing';
-  }
+  if (row.rpaCopyStatus === 'running') return 'processing';
+  if (row.rpaCopyStatus === 'queued') return 'warning';
   return 'processing';
 }
 
@@ -175,13 +183,18 @@ function parseSellingPoints(raw?: string) {
   return points;
 }
 
-function parseHighlight(row: XqWorkOrderApi.WorkOrder) {
-  if (!row.copyResultJson) return '';
+function parseCopyJson(row: XqWorkOrderApi.WorkOrder) {
+  if (!row.copyResultJson) {
+    return { highlightStyle: '', description: '' };
+  }
   try {
     const obj = JSON.parse(row.copyResultJson);
-    return String(obj.highlightStyle || obj.description || '').trim();
+    return {
+      highlightStyle: String(obj.highlightStyle || '').trim(),
+      description: String(obj.description || '').trim(),
+    };
   } catch {
-    return '';
+    return { highlightStyle: '', description: '' };
   }
 }
 
@@ -189,12 +202,15 @@ function fillForm(row: null | XqWorkOrderApi.WorkOrder) {
   if (!row) {
     form.contentTitle = '';
     form.sellingPoints = Array.from({ length: FEATURE_COUNT }, () => '');
+    form.description = '';
     form.highlightStyle = '';
     return;
   }
   form.contentTitle = row.contentTitle || row.title || '';
   form.sellingPoints = parseSellingPoints(row.contentSellingPoints);
-  form.highlightStyle = parseHighlight(row);
+  const parsed = parseCopyJson(row);
+  form.description = parsed.description;
+  form.highlightStyle = parsed.highlightStyle;
 }
 
 function selectTask(row: XqWorkOrderApi.WorkOrder) {
@@ -266,6 +282,7 @@ async function saveCurrent() {
       contentTitle: form.contentTitle.trim(),
       contentSellingPoints: sellingText,
       contentHighlight: form.highlightStyle.trim(),
+      contentDescription: form.description.trim(),
     });
     message.success('文案已保存');
     await loadTasks();
@@ -567,11 +584,21 @@ onMounted(loadTasks);
             </div>
 
             <div class="xq-edit-block">
+              <label class="xq-field-label">长描述</label>
+              <Input.TextArea
+                v-model:value="form.description"
+                :rows="8"
+                placeholder="英文 Product Description，完整句子"
+                allow-clear
+              />
+            </div>
+
+            <div class="xq-edit-block">
               <label class="xq-field-label">突出内容风格</label>
               <Input.TextArea
                 v-model:value="form.highlightStyle"
-                :rows="4"
-                placeholder="长描述 / 突出内容风格（卖点展开说明）"
+                :rows="3"
+                placeholder="中文突出卖点摘要"
                 allow-clear
               />
             </div>
@@ -589,14 +616,24 @@ onMounted(loadTasks);
                   :key="`ip-${i}`"
                   class="xq-prompt-card"
                 >
-                  <div class="xq-prompt-head">
-                    <Tag>{{ imageTypeLabel(p.imageType) }}</Tag>
-                    <span class="xq-muted">#{{ (p.index ?? i) + 1 }}</span>
-                    <span v-if="p.marker" class="xq-marker">{{
-                      p.marker
-                    }}</span>
+                  <div class="xq-prompt-thumb">
+                    <Image
+                      v-if="promptImageUrl(p, i)"
+                      :src="promptImageUrl(p, i)"
+                      :preview="true"
+                    />
+                    <span v-else class="xq-muted">无图</span>
+                    <span class="xq-source-idx">{{ (p.index ?? i) + 1 }}</span>
                   </div>
-                  <pre class="xq-prompt-text">{{ p.promptText || '—' }}</pre>
+                  <div class="xq-prompt-body">
+                    <div class="xq-prompt-head">
+                      <Tag>{{ imageTypeLabel(p.imageType) }}</Tag>
+                      <span v-if="p.marker" class="xq-marker">{{
+                        p.marker
+                      }}</span>
+                    </div>
+                    <pre class="xq-prompt-text">{{ p.promptText || '—' }}</pre>
+                  </div>
                 </div>
               </div>
               <Empty
@@ -925,10 +962,33 @@ onMounted(loadTasks);
 }
 
 .xq-prompt-card {
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: 12px;
+  align-items: start;
   padding: 10px 12px;
   background: #f9fafb;
   border: 1px solid #eee;
   border-radius: 10px;
+}
+
+.xq-prompt-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: 8px;
+}
+
+.xq-prompt-thumb :deep(.ant-image),
+.xq-prompt-thumb :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.xq-prompt-body {
+  min-width: 0;
 }
 
 .xq-prompt-head {

@@ -110,6 +110,7 @@ export function dispatchXqWorkOrder(data: XqWorkOrderApi.DispatchReq) {
 
 export function updateXqWorkOrder(
   data: Partial<XqWorkOrderApi.WorkOrder> & {
+    contentDescription?: string;
     contentHighlight?: string;
     copyResultJson?: string;
     imagePromptJson?: string;
