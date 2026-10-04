@@ -22,6 +22,7 @@ import {
 import { getIterationPage } from '#/api/pms/pm/iteration';
 import { getWorkItemPage } from '#/api/pms/pm/workitem';
 import { PmsProjectType } from '#/views/pms/pm/utils/constants';
+import { formatPmsDate } from '#/views/pms/pm/utils/format';
 import WorkItemDetail from '#/views/pms/pm/workitem/detail/work-item-detail.vue';
 
 defineOptions({ name: 'PmsProjectGantt' });
@@ -456,12 +457,12 @@ onMounted(() => {
           <span
             class="flex items-center border-0 border-l border-solid border-[var(--el-border-color-lighter)] px-2.5 text-xs"
           >
-            {{ dayjs(row.startTime).format('YYYY-MM-DD') }}
+            {{ formatPmsDate(row.startTime, 'YYYY-MM-DD') }}
           </span>
           <span
             class="flex items-center border-0 border-l border-solid border-[var(--el-border-color-lighter)] px-2.5 text-xs"
           >
-            {{ dayjs(row.endTime).format('YYYY-MM-DD') }}
+            {{ formatPmsDate(row.endTime, 'YYYY-MM-DD') }}
           </span>
         </div>
         <div
@@ -488,8 +489,8 @@ onMounted(() => {
             </template>
             <div class="font-semibold">{{ row.name }}</div>
             <div class="mt-2 text-[13px]">
-              {{ dayjs(row.startTime).format('YYYY-MM-DD') }} 至
-              {{ dayjs(row.endTime).format('YYYY-MM-DD') }}
+              {{ formatPmsDate(row.startTime, 'YYYY-MM-DD') }} 至
+              {{ formatPmsDate(row.endTime, 'YYYY-MM-DD') }}
             </div>
             <template v-if="row.item">
               <div class="mt-1.5 text-[13px]">

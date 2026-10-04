@@ -96,6 +96,7 @@ async function handleTrigger(row: InfraJobApi.Job) {
   });
   try {
     await runJob(row.id!);
+    handleRefresh();
     message.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     hideLoading();

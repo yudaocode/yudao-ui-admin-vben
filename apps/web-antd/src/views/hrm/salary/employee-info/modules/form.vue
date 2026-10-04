@@ -350,7 +350,6 @@ const [Modal, modalApi] = useVbenModal({
         };
         resetDraftMaps(record.salaryOptions, record.probationSalaryOptions);
       } else if (employeeId) {
-        employeeDisabled.value = true;
         formData.value.employeeId = employeeId;
         await loadSalaryEmployee();
       } else {

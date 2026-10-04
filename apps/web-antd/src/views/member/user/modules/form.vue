@@ -5,12 +5,14 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { getSimpleTagList } from '#/api/member/tag';
 import { getUser, updateUser } from '#/api/member/user';
 import { $t } from '#/locales';
 
+import TagForm from '../../tag/modules/form.vue';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
@@ -33,6 +35,28 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   showDefaultActions: false,
 });
+
+const [TagFormModal, tagFormModalApi] = useVbenModal({
+  connectedComponent: TagForm,
+  destroyOnClose: true,
+});
+
+/** 新增标签后刷新当前选择项 */
+async function handleTagCreated() {
+  const tags = await getSimpleTagList();
+  await formApi.updateSchema([
+    {
+      fieldName: 'tagIds',
+      component: 'Select',
+      componentProps: {
+        options: tags.map((tag) => ({
+          label: tag.name,
+          value: tag.id,
+        })),
+      },
+    },
+  ]);
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -78,5 +102,11 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal :title="getTitle" class="w-1/2">
     <Form class="mx-4" />
+    <div v-access:code="['member:tag:create']" class="mx-4 mb-4">
+      <Button type="link" @click="tagFormModalApi.setData(null).open()">
+        新增标签
+      </Button>
+    </div>
   </Modal>
+  <TagFormModal @success="handleTagCreated" />
 </template>

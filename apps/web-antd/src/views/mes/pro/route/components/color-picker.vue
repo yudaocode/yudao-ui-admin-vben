@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import { Button } from 'ant-design-vue';
+
 import { ColorPicker } from '#/components/color-picker';
 
 /** 甘特图颜色选择器：复用通用取色器并在右侧展示 hex 文本。 */
@@ -29,6 +31,10 @@ const color = computed({
     emit('change', value);
   },
 });
+
+function handleClear() {
+  color.value = '';
+}
 </script>
 
 <template>
@@ -39,6 +45,9 @@ const color = computed({
       :disabled="disabled"
     />
     <span v-if="color">{{ color }}</span>
+    <Button v-if="color" :disabled="disabled" type="link" @click="handleClear">
+      清空
+    </Button>
   </div>
 </template>
 

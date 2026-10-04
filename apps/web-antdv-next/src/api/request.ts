@@ -205,6 +205,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       if (error?.data?.code === 401) {
         return;
       }
+      if (error?.data?.code === 901 || responseData.code === 901) {
+        message.error(
+          `${errorMessage || msg}，参考 https://doc.iocoder.cn/ 教程搭建本地环境`,
+        );
+        return;
+      }
       // 如果没有错误信息，则会根据状态码进行提示
       message.error(errorMessage || msg);
     }),

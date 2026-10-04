@@ -214,7 +214,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
               link: true,
               icon: ACTION_ICON.ADD,
               ifShow: row.status !== BpmProcessInstanceStatus.RUNNING,
-              auth: ['bpm:process-instance:create'],
               onClick: handleCreate.bind(null, row),
             },
           ]"

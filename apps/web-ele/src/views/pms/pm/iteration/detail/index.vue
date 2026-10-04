@@ -17,7 +17,6 @@ import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { formatDateTime, getAllPageItems } from '@vben/utils';
 
-import dayjs from 'dayjs';
 import {
   ElButton,
   ElCard,
@@ -57,7 +56,10 @@ import {
   PmsWorkItemStatusType,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
-import { getIterationStatusTagType } from '#/views/pms/pm/utils/format';
+import {
+  formatPmsDate,
+  getIterationStatusTagType,
+} from '#/views/pms/pm/utils/format';
 import WorkItemAllList from '#/views/pms/pm/workitem/list/work-item-all-list.vue';
 import WorkItemList from '#/views/pms/pm/workitem/list/work-item-list.vue';
 
@@ -434,14 +436,14 @@ onMounted(async () => {
                     <ElDescriptionsItem label="开始时间">
                       {{
                         iteration?.startTime
-                          ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                          ? formatPmsDate(iteration.startTime, 'YYYY-MM-DD')
                           : '--'
                       }}
                     </ElDescriptionsItem>
                     <ElDescriptionsItem label="结束时间">
                       {{
                         iteration?.endTime
-                          ? dayjs(iteration.endTime).format('YYYY-MM-DD')
+                          ? formatPmsDate(iteration.endTime, 'YYYY-MM-DD')
                           : '--'
                       }}
                     </ElDescriptionsItem>

@@ -10,7 +10,6 @@ import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { getAllPageItems } from '@vben/utils';
 
-import dayjs from 'dayjs';
 import {
   ElAvatar,
   ElButton,
@@ -49,6 +48,7 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   getIterationStatusTagType,
   getPriorityColor,
   getWorkItemStatusTagType,
@@ -662,13 +662,13 @@ onMounted(() => {
                 <span class="text-xs text-[var(--el-text-color-secondary)]">
                   {{
                     iteration.startTime
-                      ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                      ? formatPmsDate(iteration.startTime, 'YYYY-MM-DD')
                       : '--'
                   }}
                   至
                   {{
                     iteration.endTime
-                      ? dayjs(iteration.endTime).format('YYYY-MM-DD')
+                      ? formatPmsDate(iteration.endTime, 'YYYY-MM-DD')
                       : '--'
                   }}
                 </span>

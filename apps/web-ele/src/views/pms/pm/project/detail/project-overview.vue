@@ -16,7 +16,6 @@ import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 import { useUserStore } from '@vben/stores';
 import { formatDateTime, getAllPageItems } from '@vben/utils';
 
-import dayjs from 'dayjs';
 import {
   ElAvatar,
   ElButton,
@@ -36,6 +35,7 @@ import {
   PmsProjectType,
 } from '#/views/pms/pm/utils/constants';
 import {
+  formatPmsDate,
   formatProjectCompletionRate,
   getIterationStatusTagType,
 } from '#/views/pms/pm/utils/format';
@@ -286,13 +286,13 @@ onMounted(() => {
             <span>
               {{
                 iteration.startTime
-                  ? dayjs(iteration.startTime).format('YYYY-MM-DD')
+                  ? formatPmsDate(iteration.startTime, 'YYYY-MM-DD')
                   : '--'
               }}
               至
               {{
                 iteration.endTime
-                  ? dayjs(iteration.endTime).format('YYYY-MM-DD')
+                  ? formatPmsDate(iteration.endTime, 'YYYY-MM-DD')
                   : '--'
               }}
             </span>
@@ -333,13 +333,13 @@ onMounted(() => {
         <ElDescriptionsItem label="项目周期" :span="2">
           {{
             project.startTime
-              ? dayjs(project.startTime).format('YYYY-MM-DD')
+              ? formatPmsDate(project.startTime, 'YYYY-MM-DD')
               : '未设置'
           }}
           至
           {{
             project.endTime
-              ? dayjs(project.endTime).format('YYYY-MM-DD')
+              ? formatPmsDate(project.endTime, 'YYYY-MM-DD')
               : '未设置'
           }}
         </ElDescriptionsItem>

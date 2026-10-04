@@ -194,7 +194,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               label: '测试',
               type: 'link',
               icon: 'lucide:test-tube-diagonal',
-              auth: ['infra:file-config:update'],
+              auth: ['infra:file-config:query'],
               onClick: handleTest.bind(null, row),
             },
             {

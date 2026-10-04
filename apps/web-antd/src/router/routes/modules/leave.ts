@@ -8,18 +8,9 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: 'OA请假',
       hideInMenu: true,
-      redirect: '/bpm/oa/leave/index',
+      redirect: '/bpm/oa/leave',
     },
     children: [
-      {
-        path: 'leave',
-        name: 'OALeaveIndex',
-        component: () => import('#/views/bpm/oa/leave/index.vue'),
-        meta: {
-          title: '请假列表',
-          activePath: '/bpm/oa/leave',
-        },
-      },
       {
         path: 'leave/create',
         name: 'OALeaveCreate',

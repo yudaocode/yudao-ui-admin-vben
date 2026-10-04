@@ -458,7 +458,6 @@ export function useDeliveryFormSchema(): VbenFormSchema[] {
         triggerFields: ['expressType'],
         show: (values) => values.expressType === 'express',
       },
-      rules: 'required',
     },
   ];
 }

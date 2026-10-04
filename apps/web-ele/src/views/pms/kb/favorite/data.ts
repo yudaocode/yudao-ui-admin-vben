@@ -4,7 +4,12 @@ import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types'
 import { DICT_TYPE } from '@vben/constants';
 
 /** 列表的字段 */
-export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
+export function useGridColumns(
+  onFavoriteChange: (
+    newStatus: boolean,
+    row: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+  ) => Promise<boolean>,
+): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
   return [
     {
       field: 'name',
@@ -42,10 +47,24 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       formatter: 'formatDateTime',
     },
     {
+      field: 'favoriteStatus',
       title: '是否关注',
       width: 100,
       fixed: 'right',
-      slots: { default: 'favorite' },
+      cellRender: {
+        attrs: { beforeChange: onFavoriteChange },
+        name: 'CellSwitch',
+        props: {
+          activeValue: true,
+          inactiveValue: false,
+        },
+      },
+    },
+    {
+      title: '操作',
+      width: 120,
+      fixed: 'right',
+      slots: { default: 'actions' },
     },
   ];
 }

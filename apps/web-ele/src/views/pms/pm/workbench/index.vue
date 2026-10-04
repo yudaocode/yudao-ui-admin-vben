@@ -4,7 +4,7 @@ import type { PmsProjectMemberApi } from '#/api/pms/pm/project/member';
 import type { PmsWorkbenchApi } from '#/api/pms/pm/workbench';
 import type { PmsWorkItemStatusApi } from '#/api/pms/pm/workitem/status';
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
@@ -118,24 +118,6 @@ async function startQuickEdit(
 /** 取消行内编辑 */
 function cancelQuickEdit() {
   quickEditingKey.value = undefined;
-}
-
-/** 点击当前编辑器外部时退出行内编辑 */
-// TODO @AI：点外部关闭依赖 antd/ele 各自 class，三端容易漏改；抽公共判断，或改成组件自身 blur。DatePicker 的 as any 去掉。
-function handleDocumentPointerDown(event: PointerEvent) {
-  if (!quickEditingKey.value || !(event.target instanceof Element)) {
-    return;
-  }
-  const activeEditor = document.querySelector(
-    '.pms-workbench-table .el-select, .pms-workbench-table .el-date-editor',
-  );
-  const isEditorClick = activeEditor?.contains(event.target);
-  const isPopupClick = event.target.closest(
-    '.el-select-dropdown, .el-picker-panel',
-  );
-  if (!isEditorClick && !isPopupClick) {
-    cancelQuickEdit();
-  }
 }
 
 /** 查询工作台列表 */
@@ -333,16 +315,6 @@ function handleTabChange() {
 function refreshWorkbench() {
   gridApi.query();
 }
-
-/** 初始化 */
-onMounted(() => {
-  document.addEventListener('pointerdown', handleDocumentPointerDown, true);
-});
-
-/** 销毁页面事件 */
-onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handleDocumentPointerDown, true);
-});
 </script>
 
 <template>

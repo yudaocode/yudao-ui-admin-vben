@@ -8,9 +8,9 @@ import { useRouter } from 'vue-router';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { ElLink, ElMessage, ElSwitch, ElTabPane, ElTabs } from 'element-plus';
+import { ElLink, ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteKnowledgeFavorite,
   getKnowledgeFavoritePage,
@@ -25,7 +25,6 @@ import { useGridColumns } from './data';
 
 defineOptions({ name: 'PmsKnowledgeFavorite' });
 
-// TODO @AI：取消关注改 TableAction popConfirm，不要 confirm + empty catch。关注列对齐 system user 的 CellSwitch，不要手写 Switch。
 const router = useRouter(); // 路由
 const activeType = ref('all'); // 当前对象类型
 
@@ -53,34 +52,47 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
   });
 }
 
-/** 取消关注 */
-async function handleCancelFavorite(
+/** 取消关注并刷新列表 */
+async function removeFavorite(
   item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
 ) {
+  await deleteKnowledgeFavorite(item.type, item.entityId);
+  ElMessage.success('已取消关注');
+  await gridApi.reload();
+}
+
+/** 切换关注状态，取消确认时保持原值 */
+async function handleCancelFavorite(
+  newStatus: boolean,
+  item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+): Promise<boolean> {
+  if (newStatus) return false;
   try {
-    // 取消关注的二次确认
     await confirm(`确认取消关注“${item.name}”吗？`);
-    // 发起取消关注
-    await deleteKnowledgeFavorite(item.type, item.entityId);
-    ElMessage.success('已取消关注');
-    // 刷新列表
-    await gridApi.reload();
-  } catch {}
+    await removeFavorite(item);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleCancelFavorite),
     height: 'auto',
     proxyConfig: {
       ajax: {
         query: async ({ page }) => {
-          return await getKnowledgeFavoritePage({
+          const data = await getKnowledgeFavoritePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             type:
               activeType.value === 'all' ? undefined : Number(activeType.value),
           });
+          return {
+            ...data,
+            list: data.list.map((item) => ({ ...item, favoriteStatus: true })),
+          };
         },
       },
     },
@@ -144,8 +156,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
           </span>
         </div>
       </template>
-      <template #favorite="{ row }">
-        <ElSwitch :model-value="true" @change="handleCancelFavorite(row)" />
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '取消关注',
+              type: 'primary',
+              link: true,
+              popConfirm: {
+                title: `确认取消关注“${row.name}”吗？`,
+                confirm: removeFavorite.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

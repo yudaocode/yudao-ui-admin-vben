@@ -10,7 +10,7 @@ import { IconifyIcon } from '@vben/icons';
 
 import { Button, message, Tabs } from 'antdv-next';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deleteKnowledgeFavorite,
   getKnowledgeFavoritePage,
@@ -52,21 +52,24 @@ function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
   });
 }
 
-/** 取消关注 */
+/** 取消关注并刷新列表 */
+async function removeFavorite(
+  item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+) {
+  await deleteKnowledgeFavorite(item.type, item.entityId);
+  message.success('已取消关注');
+  await gridApi.reload();
+}
+
+/** 切换关注状态，取消确认时保持原值 */
 async function handleCancelFavorite(
   newStatus: boolean,
   item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
 ): Promise<boolean> {
-  if (newStatus) {
-    return false;
-  }
+  if (newStatus) return false;
   try {
-    // 取消关注的二次确认
     await confirm(`确认取消关注“${item.name}”吗？`);
-    // 发起取消关注
-    await deleteKnowledgeFavorite(item.type, item.entityId);
-    message.success('已取消关注');
-    await gridApi.reload();
+    await removeFavorite(item);
     return true;
   } catch {
     return false;
@@ -152,6 +155,20 @@ const [Grid, gridApi] = useVbenVxeGrid({
             {{ formatKnowledgeFileSize(row.fileSize) }}
           </span>
         </div>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '取消关注',
+              type: 'link',
+              popConfirm: {
+                title: `确认取消关注“${row.name}”吗？`,
+                confirm: removeFavorite.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
   </Page>

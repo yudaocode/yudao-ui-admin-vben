@@ -60,5 +60,11 @@ export function useGridColumns(
         },
       },
     },
+    {
+      title: '操作',
+      width: 120,
+      fixed: 'right',
+      slots: { default: 'actions' },
+    },
   ];
 }
