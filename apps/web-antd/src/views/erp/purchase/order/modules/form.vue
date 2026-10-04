@@ -100,8 +100,7 @@ const [Modal, modalApi] = useVbenModal({
       (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
     data.items = formData.value?.items?.map((item) => ({
       ...item,
-      // 解决新增采购订单报错
-      id: undefined,
+      id: formType.value === 'create' ? undefined : item.id, // 新增时不提交明细编号，编辑时保留已有编号
     }));
     // 将文件数组转换为字符串
     if (data.fileUrl && Array.isArray(data.fileUrl)) {

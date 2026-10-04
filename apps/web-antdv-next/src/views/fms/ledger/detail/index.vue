@@ -10,6 +10,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import {
   downloadFileFromBlobPart,
   formatDate,
+  getTreeValuesWithAncestors,
   handleTree,
   traverseTreeValues,
 } from '@vben/utils';
@@ -79,11 +80,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 watch(accountSetId, () => init());
 
-watch(subjectKeyword, (value) => {
-  expandedSubjectKeys.value = value
-    ? traverseTreeValues(displaySubjectTree.value, (node) => node.id!)
-    : [];
-});
+watch(
+  [subjectKeyword, selectedSubjectKeys],
+  ([keyword, selectedKeys], [previousKeyword]) => {
+    const ancestorKeys = getTreeValuesWithAncestors(
+      subjects.value,
+      selectedKeys,
+      (node) => node.id!,
+    ).filter((key) => !selectedKeys.includes(key));
+    expandedSubjectKeys.value = keyword
+      ? traverseTreeValues(displaySubjectTree.value, (node) => node.id!)
+      : [
+          ...new Set([
+            ...(previousKeyword ? [] : expandedSubjectKeys.value),
+            ...ancestorKeys,
+          ]),
+        ];
+  },
+);
 
 /** 初始化明细账页面 */
 async function init() {
