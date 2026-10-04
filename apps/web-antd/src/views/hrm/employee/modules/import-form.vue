@@ -45,6 +45,11 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
+/** 删除已选文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
 function beforeUpload(file: FileType) {
   formApi.setFieldValue('file', file);
   return false;
@@ -64,6 +69,7 @@ async function handleDownload() {
     <Form class="mx-4">
       <template #file>
         <Upload
+          :on-remove="handleRemove"
           :before-upload="beforeUpload"
           :max-count="1"
           accept=".xls,.xlsx"

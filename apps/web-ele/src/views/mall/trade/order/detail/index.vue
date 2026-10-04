@@ -45,6 +45,14 @@ import {
 
 defineOptions({ name: 'TradeOrderDetail' });
 
+const props = withDefaults(
+  defineProps<{ id?: number; showPickUp?: boolean }>(),
+  {
+    id: 0,
+    showPickUp: true,
+  },
+);
+
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
@@ -235,7 +243,7 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
-  orderId.value = Number(route.params.id);
+  orderId.value = props.id || Number(route.params.id);
   await getDetail();
 });
 </script>
@@ -247,6 +255,7 @@ onMounted(async () => {
         :actions="[
           {
             label: '返回',
+            ifShow: !props.id,
             type: 'default',
             icon: 'lucide:arrow-left',
             onClick: handleBack,
@@ -288,6 +297,7 @@ onMounted(async () => {
             type: 'primary',
             onClick: handlePickUp,
             ifShow:
+              props.showPickUp &&
               order.status === TradeOrderStatusEnum.UNDELIVERED.status &&
               order.deliveryType === DeliveryTypeEnum.PICK_UP.type,
           },

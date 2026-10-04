@@ -4,21 +4,21 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 
 import { ref } from 'vue';
 
-import { Page, prompt, SummaryCard } from '@vben/common-ui';
-import { DeliveryTypeEnum } from '@vben/constants';
-import { $t } from '@vben/locales';
+import { Page, prompt, SummaryCard, useVbenModal } from '@vben/common-ui';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
-import { ElCard, ElImage, ElLoading, ElMessage, ElTag } from 'element-plus';
+import { ElCard, ElImage, ElMessage, ElTag } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getOrderByPickUpVerifyCode,
   getOrderPage,
   getOrderSummary,
-  pickUpOrderByVerifyCode,
 } from '#/api/mall/trade/order';
 
 import { loadPickUpStoreList, useGridColumns, useGridFormSchema } from './data';
+import PickUpForm from './modules/pick-up-form.vue';
 
 // TODO @芋艿：风格和 antd 不一致；
 const summary = ref<MallOrderApi.OrderSummaryRespVO>();
@@ -27,6 +27,11 @@ const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 function handleRefresh() {
   gridApi.query();
 }
+
+const [PickUpFormModal, pickUpFormModalApi] = useVbenModal({
+  connectedComponent: PickUpForm,
+  destroyOnClose: true,
+});
 
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
@@ -42,14 +47,16 @@ async function handlePickup(pickUpVerifyCode?: string) {
     }
   }
   if (!pickUpVerifyCode) return;
-  const loadingInstance = ElLoading.service({ text: '订单核销中 ...' });
-  try {
-    await pickUpOrderByVerifyCode(pickUpVerifyCode);
-    ElMessage.success($t('ui.actionMessage.operationSuccess'));
-    handleRefresh();
-  } finally {
-    loadingInstance.close();
+  const order = await getOrderByPickUpVerifyCode(pickUpVerifyCode);
+  if (order?.deliveryType !== DeliveryTypeEnum.PICK_UP.type) {
+    ElMessage.error('未查询到订单');
+    return;
   }
+  if (order.status !== TradeOrderStatusEnum.UNDELIVERED.status) {
+    ElMessage.error('订单不是待核销状态');
+    return;
+  }
+  pickUpFormModalApi.setData({ order, pickUpVerifyCode }).open();
 }
 
 const port = ref('');
@@ -192,6 +199,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <PickUpFormModal @success="handleRefresh" />
     <ElCard class="mb-2">
       <div class="flex flex-row gap-4">
         <SummaryCard

@@ -1,30 +1,15 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS,
+  BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS,
+  CommonStatusEnum,
+  DICT_TYPE,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
-
-export const EVENT_EXECUTION_OPTIONS = [
-  {
-    label: '开始',
-    value: 'start',
-  },
-  {
-    label: '结束',
-    value: 'end',
-  },
-];
-
-export const EVENT_OPTIONS = [
-  { label: '创建', value: 'create' },
-  { label: '指派', value: 'assignment' },
-  { label: '完成', value: 'complete' },
-  { label: '删除', value: 'delete' },
-  { label: '更新', value: 'update' },
-  { label: '超时', value: 'timeout' },
-];
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -76,7 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '事件',
       component: 'Select',
       componentProps: {
-        options: EVENT_OPTIONS,
+        options: BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS,
         placeholder: '请选择事件',
         allowClear: true,
       },
@@ -86,8 +71,8 @@ export function useFormSchema(): VbenFormSchema[] {
         trigger: (values, actions) => {
           const options =
             values.type === 'execution'
-              ? EVENT_EXECUTION_OPTIONS
-              : EVENT_OPTIONS;
+              ? BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS
+              : BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS;
           if (
             values.event &&
             !options.some((opt) => opt.value === values.event)
@@ -98,8 +83,8 @@ export function useFormSchema(): VbenFormSchema[] {
         componentProps: (values) => ({
           options:
             values.type === 'execution'
-              ? EVENT_EXECUTION_OPTIONS
-              : EVENT_OPTIONS,
+              ? BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS
+              : BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS,
         }),
       },
     },

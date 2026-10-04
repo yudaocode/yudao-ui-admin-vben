@@ -304,3 +304,19 @@ export enum ProcessVariableEnum {
    */
   START_USER_ID = 'PROCESS_START_USER_ID',
 }
+
+/** 执行监听器事件选项 */
+export const BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS = [
+  { label: '开始', value: 'start' },
+  { label: '结束', value: 'end' },
+];
+
+/** 任务监听器事件选项 */
+export const BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS = [
+  { label: '创建', value: 'create' },
+  { label: '指派', value: 'assignment' },
+  { label: '完成', value: 'complete' },
+  { label: '删除', value: 'delete' },
+  { label: '更新', value: 'update' },
+  { label: '超时', value: 'timeout' },
+];

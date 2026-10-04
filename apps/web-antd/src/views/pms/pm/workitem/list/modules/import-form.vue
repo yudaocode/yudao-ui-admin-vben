@@ -40,6 +40,11 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+/** 删除已选文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
 /** 上传前：拦截文件，等待手动提交导入 */
 function beforeUpload(uploadFile: FileType) {
   formApi.setFieldValue('file', uploadFile);
@@ -103,6 +108,7 @@ const [ModalComponent, modalApi] = useVbenModal({
       <template #file>
         <div class="w-full">
           <Upload
+            :on-remove="handleRemove"
             :before-upload="beforeUpload"
             :max-count="1"
             accept=".xls,.xlsx"

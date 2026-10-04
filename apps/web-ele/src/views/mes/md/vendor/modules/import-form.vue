@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+import type { UploadInstance, UploadRawFile } from 'element-plus';
+
 import type { MesMdVendorApi } from '#/api/mes/md/vendor';
+
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElMessage, ElUpload } from 'element-plus';
+import { ElButton, ElMessage, ElUpload, genFileId } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { importVendor, importVendorTemplate } from '#/api/mes/md/vendor';
@@ -13,6 +17,8 @@ import { $t } from '#/locales';
 import { useImportFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
+
+const uploadRef = ref<UploadInstance>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -62,6 +68,20 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
+/** 删除已选文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
+/** 替换已选文件 */
+function handleExceed(files: File[]) {
+  const file = files[0] as undefined | UploadRawFile;
+  if (!file) return;
+  uploadRef.value?.clearFiles();
+  file.uid = genFileId();
+  uploadRef.value?.handleStart(file);
+}
+
 /** 文件改变时 */
 function handleChange(file: any) {
   if (file.raw) {
@@ -82,6 +102,9 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <ElUpload
+            ref="uploadRef"
+            :on-remove="handleRemove"
+            :on-exceed="handleExceed"
             :auto-upload="false"
             :limit="1"
             :on-change="handleChange"

@@ -183,8 +183,7 @@ onMounted(async () => {
               link: true,
               ifShow: () =>
                 row.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
-                (row.status === TradeOrderStatusEnum.UNDELIVERED.status ||
-                  row.status === TradeOrderStatusEnum.DELIVERED.status),
+                row.status === TradeOrderStatusEnum.UNDELIVERED.status,
               onClick: handleDelivery.bind(null, row),
             },
             {

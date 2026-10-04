@@ -4,21 +4,21 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 
 import { ref } from 'vue';
 
-import { Page, prompt, SummaryCard } from '@vben/common-ui';
-import { DeliveryTypeEnum } from '@vben/constants';
-import { $t } from '@vben/locales';
+import { Page, prompt, SummaryCard, useVbenModal } from '@vben/common-ui';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
 import { Card, Image, Input, message, Tag } from 'antdv-next';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getOrderByPickUpVerifyCode,
   getOrderPage,
   getOrderSummary,
-  pickUpOrderByVerifyCode,
 } from '#/api/mall/trade/order';
 
 import { loadPickUpStoreList, useGridColumns, useGridFormSchema } from './data';
+import PickUpForm from './modules/pick-up-form.vue';
 
 const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 
@@ -26,6 +26,11 @@ const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 function handleRefresh() {
   gridApi.query();
 }
+
+const [PickUpFormModal, pickUpFormModalApi] = useVbenModal({
+  connectedComponent: PickUpForm,
+  destroyOnClose: true,
+});
 
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
@@ -43,17 +48,16 @@ async function handlePickup(pickUpVerifyCode?: string) {
     }
   }
   if (!pickUpVerifyCode) return;
-  const hideLoading = message.loading({
-    content: '订单核销中 ...',
-    duration: 0,
-  });
-  try {
-    await pickUpOrderByVerifyCode(pickUpVerifyCode);
-    message.success($t('ui.actionMessage.operationSuccess'));
-    handleRefresh();
-  } finally {
-    hideLoading();
+  const order = await getOrderByPickUpVerifyCode(pickUpVerifyCode);
+  if (order?.deliveryType !== DeliveryTypeEnum.PICK_UP.type) {
+    message.error('未查询到订单');
+    return;
   }
+  if (order.status !== TradeOrderStatusEnum.UNDELIVERED.status) {
+    message.error('订单不是待核销状态');
+    return;
+  }
+  pickUpFormModalApi.setData({ order, pickUpVerifyCode }).open();
 }
 
 const port = ref('');
@@ -197,6 +201,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <PickUpFormModal @success="handleRefresh" />
     <Card class="mb-2">
       <div class="flex flex-row gap-4">
         <SummaryCard
