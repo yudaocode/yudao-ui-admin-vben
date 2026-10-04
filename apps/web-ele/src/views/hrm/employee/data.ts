@@ -1004,6 +1004,7 @@ export function useEmployeeEntryFormSchema(
       fieldName: 'probation',
       label: '试用期(月)',
       component: 'InputNumber',
+      help: '0 表示无试用期；转正时间按入职时间 + 试用期月数计算。',
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === HrmEmployeeType.FORMAL,
@@ -1040,6 +1041,8 @@ export function useEmployeeEntryFormSchema(
       label: '转正时间',
       component: 'DatePicker',
       componentProps: {
+        disabled: true,
+        placeholder: '保存后自动计算',
         type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',

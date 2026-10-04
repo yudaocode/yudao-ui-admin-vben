@@ -77,6 +77,7 @@ async function submitForm() {
       :accept="FMS_VOUCHER_ATTACHMENT_FILE_TYPES"
       :disabled="!editable"
       :max-number="100"
+      :max-size="5"
       multiple
     />
     <Empty v-else description="暂无附件" />

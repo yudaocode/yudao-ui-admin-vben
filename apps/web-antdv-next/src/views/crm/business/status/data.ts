@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { handleTree } from '@vben/utils';
 
-import { getDeptList } from '#/api/system/dept';
+import { getSimpleDeptList } from '#/api/system/dept';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -31,7 +31,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiTreeSelect',
       componentProps: {
         api: async () => {
-          const data = await getDeptList();
+          const data = await getSimpleDeptList();
           return handleTree(data);
         },
         multiple: true,

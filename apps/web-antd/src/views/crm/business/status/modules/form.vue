@@ -52,8 +52,7 @@ const [Modal, modalApi] = useVbenModal({
       (await formApi.getValues()) as CrmBusinessStatusApi.BusinessStatus;
     try {
       if (formData.value?.statuses && formData.value.statuses.length > 0) {
-        data.statuses = formData.value.statuses;
-        data.statuses.splice(-3, 3);
+        data.statuses = formData.value.statuses.slice(0, -3);
       }
       await (formData.value?.id
         ? updateBusinessStatus(data)

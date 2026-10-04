@@ -82,6 +82,7 @@ function handleRowCheckboxChange({
 
 /** 推送公告 */
 async function handlePush(row: SystemNoticeApi.Notice) {
+  await confirm('是否推送所选中通知？');
   const loadingInstance = ElLoading.service({
     text: '正在推送中...',
   });

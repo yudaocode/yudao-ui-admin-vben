@@ -115,10 +115,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'update') {
         await updateIndicatorResult(payload);
-        message.success($t('common.updateSuccess'));
+        message.success($t('ui.actionMessage.operationSuccess'));
       } else {
         await createIndicatorResult(payload);
-        message.success($t('common.createSuccess'));
+        message.success($t('ui.actionMessage.operationSuccess'));
       }
       // 关闭并提示
       await modalApi.close();

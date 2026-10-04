@@ -24,10 +24,6 @@ const formSchema = (): any[] => {
       componentProps: {
         options: [
           {
-            label: '全部',
-            value: 0,
-          },
-          {
             label: '一级',
             value: 1,
           },

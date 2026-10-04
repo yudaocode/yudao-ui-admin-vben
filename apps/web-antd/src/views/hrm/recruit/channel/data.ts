@@ -4,6 +4,7 @@ import type { HrmRecruitChannelApi } from '#/api/hrm/recruit/channel';
 
 import { markRaw } from 'vue';
 
+import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -43,6 +44,7 @@ export function useGridColumns(
     row: HrmRecruitChannelApi.RecruitChannel,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions<HrmRecruitChannelApi.RecruitChannel>['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     { field: 'id', title: '渠道编号', width: 120 },
     { field: 'name', title: '渠道名称', minWidth: 160 },
@@ -62,6 +64,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['hrm:recruit:channel:update']),
           checkedValue: CommonStatusEnum.ENABLE,
           unCheckedValue: CommonStatusEnum.DISABLE,
         },

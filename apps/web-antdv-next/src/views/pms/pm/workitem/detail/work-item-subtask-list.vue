@@ -49,7 +49,7 @@ const editingName = ref(''); // 正在编辑的子工作项标题
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useColumns(),
+    columns: useColumns(props.editable),
     pagerConfig: {
       enabled: false,
     },

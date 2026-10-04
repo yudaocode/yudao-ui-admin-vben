@@ -127,11 +127,11 @@ async function handleSave() {
       formType.value = 'update';
       formApi.setState({ schema: useFormSchema(formType.value, formApi) });
       await formApi.setFieldValue('id', id);
-      ElMessage.success($t('common.createSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     } else {
       await updateFeedback(data);
       formData.value = { ...formData.value, ...data };
-      ElMessage.success($t('common.updateSuccess'));
+      ElMessage.success($t('ui.actionMessage.operationSuccess'));
     }
     // 刷新快照（已对齐数量并补 id），后续 submit 用于判断是否需要再保存
     originalSnapshot.value = JSON.stringify(data);

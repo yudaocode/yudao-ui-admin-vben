@@ -2,7 +2,9 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
 
 /** 列表的字段 */
-export function useColumns(): VxeTableGridOptions<PmsWorkItemApi.WorkItem>['columns'] {
+export function useColumns(
+  editable: boolean,
+): VxeTableGridOptions<PmsWorkItemApi.WorkItem>['columns'] {
   return [
     {
       field: 'status',
@@ -29,6 +31,7 @@ export function useColumns(): VxeTableGridOptions<PmsWorkItemApi.WorkItem>['colu
     {
       title: '操作',
       width: 120,
+      visible: editable,
       slots: { default: 'action' },
     },
   ];

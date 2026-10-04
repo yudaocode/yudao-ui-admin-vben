@@ -41,7 +41,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'createDate',
+      fieldName: 'createTime',
       label: '获得时间',
       component: 'RangePicker',
       componentProps: {

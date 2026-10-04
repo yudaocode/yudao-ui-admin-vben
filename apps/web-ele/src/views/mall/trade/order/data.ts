@@ -47,7 +47,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '支付方式',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'number'),
+        options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE),
         placeholder: '请选择支付方式',
         clearable: true,
       },
