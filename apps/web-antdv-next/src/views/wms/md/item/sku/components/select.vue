@@ -108,6 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getItemSkuPage({
@@ -149,7 +150,10 @@ async function openModal(
   await gridApi.grid.clearCheckboxRow();
   await gridApi.grid.clearCheckboxReserve();
   await gridApi.formApi.reset();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
 }
 
 /** 关闭 SKU 选择弹窗并清空临时选择 */

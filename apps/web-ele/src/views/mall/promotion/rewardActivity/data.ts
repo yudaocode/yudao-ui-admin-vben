@@ -10,7 +10,6 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
 import { z } from '#/adapter/form';
-import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -31,15 +30,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择活动状态',
-        clearable: true,
-      },
-    },
-    {
-      fieldName: 'createTime',
-      label: '活动时间',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
         clearable: true,
       },
     },

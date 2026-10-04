@@ -28,10 +28,6 @@ defineOptions({ name: 'HrmAttendanceLeave' });
 const router = useRouter();
 const exportLoading = ref(false);
 
-function handleRefresh() {
-  gridApi.query();
-}
-
 function handleProcessDetail(processInstanceId?: string) {
   if (!processInstanceId) {
     return;
@@ -69,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
     handleValuesChange(_values, fieldsChanged) {
       if (fieldsChanged.includes('month')) {
-        handleRefresh();
+        gridApi.formApi.submit();
       }
     },
   },

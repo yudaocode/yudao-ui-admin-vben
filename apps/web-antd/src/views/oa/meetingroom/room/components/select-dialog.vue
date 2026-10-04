@@ -9,10 +9,7 @@ import { Button, message, Modal } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getBookableMeetingRoomPage } from '#/api/oa/meetingroom/room';
 
-import {
-  useRoomSelectGridColumns,
-  useRoomSelectGridFormSchema,
-} from '../data';
+import { useRoomSelectGridColumns, useRoomSelectGridFormSchema } from '../data';
 import ScheduleDialog from './schedule-dialog.vue';
 
 defineOptions({ name: 'OaMeetingRoomSelectDialog' });
@@ -32,7 +29,11 @@ function handleRadioChange(row: OaMeetingRoomApi.MeetingRoom) {
 }
 
 /** 处理行双击：直接确认选择 */
-async function handleCellDblclick({ row }: { row: OaMeetingRoomApi.MeetingRoom }) {
+async function handleCellDblclick({
+  row,
+}: {
+  row: OaMeetingRoomApi.MeetingRoom;
+}) {
   selectedRows.value = [row];
   await gridApi.grid.setRadioRow(row);
   handleConfirm();
@@ -67,6 +68,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getBookableMeetingRoomPage({
@@ -107,7 +109,10 @@ async function openModal(roomId?: number) {
   selectedRows.value = [];
   await gridApi.grid.clearRadioRow();
   await gridApi.formApi.reset();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }

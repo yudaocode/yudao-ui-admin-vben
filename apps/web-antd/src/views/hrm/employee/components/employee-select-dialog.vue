@@ -93,6 +93,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(false),
     height: 420,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async (
           { page }: { page: { currentPage: number; pageSize: number } },
@@ -153,6 +154,7 @@ async function handleOpen(options: {
   selectedIds?: number[];
   title?: string;
 }) {
+  deptId.value = undefined;
   multiple.value = options.multiple ?? false;
   entryStatus.value = options.entryStatus;
   disabledIds.value = options.disabledIds || [];
@@ -178,7 +180,11 @@ async function handleOpen(options: {
     }
   }
   await nextTick();
-  await gridApi.query();
+  await gridApi.formApi.reset();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
 }
 
 function handleConfirm() {

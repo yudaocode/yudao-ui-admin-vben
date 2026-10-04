@@ -120,6 +120,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 520,
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getAvailableVehiclePage({
@@ -170,7 +171,10 @@ async function openDialog(item?: OaVehicleApi.Vehicle) {
   await nextTick();
   await gridApi.grid.clearRadioRow();
   await gridApi.formApi.reset();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await applyPreSelection();
 }
 

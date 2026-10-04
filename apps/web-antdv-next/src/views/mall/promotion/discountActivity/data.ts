@@ -91,8 +91,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'activeTime',
-      label: '活动时间',
+      fieldName: 'createTime',
+      label: '创建时间',
       component: 'RangePicker',
       componentProps: {
         placeholder: ['开始时间', '结束时间'],

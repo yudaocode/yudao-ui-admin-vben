@@ -131,6 +131,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }) => {
           if (!noticeId.value) {
@@ -166,7 +167,7 @@ async function openModal(id: number | undefined, selectedIds?: number[]) {
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
   await gridApi.grid.clearCheckboxReserve();
-  await gridApi.query();
+  await gridApi.reload();
   await nextTick();
   applyPreSelection();
 }

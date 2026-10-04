@@ -71,10 +71,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          const { pickUpStoreId, ...params } = formValues;
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues,
+            ...params,
+            pickUpStoreIds:
+              pickUpStoreId === undefined || pickUpStoreId === null
+                ? undefined
+                : [pickUpStoreId],
           });
         },
       },
