@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { FormRules } from 'element-plus';
-
+import type { VbenFormSchema } from '#/adapter/form';
 import type { PmsProjectTemplateApi } from '#/api/pms/pm/project/template';
 
 import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
@@ -16,16 +15,10 @@ import {
   ElButton,
   ElCheckbox,
   ElCheckboxGroup,
-  ElCol,
-  ElForm,
-  ElFormItem,
   ElInput,
-  ElInputNumber,
   ElMessage,
   ElOption,
   ElRadio,
-  ElRadioGroup,
-  ElRow,
   ElSelect,
   ElTable,
   ElTableColumn,
@@ -35,6 +28,7 @@ import {
 } from 'element-plus';
 import Sortable from 'sortablejs';
 
+import { useVbenForm, z } from '#/adapter/form';
 import {
   createProjectTemplate,
   getProjectTemplate,
@@ -46,32 +40,17 @@ import {
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
 import { getWorkItemTypeCode } from '#/views/pms/pm/utils/format';
-
 defineOptions({ name: 'PmsProjectTemplateForm' });
 
-// TODO @AI：基本信息页签改 useVbenForm + schema；状态/看板内嵌表格改 VXE Grid（可拖拽）。antd、antdv-next 的 v-loading 换成 lock。复杂 Tab 可以留，但不要继续手写 Form.Item。
 const emit = defineEmits<{ success: [] }>();
 
-type ProjectTemplateTab = 'basic' | 'board' | 'itemType' | 'status';
+type ProjectTemplateTab = 'basic' | 'board' | 'itemType' | 'status'; // 操作成功事件
 
-// 操作成功事件
-
-const formLoading = ref(false); // 表单加载中
 const formType = ref<'create' | 'update'>('create'); // 表单类型
 const activeTab = ref<ProjectTemplateTab>('basic'); // 当前页签
 const previousProjectType = ref<number>(PmsProjectType.GENERAL); // 切换前的项目类型
 const formData =
   ref<PmsProjectTemplateApi.ProjectTemplate>(getDefaultFormData()); // 表单数据
-const formRules: FormRules = {
-  name: [{ required: true, message: '请输入模板名称', trigger: 'blur' }],
-  projectType: [
-    { required: true, message: '请选择项目类型', trigger: 'change' },
-  ],
-  status: [{ required: true, message: '请选择模板状态', trigger: 'change' }],
-  sort: [{ required: true, message: '请输入显示顺序', trigger: 'blur' }],
-  itemTypes: [{ required: true, message: '请选择事项类型', trigger: 'change' }],
-}; // 表单校验规则
-const formRef = ref(); // 表单 Ref
 const statusTableRefs = ref<Record<number, HTMLElement | null>>({}); // 状态分组表格 Ref
 const boardTableRef = ref<HTMLElement>(); // 看板表格容器 Ref
 const statusSortables = new Map<number, Sortable>(); // 状态分组拖拽实例
@@ -92,6 +71,82 @@ const statusGroups = computed(() =>
     .filter((group) => group.statuses.length > 0),
 ); // 按事项类型分组的状态列表
 
+const basicFormSchema: VbenFormSchema[] = [
+  {
+    fieldName: 'id',
+    component: 'Input',
+    dependencies: { triggerFields: [''], show: () => false },
+  },
+  {
+    fieldName: 'name',
+    label: '模板名称',
+    component: 'Input',
+    componentProps: {
+      maxlength: 100,
+      placeholder: '请输入模板名称',
+      showWordLimit: true,
+    },
+    rules: 'required',
+  },
+  {
+    fieldName: 'projectType',
+    label: '项目类型',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: '通用项目', value: PmsProjectType.GENERAL },
+        { label: '敏捷开发项目', value: PmsProjectType.AGILE },
+      ],
+      placeholder: '请选择项目类型',
+      onChange: (value: number) => handleProjectTypeChange(value),
+    },
+    rules: z.number({ message: '请选择项目类型' }),
+  },
+  {
+    fieldName: 'status',
+    label: '模板状态',
+    component: 'RadioGroup',
+    componentProps: {
+      options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map(
+        (item) => ({
+          label: item.label,
+          value: item.value,
+        }),
+      ),
+    },
+    rules: z.number(),
+  },
+  {
+    fieldName: 'sort',
+    label: '显示顺序',
+    component: 'InputNumber',
+    componentProps: { class: '!w-full', min: 0, controlsPosition: 'right' },
+    rules: z.number().min(0),
+  },
+  {
+    fieldName: 'description',
+    label: '模板描述',
+    component: 'Textarea',
+    componentProps: {
+      maxlength: 500,
+      placeholder: '请输入模板适用场景',
+      rows: 4,
+      showWordLimit: true,
+    },
+  },
+];
+
+const [BasicForm, basicFormApi] = useVbenForm({
+  commonConfig: {
+    formItemClass: 'col-span-2 md:col-span-1',
+    labelWidth: 96,
+  },
+  layout: 'horizontal',
+  schema: basicFormSchema,
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-2',
+});
+
 /** 切换项目类型时恢复对应的默认配置 */
 async function handleProjectTypeChange(projectType: number) {
   const previousConfig = getDefaultCollaborationConfig(
@@ -109,9 +164,14 @@ async function handleProjectTypeChange(projectType: number) {
       await confirm('切换项目类型会恢复默认事项类型、状态和看板，确认继续吗？');
     } catch {
       formData.value.projectType = previousProjectType.value;
+      await basicFormApi.setFieldValue(
+        'projectType',
+        previousProjectType.value,
+      );
       return;
     }
   }
+  formData.value.projectType = projectType;
   const config = getDefaultCollaborationConfig(projectType);
   formData.value.itemTypes = config.itemTypes;
   formData.value.statuses = config.statuses;
@@ -160,7 +220,7 @@ function initStatusSortable() {
   statusSortables.clear();
   statusGroups.value.forEach((group) => {
     const tableBody = statusTableRefs.value[group.value]?.querySelector(
-      '.el-table__body-wrapper tbody',
+      '.el-table__body tbody',
     );
     if (!tableBody) {
       return;
@@ -206,9 +266,7 @@ async function handleStatusTypeChange() {
 /** 初始化看板表格拖拽排序 */
 function initBoardSortable() {
   boardSortable?.destroy();
-  const tableBody = boardTableRef.value?.querySelector(
-    '.el-table__body-wrapper tbody',
-  );
+  const tableBody = boardTableRef.value?.querySelector('.el-table__body tbody');
   if (!tableBody) {
     return;
   }
@@ -325,6 +383,9 @@ function getStatusOptions(workItemType: number, currentBoardCode: string) {
 
 /** 校验事项类型、状态和看板的页签配置 */
 function validateCollaborationConfig() {
+  if (formData.value.itemTypes.length === 0) {
+    return warnAndSwitchTab('itemType', '请至少选择一种事项类型');
+  }
   const statusCodeSet = new Set<string>();
   for (const status of formData.value.statuses) {
     if (
@@ -411,10 +472,11 @@ function buildSubmitData() {
 }
 
 /** 重置表单 */
-function resetForm() {
+async function resetForm() {
   formData.value = getDefaultFormData();
   previousProjectType.value = formData.value.projectType;
-  formRef.value?.resetFields();
+  await basicFormApi.resetForm();
+  await basicFormApi.setValues(formData.value);
 }
 
 /** 销毁拖拽实例 */
@@ -538,18 +600,12 @@ const [Modal, modalApi] = useVbenModal({
     destroySortables();
   },
   async onConfirm() {
-    // 校验表单
-    if (!formRef.value) {
+    const { valid } = await basicFormApi.validate();
+    if (!valid) {
+      activeTab.value = 'basic';
       return;
     }
-    try {
-      await formRef.value.validate();
-    } catch (error: any) {
-      activeTab.value = Object.prototype.hasOwnProperty.call(error, 'itemTypes')
-        ? 'itemType'
-        : 'basic';
-      return;
-    }
+    Object.assign(formData.value, await basicFormApi.getValues());
     // 校验状态和看板配置
     if (!validateCollaborationConfig()) {
       return;
@@ -582,15 +638,16 @@ const [Modal, modalApi] = useVbenModal({
     };
     formType.value = data.formType;
     activeTab.value = 'basic';
-    resetForm();
+    await resetForm();
     // 修改时，设置数据
     if (data.id) {
-      formLoading.value = true;
+      modalApi.lock();
       try {
         formData.value = await getProjectTemplate(data.id);
         previousProjectType.value = formData.value.projectType;
+        await basicFormApi.setValues(formData.value);
       } finally {
-        formLoading.value = false;
+        modalApi.unlock();
       }
     }
   },
@@ -602,337 +659,251 @@ onBeforeUnmount(destroySortables);
 
 <template>
   <Modal :title="formType === 'create' ? '新增' : '修改'">
-    <ElForm
-      ref="formRef"
-      v-loading="formLoading"
-      :model="formData"
-      :rules="formRules"
-      label-width="96px"
-    >
-      <ElTabs v-model="activeTab" @tab-change="handleTabChange">
-        <!-- 模板基本信息 -->
-        <ElTabPane label="基本信息" name="basic">
-          <ElRow :gutter="20">
-            <ElCol :span="12">
-              <ElFormItem label="模板名称" prop="name">
-                <ElInput
-                  v-model="formData.name"
-                  maxlength="100"
-                  placeholder="请输入模板名称"
-                  show-word-limit
-                />
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="12">
-              <ElFormItem label="项目类型" prop="projectType">
-                <ElSelect
-                  v-model="formData.projectType"
-                  class="!w-full"
-                  placeholder="请选择项目类型"
-                  @change="handleProjectTypeChange"
-                >
-                  <ElOption label="通用项目" :value="PmsProjectType.GENERAL" />
-                  <ElOption
-                    label="敏捷开发项目"
-                    :value="PmsProjectType.AGILE"
-                  />
-                </ElSelect>
-              </ElFormItem>
-            </ElCol>
-          </ElRow>
-          <ElRow :gutter="20">
-            <ElCol :span="12">
-              <ElFormItem label="模板状态" prop="status">
-                <ElRadioGroup v-model="formData.status">
-                  <ElRadio
-                    v-for="dict in getDictOptions(
-                      DICT_TYPE.COMMON_STATUS,
-                      'number',
-                    )"
-                    :key="dict.value"
-                    :value="dict.value"
-                  >
-                    {{ dict.label }}
-                  </ElRadio>
-                </ElRadioGroup>
-              </ElFormItem>
-            </ElCol>
-            <ElCol :span="12">
-              <ElFormItem label="显示顺序" prop="sort">
-                <ElInputNumber
-                  v-model="formData.sort"
-                  :min="0"
-                  class="!w-full"
-                />
-              </ElFormItem>
-            </ElCol>
-          </ElRow>
-          <ElFormItem label="模板描述" prop="description">
-            <ElInput
-              v-model="formData.description"
-              :rows="4"
-              maxlength="500"
-              placeholder="请输入模板适用场景"
-              show-word-limit
-              type="textarea"
-            />
-          </ElFormItem>
-        </ElTabPane>
+    <ElTabs v-model="activeTab" @tab-change="handleTabChange">
+      <!-- 模板基本信息 -->
+      <ElTabPane label="基本信息" name="basic">
+        <BasicForm class="mx-4" />
+      </ElTabPane>
 
-        <!-- 启用的事项类型 -->
-        <ElTabPane
-          :label="`事项类型（${formData.itemTypes.length}）`"
-          name="itemType"
-        >
-          <div class="mb-5">
-            <ElAlert
-              :closable="false"
-              description="项目创建时会根据这里的事项类型初始化可用能力；取消事项类型会同步移除其状态和看板"
-              title="事项类型是模板的全局关系；项目创建后不提供项目级维护"
-              type="info"
-            />
-          </div>
-          <ElFormItem class="!mb-0" label="事项类型" prop="itemTypes">
-            <ElCheckboxGroup
-              v-model="formData.itemTypes"
-              @change="handleItemTypesChange"
+      <!-- 启用的事项类型 -->
+      <ElTabPane
+        :label="`事项类型（${formData.itemTypes.length}）`"
+        name="itemType"
+      >
+        <div class="mb-5">
+          <ElAlert
+            :closable="false"
+            description="项目创建时会根据这里的事项类型初始化可用能力；取消事项类型会同步移除其状态和看板"
+            title="事项类型是模板的全局关系；项目创建后不提供项目级维护"
+            type="info"
+          />
+        </div>
+        <div class="flex items-center gap-4">
+          <span>事项类型</span>
+          <ElCheckboxGroup
+            v-model="formData.itemTypes"
+            @change="handleItemTypesChange"
+          >
+            <ElCheckbox
+              v-for="item in getDictOptions(
+                DICT_TYPE.PMS_WORK_ITEM_TYPE,
+                'number',
+              )"
+              :key="item.value"
+              :value="item.value"
             >
-              <ElCheckbox
-                v-for="item in getDictOptions(
-                  DICT_TYPE.PMS_WORK_ITEM_TYPE,
-                  'number',
-                )"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.label }}
-              </ElCheckbox>
-            </ElCheckboxGroup>
-          </ElFormItem>
-        </ElTabPane>
+              {{ item.label }}
+            </ElCheckbox>
+          </ElCheckboxGroup>
+        </div>
+      </ElTabPane>
 
-        <!-- 工作项状态 -->
-        <ElTabPane :label="`状态（${formData.statuses.length}）`" name="status">
-          <div class="mb-4 flex items-center gap-4">
-            <ElAlert
-              :closable="false"
-              class="flex-1"
-              title="拖拽调整状态顺序；每种事项类型必须且只能配置一个初始状态"
-              type="info"
-            />
-            <ElButton type="primary" @click="addStatus">
-              <IconifyIcon icon="ep:plus" />新增状态
-            </ElButton>
-          </div>
-          <div class="space-y-4">
-            <div v-for="group in statusGroups" :key="group.value">
-              <div class="mb-2 flex items-center gap-2 text-sm font-medium">
-                <span>{{ group.label }}</span>
-                <span class="text-[var(--el-text-color-secondary)]">
-                  （{{ group.statuses.length }}）
-                </span>
-              </div>
-              <div
-                :ref="
-                  (el) => setStatusTableRef(group.value, el as Element | null)
-                "
-              >
-                <ElTable
-                  :data="group.statuses"
-                  max-height="430px"
-                  row-key="code"
+      <!-- 工作项状态 -->
+      <ElTabPane :label="`状态（${formData.statuses.length}）`" name="status">
+        <div class="mb-4 flex items-center gap-4">
+          <ElAlert
+            :closable="false"
+            class="flex-1"
+            title="拖拽调整状态顺序；每种事项类型必须且只能配置一个初始状态"
+            type="info"
+          />
+          <ElButton type="primary" @click="addStatus">
+            <IconifyIcon icon="ep:plus" />新增状态
+          </ElButton>
+        </div>
+        <div class="space-y-4">
+          <div v-for="group in statusGroups" :key="group.value">
+            <div class="mb-2 flex items-center gap-2 text-sm font-medium">
+              <span>{{ group.label }}</span>
+              <span class="text-[var(--el-text-color-secondary)]">
+                （{{ group.statuses.length }}）
+              </span>
+            </div>
+            <div
+              :ref="
+                (el) => setStatusTableRef(group.value, el as Element | null)
+              "
+            >
+              <ElTable :data="group.statuses" max-height="430px" row-key="code">
+                <ElTableColumn align="center" width="44">
+                  <template #default>
+                    <ElTooltip content="拖动排序" placement="top">
+                      <IconifyIcon
+                        class="status-drag-handle cursor-move text-[var(--el-text-color-secondary)]"
+                        icon="ep:rank"
+                      />
+                    </ElTooltip>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn label="编码" min-width="150">
+                  <template #default="scope">
+                    <ElInput
+                      v-model="scope.row.code"
+                      placeholder="如 task_todo"
+                    />
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn label="名称" min-width="130">
+                  <template #default="scope">
+                    <ElInput
+                      v-model="scope.row.name"
+                      placeholder="请输入状态名称"
+                    />
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn label="事项类型" min-width="130">
+                  <template #default="scope">
+                    <ElSelect
+                      class="w-full"
+                      v-model="scope.row.workItemType"
+                      @change="handleStatusTypeChange"
+                    >
+                      <ElOption
+                        v-for="item in enabledWorkItemTypeOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </ElSelect>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn label="语义状态" min-width="130">
+                  <template #default="scope">
+                    <ElSelect class="w-full" v-model="scope.row.statusType">
+                      <ElOption
+                        v-for="item in getDictOptions(
+                          DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE,
+                          'number',
+                        )"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </ElSelect>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn align="center" label="初始" width="80">
+                  <template #default="scope">
+                    <ElRadio
+                      :model-value="scope.row.defaultStatus"
+                      :value="true"
+                      class="!mr-0"
+                      @change="
+                        handleDefaultStatusChange(
+                          scope.row as PmsProjectTemplateApi.ProjectTemplateStatus,
+                        )
+                      "
+                    >
+                      初始
+                    </ElRadio>
+                  </template>
+                </ElTableColumn>
+                <ElTableColumn
+                  align="center"
+                  fixed="right"
+                  label="操作"
+                  width="70"
                 >
-                  <ElTableColumn align="center" width="44">
-                    <template #default>
-                      <ElTooltip content="拖动排序" placement="top">
-                        <IconifyIcon
-                          class="status-drag-handle cursor-move text-[var(--el-text-color-secondary)]"
-                          icon="ep:rank"
-                        />
-                      </ElTooltip>
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn label="编码" min-width="150">
-                    <template #default="scope">
-                      <ElInput
-                        v-model="scope.row.code"
-                        placeholder="如 task_todo"
-                      />
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn label="名称" min-width="130">
-                    <template #default="scope">
-                      <ElInput
-                        v-model="scope.row.name"
-                        placeholder="请输入状态名称"
-                      />
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn label="事项类型" min-width="130">
-                    <template #default="scope">
-                      <ElSelect
-                        class="w-full"
-                        v-model="scope.row.workItemType"
-                        @change="handleStatusTypeChange"
-                      >
-                        <ElOption
-                          v-for="item in enabledWorkItemTypeOptions"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </ElSelect>
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn label="语义状态" min-width="130">
-                    <template #default="scope">
-                      <ElSelect class="w-full" v-model="scope.row.statusType">
-                        <ElOption
-                          v-for="item in getDictOptions(
-                            DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE,
-                            'number',
-                          )"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </ElSelect>
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn align="center" label="初始" width="80">
-                    <template #default="scope">
-                      <ElRadio
-                        :model-value="scope.row.defaultStatus"
-                        :value="true"
-                        class="!mr-0"
-                        @change="
-                          handleDefaultStatusChange(
-                            scope.row as PmsProjectTemplateApi.ProjectTemplateStatus,
-                          )
-                        "
-                      >
-                        初始
-                      </ElRadio>
-                    </template>
-                  </ElTableColumn>
-                  <ElTableColumn
-                    align="center"
-                    fixed="right"
-                    label="操作"
-                    width="70"
-                  >
-                    <template #default="scope">
-                      <ElButton
-                        link
-                        type="danger"
-                        @click="
-                          removeStatusByItem(group.statuses[scope.$index]!)
-                        "
-                      >
-                        删除
-                      </ElButton>
-                    </template>
-                  </ElTableColumn>
-                </ElTable>
-              </div>
+                  <template #default="scope">
+                    <ElButton
+                      link
+                      type="danger"
+                      @click="removeStatusByItem(group.statuses[scope.$index]!)"
+                    >
+                      删除
+                    </ElButton>
+                  </template>
+                </ElTableColumn>
+              </ElTable>
             </div>
           </div>
-        </ElTabPane>
+        </div>
+      </ElTabPane>
 
-        <!-- 看板列 -->
-        <ElTabPane :label="`看板（${formData.boards.length}）`" name="board">
-          <div class="mb-4 flex items-center gap-4">
-            <ElAlert
-              :closable="false"
-              class="flex-1"
-              title="拖拽调整看板列顺序；同一状态只能归属一个看板列"
-              type="info"
-            />
-            <ElButton type="primary" @click="addBoard">
-              <IconifyIcon icon="ep:plus" />新增看板列
-            </ElButton>
-          </div>
-          <div ref="boardTableRef">
-            <ElTable :data="formData.boards" max-height="430px">
-              <ElTableColumn align="center" width="44">
-                <template #default>
-                  <ElTooltip content="拖动排序" placement="top">
-                    <IconifyIcon
-                      class="board-drag-handle cursor-move text-[var(--el-text-color-secondary)]"
-                      icon="ep:rank"
-                    />
-                  </ElTooltip>
-                </template>
-              </ElTableColumn>
-              <ElTableColumn label="编码" min-width="140">
-                <template #default="scope">
-                  <ElInput v-model="scope.row.code" placeholder="如 todo" />
-                </template>
-              </ElTableColumn>
-              <ElTableColumn label="名称" min-width="130">
-                <template #default="scope">
-                  <ElInput
-                    v-model="scope.row.name"
-                    placeholder="请输入看板列名称"
+      <!-- 看板列 -->
+      <ElTabPane :label="`看板（${formData.boards.length}）`" name="board">
+        <div class="mb-4 flex items-center gap-4">
+          <ElAlert
+            :closable="false"
+            class="flex-1"
+            title="拖拽调整看板列顺序；同一状态只能归属一个看板列"
+            type="info"
+          />
+          <ElButton type="primary" @click="addBoard">
+            <IconifyIcon icon="ep:plus" />新增看板列
+          </ElButton>
+        </div>
+        <div ref="boardTableRef">
+          <ElTable :data="formData.boards" max-height="430px">
+            <ElTableColumn align="center" width="44">
+              <template #default>
+                <ElTooltip content="拖动排序" placement="top">
+                  <IconifyIcon
+                    class="board-drag-handle cursor-move text-[var(--el-text-color-secondary)]"
+                    icon="ep:rank"
                   />
-                </template>
-              </ElTableColumn>
-              <ElTableColumn label="事项类型" min-width="130">
-                <template #default="scope">
-                  <ElSelect
-                    class="w-full"
-                    v-model="scope.row.workItemType"
-                    @change="scope.row.statusCodes = []"
-                  >
-                    <ElOption
-                      v-for="item in enabledWorkItemTypeOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </ElSelect>
-                </template>
-              </ElTableColumn>
-              <ElTableColumn label="关联状态" min-width="260">
-                <template #default="scope">
-                  <ElSelect
-                    v-model="scope.row.statusCodes"
-                    class="!w-full"
-                    multiple
-                    placeholder="请选择关联状态"
-                  >
-                    <ElOption
-                      v-for="status in getStatusOptions(
-                        scope.row.workItemType,
-                        scope.row.code,
-                      )"
-                      :key="status.code"
-                      :label="status.name || status.code"
-                      :value="status.code"
-                    />
-                  </ElSelect>
-                </template>
-              </ElTableColumn>
-              <ElTableColumn
-                align="center"
-                fixed="right"
-                label="操作"
-                width="70"
-              >
-                <template #default="scope">
-                  <ElButton
-                    link
-                    type="danger"
-                    @click="removeBoard(scope.$index)"
-                  >
-                    删除
-                  </ElButton>
-                </template>
-              </ElTableColumn>
-            </ElTable>
-          </div>
-        </ElTabPane>
-      </ElTabs>
-    </ElForm>
+                </ElTooltip>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="编码" min-width="140">
+              <template #default="scope">
+                <ElInput v-model="scope.row.code" placeholder="如 todo" />
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="名称" min-width="130">
+              <template #default="scope">
+                <ElInput
+                  v-model="scope.row.name"
+                  placeholder="请输入看板列名称"
+                />
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="事项类型" min-width="130">
+              <template #default="scope">
+                <ElSelect
+                  class="w-full"
+                  v-model="scope.row.workItemType"
+                  @change="scope.row.statusCodes = []"
+                >
+                  <ElOption
+                    v-for="item in enabledWorkItemTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </ElSelect>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn label="关联状态" min-width="260">
+              <template #default="scope">
+                <ElSelect
+                  v-model="scope.row.statusCodes"
+                  class="!w-full"
+                  multiple
+                  placeholder="请选择关联状态"
+                >
+                  <ElOption
+                    v-for="status in getStatusOptions(
+                      scope.row.workItemType,
+                      scope.row.code,
+                    )"
+                    :key="status.code"
+                    :label="status.name || status.code"
+                    :value="status.code"
+                  />
+                </ElSelect>
+              </template>
+            </ElTableColumn>
+            <ElTableColumn align="center" fixed="right" label="操作" width="70">
+              <template #default="scope">
+                <ElButton link type="danger" @click="removeBoard(scope.$index)">
+                  删除
+                </ElButton>
+              </template>
+            </ElTableColumn>
+          </ElTable>
+        </div>
+      </ElTabPane>
+    </ElTabs>
   </Modal>
 </template>

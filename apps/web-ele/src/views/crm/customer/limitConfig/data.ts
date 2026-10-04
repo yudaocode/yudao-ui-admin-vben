@@ -83,6 +83,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
       label: '成交客户是否占用拥有客户数',
       component: 'RadioGroup',
       componentProps: {
+        isButton: true,
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
       dependencies: {

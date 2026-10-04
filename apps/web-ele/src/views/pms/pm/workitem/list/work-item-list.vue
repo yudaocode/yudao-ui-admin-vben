@@ -4,13 +4,13 @@ import type { PmsProjectMemberApi } from '#/api/pms/pm/project/member';
 import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
 import type { PmsWorkItemStatusApi } from '#/api/pms/pm/workitem/status';
 
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel, getDictOptions } from '@vben/hooks';
+import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
@@ -21,12 +21,8 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElForm,
-  ElFormItem,
-  ElInput,
   ElMessage,
   ElOption,
-  ElPopover,
   ElProgress,
   ElRadioButton,
   ElRadioGroup,
@@ -37,6 +33,7 @@ import {
 } from 'element-plus';
 import draggable from 'vuedraggable';
 
+import { useVbenForm } from '#/adapter/form';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProjectMemberList } from '#/api/pms/pm/project/member';
 import {
@@ -51,10 +48,7 @@ import {
   updateWorkItemStatus,
 } from '#/api/pms/pm/workitem';
 import { getWorkItemStatusList } from '#/api/pms/pm/workitem/status';
-import IterationSelect from '#/views/pms/pm/iteration/components/iteration-select.vue';
-import ProjectMemberSelect from '#/views/pms/pm/project/components/project-member-select.vue';
 import {
-  PmsProjectType,
   PmsWorkItemLifecycleStatus,
   PmsWorkItemStatusType,
 } from '#/views/pms/pm/utils/constants';
@@ -65,15 +59,13 @@ import {
 } from '#/views/pms/pm/utils/format';
 
 import WorkItemDetail from '../detail/work-item-detail.vue';
-import WorkItemLabelSelect from '../label/work-item-label-select.vue';
 import WorkItemStatusList from '../status/status-list.vue';
-import { useWorkItemGridColumns } from './data';
+import { useWorkItemGridColumns, useWorkItemSearchFormSchema } from './data';
 import WorkItemForm from './modules/form.vue';
 import WorkItemImportForm from './modules/import-form.vue';
 
 defineOptions({ name: 'PmsWorkItemList' });
 
-// TODO @AI：筛选不要手写 Input/Select/Popover，放到 formOptions.schema，对齐 system user。height 用 auto。不要为前端搜索把全部分页拉下来。看板模式可保留自定义。
 const props = defineProps<{
   defaultViewMode?: 'board' | 'list';
   editable: boolean;
@@ -96,9 +88,7 @@ const route = useRoute(); // 当前项目路由
 const { hasAccessByCodes } = useAccess();
 const loading = ref(true); // 看板数据加载中
 const boardSaving = ref(false); // 看板拖拽保存中
-const showFilterPopover = ref(false); // 高级筛选是否展示
 const viewMode = ref<'board' | 'list'>(props.defaultViewMode || 'list'); // 当前展示模式
-const searchKeyword = ref(''); // 搜索关键字
 const board = ref<BoardColumn[]>([]); // 工作项看板
 const statusOptions = ref<PmsWorkItemStatusApi.WorkItemStatus[]>([]); // 看板状态列表
 const memberOptions = ref<PmsProjectMemberApi.ProjectMember[]>([]); // 负责人筛选选项
@@ -107,6 +97,7 @@ const queryParams = reactive({
   pageSize: 10,
   projectId: props.projectId,
   type: props.type,
+  name: undefined as string | undefined,
   statuses: [] as number[],
   priorities: [] as number[],
   iterationId: props.iterationId,
@@ -123,7 +114,7 @@ const workItemTypeName = computed(
   () => getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, props.type) || '-',
 ); // 工作项业务名称
 const normalizedSearchKeyword = computed(() =>
-  searchKeyword.value.trim().toLowerCase(),
+  (queryParams.name ?? '').trim().toLowerCase(),
 ); // 规范化搜索关键字
 const filteredBoard = computed(() =>
   normalizedSearchKeyword.value
@@ -157,20 +148,32 @@ const hasBoardFilter = computed(() =>
 ); // 看板是否正在筛选，筛选结果不允许拖拽排序
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useWorkItemSearchFormSchema({
+      projectId: props.projectId,
+      projectType: props.projectType,
+      iterationId: props.iterationId,
+      showLifecycle: true,
+      namePlaceholder: `请输入${workItemTypeName.value}标题`,
+      assigneeUserIds: queryParams.assigneeUserIds,
+    }),
+  },
   gridOptions: {
     columns: useWorkItemGridColumns(props.type, props.projectType),
-    height: 600,
+    height: 'auto',
     pagerConfig: {
       pageSize: queryParams.pageSize,
     },
     proxyConfig: {
       ajax: {
-        query: async ({ page }) => {
+        query: async ({ page }, formValues) => {
+          if (viewMode.value !== 'list') return { list: [], total: 0 };
+          applyFilters(formValues);
           queryParams.pageNo = page.currentPage;
           queryParams.pageSize = page.pageSize;
           const data = await getWorkItemPage({
             ...queryParams,
-            name: searchKeyword.value.trim() || undefined,
+            name: queryParams.name?.trim() || undefined,
           });
           // 查询状态选项，供列表快捷修改和看板展示使用
           statusOptions.value = await getWorkItemStatusList(
@@ -186,17 +189,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     toolbarConfig: {
-      enabled: false,
+      refresh: true,
     },
   } as VxeTableGridOptions<PmsWorkItemApi.WorkItem>,
-});
-
-/** 搜索关键字改变后从第一页查询 */
-watch(normalizedSearchKeyword, () => {
-  if (viewMode.value !== 'list') {
-    return;
-  }
-  gridApi.reload();
 });
 
 /** 查询工作项 */
@@ -208,7 +203,10 @@ async function getWorkItemList() {
   }
   loading.value = true;
   try {
-    const boardData = await getWorkItemBoard(queryParams);
+    const boardData = await getWorkItemBoard({
+      ...queryParams,
+      name: undefined,
+    });
     board.value = boardData.map((column) => ({
       ...column,
       statusGroups: column.statuses.map((status) => ({
@@ -257,40 +255,63 @@ function getBoardColumnItemCount(column: BoardColumn) {
   );
 }
 
-/** 确认高级筛选 */
-function handleAdvancedQuery() {
-  showFilterPopover.value = false;
-  // 切回列表时 Grid 重新挂载会自动查询，无需重复触发
+/** 提交筛选 */
+function applyFilters(values: any) {
+  Object.assign(queryParams, {
+    name: undefined,
+    statuses: [],
+    priorities: [],
+    iterationIds: [],
+    excludedIterationIds: [],
+    assigneeUserIds: [],
+    labelIds: [],
+    lifecycleStatus: PmsWorkItemLifecycleStatus.ACTIVE,
+    ...values,
+  });
+}
+
+/** 提交看板筛选 */
+async function handleFilterSubmit(values: any) {
+  applyFilters(values);
   const switchedToList = !isActiveLifecycle.value && viewMode.value === 'board';
   if (!isActiveLifecycle.value) {
     viewMode.value = 'list';
   }
-  if (!switchedToList) {
+  if (switchedToList) {
+    await handleViewModeChange();
+  } else {
     handleQuery();
   }
 }
 
-/** 重置按钮操作 */
-function resetQuery() {
-  queryParams.statuses = [];
-  queryParams.priorities = [];
-  queryParams.iterationIds = [];
-  queryParams.excludedIterationIds = [];
-  queryParams.assigneeUserIds = route.query.assigneeUserId
-    ? [Number(route.query.assigneeUserId)]
-    : [];
-  queryParams.labelIds = [];
-  queryParams.lifecycleStatus = PmsWorkItemLifecycleStatus.ACTIVE;
-  searchKeyword.value = '';
-  showFilterPopover.value = false;
-  handleQuery();
-}
+const [FilterForm, boardFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    labelWidth: 80,
+  },
+  layout: 'horizontal',
+  schema: useWorkItemSearchFormSchema({
+    projectId: props.projectId,
+    projectType: props.projectType,
+    iterationId: props.iterationId,
+    showLifecycle: true,
+    namePlaceholder: `请输入${workItemTypeName.value}标题`,
+    assigneeUserIds: queryParams.assigneeUserIds,
+  }),
+  wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+  handleSubmit: handleFilterSubmit,
+  handleReset: handleFilterSubmit,
+});
 
 /** 切换展示模式 */
-function handleViewModeChange() {
-  // 切回列表时 Grid 重新挂载会自动查询，看板需要主动查询
+async function handleViewModeChange() {
   if (viewMode.value === 'board') {
-    getWorkItemList();
+    await boardFormApi.setValues(queryParams);
+    await getWorkItemList();
+  } else {
+    await gridApi.formApi.setValues(queryParams);
+    gridApi.formApi.setLatestSubmissionValues({ ...queryParams });
+    await gridApi.reload(queryParams);
   }
 }
 
@@ -497,9 +518,14 @@ async function handleBoardSort(statusGroup: BoardStatusGroup) {
 
 /** 导出工作项 */
 async function handleExport() {
+  const filters =
+    viewMode.value === 'list'
+      ? await gridApi.formApi.getValues()
+      : await boardFormApi.getValues();
   const data = await exportWorkItemList({
     ...queryParams,
-    name: searchKeyword.value.trim() || undefined,
+    ...filters,
+    name: filters.name?.trim() || undefined,
   });
   downloadFileFromBlobPart({
     fileName: `${workItemTypeName.value}.xlsx`,
@@ -523,144 +549,15 @@ onMounted(() => {
 
 <template>
   <div>
+    <FilterForm v-show="viewMode === 'board'" class="mb-4" />
     <!-- 项目工作项列表 -->
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <!-- 搜索与高级筛选 -->
-      <div class="flex flex-wrap items-center gap-2">
-        <ElInput
-          v-model="searchKeyword"
-          class="!w-[240px]"
-          clearable
-          :placeholder="`请输入${workItemTypeName}标题`"
-        />
-        <!-- 高级筛选 -->
-        <ElPopover
-          :visible="showFilterPopover"
-          :show-arrow="false"
-          :width="420"
-          persistent
-          placement="bottom-start"
-        >
-          <template #reference>
-            <ElButton @click="showFilterPopover = !showFilterPopover">
-              <IconifyIcon class="mr-1.5" icon="ep:plus" />高级筛选
-            </ElButton>
-          </template>
-          <ElForm class="max-h-[360px] overflow-y-auto pr-1">
-            <ElFormItem class="font-bold" label="数据范围" label-position="top">
-              <ElRadioGroup v-model="queryParams.lifecycleStatus">
-                <ElRadioButton :value="PmsWorkItemLifecycleStatus.ACTIVE">
-                  当前
-                </ElRadioButton>
-                <ElRadioButton :value="PmsWorkItemLifecycleStatus.ARCHIVED">
-                  已归档
-                </ElRadioButton>
-                <ElRadioButton :value="PmsWorkItemLifecycleStatus.RECYCLED">
-                  回收站
-                </ElRadioButton>
-              </ElRadioGroup>
-            </ElFormItem>
-            <ElFormItem class="font-bold" label="语义状态" label-position="top">
-              <ElSelect
-                v-model="queryParams.statuses"
-                class="!w-full"
-                clearable
-                collapse-tags
-                collapse-tags-tooltip
-                multiple
-                placeholder="全部状态"
-              >
-                <ElOption
-                  v-for="option in getDictOptions(
-                    DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE,
-                    'number',
-                  )"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </ElSelect>
-            </ElFormItem>
-            <ElFormItem class="font-bold" label="优先级" label-position="top">
-              <ElSelect
-                v-model="queryParams.priorities"
-                class="!w-full"
-                clearable
-                collapse-tags
-                collapse-tags-tooltip
-                multiple
-                placeholder="全部优先级"
-              >
-                <ElOption
-                  v-for="option in getDictOptions(
-                    DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
-                    'number',
-                  )"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </ElSelect>
-            </ElFormItem>
-            <ElFormItem
-              v-if="projectType === PmsProjectType.AGILE && !iterationId"
-              class="font-bold"
-              label="所属迭代"
-              label-position="top"
-            >
-              <IterationSelect
-                v-model="queryParams.iterationIds"
-                multiple
-                :project-id="projectId"
-                placeholder="全部迭代"
-              />
-            </ElFormItem>
-            <ElFormItem
-              v-if="projectType === PmsProjectType.AGILE && !iterationId"
-              class="font-bold"
-              label="排除迭代"
-              label-position="top"
-            >
-              <IterationSelect
-                v-model="queryParams.excludedIterationIds"
-                multiple
-                :project-id="projectId"
-                placeholder="不显示所选迭代"
-              />
-            </ElFormItem>
-            <ElFormItem class="font-bold" label="负责人" label-position="top">
-              <ProjectMemberSelect
-                v-model="queryParams.assigneeUserIds"
-                multiple
-                :project-id="projectId"
-                placeholder="全部负责人"
-                @loaded="memberOptions = $event"
-              />
-            </ElFormItem>
-            <ElFormItem class="font-bold" label="标签" label-position="top">
-              <WorkItemLabelSelect
-                v-model="queryParams.labelIds"
-                placeholder="全部标签"
-              />
-            </ElFormItem>
-          </ElForm>
-          <div class="flex w-full justify-end pt-2">
-            <ElButton @click="resetQuery">清空</ElButton>
-            <ElButton @click="showFilterPopover = false">取消</ElButton>
-            <ElButton type="primary" @click="handleAdvancedQuery">
-              确认
-            </ElButton>
-          </div>
-        </ElPopover>
-        <!-- 展示模式 -->
-        <ElRadioGroup v-model="viewMode" @change="handleViewModeChange">
-          <ElRadioButton value="list">列表</ElRadioButton>
-          <ElRadioButton :disabled="!isActiveLifecycle" value="board">
-            看板
-          </ElRadioButton>
-        </ElRadioGroup>
-      </div>
-
+      <ElRadioGroup v-model="viewMode" @change="handleViewModeChange">
+        <ElRadioButton value="list">列表</ElRadioButton>
+        <ElRadioButton :disabled="!isActiveLifecycle" value="board">
+          看板
+        </ElRadioButton>
+      </ElRadioGroup>
       <!-- 创建与更多操作 -->
       <div class="flex items-center gap-2">
         <ElButton
@@ -709,7 +606,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <template v-if="viewMode === 'list'">
+    <div v-show="viewMode === 'list'">
       <!-- 列表 -->
       <Grid>
         <template #serialNumber="{ row }"> #{{ row.serialNumber }} </template>
@@ -812,10 +709,10 @@ onMounted(() => {
           />
         </template>
       </Grid>
-    </template>
+    </div>
 
     <div
-      v-else
+      v-if="viewMode === 'board'"
       v-loading="loading"
       class="flex min-h-[460px] gap-4 overflow-x-auto pb-3"
     >

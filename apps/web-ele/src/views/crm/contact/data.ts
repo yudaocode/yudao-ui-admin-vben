@@ -132,6 +132,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
       label: '关键决策人',
       component: 'RadioGroup',
       componentProps: {
+        isButton: true,
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
         placeholder: '请选择是否关键决策人',
       },

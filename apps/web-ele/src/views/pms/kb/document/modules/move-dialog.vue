@@ -1,21 +1,15 @@
 <script lang="ts" setup>
-import type { FormRules } from 'element-plus';
-
+import type { VbenFormSchema } from '#/adapter/form';
 import type { PmsKnowledgeDocumentApi } from '#/api/pms/kb/content/document';
 import type { PmsKnowledgeFolderApi } from '#/api/pms/kb/content/folder';
 
-import { computed, reactive, ref } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import {
-  ElForm,
-  ElFormItem,
-  ElInput,
-  ElMessage,
-  ElTreeSelect,
-} from 'element-plus';
+import { ElMessage } from 'element-plus';
 
+import { useVbenForm, z } from '#/adapter/form';
 import { moveKnowledgeDocument } from '#/api/pms/kb/content/document';
 import {
   getKnowledgeTree,
@@ -39,27 +33,13 @@ interface TargetOption {
   value: string;
 }
 
-// TODO @AI：目标知识库/目标位置改成 useVbenForm + schema；「定义 success 事件」这类注释对齐 system user 删掉。v-loading 换成 lock。
-
-const loading = ref(false); // 数据加载和提交中
 const contentKind = ref<'document' | 'folder'>('document'); // 内容类型
 const contentId = ref(0); // 内容编号
-const contentTitle = ref(''); // 内容标题
 const sourceLibraryId = ref(0); // 源知识库编号
 const sourceParentId = ref(0); // 源父文件夹或父文档编号
 const sourceFolderId = ref(0); // 源文档所属文件夹编号
+const targetLibraryId = ref<number>(); // 目标知识库编号
 const targetTree = ref<PmsKnowledgeFolderApi.KnowledgeTree>(); // 目标知识库目录树
-const formData = reactive({
-  targetLibraryId: undefined as number | undefined,
-  targetKey: '',
-}); // 表单数据
-const formRules: FormRules = {
-  targetLibraryId: [
-    { required: true, message: '请选择目标知识库', trigger: 'change' },
-  ],
-  targetKey: [{ required: true, message: '请选择目标位置', trigger: 'change' }],
-}; // 表单校验规则
-const formRef = ref(); // 表单 Ref
 
 // 内容移动目标选项
 const targetOptions = computed<TargetOption[]>(() => {
@@ -85,14 +65,71 @@ const targetOptions = computed<TargetOption[]>(() => {
   return [root];
 });
 
+const formSchema: VbenFormSchema[] = [
+  {
+    fieldName: 'contentTitle',
+    label: '当前内容',
+    component: 'Input',
+    componentProps: { disabled: true },
+  },
+  {
+    fieldName: 'targetLibraryId',
+    label: '目标知识库',
+    component: markRaw(KnowledgeLibrarySelect),
+    componentProps: {
+      placeholder: '请选择目标知识库',
+      onChange(value: number | undefined) {
+        targetLibraryId.value = value;
+        loadTargetTree();
+      },
+    },
+    rules: 'required',
+  },
+  {
+    fieldName: 'targetKey',
+    label: '目标位置',
+    component: 'TreeSelect',
+    componentProps: () => ({
+      class: '!w-full',
+      props: {
+        label: 'label',
+        value: 'value',
+        children: 'children',
+      },
+      placeholder: '请选择目标位置',
+      data: targetOptions.value,
+      nodeKey: 'value',
+      checkStrictly: true,
+      defaultExpandAll: true,
+      filterable: true,
+    }),
+    rules: z.string({ message: '请选择目标位置' }).min(1, '请选择目标位置'),
+  },
+];
+
+const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    formItemClass: 'col-span-2',
+    labelWidth: 100,
+  },
+  layout: 'horizontal',
+  schema: formSchema,
+  showDefaultActions: false,
+});
+
 /** 加载目标目录树 */
 async function loadTargetTree() {
-  formData.targetKey = '';
-  if (!formData.targetLibraryId) {
+  await formApi.setFieldValue('targetKey', undefined);
+  if (!targetLibraryId.value) {
     targetTree.value = undefined;
     return;
   }
-  targetTree.value = await getKnowledgeTree(formData.targetLibraryId);
+  modalApi.lock();
+  try {
+    targetTree.value = await getKnowledgeTree(targetLibraryId.value);
+  } finally {
+    modalApi.unlock();
+  }
 }
 
 /** 构建文件夹选项 */
@@ -101,7 +138,7 @@ function buildFolderOption(
 ): TargetOption {
   const isSourceOrDescendant =
     contentKind.value === 'folder' &&
-    formData.targetLibraryId === sourceLibraryId.value &&
+    targetLibraryId.value === sourceLibraryId.value &&
     isSourceFolderOrDescendant(folder.id);
   return {
     value: `folder-${folder.id}`,
@@ -129,7 +166,7 @@ function buildDocumentOption(
   folderId: number,
 ): TargetOption {
   const isSourceOrDescendant =
-    formData.targetLibraryId === sourceLibraryId.value &&
+    targetLibraryId.value === sourceLibraryId.value &&
     isSourceDocumentOrDescendant(document.id);
   return {
     value: `document-${document.id}`,
@@ -241,28 +278,26 @@ function findTargetOption(
 const [Modal, modalApi] = useVbenModal({
   class: 'w-[560px]',
   async onConfirm() {
-    // 1.1 校验表单
-    if (
-      !formRef.value ||
-      !(await formRef.value.validate().catch(() => false))
-    ) {
+    // 1. 校验表单和目标位置
+    const { valid } = await formApi.validate();
+    if (!valid) {
       return;
     }
-    const target = findTargetOption(targetOptions.value, formData.targetKey);
-    if (!target || !formData.targetLibraryId) {
+    const values = await formApi.getValues();
+    const target = findTargetOption(targetOptions.value, values.targetKey);
+    if (!target || !values.targetLibraryId) {
       return;
     }
-    // 1.2 校验目标位置可编辑
     if (target.disabled) {
       ElMessage.warning('当前账号不能移动到该位置');
       return;
     }
-    loading.value = true;
+    modalApi.lock();
     try {
-      // 3. 根据内容类型发起移动请求
+      // 2. 根据内容类型发起移动请求
       if (contentKind.value === 'folder') {
         if (
-          formData.targetLibraryId === sourceLibraryId.value &&
+          values.targetLibraryId === sourceLibraryId.value &&
           target.entityId === sourceParentId.value
         ) {
           ElMessage.warning('内容已在当前目录');
@@ -270,7 +305,7 @@ const [Modal, modalApi] = useVbenModal({
         }
         await moveKnowledgeFolder({
           id: contentId.value,
-          targetLibraryId: formData.targetLibraryId,
+          targetLibraryId: values.targetLibraryId,
           targetParentId: target.entityId,
         });
       } else {
@@ -279,7 +314,7 @@ const [Modal, modalApi] = useVbenModal({
         const targetParentId =
           target.kind === 'document' ? target.entityId : PmsKnowledgeRootId;
         if (
-          formData.targetLibraryId === sourceLibraryId.value &&
+          values.targetLibraryId === sourceLibraryId.value &&
           targetFolderId === sourceFolderId.value &&
           targetParentId === sourceParentId.value
         ) {
@@ -288,7 +323,7 @@ const [Modal, modalApi] = useVbenModal({
         }
         await moveKnowledgeDocument({
           id: contentId.value,
-          targetLibraryId: formData.targetLibraryId,
+          targetLibraryId: values.targetLibraryId,
           targetFolderId,
           targetParentId,
         });
@@ -298,7 +333,7 @@ const [Modal, modalApi] = useVbenModal({
       await modalApi.close();
       emit('success');
     } finally {
-      loading.value = false;
+      modalApi.unlock();
     }
   },
   async onOpenChange(isOpen: boolean) {
@@ -314,7 +349,6 @@ const [Modal, modalApi] = useVbenModal({
     // 1. 初始化待移动内容
     contentKind.value = data.kind;
     contentId.value = data.content.id;
-    contentTitle.value = data.content.title;
     sourceLibraryId.value = data.content.libraryId;
     sourceParentId.value = data.content.parentId;
     sourceFolderId.value =
@@ -323,55 +357,21 @@ const [Modal, modalApi] = useVbenModal({
         : PmsKnowledgeRootId;
 
     // 2. 重置目标位置表单
-    formData.targetLibraryId = data.content.libraryId;
-    formData.targetKey = '';
-    formRef.value?.resetFields();
+    targetLibraryId.value = data.content.libraryId;
+    await formApi.setValues({
+      contentTitle: data.content.title,
+      targetLibraryId: data.content.libraryId,
+      targetKey: undefined,
+    });
 
     // 3. 加载目标知识库目录树
-    loading.value = true;
-    try {
-      await loadTargetTree();
-    } finally {
-      loading.value = false;
-    }
+    await loadTargetTree();
   },
 });
 </script>
 
 <template>
   <Modal :title="`移动${contentKind === 'folder' ? '文件夹' : '文档'}`">
-    <ElForm
-      ref="formRef"
-      v-loading="loading"
-      :model="formData"
-      :rules="formRules"
-      label-width="100px"
-    >
-      <ElFormItem label="当前内容">
-        <ElInput :model-value="contentTitle" disabled />
-      </ElFormItem>
-      <ElFormItem label="目标知识库" prop="targetLibraryId">
-        <KnowledgeLibrarySelect
-          v-model="formData.targetLibraryId"
-          placeholder="请选择目标知识库"
-          @change="loadTargetTree"
-        />
-      </ElFormItem>
-      <ElFormItem label="目标位置" prop="targetKey">
-        <ElTreeSelect
-          v-model="formData.targetKey"
-          check-strictly
-          :data="targetOptions"
-          default-expand-all
-          node-key="value"
-          placeholder="请选择目标位置"
-          :props="{
-            label: 'label',
-            children: 'children',
-            disabled: 'disabled',
-          }"
-        />
-      </ElFormItem>
-    </ElForm>
+    <Form class="mx-4" />
   </Modal>
 </template>

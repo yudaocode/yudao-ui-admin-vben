@@ -265,9 +265,7 @@ const [Modal, modalApi] = useVbenModal({
         <!-- 商品选择 -->
         <template #spuId>
           <div class="w-full">
-            <Button v-if="!formData?.id" type="primary" @click="openSpuSelect">
-              选择商品
-            </Button>
+            <Button type="primary" @click="openSpuSelect"> 选择商品 </Button>
 
             <!-- SPU 和 SKU 列表展示 -->
             <SpuAndSkuList

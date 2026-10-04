@@ -109,6 +109,101 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
+/** 新增/修改的表单 */
+export function useFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
+    {
+      fieldName: 'year',
+      label: '年份',
+      component: 'DatePicker',
+      componentProps: {
+        type: 'year',
+        format: 'YYYY',
+        valueFormat: 'YYYY',
+        placeholder: '请选择年份',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'bizType',
+      label: '目标类型',
+      component: 'Select',
+      componentProps: {
+        options: bizTypeOptions,
+        placeholder: '请选择目标类型',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'objectType',
+      label: '对象类型',
+      component: 'Select',
+      componentProps: {
+        options: objectTypeOptions,
+        placeholder: '请选择对象类型',
+      },
+      rules: 'required',
+    },
+    {
+      fieldName: 'deptObjectId',
+      label: '目标对象',
+      component: 'ApiTreeSelect',
+      componentProps: {
+        api: async () => handleTree(await getSimpleDeptList()),
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
+        defaultExpandAll: true,
+        checkStrictly: true,
+        placeholder: '请选择部门',
+      },
+      dependencies: {
+        triggerFields: ['objectType'],
+        show: (values) =>
+          values.objectType === PerformanceConfigObjectTypeEnum.DEPT,
+      },
+    },
+    {
+      fieldName: 'userObjectId',
+      label: '目标对象',
+      component: 'ApiSelect',
+      componentProps: {
+        api: getSimpleUserList,
+        clearable: true,
+        filterable: true,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择员工',
+      },
+      dependencies: {
+        triggerFields: ['objectType'],
+        show: (values) =>
+          values.objectType === PerformanceConfigObjectTypeEnum.USER,
+      },
+    },
+    ...monthFields.map((item) => ({
+      fieldName: item.prop,
+      label: item.label,
+      component: 'InputNumber',
+      componentProps: {
+        class: '!w-full',
+        min: 0,
+        precision: 2,
+        controlsPosition: 'right',
+        step: 1000,
+      },
+    })),
+  ];
+}
+
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [

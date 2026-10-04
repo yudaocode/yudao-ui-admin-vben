@@ -176,12 +176,13 @@ const [DocumentGrid, documentGridApi] = useVbenVxeGrid({
 /** 打开模板文档表单 */
 async function openDocumentForm(index = -1) {
   editingDocumentIndex.value = index;
+  documentModalApi.open();
+  await documentFormApi.resetForm();
   await documentFormApi.setValues(
     index >= 0
       ? { ...documents.value[index]! }
       : { title: '', content: '<p></p>' },
   );
-  documentModalApi.open();
 }
 
 /** 删除模板文档 */
