@@ -12,7 +12,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, getAllPageItems } from '@vben/utils';
 
 import {
   Avatar,
@@ -111,6 +111,28 @@ const queryParams = reactive({
 const workItemTypeName = computed(
   () => getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, props.type) || '-',
 ); // 工作项业务名称
+const pageWorkItems = ref<PmsWorkItemApi.WorkItem[]>([]); // 当前页工作项
+const searchableWorkItems = ref<PmsWorkItemApi.WorkItem[]>([]); // 全量可搜索工作项
+const normalizedSearchKeyword = computed(() =>
+  (queryParams.name ?? '').trim().toLowerCase(),
+); // 规范化搜索关键字
+const filteredWorkItems = computed(() =>
+  normalizedSearchKeyword.value
+    ? searchableWorkItems.value.filter(matchSearchKeyword)
+    : pageWorkItems.value,
+);
+const filteredBoard = computed(() =>
+  normalizedSearchKeyword.value
+    ? board.value.map((column) => ({
+        ...column,
+        items: column.items.filter((item) => matchSearchKeyword(item)),
+        statusGroups: column.statusGroups.map((statusGroup) => ({
+          ...statusGroup,
+          items: statusGroup.items.filter((item) => matchSearchKeyword(item)),
+        })),
+      }))
+    : board.value,
+); // 看板前端搜索结果
 const memberMap = computed(
   () => new Map(memberOptions.value.map((member) => [member.userId, member])),
 ); // 项目成员 Map
@@ -119,7 +141,7 @@ const isActiveLifecycle = computed(
 ); // 是否展示当前工作项
 const hasBoardFilter = computed(() =>
   Boolean(
-    queryParams.name ||
+    normalizedSearchKeyword.value ||
     queryParams.statuses.length > 0 ||
     queryParams.priorities.length > 0 ||
     queryParams.iterationId ||
@@ -131,6 +153,17 @@ const hasBoardFilter = computed(() =>
 ); // 看板是否正在筛选，筛选结果不允许拖拽排序
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useWorkItemSearchFormSchema({
+      projectId: props.projectId,
+      projectType: props.projectType,
+      iterationId: props.iterationId,
+      showLifecycle: true,
+      namePlaceholder: `请输入${workItemTypeName.value}标题`,
+      onNameChange: handleNameChange,
+      assigneeUserIds: queryParams.assigneeUserIds,
+    }),
+  },
   gridOptions: {
     columns: useWorkItemGridColumns(props.type, props.projectType),
     height: 'auto',
@@ -139,16 +172,29 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     proxyConfig: {
       ajax: {
-        query: async ({ page }) => {
+        query: async ({ page }, formValues) => {
+          if (viewMode.value !== 'list') return { list: [], total: 0 };
+          applyFilters(formValues);
           queryParams.pageNo = page.currentPage;
           queryParams.pageSize = page.pageSize;
-          const [data] = await Promise.all([getWorkItemPage(queryParams)]);
+          const filters = { ...queryParams, name: undefined };
+          const [data, searchableItems] = await Promise.all([
+            getWorkItemPage(filters),
+            getAllPageItems<PmsWorkItemApi.WorkItem>((pageNo, pageSize) =>
+              getWorkItemPage({ ...filters, pageNo, pageSize }),
+            ),
+          ]);
+          pageWorkItems.value = data.list;
+          searchableWorkItems.value = searchableItems;
+          gridApi.setGridOptions({
+            pagerConfig: { enabled: !normalizedSearchKeyword.value },
+          });
           // 查询状态选项，供列表快捷修改和看板展示使用
           statusOptions.value = await getWorkItemStatusList(
             props.projectId,
             props.type,
           );
-          return data;
+          return { ...data, list: filteredWorkItems.value };
         },
       },
     },
@@ -171,7 +217,10 @@ async function getWorkItemList() {
   }
   loading.value = true;
   try {
-    const boardData = await getWorkItemBoard(queryParams);
+    const boardData = await getWorkItemBoard({
+      ...queryParams,
+      name: undefined,
+    });
     board.value = boardData.map((column) => ({
       ...column,
       statusGroups: column.statuses.map((status) => ({
@@ -189,11 +238,32 @@ async function getWorkItemList() {
   }
 }
 
+/** 输入标题时立即过滤已加载的名称和编号 */
+async function handleNameChange(value: string) {
+  queryParams.name = value;
+  if (viewMode.value === 'list') {
+    gridApi.formApi.setLatestSubmissionValues({ ...queryParams });
+    gridApi.setGridOptions({
+      pagerConfig: { enabled: !normalizedSearchKeyword.value },
+    });
+    await gridApi.grid.loadData(filteredWorkItems.value);
+  }
+}
+
+/** 判断工作项是否匹配前端搜索关键字 */
+function matchSearchKeyword(workItem: PmsWorkItemApi.WorkItem) {
+  return (
+    workItem.name.toLowerCase().includes(normalizedSearchKeyword.value) ||
+    String(workItem.serialNumber).includes(normalizedSearchKeyword.value)
+  );
+}
+
 /** 从第一页重新查询 */
 function handleQuery() {
   queryParams.pageNo = 1;
   if (viewMode.value === 'list') {
-    gridApi.reload();
+    gridApi.formApi.setLatestSubmissionValues({ ...queryParams });
+    gridApi.reload(queryParams);
   } else {
     getWorkItemList();
   }
@@ -213,7 +283,7 @@ function getBoardColumnItemCount(column: BoardColumn) {
 }
 
 /** 提交筛选 */
-async function handleFilterSubmit(values: any) {
+function applyFilters(values: any) {
   Object.assign(queryParams, {
     name: undefined,
     statuses: [],
@@ -225,16 +295,23 @@ async function handleFilterSubmit(values: any) {
     lifecycleStatus: PmsWorkItemLifecycleStatus.ACTIVE,
     ...values,
   });
+}
+
+/** 提交看板筛选 */
+async function handleFilterSubmit(values: any) {
+  applyFilters(values);
   const switchedToList = !isActiveLifecycle.value && viewMode.value === 'board';
   if (!isActiveLifecycle.value) {
     viewMode.value = 'list';
   }
-  if (!switchedToList) {
+  if (switchedToList) {
+    await handleViewModeChange();
+  } else {
     handleQuery();
   }
 }
 
-const [FilterForm] = useVbenForm({
+const [FilterForm, boardFormApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
     labelWidth: 80,
@@ -246,6 +323,7 @@ const [FilterForm] = useVbenForm({
     iterationId: props.iterationId,
     showLifecycle: true,
     namePlaceholder: `请输入${workItemTypeName.value}标题`,
+    onNameChange: handleNameChange,
     assigneeUserIds: queryParams.assigneeUserIds,
   }),
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
@@ -254,10 +332,14 @@ const [FilterForm] = useVbenForm({
 });
 
 /** 切换展示模式 */
-function handleViewModeChange() {
-  // 切回列表时 Grid 重新挂载会自动查询，看板需要主动查询
+async function handleViewModeChange() {
   if (viewMode.value === 'board') {
-    getWorkItemList();
+    await boardFormApi.setValues(queryParams);
+    await getWorkItemList();
+  } else {
+    await gridApi.formApi.setValues(queryParams);
+    gridApi.formApi.setLatestSubmissionValues({ ...queryParams });
+    await gridApi.reload(queryParams);
   }
 }
 
@@ -488,7 +570,7 @@ onMounted(() => {
 <template>
   <div>
     <!-- 项目工作项筛选 -->
-    <FilterForm class="mb-4" />
+    <FilterForm v-show="viewMode === 'board'" class="mb-4" />
 
     <!-- 项目工作项操作 -->
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -549,7 +631,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <template v-if="viewMode === 'list'">
+    <div v-show="viewMode === 'list'">
       <!-- 列表 -->
       <Grid>
         <template #serialNumber="{ row }"> #{{ row.serialNumber }} </template>
@@ -646,13 +728,13 @@ onMounted(() => {
           />
         </template>
       </Grid>
-    </template>
+    </div>
 
-    <Spin v-else :spinning="loading">
+    <Spin v-if="viewMode === 'board'" :spinning="loading">
       <!-- 看板 -->
       <div class="flex min-h-[460px] gap-4 overflow-x-auto pb-3">
         <section
-          v-for="column in board"
+          v-for="column in filteredBoard"
           :key="column.name"
           class="shrink-0 grow-0 basis-[300px] rounded-lg bg-accent p-3"
         >

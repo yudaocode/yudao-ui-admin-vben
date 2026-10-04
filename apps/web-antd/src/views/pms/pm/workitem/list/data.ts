@@ -31,6 +31,13 @@ export function useWorkItemSearchFormSchema(options: any): VbenFormSchema[] {
       componentProps: {
         allowClear: true,
         placeholder: options.namePlaceholder || '请输入工作项标题',
+        onInput: (value: Event | string) => {
+          options.onNameChange?.(
+            typeof value === 'string'
+              ? value
+              : (value.target as HTMLInputElement).value,
+          );
+        },
       },
     },
     ...(options.showTypes

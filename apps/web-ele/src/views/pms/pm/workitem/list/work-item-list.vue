@@ -12,7 +12,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, getAllPageItems } from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -113,9 +113,16 @@ const queryParams = reactive({
 const workItemTypeName = computed(
   () => getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, props.type) || '-',
 ); // 工作项业务名称
+const pageWorkItems = ref<PmsWorkItemApi.WorkItem[]>([]); // 当前页工作项
+const searchableWorkItems = ref<PmsWorkItemApi.WorkItem[]>([]); // 全量可搜索工作项
 const normalizedSearchKeyword = computed(() =>
   (queryParams.name ?? '').trim().toLowerCase(),
 ); // 规范化搜索关键字
+const filteredWorkItems = computed(() =>
+  normalizedSearchKeyword.value
+    ? searchableWorkItems.value.filter(matchSearchKeyword)
+    : pageWorkItems.value,
+);
 const filteredBoard = computed(() =>
   normalizedSearchKeyword.value
     ? board.value.map((column) => ({
@@ -155,6 +162,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       iterationId: props.iterationId,
       showLifecycle: true,
       namePlaceholder: `请输入${workItemTypeName.value}标题`,
+      onNameChange: handleNameChange,
       assigneeUserIds: queryParams.assigneeUserIds,
     }),
   },
@@ -171,16 +179,24 @@ const [Grid, gridApi] = useVbenVxeGrid({
           applyFilters(formValues);
           queryParams.pageNo = page.currentPage;
           queryParams.pageSize = page.pageSize;
-          const data = await getWorkItemPage({
-            ...queryParams,
-            name: queryParams.name?.trim() || undefined,
+          const filters = { ...queryParams, name: undefined };
+          const [data, searchableItems] = await Promise.all([
+            getWorkItemPage(filters),
+            getAllPageItems<PmsWorkItemApi.WorkItem>((pageNo, pageSize) =>
+              getWorkItemPage({ ...filters, pageNo, pageSize }),
+            ),
+          ]);
+          pageWorkItems.value = data.list;
+          searchableWorkItems.value = searchableItems;
+          gridApi.setGridOptions({
+            pagerConfig: { enabled: !normalizedSearchKeyword.value },
           });
           // 查询状态选项，供列表快捷修改和看板展示使用
           statusOptions.value = await getWorkItemStatusList(
             props.projectId,
             props.type,
           );
-          return data;
+          return { ...data, list: filteredWorkItems.value };
         },
       },
     },
@@ -231,6 +247,18 @@ function handleQuery() {
     gridApi.reload();
   } else {
     getWorkItemList();
+  }
+}
+
+/** 输入标题时立即过滤已加载的名称和编号 */
+async function handleNameChange(value: string) {
+  queryParams.name = value;
+  if (viewMode.value === 'list') {
+    gridApi.formApi.setLatestSubmissionValues({ ...queryParams });
+    gridApi.setGridOptions({
+      pagerConfig: { enabled: !normalizedSearchKeyword.value },
+    });
+    await gridApi.grid.loadData(filteredWorkItems.value);
   }
 }
 
@@ -296,6 +324,7 @@ const [FilterForm, boardFormApi] = useVbenForm({
     iterationId: props.iterationId,
     showLifecycle: true,
     namePlaceholder: `请输入${workItemTypeName.value}标题`,
+    onNameChange: handleNameChange,
     assigneeUserIds: queryParams.assigneeUserIds,
   }),
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',

@@ -63,7 +63,7 @@ async function resolveBomById(bomItemId: number | undefined) {
   if (selectedBom.value?.bomItemId === bomItemId) {
     return;
   }
-  const list = await getProductBomListByItemId(props.itemId as number);
+  const list = await getProductBomListByItemId(props.itemId);
   selectedBom.value = list.find((item) => item.bomItemId === bomItemId);
 }
 
@@ -102,7 +102,7 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  dialogRef.value?.open(props.itemId as number, props.modelValue);
+  dialogRef.value?.open(props.itemId, props.modelValue);
 }
 
 /** 回填选中的 BOM 物料 */

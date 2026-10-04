@@ -8,7 +8,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDate, handleTree } from '@vben/utils';
 
-import { z } from '#/adapter/form';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -55,7 +54,8 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.OA_SEAL_APPLY_TYPE, 'number'),
         placeholder: '请选择用印类型',
       },
-      rules: z.number().default(OaSealApplyType.CONTRACT),
+      defaultValue: OaSealApplyType.CONTRACT,
+      rules: 'required',
     },
     {
       fieldName: 'mode',
@@ -65,7 +65,8 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.OA_SEAL_USE_MODE, 'number'),
         placeholder: '请选择用印方式',
       },
-      rules: z.number().default(OaSealUseMode.ONSITE),
+      defaultValue: OaSealUseMode.ONSITE,
+      rules: 'required',
     },
     {
       fieldName: 'documentTitle',
@@ -97,7 +98,8 @@ export function useFormSchema(): VbenFormSchema[] {
         class: '!w-full',
         placeholder: '请输入文件份数',
       },
-      rules: z.number().default(1),
+      defaultValue: 1,
+      rules: 'required',
     },
     {
       fieldName: 'contractPrice',
@@ -170,7 +172,8 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'urgent',
       label: '是否紧急',
       component: 'Switch',
-      rules: z.boolean().default(false),
+      defaultValue: false,
+      rules: 'required',
     },
     {
       fieldName: 'remark',
