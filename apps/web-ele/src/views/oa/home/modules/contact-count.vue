@@ -19,7 +19,8 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    count.value = (await getMyContactPage({ pageNo: 1, pageSize: 1 })).total;
+    const result = await getMyContactPage({ pageNo: 1, pageSize: 1 });
+    count.value = result.total;
   } catch {
     loadError.value = true;
   } finally {

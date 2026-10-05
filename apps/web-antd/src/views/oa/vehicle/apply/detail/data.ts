@@ -59,7 +59,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'returnStatus',
       label: '还车状态',
-      render: (value) => getDictLabel(DICT_TYPE.OA_VEHICLE_RETURN_STATUS, value),
+      render: (value) =>
+        getDictLabel(DICT_TYPE.OA_VEHICLE_RETURN_STATUS, value),
     },
     {
       field: 'remark',

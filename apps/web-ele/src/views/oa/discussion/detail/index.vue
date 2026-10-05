@@ -40,11 +40,9 @@ async function handleDiscussionLike() {
   }
   likeLoading.value = true;
   try {
-    if (detail.value.liked) {
-      await deleteDiscussionLike(detail.value.id);
-    } else {
-      await createDiscussionLike(detail.value.id);
-    }
+    await (detail.value.liked
+      ? deleteDiscussionLike(detail.value.id)
+      : createDiscussionLike(detail.value.id));
     await getDetail();
   } finally {
     likeLoading.value = false;
@@ -92,7 +90,10 @@ watch(
             v-dompurify-html="detail.content || ''"
           ></div>
           <!-- 附件 -->
-          <div v-if="detail.fileUrls?.length" class="border-border mt-4 border-t pt-3">
+          <div
+            v-if="detail.fileUrls?.length"
+            class="border-border mt-4 border-t pt-3"
+          >
             <h3 class="mb-3 mt-0 text-sm font-medium">附件</h3>
             <ElLink
               v-for="(url, index) in detail.fileUrls"
@@ -142,7 +143,9 @@ watch(
                 :icon="detail.liked ? 'mdi:thumb-up' : 'mdi:thumb-up-outline'"
                 class="mr-1"
               />
-              {{ detail.liked ? '取消点赞' : '点赞' }}（{{ detail.likeCount || 0 }}）
+              {{ detail.liked ? '取消点赞' : '点赞' }}（{{
+                detail.likeCount || 0
+              }}）
             </ElButton>
           </div>
           <!-- 点赞人摘要 -->
@@ -153,7 +156,9 @@ watch(
             {{ detail.likeUserNames.slice(0, 3).join('、') }}，
             <ElPopover trigger="click" title="点赞人" :width="260">
               <template #reference>
-                <ElButton link>共 {{ detail.likeCount || 0 }} 人觉得很赞</ElButton>
+                <ElButton link>
+                  共 {{ detail.likeCount || 0 }} 人觉得很赞
+                </ElButton>
               </template>
               <div class="break-words leading-7">
                 {{ detail.likeUserNames.join('、') }}

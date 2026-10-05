@@ -44,7 +44,9 @@ const formLoading = ref(false); // 表单加载及保存状态
 const formData = ref<OaTravelApplyApi.TravelApply>(createDefaultFormData()); // 单据
 const formRules = reactive({
   reason: [{ required: true, message: '出差事由不能为空', trigger: 'blur' }],
-  startTime: [{ required: true, message: '开始日期不能为空', trigger: 'change' }],
+  startTime: [
+    { required: true, message: '开始日期不能为空', trigger: 'change' },
+  ],
   endTime: [{ required: true, message: '结束日期不能为空', trigger: 'change' }],
 });
 
@@ -116,7 +118,7 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     // 1. 校验表单及明细
     await formRef.value?.validate();
-    if (!formData.value.items.length) {
+    if (formData.value.items.length === 0) {
       ElMessage.warning('请添加行程明细');
       return;
     }
@@ -297,7 +299,10 @@ const [Modal, modalApi] = useVbenModal({
             placeholder="请选择交通方式"
           >
             <ElOption
-              v-for="item in getDictOptions(DICT_TYPE.OA_TRANSPORT_TYPE, 'number')"
+              v-for="item in getDictOptions(
+                DICT_TYPE.OA_TRANSPORT_TYPE,
+                'number',
+              )"
               :key="String(item.value)"
               :label="item.label"
               :value="item.value"

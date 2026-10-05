@@ -113,7 +113,9 @@ function validate() {
     throw new Error('请添加领用明细');
   }
   if (
-    tableData.value.some((item) => !item.applyQuantity || item.applyQuantity < 1)
+    tableData.value.some(
+      (item) => !item.applyQuantity || item.applyQuantity < 1,
+    )
   ) {
     throw new Error('请填写每行领用数量，数量不能小于 1');
   }

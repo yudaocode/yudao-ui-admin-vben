@@ -130,9 +130,7 @@ export function cancelWorkReport(id: number) {
 }
 
 /** 查询工作汇报统计 */
-export function getWorkReportStatistics(
-  params: OaWorkReportApi.StatisticsReq,
-) {
+export function getWorkReportStatistics(params: OaWorkReportApi.StatisticsReq) {
   return requestClient.get<OaWorkReportApi.Statistics>(
     '/oa/work-report/statistics',
     { params },

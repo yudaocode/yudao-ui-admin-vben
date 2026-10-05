@@ -28,7 +28,8 @@ async function getUnreadCount() {
   unreadError.value = false;
   try {
     const queryParams = { pageNo: 1, pageSize: 1, readStatus: false };
-    unreadCount.value = (await getReceivedAnnouncementPage(queryParams)).total;
+    const result = await getReceivedAnnouncementPage(queryParams);
+    unreadCount.value = result.total;
   } catch {
     unreadError.value = true;
   } finally {
@@ -42,7 +43,8 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    count.value = (await getTaskStatusCount())[OA_TASK_STATUS.NEW] || 0;
+    const result = await getTaskStatusCount();
+    count.value = result[OA_TASK_STATUS.NEW] || 0;
   } catch {
     loadError.value = true;
   } finally {
@@ -85,7 +87,9 @@ onMounted(() => {
           </span>
           <span v-else>
             {{
-              unreadLoading ? '未读公告加载中' : `另有 ${unreadCount} 条未读公告`
+              unreadLoading
+                ? '未读公告加载中'
+                : `另有 ${unreadCount} 条未读公告`
             }}
           </span>
         </div>

@@ -56,7 +56,10 @@ onMounted(() => {
 
 <template>
   <Page>
-    <DocAlert title="【组织】工作台、组织架构" url="https://doc.iocoder.cn/hrm/organization/" />
+    <DocAlert
+      title="【组织】工作台、组织架构"
+      url="https://doc.iocoder.cn/hrm/organization/"
+    />
     <Spin :spinning="loading">
       <div class="mb-4 text-2xl leading-7">团队工作台</div>
       <Row :gutter="[16, 16]" align="top">

@@ -10,10 +10,7 @@ import { IconifyIcon } from '@vben/icons';
 import { ElButton, ElDialog, ElInput, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getVehicleApply,
-  getVehicleApplyPage,
-} from '#/api/oa/vehicle/apply';
+import { getVehicleApply, getVehicleApplyPage } from '#/api/oa/vehicle/apply';
 
 defineOptions({ name: 'OaVehicleApplySelect' });
 
@@ -193,7 +190,7 @@ function handleClear() {
 watch(
   () => props.modelValue,
   async (id) => {
-    if (id == null) {
+    if (id === null || id === undefined) {
       selectedItem.value = undefined;
     } else if (selectedItem.value?.id !== id) {
       selectedItem.value = undefined;

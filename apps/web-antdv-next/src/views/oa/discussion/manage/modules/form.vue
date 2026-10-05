@@ -106,11 +106,7 @@ const [Modal, modalApi] = useVbenModal({
         values.type === OA_DISCUSSION_TYPE.VOTE ? voteOptions.value : [],
     };
     try {
-      if (isUpdate.value) {
-        await updateDiscussion(data);
-      } else {
-        await createDiscussion(data);
-      }
+      await (isUpdate.value ? updateDiscussion(data) : createDiscussion(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

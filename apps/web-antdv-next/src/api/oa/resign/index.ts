@@ -39,16 +39,12 @@ export function getResignApply(id: number) {
 }
 
 /** 创建离职申请草稿 */
-export function createResignApply(
-  data: Partial<OaResignApplyApi.ResignApply>,
-) {
+export function createResignApply(data: Partial<OaResignApplyApi.ResignApply>) {
   return requestClient.post<number>('/oa/resign-apply/create', data);
 }
 
 /** 修改离职申请草稿 */
-export function updateResignApply(
-  data: Partial<OaResignApplyApi.ResignApply>,
-) {
+export function updateResignApply(data: Partial<OaResignApplyApi.ResignApply>) {
   return requestClient.put<boolean>('/oa/resign-apply/update', data);
 }
 

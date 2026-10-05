@@ -8,11 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  createSchedule,
-  getSchedule,
-  updateSchedule,
-} from '#/api/oa/schedule';
+import { createSchedule, getSchedule, updateSchedule } from '#/api/oa/schedule';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -55,9 +51,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     try {
-      await (formData.value?.id
-        ? updateSchedule(data)
-        : createSchedule(data));
+      await (formData.value?.id ? updateSchedule(data) : createSchedule(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

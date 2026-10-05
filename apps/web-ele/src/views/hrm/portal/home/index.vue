@@ -61,7 +61,10 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
-    <DocAlert title="【员工】员工管理" url="https://doc.iocoder.cn/hrm/employee/" />
+    <DocAlert
+      title="【员工】员工管理"
+      url="https://doc.iocoder.cn/hrm/employee/"
+    />
     <div v-loading="loading">
       <ElRow :gutter="16" align="top">
         <ElCol :span="16">

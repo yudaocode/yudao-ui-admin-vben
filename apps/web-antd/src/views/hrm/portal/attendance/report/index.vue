@@ -136,7 +136,10 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
-    <DocAlert title="【考勤】考勤管理" url="https://doc.iocoder.cn/hrm/attendance/" />
+    <DocAlert
+      title="【考勤】考勤管理"
+      url="https://doc.iocoder.cn/hrm/attendance/"
+    />
     <Card title="考勤报表">
       <Spin :spinning="loading">
         <div class="mb-4 flex flex-wrap items-center gap-3">

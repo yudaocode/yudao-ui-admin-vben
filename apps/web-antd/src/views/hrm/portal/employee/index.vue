@@ -77,7 +77,10 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
-    <DocAlert title="【员工】员工管理" url="https://doc.iocoder.cn/hrm/employee/" />
+    <DocAlert
+      title="【员工】员工管理"
+      url="https://doc.iocoder.cn/hrm/employee/"
+    />
     <Card :style="{ marginBottom: '15px' }">
       <div class="flex items-center justify-between">
         <span class="text-lg font-semibold">我的档案</span>

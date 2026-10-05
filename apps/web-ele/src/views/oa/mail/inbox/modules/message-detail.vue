@@ -57,9 +57,9 @@ async function downloadAttachment(part: string, name: string) {
 // 邮件正文使用独立沙箱，链接在新窗口打开，外部图片由用户选择加载
 const mailHtml = computed(
   () =>
-    `<!doctype html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data: ${showExternalImages.value ? 'http: https:' : ''}; base-uri &#39;none&#39;; form-action &#39;none&#39;"><base target="_blank"><style>body{font:14px/1.7 sans-serif;padding:20px;overflow-wrap:anywhere}table,img{max-width:100%}pre{white-space:pre-wrap}</style></head><body>` +
-    (props.detail?.content || '') +
-    '</body></html>',
+    `<!doctype html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src data: ${showExternalImages.value ? 'http: https:' : ''}; base-uri &#39;none&#39;; form-action &#39;none&#39;"><base target="_blank"><style>body{font:14px/1.7 sans-serif;padding:20px;overflow-wrap:anywhere}table,img{max-width:100%}pre{white-space:pre-wrap}</style></head><body>${
+      props.detail?.content || ''
+    }</body></html>`,
 );
 </script>
 
@@ -72,7 +72,9 @@ const mailHtml = computed(
       <div class="mt-3 break-words text-[13px] leading-6 text-muted-foreground">
         <div>发件人：{{ detail.sender }}</div>
         <div>收件人：{{ detail.recipients?.join(', ') }}</div>
-        <div v-if="detail.ccs?.length">抄送人：{{ detail.ccs?.join(', ') }}</div>
+        <div v-if="detail.ccs?.length">
+          抄送人：{{ detail.ccs?.join(', ') }}
+        </div>
         <div>时间：{{ formatDate(detail.receiveTime) }}</div>
       </div>
       <div class="mt-3 flex flex-wrap gap-2 [&>.el-button]:!ml-0">
@@ -108,7 +110,12 @@ const mailHtml = computed(
         >
           恢复到收件箱
         </ElButton>
-        <ElButton type="danger" plain :disabled="operating" @click="emit('delete')">
+        <ElButton
+          type="danger"
+          plain
+          :disabled="operating"
+          @click="emit('delete')"
+        >
           {{ folderKey === OA_MAIL_FOLDER_KEY.TRASH ? '彻底删除' : '删除' }}
         </ElButton>
       </div>

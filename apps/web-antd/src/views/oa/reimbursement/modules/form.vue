@@ -47,7 +47,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as OaReimbursementApi.Reimbursement;
+    const data =
+      (await formApi.getValues()) as OaReimbursementApi.Reimbursement;
     try {
       await (formData.value?.id
         ? updateReimbursement(data)
@@ -88,9 +89,7 @@ const [Modal, modalApi] = useVbenModal({
       <template #items="slotProps">
         <ItemForm
           :model-value="slotProps.componentField.modelValue ?? []"
-          @update:model-value="
-            slotProps.componentField['onUpdate:modelValue']
-          "
+          @update:model-value="slotProps.componentField['onUpdate:modelValue']"
         />
       </template>
     </Form>

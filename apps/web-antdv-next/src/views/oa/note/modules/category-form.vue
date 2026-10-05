@@ -45,8 +45,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data =
-      (await formApi.getValues()) as OaNoteCategoryApi.NoteCategory;
+    const data = (await formApi.getValues()) as OaNoteCategoryApi.NoteCategory;
     try {
       await (formData.value?.id
         ? updateNoteCategory(data)

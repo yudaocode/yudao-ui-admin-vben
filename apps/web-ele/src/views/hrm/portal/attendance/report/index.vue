@@ -135,7 +135,10 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
-    <DocAlert title="【考勤】考勤管理" url="https://doc.iocoder.cn/hrm/attendance/" />
+    <DocAlert
+      title="【考勤】考勤管理"
+      url="https://doc.iocoder.cn/hrm/attendance/"
+    />
     <ElCard shadow="never">
       <template #header>
         <span class="font-semibold">考勤报表</span>

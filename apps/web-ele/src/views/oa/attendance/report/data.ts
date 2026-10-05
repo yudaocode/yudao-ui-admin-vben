@@ -72,7 +72,15 @@ export function useWeekGridFormSchema(): VbenFormSchema[] {
 export function useWeekGridColumns(
   startDate: string,
 ): VxeTableGridOptions['columns'] {
-  const weekDayLabels = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+  const weekDayLabels = [
+    '周一',
+    '周二',
+    '周三',
+    '周四',
+    '周五',
+    '周六',
+    '周日',
+  ];
   const weekStartDate = dayjs(getWeekStartDate(dayjs(startDate)));
   const dayColumns = weekDayLabels.map((label, index) => ({
     title: `${label} ${weekStartDate.add(index, 'day').format('YYYY-MM-DD').slice(5)}`,

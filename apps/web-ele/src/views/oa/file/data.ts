@@ -66,7 +66,9 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '大小',
       width: 110,
       formatter: ({ row }) =>
-        row.type === OA_FILE_NODE_TYPE.FILE ? formatFileSize(row.size || 0) : '',
+        row.type === OA_FILE_NODE_TYPE.FILE
+          ? formatFileSize(row.size || 0)
+          : '',
     },
     {
       field: 'createTime',

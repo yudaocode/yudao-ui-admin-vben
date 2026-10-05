@@ -212,10 +212,7 @@ function openReportDetail(id: number) {
             </template>
           </Table>
         </TabPane>
-        <TabPane
-          key="missing"
-          :tab="`未填 ${currentUser?.missingCount || 0}`"
-        >
+        <TabPane key="missing" :tab="`未填 ${currentUser?.missingCount || 0}`">
           <!-- 未填明细 -->
           <Table
             :columns="missingColumns"

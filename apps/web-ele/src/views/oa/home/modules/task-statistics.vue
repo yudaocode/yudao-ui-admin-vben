@@ -41,7 +41,9 @@ const rankingOptions = computed<EChartsOption>(() => ({
   grid: { left: 32, right: 16, top: 20, bottom: 50 },
   xAxis: {
     type: 'category',
-    data: taskRankings.value.map((item) => item.userName || `用户 ${item.userId}`),
+    data: taskRankings.value.map(
+      (item) => item.userName || `用户 ${item.userId}`,
+    ),
     axisLabel: { interval: 0, width: 60, overflow: 'truncate' },
   },
   yAxis: { type: 'value', minInterval: 1 },
@@ -59,7 +61,9 @@ const { renderEcharts } = useEcharts(rankingChartRef);
 
 /** 获得任务状态占比 */
 function getStatusPercentage(count: number) {
-  return taskTotal.value === 0 ? 0 : Math.round((count / taskTotal.value) * 100);
+  return taskTotal.value === 0
+    ? 0
+    : Math.round((count / taskTotal.value) * 100);
 }
 
 /** 渲染任务完成排行图 */
@@ -145,7 +149,9 @@ onMounted(() => {
     <div v-loading="rankingLoading">
       <div v-if="rankingError" class="mb-3 text-[13px] text-destructive">
         加载失败，
-        <ElButton link type="primary" @click="getRankingList">重新加载</ElButton>
+        <ElButton link type="primary" @click="getRankingList">
+          重新加载
+        </ElButton>
       </div>
       <div class="mb-3 text-sm font-semibold">任务完成排行（按发布人）</div>
       <ElEmpty

@@ -28,7 +28,11 @@ const visible = ref(true); // 关闭后刷新页面恢复
         >
           <IconifyIcon :icon="collapsed ? 'ep:arrow-down' : 'ep:arrow-up'" />
         </Button>
-        <Button type="link" :aria-label="`关闭${title}`" @click="visible = false">
+        <Button
+          type="link"
+          :aria-label="`关闭${title}`"
+          @click="visible = false"
+        >
           <IconifyIcon icon="ep:close" />
         </Button>
       </div>

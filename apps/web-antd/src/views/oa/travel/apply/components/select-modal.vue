@@ -11,7 +11,10 @@ import { message, Radio } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getApprovedTravelApplyList } from '#/api/oa/travel/apply';
 
-import { useApplySelectGridColumns, useApplySelectGridFormSchema } from '../data';
+import {
+  useApplySelectGridColumns,
+  useApplySelectGridFormSchema,
+} from '../data';
 
 defineOptions({ name: 'OaTravelApplySelectModal' });
 
@@ -127,7 +130,7 @@ const [Modal, modalApi] = useVbenModal({
       <template #radioSelect="{ row }">
         <Radio
           :checked="selectedId === row.id"
-          :aria-label="`选择 ${ row.no}`"
+          :aria-label="`选择 ${row.no}`"
           @change="handleSelect(row)"
         />
       </template>

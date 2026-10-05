@@ -71,7 +71,10 @@ onActivated(async () => {
 
 <template>
   <Page v-if="accessible">
-    <DocAlert title="【薪资】月度工资、工资条" url="https://doc.iocoder.cn/hrm/salary/payroll/" />
+    <DocAlert
+      title="【薪资】月度工资、工资条"
+      url="https://doc.iocoder.cn/hrm/salary/payroll/"
+    />
     <div v-loading="loading">
       <ElCard class="mb-4" title="我的工资条">
         <FilterForm />

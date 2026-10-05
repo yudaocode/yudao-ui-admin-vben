@@ -27,7 +27,8 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    list.value = (await getPlanPage({ pageNo: 1, pageSize: 2 })).list;
+    const result = await getPlanPage({ pageNo: 1, pageSize: 2 });
+    list.value = result.list;
   } catch {
     loadError.value = true;
   } finally {

@@ -83,7 +83,10 @@ watch(accountSetId, init, { immediate: true });
 
 <template>
   <Page>
-    <DocAlert title="FMS 手册（功能开启）" url="https://doc.iocoder.cn/fms/build/" />
+    <DocAlert
+      title="FMS 手册（功能开启）"
+      url="https://doc.iocoder.cn/fms/build/"
+    />
     <div class="flex flex-col gap-4">
       <FmsHomeShortcuts />
       <Card>

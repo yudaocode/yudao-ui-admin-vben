@@ -10,7 +10,7 @@ const props = withDefaults(
     text: string;
     width?: number;
   }>(),
-  { width: 160 }
+  { width: 160 },
 );
 
 const emit = defineEmits<{ done: [dataUrl: string] }>();
@@ -28,10 +28,14 @@ watch(
       emit('done', dataUrl);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 
 <template>
-  <img :src="qrcode" alt="qrcode" class="h-40 w-40 rounded border border-solid border-gray-200" />
+  <img
+    :src="qrcode"
+    alt="qrcode"
+    class="h-40 w-40 rounded border border-solid border-gray-200"
+  />
 </template>

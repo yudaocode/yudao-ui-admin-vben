@@ -221,9 +221,7 @@ function openStatisticsDetail(
   user: OaWorkReportApi.UserStatistics,
   tab: string,
 ) {
-  detailModalApi
-    .setData({ user, tab, queryParams: { ...queryParams } })
-    .open();
+  detailModalApi.setData({ user, tab, queryParams: { ...queryParams } }).open();
 }
 
 /** 初始化 */
@@ -234,7 +232,10 @@ onMounted(() => {
 
 <template>
   <Page>
-    <DocAlert title="【协作】日程、任务、计划与汇报" url="https://doc.iocoder.cn/oa/collaboration/work/" />
+    <DocAlert
+      title="【协作】日程、任务、计划与汇报"
+      url="https://doc.iocoder.cn/oa/collaboration/work/"
+    />
     <DetailModal />
 
     <div class="flex h-full w-full gap-4">
@@ -283,7 +284,9 @@ onMounted(() => {
               class="bg-card border-border flex items-center justify-between rounded-md border px-4 py-3 shadow-sm"
             >
               <div>
-                <div class="text-muted-foreground text-sm">{{ card.title }}</div>
+                <div class="text-muted-foreground text-sm">
+                  {{ card.title }}
+                </div>
                 <div
                   class="mt-1 text-[22px] font-semibold leading-7"
                   :class="card.color"

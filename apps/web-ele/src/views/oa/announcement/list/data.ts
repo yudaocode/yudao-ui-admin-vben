@@ -11,10 +11,7 @@ import { formatDateTime } from '@vben/utils';
 import { z } from '#/adapter/form';
 import { DictTag } from '#/components/dict-tag';
 import { getRangePickerDefaultProps } from '#/utils';
-import {
-  OA_ANNOUNCEMENT_TYPE,
-  OA_PRIORITY,
-} from '#/views/oa/utils/constants';
+import { OA_ANNOUNCEMENT_TYPE, OA_PRIORITY } from '#/views/oa/utils/constants';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

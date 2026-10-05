@@ -13,9 +13,7 @@ import { clockAttendance, getMyTodayAttendanceList } from '#/api/oa/attendance';
 
 defineOptions({ name: 'OaHomeAttendance' });
 
-type Attendance = Awaited<
-  ReturnType<typeof getMyTodayAttendanceList>
->[number];
+type Attendance = Awaited<ReturnType<typeof getMyTodayAttendanceList>>[number];
 
 const { push } = useRouter();
 const loading = ref(false); // 区块加载中
@@ -45,7 +43,8 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    attendance.value = (await getMyTodayAttendanceList()).slice(-1)[0];
+    const result = await getMyTodayAttendanceList();
+    attendance.value = result.slice(-1)[0];
   } catch {
     loadError.value = true;
   } finally {

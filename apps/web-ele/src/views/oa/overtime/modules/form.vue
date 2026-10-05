@@ -101,7 +101,11 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-[800px]">
     <Form class="mx-4">
       <template #days="{ componentField }">
-        <ElInput :model-value="componentField.modelValue" disabled class="w-full">
+        <ElInput
+          :model-value="componentField.modelValue"
+          disabled
+          class="w-full"
+        >
           <template #append>天</template>
         </ElInput>
       </template>

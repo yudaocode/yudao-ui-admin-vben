@@ -25,7 +25,6 @@ const emit = defineEmits<{
   sync: [];
 }>();
 const accountId = defineModel<number>('accountId'); // 当前账号
-
 </script>
 
 <template>
@@ -69,8 +68,14 @@ const accountId = defineModel<number>('accountId'); // 当前账号
         </span>
       </button>
     </nav>
-    <div class="mt-auto grid grid-cols-2 gap-2 pt-4 [&>button]:!ml-0 [&>button]:w-full">
-      <Button :loading="syncing" :disabled="!accountId || composing" @click="emit('sync')">
+    <div
+      class="mt-auto grid grid-cols-2 gap-2 pt-4 [&>button]:!ml-0 [&>button]:w-full"
+    >
+      <Button
+        :loading="syncing"
+        :disabled="!accountId || composing"
+        @click="emit('sync')"
+      >
         同步
       </Button>
       <Button @click="emit('settings')">账号设置</Button>

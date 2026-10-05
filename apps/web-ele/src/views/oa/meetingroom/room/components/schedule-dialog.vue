@@ -45,16 +45,13 @@ const slots = computed(() => {
         Number(item.startTime) < endTime && Number(item.endTime) > startTime,
     );
     const expired = endTime <= Date.now();
-    const title =
-      formatDate(startTime, 'HH:mm') +
-      '-' +
-      formatDate(endTime, 'HH:mm') +
-      ' - ' +
-      (expired
-        ? '已过期'
-        : booking
-          ? booking.title + '（' + booking.moderatorName + '）'
-          : '可预约');
+    let status = '可预约';
+    if (expired) {
+      status = '已过期';
+    } else if (booking) {
+      status = `${booking.title}（${booking.moderatorName}）`;
+    }
+    const title = `${formatDate(startTime, 'HH:mm')}-${formatDate(endTime, 'HH:mm')} - ${status}`;
     return { startTime, booking, expired, title };
   });
 });
@@ -63,7 +60,7 @@ const slots = computed(() => {
 async function openModal(roomId: number, roomName: string) {
   // 1. 打开弹窗，初始化最近五天及当前选中日期
   open.value = true;
-  dialogTitle.value = roomName + ' - 预约信息';
+  dialogTitle.value = `${roomName} - 预约信息`;
   const startTime = new Date();
   startTime.setHours(0, 0, 0, 0);
   dates.value = Array.from(
@@ -95,7 +92,9 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
   <ElDialog v-model="open" :title="dialogTitle" width="1150px">
     <div v-loading="loading">
       <!-- 最近五天 -->
-      <div class="border-border mb-5 flex gap-2 border-0 border-b border-solid pb-3">
+      <div
+        class="border-border mb-5 flex gap-2 border-0 border-b border-solid pb-3"
+      >
         <button
           v-for="date in dates"
           :key="date"
@@ -105,7 +104,9 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
           @click="selectedDate = date"
         >
           <div>{{ formatDate(date, 'MM-DD') }}</div>
-          <div class="mt-1 text-xs">{{ OA_WEEKDAY_NAMES[new Date(date).getDay()] }}</div>
+          <div class="mt-1 text-xs">
+            {{ OA_WEEKDAY_NAMES[new Date(date).getDay()] }}
+          </div>
         </button>
       </div>
       <div class="flex gap-5">
@@ -118,7 +119,9 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
             <!-- 预约状态说明 -->
             <div class="flex shrink-0 items-center gap-4 text-[13px]">
               <span class="flex items-center gap-1.5">
-                <i class="h-3.5 w-3.5 border border-solid border-gray-300 bg-white"></i>
+                <i
+                  class="h-3.5 w-3.5 border border-solid border-gray-300 bg-white"
+                ></i>
                 可预约
               </span>
               <span class="flex items-center gap-1.5">
@@ -131,12 +134,18 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
               </span>
             </div>
           </div>
-          <div class="border-border overflow-hidden rounded-lg border border-solid">
+          <div
+            class="border-border overflow-hidden rounded-lg border border-solid"
+          >
             <div
               v-for="period in [0, 1]"
               :key="period"
               class="flex"
-              :class="period === 1 ? 'border-border border-0 border-t border-solid' : ''"
+              :class="
+                period === 1
+                  ? 'border-border border-0 border-t border-solid'
+                  : ''
+              "
             >
               <div
                 class="border-border bg-muted flex w-14 shrink-0 items-center justify-center border-0 border-r border-solid font-semibold"
@@ -153,7 +162,9 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
                   </span>
                 </div>
                 <!-- 每格表示半小时 -->
-                <div class="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 px-1.5 py-2.5">
+                <div
+                  class="grid grid-cols-[repeat(24,minmax(0,1fr))] gap-0.5 px-1.5 py-2.5"
+                >
                   <ElTooltip
                     v-for="slot in slots.slice(period * 24, (period + 1) * 24)"
                     :key="slot.startTime"
@@ -163,7 +174,11 @@ defineExpose({ open: openModal }); // 提供 open 方法，用于打开弹窗
                     <div
                       class="border-border h-9 rounded border border-solid"
                       :class="
-                        slot.expired ? 'bg-gray-200' : slot.booking ? 'bg-green-500' : 'bg-white'
+                        slot.expired
+                          ? 'bg-gray-200'
+                          : slot.booking
+                            ? 'bg-green-500'
+                            : 'bg-white'
                       "
                     ></div>
                   </ElTooltip>

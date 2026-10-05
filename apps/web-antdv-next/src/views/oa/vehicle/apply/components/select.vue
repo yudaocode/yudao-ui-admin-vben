@@ -10,10 +10,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Input, message, Modal } from 'antdv-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  getVehicleApply,
-  getVehicleApplyPage,
-} from '#/api/oa/vehicle/apply';
+import { getVehicleApply, getVehicleApplyPage } from '#/api/oa/vehicle/apply';
 
 defineOptions({ name: 'OaVehicleApplySelect' });
 
@@ -193,7 +190,7 @@ function handleClear() {
 watch(
   () => props.modelValue,
   async (id) => {
-    if (id == null) {
+    if (id === null || id === undefined) {
       selectedItem.value = undefined;
     } else if (selectedItem.value?.id !== id) {
       selectedItem.value = undefined;
@@ -212,7 +209,9 @@ watch(
   <div class="w-full">
     <Input
       readonly
-      :value="selectedItem ? `${selectedItem.no} / ${selectedItem.vehicleNo}` : ''"
+      :value="
+        selectedItem ? `${selectedItem.no} / ${selectedItem.vehicleNo}` : ''
+      "
       :placeholder="placeholder"
       :disabled="disabled"
       @click="openSelect"

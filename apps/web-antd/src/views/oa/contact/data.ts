@@ -13,7 +13,7 @@ import { OA_CONTACT_SCENE_TYPE } from '#/views/oa/utils/constants';
 /** 姓名拼音首字母选项 */
 const ALPHABET_OPTIONS = [
   { label: '全部', value: '' },
-  ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((value) => ({
+  ...[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((value) => ({
     label: value,
     value,
   })),
@@ -246,9 +246,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 /** 表格列配置 */
-export function useGridColumns(
-  scene: number,
-): VxeTableGridOptions['columns'] {
+export function useGridColumns(scene: number): VxeTableGridOptions['columns'] {
   const columns: VxeTableGridOptions['columns'] = [
     {
       field: 'name',

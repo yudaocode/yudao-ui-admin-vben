@@ -107,9 +107,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           ...getDictOptions(
             DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS,
             'number',
-          ).filter(
-            (item) => item.value !== BpmProcessInstanceStatus.NOT_START,
-          ),
+          ).filter((item) => item.value !== BpmProcessInstanceStatus.NOT_START),
         ],
       },
     },

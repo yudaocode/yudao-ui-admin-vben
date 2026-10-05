@@ -47,9 +47,11 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    list.value = (
-      await getReceivedAnnouncementPage({ pageNo: 1, pageSize: 5 })
-    ).list;
+    const result = await getReceivedAnnouncementPage({
+      pageNo: 1,
+      pageSize: 5,
+    });
+    list.value = result.list;
   } catch {
     loadError.value = true;
   } finally {
@@ -75,7 +77,11 @@ onMounted(() => {
       <ElButton link type="primary" @click="getList">重新加载</ElButton>
     </div>
     <ElTable :data="list" :show-header="true" :show-overflow-tooltip="true">
-      <ElTableColumn label="发布部门" min-width="130" prop="publisherDeptName" />
+      <ElTableColumn
+        label="发布部门"
+        min-width="130"
+        prop="publisherDeptName"
+      />
       <ElTableColumn align="center" label="优先级" width="90">
         <template #default="{ row }">
           <DictTag :type="DICT_TYPE.OA_PRIORITY" :value="row.priority" />

@@ -116,9 +116,9 @@ async function handleRecycle() {
         <ElButton
           v-access:code="['pms:pm:project:update']"
           @click="handleArchive"
-          >
-归档
-</ElButton>
+        >
+          归档
+        </ElButton>
       </div>
       <ElDivider />
       <div class="flex items-center justify-between gap-4">
@@ -134,9 +134,9 @@ async function handleRecycle() {
           v-access:code="['pms:pm:project:update']"
           type="danger"
           @click="handleRecycle"
-          >
-移入回收站
-</ElButton>
+        >
+          移入回收站
+        </ElButton>
       </div>
     </template>
 

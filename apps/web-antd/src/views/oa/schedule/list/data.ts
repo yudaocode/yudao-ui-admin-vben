@@ -280,7 +280,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'type',
       label: '日程类型',
-      render: (value) => h(DictTag, { type: DICT_TYPE.OA_SCHEDULE_TYPE, value }),
+      render: (value) =>
+        h(DictTag, { type: DICT_TYPE.OA_SCHEDULE_TYPE, value }),
     },
     {
       field: 'priority',

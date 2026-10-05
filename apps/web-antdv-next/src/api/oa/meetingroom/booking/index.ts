@@ -35,10 +35,9 @@ export namespace OaMeetingRoomBookingApi {
 
 /** 查询会议室预定分页 */
 export function getMeetingRoomBookingPage(params: PageParam) {
-  return requestClient.get<PageResult<OaMeetingRoomBookingApi.MeetingRoomBooking>>(
-    '/oa/meeting-room-booking/page',
-    { params },
-  );
+  return requestClient.get<
+    PageResult<OaMeetingRoomBookingApi.MeetingRoomBooking>
+  >('/oa/meeting-room-booking/page', { params });
 }
 
 /** 查询会议室预定详情 */

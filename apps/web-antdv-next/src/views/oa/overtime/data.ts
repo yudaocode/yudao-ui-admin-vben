@@ -194,7 +194,8 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'type',
       label: '加班类型',
-      render: (value) => h(DictTag, { type: DICT_TYPE.OA_OVERTIME_TYPE, value }),
+      render: (value) =>
+        h(DictTag, { type: DICT_TYPE.OA_OVERTIME_TYPE, value }),
     },
     {
       field: 'startTime',

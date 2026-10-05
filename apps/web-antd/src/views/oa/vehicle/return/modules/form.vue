@@ -52,7 +52,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as OaVehicleReturnApi.VehicleReturn;
+    const data =
+      (await formApi.getValues()) as OaVehicleReturnApi.VehicleReturn;
     try {
       await (formData.value?.id
         ? updateVehicleReturn(data)

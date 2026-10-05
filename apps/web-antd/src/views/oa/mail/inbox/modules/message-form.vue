@@ -31,7 +31,7 @@ const formData = ref<OaMailMessageApi.MailMessage>({ ...props.data }); // 表单
 const wordCount = computed(() => {
   const element = document.createElement('div');
   element.innerHTML = formData.value.content || '';
-  return Array.from((element.textContent || '').replace(/\s/g, '')).length;
+  return [...(element.textContent || '').replaceAll(/\s/g, '')].length;
 });
 
 /** 移除草稿或转发邮件中不再保留的附件 */

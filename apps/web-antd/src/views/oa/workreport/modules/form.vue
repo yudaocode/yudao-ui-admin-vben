@@ -108,8 +108,8 @@ const [Modal, modalApi] = useVbenModal({
     if (
       !values.summary?.trim() &&
       !values.plan?.trim() &&
-      !items.length &&
-      !plans.length
+      items.length === 0 &&
+      plans.length === 0
     ) {
       message.warning('请填写工作总结、计划说明或工作明细');
       return;
@@ -124,11 +124,9 @@ const [Modal, modalApi] = useVbenModal({
         workItems: items,
         planItems: plans,
       };
-      if (formType.value === 'create') {
-        await createWorkReport(data);
-      } else {
-        await updateWorkReport(data);
-      }
+      await (formType.value === 'create'
+        ? createWorkReport(data)
+        : updateWorkReport(data));
       // 关闭并提示
       await modalApi.close();
       emit('success');

@@ -30,7 +30,8 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    list.value = (await getMyNotePage({ pageNo: 1, pageSize: 5 })).list;
+    const result = await getMyNotePage({ pageNo: 1, pageSize: 5 });
+    list.value = result.list;
   } catch {
     loadError.value = true;
   } finally {
@@ -82,11 +83,7 @@ onMounted(() => {
       加载失败，
       <ElButton link type="primary" @click="getList">重新加载</ElButton>
     </div>
-    <ElEmpty
-      v-if="list.length === 0"
-      :image-size="56"
-      description="暂无笔记"
-    />
+    <ElEmpty v-if="list.length === 0" :image-size="56" description="暂无笔记" />
     <div
       v-for="item in list"
       v-else
@@ -103,10 +100,7 @@ onMounted(() => {
         {{ formatDate(item.createTime, 'MM-DD') }}
       </span>
     </div>
-    <div
-      v-if="hasAccessByCodes(['oa:note:create'])"
-      class="mt-3.5 flex gap-2"
-    >
+    <div v-if="hasAccessByCodes(['oa:note:create'])" class="mt-3.5 flex gap-2">
       <ElInput
         v-model="quickNote"
         maxlength="255"

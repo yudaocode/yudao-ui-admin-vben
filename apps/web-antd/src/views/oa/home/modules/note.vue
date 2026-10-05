@@ -30,7 +30,8 @@ async function getList() {
   loading.value = true;
   loadError.value = false;
   try {
-    list.value = (await getMyNotePage({ pageNo: 1, pageSize: 5 })).list;
+    const result = await getMyNotePage({ pageNo: 1, pageSize: 5 });
+    list.value = result.list;
   } catch {
     loadError.value = true;
   } finally {

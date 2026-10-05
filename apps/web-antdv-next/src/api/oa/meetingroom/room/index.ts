@@ -37,9 +37,12 @@ export function getMeetingRoomPage(params: PageParam) {
 
 /** 查询会议室详情 */
 export function getMeetingRoom(id: number) {
-  return requestClient.get<OaMeetingRoomApi.MeetingRoom>('/oa/meeting-room/get', {
-    params: { id },
-  });
+  return requestClient.get<OaMeetingRoomApi.MeetingRoom>(
+    '/oa/meeting-room/get',
+    {
+      params: { id },
+    },
+  );
 }
 
 /** 新增会议室 */

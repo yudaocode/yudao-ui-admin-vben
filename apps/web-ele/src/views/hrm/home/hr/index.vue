@@ -63,7 +63,10 @@ onMounted(() => {
 
 <template>
   <Page>
-    <DocAlert title="【组织】工作台、组织架构" url="https://doc.iocoder.cn/hrm/organization/" />
+    <DocAlert
+      title="【组织】工作台、组织架构"
+      url="https://doc.iocoder.cn/hrm/organization/"
+    />
     <div v-loading="loading">
       <div class="mb-4 text-2xl leading-7">HR 工作台</div>
       <ElRow :gutter="16" align="top">

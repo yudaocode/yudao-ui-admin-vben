@@ -128,10 +128,7 @@ function openReportDetail(id: number) {
           :label="`已填 ${currentUser?.submittedReports.length || 0}`"
         >
           <!-- 已填汇报 -->
-          <ElTable
-            :data="currentUser?.submittedReports || []"
-            max-height="360"
-          >
+          <ElTable :data="currentUser?.submittedReports || []" max-height="360">
             <ElTableColumn label="日期" prop="startTime" width="120">
               <template #default="{ row }">
                 {{ formatDate(row.startTime) }}
@@ -177,7 +174,9 @@ function openReportDetail(id: number) {
             <ElTableColumn
               v-if="queryParams.type !== OA_WORK_REPORT_TYPE.DAILY"
               :label="
-                queryParams.type === OA_WORK_REPORT_TYPE.WEEKLY ? '周次' : '月份'
+                queryParams.type === OA_WORK_REPORT_TYPE.WEEKLY
+                  ? '周次'
+                  : '月份'
               "
               prop="periodKey"
               width="130"

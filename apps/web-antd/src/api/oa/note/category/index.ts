@@ -33,12 +33,16 @@ export function getSimpleNoteCategoryList() {
 }
 
 /** 新增笔记目录 */
-export function createNoteCategory(data: Partial<OaNoteCategoryApi.NoteCategory>) {
+export function createNoteCategory(
+  data: Partial<OaNoteCategoryApi.NoteCategory>,
+) {
   return requestClient.post<number>('/oa/note-category/create', data);
 }
 
 /** 修改笔记目录 */
-export function updateNoteCategory(data: Partial<OaNoteCategoryApi.NoteCategory>) {
+export function updateNoteCategory(
+  data: Partial<OaNoteCategoryApi.NoteCategory>,
+) {
   return requestClient.put<boolean>('/oa/note-category/update', data);
 }
 

@@ -28,7 +28,8 @@ const selectedDateTitle = computed(() =>
 ); // 选中日期标题
 const selectedSchedules = computed(() =>
   schedules.value.filter(
-    (item) => dayjs(item.startTime).format('YYYY-MM-DD') === selectedDateKey.value,
+    (item) =>
+      dayjs(item.startTime).format('YYYY-MM-DD') === selectedDateKey.value,
   ),
 ); // 选中日期的日程列表
 
@@ -128,7 +129,9 @@ onMounted(() => {
 
       <!-- 选中日期的日程 -->
       <div class="border-border min-h-[90px] border-t pt-3">
-        <div class="mb-2 text-[13px] font-semibold">{{ selectedDateTitle }}</div>
+        <div class="mb-2 text-[13px] font-semibold">
+          {{ selectedDateTitle }}
+        </div>
         <Empty
           v-if="selectedSchedules.length === 0"
           :image-style="{ height: '48px' }"

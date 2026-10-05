@@ -129,9 +129,7 @@ const [Modal, modalApi] = useVbenModal({
           v-if="subjectType === OA_FILE_SUBJECT_TYPE.USER"
           :model-value="slotProps.componentField.modelValue"
           :disabled="!!formData?.id"
-          @update:model-value="
-            slotProps.componentField['onUpdate:modelValue']
-          "
+          @update:model-value="slotProps.componentField['onUpdate:modelValue']"
         />
         <ElTreeSelect
           v-else
@@ -145,9 +143,7 @@ const [Modal, modalApi] = useVbenModal({
           default-expand-all
           class="!w-full"
           placeholder="请选择部门"
-          @update:model-value="
-            slotProps.componentField['onUpdate:modelValue']
-          "
+          @update:model-value="slotProps.componentField['onUpdate:modelValue']"
         />
       </template>
     </Form>

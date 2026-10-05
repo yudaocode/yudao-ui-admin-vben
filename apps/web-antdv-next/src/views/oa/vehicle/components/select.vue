@@ -34,17 +34,17 @@ const emit = defineEmits<{
 }>();
 
 const currentVehicle = ref<OaVehicleApi.Vehicle>(); // 本次选中的车辆
-const selectDialogRef =
-  ref<InstanceType<typeof OaVehicleSelectDialog>>(); // 选择弹窗
+const selectDialogRef = ref<InstanceType<typeof OaVehicleSelectDialog>>(); // 选择弹窗
 
 /** 当前展示的车辆：优先本次选中，其次编辑回显 */
-const selectedItem = computed(() =>
-  currentVehicle.value?.id === props.modelValue
-    ? currentVehicle.value
-    : props.selectedVehicle?.id === props.modelValue
-      ? props.selectedVehicle
-      : undefined,
-);
+const selectedItem = computed(() => {
+  if (currentVehicle.value?.id === props.modelValue) {
+    return currentVehicle.value;
+  }
+  return props.selectedVehicle?.id === props.modelValue
+    ? props.selectedVehicle
+    : undefined;
+});
 
 /** 打开选择弹窗 */
 function openSelect() {

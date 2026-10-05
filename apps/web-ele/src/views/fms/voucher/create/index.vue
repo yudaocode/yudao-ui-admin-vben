@@ -1098,7 +1098,10 @@ onBeforeUnmount(removePageShortcutListener);
 
 <template>
   <Page>
-    <DocAlert title="【凭证】凭证管理" url="https://doc.iocoder.cn/fms/voucher/" />
+    <DocAlert
+      title="【凭证】凭证管理"
+      url="https://doc.iocoder.cn/fms/voucher/"
+    />
     <!-- 凭证操作 -->
     <div class="mb-4 flex items-center justify-between rounded-md bg-card p-4">
       <div class="flex items-center gap-2">

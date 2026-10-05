@@ -66,7 +66,10 @@ onMounted(() => {
     :loading="loading"
     :placeholder="placeholder"
     :options="
-      templates.map((template) => ({ label: template.name, value: template.id }))
+      templates.map((template) => ({
+        label: template.name,
+        value: template.id,
+      }))
     "
     option-filter-prop="label"
     @update:value="handleChange"

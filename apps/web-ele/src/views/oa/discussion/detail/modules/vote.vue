@@ -49,20 +49,16 @@ const voteStatus = computed<string>(() => {
   }
   return now > endTime ? 'ended' : 'ongoing';
 }); // 投票状态
-const voteStatusText = computed(() =>
-  voteStatus.value === 'notStarted'
-    ? '未开始'
-    : voteStatus.value === 'ended'
-      ? '已结束'
-      : '进行中',
-); // 投票状态文本
-const voteStatusTagType = computed(() =>
-  voteStatus.value === 'ongoing'
-    ? ('success' as const)
-    : voteStatus.value === 'ended'
-      ? ('info' as const)
-      : ('warning' as const),
-); // 投票状态标签类型
+const voteStatusText = computed(() => {
+  if (voteStatus.value === 'notStarted') return '未开始';
+  return voteStatus.value === 'ended' ? '已结束' : '进行中';
+}); // 投票状态文本
+const voteStatusTagType = computed(() => {
+  if (voteStatus.value === 'ongoing') return 'success' as const;
+  return voteStatus.value === 'ended'
+    ? ('info' as const)
+    : ('warning' as const);
+}); // 投票状态标签类型
 const voteDisabled = computed(() => {
   if (voteStatus.value !== 'ongoing') {
     return true;
@@ -91,13 +87,14 @@ async function submitVote() {
     return;
   }
   // 校验投票选项
-  const optionIds = detail.value.voteMultiple
-    ? selectedOptionIds.value.filter(
-        (optionId) => !votedOptionIds.value.includes(optionId),
-      )
-    : selectedOptionId.value
-      ? [selectedOptionId.value]
-      : [];
+  let optionIds: number[];
+  if (detail.value.voteMultiple) {
+    optionIds = selectedOptionIds.value.filter(
+      (optionId) => !votedOptionIds.value.includes(optionId),
+    );
+  } else {
+    optionIds = selectedOptionId.value ? [selectedOptionId.value] : [];
+  }
   if (optionIds.length === 0) {
     ElMessage.warning('请选择投票选项');
     return;
@@ -132,12 +129,15 @@ watch(
   <ElCard shadow="never" class="my-4">
     <template #header>
       <div class="flex items-center justify-between">
-        <span>投票（{{ getDiscussionVoteModeName(detail.voteMultiple) }}）</span>
+        <span>
+          投票（{{ getDiscussionVoteModeName(detail.voteMultiple) }}）
+        </span>
         <ElTag :type="voteStatusTagType">{{ voteStatusText }}</ElTag>
       </div>
     </template>
     <div class="text-muted-foreground mb-3 text-[13px]">
-      {{ formatDate(detail.voteStartTime) }} 至 {{ formatDate(detail.voteEndTime) }}
+      {{ formatDate(detail.voteStartTime) }} 至
+      {{ formatDate(detail.voteEndTime) }}
     </div>
     <ElCheckboxGroup v-if="detail.voteMultiple" v-model="selectedOptionIds">
       <div v-for="option in detail.voteOptions" :key="option.id" class="mb-3.5">

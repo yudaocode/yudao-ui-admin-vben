@@ -66,7 +66,11 @@ const [Modal, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <Modal title="共享联系人" class="w-[560px]" :confirm-disabled="!hasNewReceiver">
+  <Modal
+    title="共享联系人"
+    class="w-[560px]"
+    :confirm-disabled="!hasNewReceiver"
+  >
     <div class="mx-4">
       <div class="flex items-center gap-2">
         <span class="w-20 shrink-0">共享接收人</span>

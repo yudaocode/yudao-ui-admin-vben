@@ -144,8 +144,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           下班：
           <Button
             v-if="
-              row.dailyAttendances[getWeekDayIndex(column.field)]
-                ?.clockOutId && hasAccessByCodes(['oa:attendance:update'])
+              row.dailyAttendances[getWeekDayIndex(column.field)]?.clockOutId &&
+              hasAccessByCodes(['oa:attendance:update'])
             "
             type="link"
             class="!h-auto !p-0"

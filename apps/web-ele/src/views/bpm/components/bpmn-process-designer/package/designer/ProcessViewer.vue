@@ -197,7 +197,7 @@ const importXML = async (xml: string) => {
   clearViewer();
 
   // 初始化流程图
-  if (xml != null && xml !== '') {
+  if (xml !== null && xml !== undefined && xml !== '') {
     try {
       bpmnViewer.value = new BpmnViewer({
         additionalModules: [MoveCanvasModule],

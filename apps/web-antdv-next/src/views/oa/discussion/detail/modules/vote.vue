@@ -133,7 +133,9 @@ watch(
   <Card class="my-4" size="small">
     <template #title>
       <div class="flex items-center justify-between">
-        <span>投票（{{ getDiscussionVoteModeName(detail.voteMultiple) }}）</span>
+        <span>
+          投票（{{ getDiscussionVoteModeName(detail.voteMultiple) }}）
+        </span>
         <Tag :color="voteStatusTagColor">{{ voteStatusText }}</Tag>
       </div>
     </template>

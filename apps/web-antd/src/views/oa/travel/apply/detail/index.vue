@@ -117,7 +117,10 @@ watch(
         {{ detail.estimatedPrice }}
       </Descriptions.Item>
       <Descriptions.Item label="报销状态">
-        <DictTag :type="DICT_TYPE.OA_REIMBURSE_STATUS" :value="detail.reimburseStatus" />
+        <DictTag
+          :type="DICT_TYPE.OA_REIMBURSE_STATUS"
+          :value="detail.reimburseStatus"
+        />
       </Descriptions.Item>
       <Descriptions.Item label="备注" :span="3">
         {{ detail.remark }}

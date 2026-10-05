@@ -28,7 +28,8 @@ const selectedDateTitle = computed(() =>
 ); // 选中日期标题
 const selectedSchedules = computed(() =>
   schedules.value.filter(
-    (item) => dayjs(item.startTime).format('YYYY-MM-DD') === selectedDateKey.value,
+    (item) =>
+      dayjs(item.startTime).format('YYYY-MM-DD') === selectedDateKey.value,
   ),
 ); // 选中日期的日程列表
 
@@ -49,7 +50,9 @@ async function getList() {
       pageNo: 1,
       pageSize: 200,
       startTime: [
-        dayjs(selectedDate.value).startOf('month').format('YYYY-MM-DD HH:mm:ss'),
+        dayjs(selectedDate.value)
+          .startOf('month')
+          .format('YYYY-MM-DD HH:mm:ss'),
         dayjs(selectedDate.value).endOf('month').format('YYYY-MM-DD HH:mm:ss'),
       ],
     };

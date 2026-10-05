@@ -86,7 +86,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 加载数据
-    const data = modalApi.getData() as OaMeetingRoomBookingApi.MeetingRoomBooking;
+    const data =
+      modalApi.getData() as OaMeetingRoomBookingApi.MeetingRoomBooking;
     if (!data || !data.id) {
       return;
     }
@@ -112,7 +113,9 @@ const [Modal, modalApi] = useVbenModal({
           :model-value="roomName"
           placeholder="请选择会议室"
           readonly
-          @click="roomSelectDialogRef?.open(slotProps.componentField.modelValue)"
+          @click="
+            roomSelectDialogRef?.open(slotProps.componentField.modelValue)
+          "
         >
           <template #suffix>
             <IconifyIcon class="size-4" icon="lucide:search" />

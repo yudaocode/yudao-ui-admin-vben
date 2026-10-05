@@ -54,7 +54,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       rules: z.number().default(0),
       componentProps: {
-        options: getDictOptions(DICT_TYPE.OA_OFFICIAL_DOC_RECEIVE_TYPE, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.OA_OFFICIAL_DOC_RECEIVE_TYPE,
+          'number',
+        ),
         placeholder: '请选择收文类型',
         disabled: true,
       },
@@ -134,7 +137,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       rules: 'required',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.OA_OFFICIAL_DOC_SECRET_LEVEL, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.OA_OFFICIAL_DOC_SECRET_LEVEL,
+          'number',
+        ),
       },
     },
     {
