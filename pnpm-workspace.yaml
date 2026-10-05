@@ -114,7 +114,7 @@ catalog:
   benz-amr-recorder: ^1.1.5
   bpmn-js: ^18.25.1
   bpmn-js-properties-panel: 5.54.0
-  bpmn-js-token-simulation: ^0.39.4
+  bpmn-js-token-simulation: ^1.0.0
   cac: ^7.0.0
   camunda-bpmn-moddle: ^7.0.2
   chalk: ^5.6.2
