@@ -721,7 +721,7 @@ function getFormFieldTitle(
   field: string,
 ) {
   const item = fieldOptions.find((item) => item.field === field);
-  return item?.title;
+  return item?.title ?? field;
 }
 
 /** 获取操作符名称 */

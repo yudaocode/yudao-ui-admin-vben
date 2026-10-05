@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import type { FormRules } from 'element-plus';
 
+import type { Ref } from 'vue';
+
 import type {
   FormTriggerSetting,
   SimpleFlowNode,
   TriggerSetting,
 } from '../../consts';
 
-import { computed, getCurrentInstance, onMounted, reactive, ref } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  onMounted,
+  reactive,
+  ref,
+} from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
-import { BpmNodeTypeEnum } from '@vben/constants';
+import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
@@ -102,6 +111,17 @@ const configForm = ref<TriggerSetting>({
   ],
 });
 // 流程表单字段
+const formType = inject<Ref<number>>('formType'); // 表单类型
+const triggerTypeOptions = computed(() =>
+  formType?.value === BpmModelFormType.CUSTOM
+    ? TRIGGER_TYPES.filter(
+        (item) =>
+          item.value !== TriggerTypeEnum.FORM_DELETE &&
+          item.value !== TriggerTypeEnum.FORM_UPDATE,
+      )
+    : TRIGGER_TYPES,
+); // 业务表单不支持修改、删除流程表单数据
+
 const formFields = useFormFields();
 
 // 可选的修改的表单字段
@@ -412,7 +432,7 @@ onMounted(() => {
         <ElFormItem label="触发器类型" prop="type">
           <ElSelect v-model="configForm.type" @change="changeTriggerType">
             <ElOption
-              v-for="(item, index) in TRIGGER_TYPES"
+              v-for="(item, index) in triggerTypeOptions"
               :key="index"
               :value="item.value"
               :label="item.label"

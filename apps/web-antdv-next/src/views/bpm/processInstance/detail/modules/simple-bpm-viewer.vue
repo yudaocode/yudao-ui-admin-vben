@@ -166,6 +166,7 @@ watch(
       simpleModel.value = JSON.parse(value);
     }
   },
+  { immediate: true },
 );
 </script>
 <template>

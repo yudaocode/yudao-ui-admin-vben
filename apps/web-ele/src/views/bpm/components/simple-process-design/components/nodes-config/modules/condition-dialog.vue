@@ -26,8 +26,7 @@ const conditionData = ref<{
   conditionGroups: cloneDeep(DEFAULT_CONDITION_GROUP_VALUE),
 });
 
-// 条件组件的引用
-const conditionRef = ref();
+const conditionRef = ref(); // 条件表单 Ref
 
 const [Modal, modalApi] = useVbenModal<FormTriggerSetting>({
   title: '条件配置',
@@ -37,15 +36,13 @@ const [Modal, modalApi] = useVbenModal<FormTriggerSetting>({
     if (isOpen) {
       // 获取传递的数据
       const conditionObj = modalApi.getData();
-      if (conditionObj) {
-        conditionData.value.conditionType =
-          conditionObj.conditionType ?? ConditionType.RULE;
-        conditionData.value.conditionExpression =
-          conditionObj.conditionExpression;
-        conditionData.value.conditionGroups =
-          conditionObj.conditionGroups ??
-          cloneDeep(DEFAULT_CONDITION_GROUP_VALUE);
-      }
+      conditionData.value = {
+        conditionType: conditionObj?.conditionType ?? ConditionType.RULE,
+        conditionExpression: conditionObj?.conditionExpression,
+        conditionGroups: cloneDeep(
+          conditionObj?.conditionGroups ?? DEFAULT_CONDITION_GROUP_VALUE,
+        ),
+      };
     }
   },
   async onConfirm() {
