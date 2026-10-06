@@ -21,7 +21,7 @@ export namespace SystemTenantPackageApi {
 export function getTenantPackagePage(params: PageParam) {
   return requestClient.get<PageResult<SystemTenantPackageApi.TenantPackage>>(
     '/system/tenant-package/page',
-    { params },
+    { params, headers: { isVisitTenant: false } },
   );
 }
 
@@ -29,6 +29,7 @@ export function getTenantPackagePage(params: PageParam) {
 export function getTenantPackage(id: number) {
   return requestClient.get<SystemTenantPackageApi.TenantPackage>(
     `/system/tenant-package/get?id=${id}`,
+    { headers: { isVisitTenant: false } },
   );
 }
 
@@ -36,14 +37,18 @@ export function getTenantPackage(id: number) {
 export function createTenantPackage(
   data: SystemTenantPackageApi.TenantPackage,
 ) {
-  return requestClient.post('/system/tenant-package/create', data);
+  return requestClient.post('/system/tenant-package/create', data, {
+    headers: { isVisitTenant: false },
+  });
 }
 
 /** 修改租户套餐 */
 export function updateTenantPackage(
   data: SystemTenantPackageApi.TenantPackage,
 ) {
-  return requestClient.put('/system/tenant-package/update', data);
+  return requestClient.put('/system/tenant-package/update', data, {
+    headers: { isVisitTenant: false },
+  });
 }
 
 /** 删除租户套餐 */

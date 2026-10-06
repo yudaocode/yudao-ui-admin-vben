@@ -61,6 +61,9 @@ async function fetchTenantList() {
 
     // 设置选中的租户编号
     accessStore.setTenantId(tenantId);
+    if (tenantId) {
+      accessStore.setVisitTenantId(tenantId);
+    }
     loginRef.value.getFormApi().setFieldValue('tenantId', tenantId?.toString());
   } catch (error) {
     console.error('获取租户列表失败:', error);
@@ -136,7 +139,9 @@ const formSchema = computed((): VbenFormSchema[] => {
         if: tenantEnable,
         trigger(values) {
           if (values.tenantId) {
-            accessStore.setTenantId(Number(values.tenantId));
+            const id = Number(values.tenantId);
+            accessStore.setTenantId(id);
+            accessStore.setVisitTenantId(id);
           }
         },
       },

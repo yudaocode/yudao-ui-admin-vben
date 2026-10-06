@@ -22,8 +22,11 @@ export namespace SystemMenuApi {
 }
 
 /** 查询菜单（精简）列表 */
-export async function getSimpleMenusList() {
-  return requestClient.get<SystemMenuApi.Menu[]>('/system/menu/simple-list');
+export async function getSimpleMenusList(options?: { visitTenant?: boolean }) {
+  return requestClient.get<SystemMenuApi.Menu[]>('/system/menu/simple-list', {
+    headers:
+      options?.visitTenant === false ? { isVisitTenant: false } : undefined,
+  });
 }
 
 /** 查询菜单列表 */

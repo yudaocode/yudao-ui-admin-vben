@@ -20,7 +20,12 @@ import {
   smsLogin,
   socialLogin,
 } from '#/api';
+import { getXqWorkbenchScope } from '#/api/xq/listing';
 import { $t } from '#/locales';
+import {
+  attachDesksToWorkbench,
+  buildXqDeskMenus,
+} from '#/views/xq/desk/use-desk-scope';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
@@ -79,6 +84,9 @@ export const useAuthStore = defineStore('auth', () => {
         const fetchUserInfoResult = await fetchUserInfo();
 
         userInfo = fetchUserInfoResult.user;
+        if (accessStore.tenantId) {
+          accessStore.setVisitTenantId(accessStore.tenantId);
+        }
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
@@ -138,7 +146,18 @@ export const useAuthStore = defineStore('auth', () => {
     // userStore
     userStore.setUserInfo(authPermissionInfo.user);
     userStore.setUserRoles(authPermissionInfo.roles);
-    // accessStore
+    try {
+      const scope = await getXqWorkbenchScope();
+      const desks = buildXqDeskMenus(
+        scope?.platforms || [],
+        authPermissionInfo.permissions || [],
+      );
+      if (desks.length > 0) {
+        attachDesksToWorkbench(authPermissionInfo.menus || [], desks);
+      }
+    } catch {
+      // 无绑店或无 listing 权限时不注入平台工作台
+    }
     accessStore.setAccessMenus(authPermissionInfo.menus);
     accessStore.setAccessCodes(authPermissionInfo.permissions);
     return authPermissionInfo;

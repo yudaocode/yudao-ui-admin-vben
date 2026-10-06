@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { XqListingApi } from '#/api/xq/listing';
 
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -24,6 +24,7 @@ import {
   getXqListingPlatforms,
   saveXqImageRule,
 } from '#/api/xq/listing';
+import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 
 const loading = ref(false);
 const saving = ref(false);
@@ -31,6 +32,7 @@ const catLoading = ref(false);
 const platforms = ref<XqListingApi.Platform[]>([]);
 const categoryTree = ref<XqListingApi.CategoryNode[]>([]);
 const configuredRules = ref<XqListingApi.ImageRule[]>([]);
+const lockedPlatformId = useDeskPlatformId();
 const activePlatformId = ref<string>('');
 /** 空字符串 = 平台默认提示词 */
 const activeCategoryId = ref<string>('');
@@ -90,6 +92,10 @@ function findCategoryName(
 
 async function loadPlatforms() {
   platforms.value = (await getXqListingPlatforms()) || [];
+  if (lockedPlatformId.value) {
+    activePlatformId.value = lockedPlatformId.value;
+    return;
+  }
   if (!activePlatformId.value && platforms.value[0]) {
     activePlatformId.value = platforms.value[0].id;
   }
@@ -194,6 +200,11 @@ onMounted(async () => {
     message.error(error?.message || '初始化失败');
   }
 });
+
+watch(lockedPlatformId, async (pid) => {
+  if (!pid) return;
+  await onSelectPlatform(pid);
+});
 </script>
 
 <template>
@@ -203,8 +214,11 @@ onMounted(async () => {
         <div>
           <h2>图片管理</h2>
           <p>
-            按上架平台 + 分类配置不同生图提示词，数据写入原库
-            t_giga_image_gen_rule。
+            {{
+              lockedPlatformId
+                ? '当前平台按分类配置生图提示词。'
+                : '按上架平台 + 分类配置不同生图提示词，数据写入原库 t_giga_image_gen_rule。'
+            }}
           </p>
         </div>
         <Button type="primary" :loading="saving" @click="handleSave">
@@ -212,8 +226,11 @@ onMounted(async () => {
         </Button>
       </div>
 
-      <div class="xq-img-rule-layout">
-        <div class="xq-img-rule-side">
+      <div
+        class="xq-img-rule-layout"
+        :class="{ 'is-locked': !!lockedPlatformId }"
+      >
+        <div v-if="!lockedPlatformId" class="xq-img-rule-side">
           <div class="side-title">平台</div>
           <button
             v-for="p in platforms"
@@ -333,6 +350,10 @@ onMounted(async () => {
   grid-template-columns: 200px 280px 1fr;
   gap: 16px;
   min-height: 560px;
+}
+
+.xq-img-rule-layout.is-locked {
+  grid-template-columns: 280px 1fr;
 }
 
 .xq-img-rule-side,

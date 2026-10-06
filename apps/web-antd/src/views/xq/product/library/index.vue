@@ -20,14 +20,9 @@ import {
   Select,
   Spin,
   Tag,
-  TreeSelect,
 } from 'ant-design-vue';
 
-import {
-  getXqListingCategories,
-  getXqListingPlatforms,
-  getXqListingShops,
-} from '#/api/xq/listing';
+import { getXqListingPlatforms, getXqListingShops } from '#/api/xq/listing';
 import {
   getXqCategoryTree,
   getXqProduct,
@@ -58,6 +53,8 @@ const pageSize = ref(20);
 const detailOpen = ref(false);
 const detailLoading = ref(false);
 const detail = ref<null | XqProductApi.Product>(null);
+const selectedVariantSku = ref('');
+const galleryIndex = ref(0);
 /** 勾选待下发：key = sku/itemCode */
 const selectedMap = ref<Record<string, XqProductApi.Product>>({});
 const dispatching = ref(false);
@@ -66,10 +63,8 @@ const dispatchExtra = ref<null | XqProductApi.Product>(null);
 
 const platforms = ref<XqListingApi.Platform[]>([]);
 const shops = ref<XqListingApi.Shop[]>([]);
-const listingCategoryTree = ref<XqListingApi.CategoryNode[]>([]);
 const listingPlatformId = ref<string | undefined>();
 const listingShopId = ref<string | undefined>();
-const listingCategoryId = ref<string | undefined>();
 const listingLoading = ref(false);
 
 const selectedList = computed(() => Object.values(selectedMap.value));
@@ -98,35 +93,6 @@ const platformOptions = computed(() =>
 const shopOptions = computed(() =>
   shops.value.map((s) => ({ label: s.name, value: s.id })),
 );
-const listingCategoryTreeData = computed(() =>
-  mapListingCategoryTree(listingCategoryTree.value),
-);
-
-function mapListingCategoryTree(
-  nodes: XqListingApi.CategoryNode[],
-): Array<Record<string, any>> {
-  return (nodes || []).map((n) => ({
-    title: n.name,
-    value: n.id,
-    key: n.id,
-    children: n.children?.length
-      ? mapListingCategoryTree(n.children)
-      : undefined,
-  }));
-}
-
-function findListingCategoryName(
-  nodes: XqListingApi.CategoryNode[],
-  id?: string,
-): string | undefined {
-  if (!id) return undefined;
-  for (const n of nodes || []) {
-    if (n.id === id) return n.name;
-    const child = findListingCategoryName(n.children || [], id);
-    if (child) return child;
-  }
-  return undefined;
-}
 
 function productKey(item: XqProductApi.Product) {
   return item.itemCode || item.sku || String(item.id || '');
@@ -178,13 +144,10 @@ async function ensureListingPlatforms() {
 async function onListingPlatformChange(id?: string) {
   listingPlatformId.value = id;
   listingShopId.value = undefined;
-  listingCategoryId.value = undefined;
   shops.value = [];
-  listingCategoryTree.value = [];
   if (!id) return;
   listingLoading.value = true;
   try {
-    // 分开拉取：分类接口未部署时不影响店铺
     const shopRes = await getXqListingShops(id).catch((error: any) => {
       message.error(error?.message || '加载店铺失败（原库）');
       return [] as XqListingApi.Shop[];
@@ -193,11 +156,6 @@ async function onListingPlatformChange(id?: string) {
     if (shops.value.length === 1) {
       listingShopId.value = shops.value[0]!.id;
     }
-    const catRes = await getXqListingCategories(id).catch((error: any) => {
-      message.error(error?.message || '加载平台分类失败（原库）');
-      return [] as XqListingApi.CategoryNode[];
-    });
-    listingCategoryTree.value = catRes || [];
   } finally {
     listingLoading.value = false;
   }
@@ -224,8 +182,8 @@ async function openDispatchModal(extra?: XqProductApi.Product) {
 }
 
 async function confirmDispatch() {
-  if (!listingPlatformId.value || !listingCategoryId.value) {
-    message.warning('请选择上架平台与平台分类（原库）');
+  if (!listingPlatformId.value) {
+    message.warning('请选择上架平台');
     return;
   }
   const map = { ...selectedMap.value };
@@ -249,19 +207,13 @@ async function confirmDispatch() {
     (p) => p.id === listingPlatformId.value,
   )?.name;
   const shopName = shops.value.find((s) => s.id === listingShopId.value)?.name;
-  const categoryName = findListingCategoryName(
-    listingCategoryTree.value,
-    listingCategoryId.value,
-  );
   dispatching.value = true;
   try {
     const list = await dispatchXqWorkOrder({
       listingPlatformId: listingPlatformId.value,
       listingShopId: listingShopId.value || undefined,
-      listingCategoryId: listingCategoryId.value,
       listingPlatformName: platformName,
       listingShopName: shopName,
-      listingCategoryName: categoryName,
       items,
     });
     message.success(`已下发 ${list?.length ?? items.length} 个任务到工作台`);
@@ -374,14 +326,183 @@ watch(filterCategoryId, (id) => {
   loadProducts();
 });
 
+const familyBar = ref<XqProductApi.Variant[]>([]);
+
 async function openDetail(item: XqProductApi.Product) {
   detailOpen.value = true;
   detailLoading.value = true;
   detail.value = item;
+  selectedVariantSku.value = item.sku;
+  galleryIndex.value = 0;
+  familyBar.value = [];
   try {
     if (item.id) {
-      detail.value = await getXqProduct(item.id);
+      await loadDetailSku(item.id, item);
+    } else {
+      familyBar.value = buildFamily(item);
     }
+  } finally {
+    detailLoading.value = false;
+  }
+}
+
+async function loadDetailSku(id: string, fallback?: XqProductApi.Product) {
+  const loaded = await getXqProduct(id);
+  const prev = fallback?.variants || detail.value?.variants || [];
+  if ((!loaded.variants || loaded.variants.length === 0) && prev.length > 0) {
+    loaded.variants = prev.filter((v) => isCollectedVariant(v, loaded.sku));
+  }
+  detail.value = loaded;
+  selectedVariantSku.value = loaded?.sku || fallback?.sku || '';
+  galleryIndex.value = 0;
+  familyBar.value = mergeFamily(familyBar.value, loaded);
+}
+
+function toFamilyItem(
+  p: XqProductApi.Product | XqProductApi.Variant,
+): XqProductApi.Variant {
+  return {
+    id: p.id,
+    sku: p.sku,
+    itemCode: p.itemCode,
+    name: variantChipLabel(p),
+    imageUrl: p.imageUrl,
+    mainColor: p.mainColor,
+    qtyAvailable: p.qtyAvailable,
+    price: p.price,
+    discountedPrice: p.discountedPrice,
+  };
+}
+
+function variantChipLabel(
+  v: Pick<XqProductApi.Variant, 'mainColor' | 'name' | 'sku'>,
+): string {
+  const color = cleanChipText(v.mainColor);
+  if (color) return color;
+  const name = cleanChipText(v.name);
+  if (name) return name;
+  return v.sku || '';
+}
+
+function cleanChipText(raw?: null | string): string {
+  const s = String(raw ?? '').trim();
+  if (!s || s.toLowerCase() === 'null' || s.toLowerCase() === 'undefined') {
+    return '';
+  }
+  return s;
+}
+
+function isCollectedVariant(
+  v: XqProductApi.Variant,
+  currentSku?: string,
+): boolean {
+  if (!v?.sku) return false;
+  if (currentSku && v.sku === currentSku) return true;
+  return Boolean(v.id);
+}
+
+function buildFamily(p: XqProductApi.Product): XqProductApi.Variant[] {
+  const map = new Map<string, XqProductApi.Variant>();
+  map.set(p.sku, toFamilyItem(p));
+  for (const v of p.variants || []) {
+    if (!v.sku || map.has(v.sku) || !isCollectedVariant(v, p.sku)) continue;
+    map.set(v.sku, v);
+  }
+  return [...map.values()];
+}
+
+function mergeFamily(
+  prev: XqProductApi.Variant[],
+  loaded: XqProductApi.Product,
+): XqProductApi.Variant[] {
+  const currentSku = loaded.sku;
+  const map = new Map<string, XqProductApi.Variant>();
+  for (const v of prev) {
+    if (v.sku && isCollectedVariant(v, currentSku)) map.set(v.sku, v);
+  }
+  for (const v of buildFamily(loaded)) {
+    map.set(v.sku, v);
+  }
+  return [...map.values()];
+}
+
+const selectedVariant = computed(
+  () =>
+    familyBar.value.find((v) => v.sku === selectedVariantSku.value) ||
+    familyBar.value[0],
+);
+
+const displayGallery = computed(() => {
+  const d = detail.value;
+  if (!d) return [] as string[];
+  return detailGallery(d);
+});
+
+const displayImage = computed(
+  () => displayGallery.value[galleryIndex.value] || displayGallery.value[0],
+);
+
+const detailSpecRows = computed(() => {
+  const d = detail.value;
+  if (!d) return [] as { label: string; value: string }[];
+  const rows: { label: string; value: string }[] = [];
+  const push = (label: string, value?: null | number | string) => {
+    const text = formatSpecValue(value);
+    if (text) rows.push({ label, value: text });
+  };
+  push('SKU', d.sku);
+  push('Item Code', d.itemCode);
+  push('UPC', d.upc);
+  push('品牌', d.brandName);
+  push('类目', d.categoryName);
+  push('颜色', d.mainColor);
+  push('材质', d.mainMaterial);
+  push('产地', d.placeOfOrigin);
+  push(
+    '包装尺寸（in）',
+    formatDim(d.lengthIn, d.widthIn, d.heightIn, d.lengthUnit || 'in'),
+  );
+  push('包装尺寸（cm）', formatDim(d.lengthCm, d.widthCm, d.heightCm, 'cm'));
+  push('重量', formatWeight(d.weight, d.weightUnit, d.weightKg));
+  push(
+    '组装尺寸',
+    formatDim(
+      d.assembledLength,
+      d.assembledWidth,
+      d.assembledHeight,
+      d.assembledLengthUnit || 'in',
+    ),
+  );
+  push(
+    '组装重量',
+    d.assembledWeight
+      ? `${formatSpecValue(d.assembledWeight)} ${d.assembledWeightUnit || ''}`.trim()
+      : '',
+  );
+  const attrs = parseAttributes(d.attributesJson);
+  for (const [label, value] of attrs) {
+    if (rows.some((r) => r.label === label || r.value === value)) continue;
+    push(label, value);
+  }
+  if (
+    d.characteristics &&
+    d.characteristics !== d.description &&
+    !d.characteristics.includes('<')
+  ) {
+    push('特点', d.characteristics);
+  }
+  return rows;
+});
+
+async function selectAssociate(v: XqProductApi.Variant) {
+  if (!v?.sku || v.sku === detail.value?.sku) return;
+  if (!v.id) {
+    selectedVariantSku.value = v.sku;
+    return;
+  }
+  detailLoading.value = true;
+  try {
+    await loadDetailSku(v.id);
   } finally {
     detailLoading.value = false;
   }
@@ -397,9 +518,58 @@ function formatMoney(value?: null | number) {
   return n.toFixed(2);
 }
 
+function formatSpecValue(value?: null | number | string) {
+  if (value === null || value === undefined) return '';
+  const s = String(value).trim();
+  if (!s || s.toLowerCase() === 'null' || s === '0' || s === '0.00') return '';
+  return s;
+}
+
+function formatDim(
+  l?: null | number,
+  w?: null | number,
+  h?: null | number,
+  unit?: string,
+) {
+  const parts = [l, w, h].map((n) => formatSpecValue(n)).filter(Boolean);
+  if (parts.length === 0) return '';
+  return `${parts.join(' × ')} ${unit || ''}`.trim();
+}
+
+function formatWeight(
+  weight?: null | number,
+  unit?: string,
+  kg?: null | number,
+) {
+  const w = formatSpecValue(weight);
+  const k = formatSpecValue(kg);
+  if (w && k) return `${w} ${unit || 'lb'} / ${k} kg`;
+  if (w) return `${w} ${unit || ''}`.trim();
+  if (k) return `${k} kg`;
+  return '';
+}
+
+function parseAttributes(raw?: string) {
+  const out: [string, string][] = [];
+  if (!raw) return out;
+  try {
+    const obj = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return out;
+    for (const [k, v] of Object.entries(obj)) {
+      const val = formatSpecValue(v as string);
+      if (k && val) out.push([k, val]);
+    }
+  } catch {
+    // ignore
+  }
+  return out;
+}
+
 function imgBadgeText(item: XqProductApi.Product) {
-  const n = item.imageCount || item.imageUrls?.length || 0;
-  if (n > 1) return `${n} imgs`;
+  const n = item.variants?.length || 0;
+  if (n > 0) return `${n + 1} 款`;
+  const imgs = item.imageCount || item.imageUrls?.length || 0;
+  if (imgs > 1) return `${imgs} imgs`;
   return item.listedTag || '';
 }
 
@@ -410,18 +580,6 @@ function detailGallery(item: null | XqProductApi.Product) {
     urls.unshift(item.imageUrl);
   }
   return urls;
-}
-
-function formatCreateTime(value?: string) {
-  if (!value) return '—';
-  if (/^\d+$/.test(value)) {
-    const n = Number(value);
-    const d = new Date(n > 1e12 ? n : n * 1000);
-    if (!Number.isNaN(d.getTime())) {
-      return d.toLocaleString();
-    }
-  }
-  return value.replace('T', ' ').slice(0, 19);
 }
 
 function onPageChange(page: number, size: number) {
@@ -644,6 +802,17 @@ onMounted(async () => {
                   item.supplierName || item.categoryName || ''
                 }}</span>
               </div>
+              <div v-if="item.variants?.length" class="xq-assoc">
+                同品 {{ item.variants.length + 1 }} 个 SKU
+                <span
+                  v-for="v in item.variants.slice(0, 4)"
+                  :key="v.sku"
+                  class="xq-assoc-tag"
+                  :title="v.sku"
+                >
+                  {{ variantChipLabel(v) }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -665,7 +834,7 @@ onMounted(async () => {
     <Modal
       v-model:open="detailOpen"
       :title="detail?.name || '产品详情'"
-      width="920px"
+      width="1080px"
       destroy-on-close
       class="xq-detail-modal"
       ok-text="下发工作台"
@@ -673,89 +842,111 @@ onMounted(async () => {
       @ok="detail && openDispatchModal(detail)"
     >
       <Spin :spinning="detailLoading">
-        <div v-if="detail" class="xq-detail">
-          <div class="xq-detail-media">
-            <Image.PreviewGroup>
-              <div class="xq-gallery-main">
-                <Image
-                  :src="
-                    detailGallery(detail)[0] || detail.imageUrl || undefined
-                  "
-                  :preview="true"
-                  fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3C/svg%3E"
-                />
-              </div>
-              <div
-                v-if="detailGallery(detail).length > 1"
-                class="xq-gallery-thumbs"
+        <div v-if="detail" class="xq-shop">
+          <div class="xq-shop-media">
+            <div v-if="displayGallery.length" class="xq-shop-thumbs">
+              <button
+                v-for="(url, idx) in displayGallery.slice(0, 12)"
+                :key="`g-${idx}`"
+                type="button"
+                class="xq-shop-thumb"
+                :class="{ active: galleryIndex === idx }"
+                @click="galleryIndex = idx"
               >
-                <Image
-                  v-for="(url, idx) in detailGallery(detail).slice(0, 12)"
-                  :key="`${url}-${idx}`"
-                  :src="url"
-                  :preview="true"
-                  class="xq-thumb"
-                />
+                <img :src="url" alt="" />
+              </button>
+            </div>
+            <div class="xq-shop-main">
+              <Image
+                :src="displayImage || detail.imageUrl || undefined"
+                :preview="true"
+                fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3C/svg%3E"
+              />
+            </div>
+          </div>
+
+          <div class="xq-shop-buy">
+            <h3 class="xq-shop-title">{{ detail.name }}</h3>
+            <div class="xq-shop-price">
+              <strong
+                v-if="
+                  formatMoney(
+                    selectedVariant?.discountedPrice || detail.discountedPrice,
+                  )
+                "
+              >
+                ${{
+                  formatMoney(
+                    selectedVariant?.discountedPrice || detail.discountedPrice,
+                  )
+                }}
+              </strong>
+              <strong
+                v-else-if="formatMoney(selectedVariant?.price || detail.price)"
+              >
+                ${{ formatMoney(selectedVariant?.price || detail.price) }}
+              </strong>
+              <strong v-else>—</strong>
+              <s
+                v-if="
+                  formatMoney(detail.price) &&
+                  formatMoney(detail.discountedPrice)
+                "
+              >
+                ${{ formatMoney(detail.price) }}
+              </s>
+              <span
+                v-if="formatMoney(detail.exclusivePrice)"
+                class="xq-exclusive"
+              >
+                专享 ${{ formatMoney(detail.exclusivePrice) }}
+              </span>
+            </div>
+            <div class="xq-shop-meta">
+              <span>Item Code
+                {{
+                  selectedVariant?.itemCode || detail.itemCode || detail.sku
+                }}</span>
+              <span>库存
+                {{
+                  selectedVariant?.qtyAvailable ?? detail.qtyAvailable ?? '—'
+                }}</span>
+            </div>
+
+            <div v-if="familyBar.length > 1" class="xq-shop-spec">
+              <div class="xq-spec-label">同品 SKU</div>
+              <p class="xq-spec-hint">
+                独立货号，各有自己的图/价/库存（非一条详情里的变体字段）
+              </p>
+              <div class="xq-spec-list">
+                <button
+                  v-for="v in familyBar"
+                  :key="v.sku"
+                  type="button"
+                  class="xq-spec-item"
+                  :class="{ active: detail.sku === v.sku }"
+                  :title="`${v.sku} ${v.name || ''}`"
+                  @click="selectAssociate(v)"
+                >
+                  <img v-if="v.imageUrl" :src="v.imageUrl" alt="" />
+                  <span>{{ variantChipLabel(v) }}</span>
+                </button>
               </div>
-            </Image.PreviewGroup>
-            <div v-if="detail.imageCount" class="xq-gallery-count">
-              共 {{ detail.imageCount }} 张图
             </div>
           </div>
-          <div class="xq-detail-info">
-            <div class="row">
-              <label>SKU</label><span>{{ detail.sku }}</span>
-            </div>
-            <div class="row">
-              <label>Item Code</label><span>{{ detail.itemCode || '—' }}</span>
-            </div>
-            <div class="row">
-              <label>分类</label><span>{{ detail.categoryName || '—' }}</span>
-            </div>
-            <div class="row">
-              <label>原价</label>
-              <span>
-                <template v-if="formatMoney(detail.price)">
-                  {{ detail.currency || 'USD' }}
-                  {{ formatMoney(detail.price) }}
-                </template>
-                <template v-else>—</template>
-              </span>
-            </div>
-            <div class="row">
-              <label>折扣价</label>
-              <span class="xq-sale-text">
-                <template v-if="formatMoney(detail.discountedPrice)">
-                  {{ detail.currency || 'USD' }}
-                  {{ formatMoney(detail.discountedPrice) }}
-                </template>
-                <template v-else>—</template>
-              </span>
-            </div>
-            <div v-if="formatMoney(detail.exclusivePrice)" class="row">
-              <label>专享价</label>
-              <span>
-                {{ detail.currency || 'USD' }}
-                {{ formatMoney(detail.exclusivePrice) }}
-              </span>
-            </div>
-            <div class="row">
-              <label>库存</label><span>{{ detail.qtyAvailable ?? '—' }}</span>
-            </div>
-            <div class="row">
-              <label>供应商</label>
-              <span>{{ detail.supplierCode || '' }}
-                {{ detail.supplierName || '' }}</span>
-            </div>
-            <div class="row">
-              <label>备注</label><span>{{ detail.remark || '—' }}</span>
-            </div>
-            <div class="row">
-              <label>同步时间</label><span>{{ formatCreateTime(detail.createTime) }}</span>
-            </div>
+
+          <div v-if="detailSpecRows.length" class="xq-shop-copy">
+            <div class="xq-copy-title">规格参数</div>
+            <dl class="xq-spec-table">
+              <template v-for="row in detailSpecRows" :key="row.label">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </template>
+            </dl>
           </div>
-          <div v-if="detail.description" class="xq-detail-copy">
-            <div class="xq-copy-title">产品文案</div>
+
+          <div v-if="detail.description" class="xq-shop-copy">
+            <div class="xq-copy-title">产品详情</div>
             <div class="xq-copy-body" v-html="detail.description"></div>
           </div>
         </div>
@@ -764,14 +955,14 @@ onMounted(async () => {
 
     <Modal
       v-model:open="dispatchOpen"
-      title="选择上架平台 / 分类（原库）"
+      title="选择上架平台 / 店铺"
       ok-text="确认下发"
       :confirm-loading="dispatching"
       destroy-on-close
       @ok="confirmDispatch"
     >
       <p class="xq-dispatch-hint">
-        平台与分类从原库 xq_finance_test 拉取；店铺可选（原库有则选）。
+        勾选时会把 associateProductList 里的同品 SKU 一并下发到工作台。
       </p>
       <Spin :spinning="listingLoading">
         <div class="xq-dispatch-form">
@@ -800,23 +991,6 @@ onMounted(async () => {
             "
             :options="shopOptions"
             :disabled="!listingPlatformId"
-          />
-          <label>平台分类（原库）</label>
-          <TreeSelect
-            v-model:value="listingCategoryId"
-            allow-clear
-            show-search
-            tree-node-filter-prop="title"
-            :placeholder="
-              listingPlatformId
-                ? listingCategoryTreeData.length
-                  ? '选择平台分类'
-                  : '该平台暂无分类'
-                : '请先选平台'
-            "
-            :tree-data="listingCategoryTreeData"
-            :disabled="!listingPlatformId"
-            style="width: 100%"
           />
         </div>
       </Spin>
@@ -1219,84 +1393,181 @@ onMounted(async () => {
   white-space: nowrap;
 }
 
-.xq-pager {
+.xq-assoc {
   display: flex;
-  justify-content: flex-end;
-  padding-top: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #6b7280;
 }
 
-.xq-empty {
-  padding: 48px 0;
+.xq-assoc-tag {
+  max-width: 120px;
+  padding: 0 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #374151;
+  white-space: nowrap;
+  background: #f3f4f6;
+  border-radius: 4px;
 }
 
-.xq-detail {
+.xq-shop {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 460px 1fr;
   gap: 20px;
 }
 
-.xq-detail-media :deep(img) {
-  width: 100%;
-  border-radius: 10px;
-}
-
-.xq-gallery-main {
-  overflow: hidden;
-  background: #f8fafc;
-  border-radius: 10px;
-}
-
-.xq-gallery-thumbs {
+.xq-shop-media {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 64px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.xq-shop-thumbs {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  margin-top: 8px;
+  max-height: 420px;
+  overflow: auto;
 }
 
-.xq-gallery-thumbs :deep(.ant-image) {
-  width: 100%;
-  aspect-ratio: 1;
+.xq-shop-thumb {
+  width: 64px;
+  height: 64px;
+  padding: 0;
   overflow: hidden;
-  border-radius: 6px;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
 }
 
-.xq-gallery-thumbs :deep(img) {
+.xq-shop-thumb.active {
+  border-color: #ff6a00;
+}
+
+.xq-shop-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.xq-gallery-count {
-  margin-top: 8px;
-  font-size: 12px;
+.xq-shop-main {
+  overflow: hidden;
+  background: #f8fafc;
+  border-radius: 6px;
+}
+
+.xq-shop-main :deep(.ant-image),
+.xq-shop-main :deep(img) {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: #fff;
+}
+
+.xq-shop-buy {
+  min-width: 0;
+}
+
+.xq-shop-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #111;
+}
+
+.xq-shop-price {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  background: #fff7f2;
+}
+
+.xq-shop-price strong {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff5000;
+}
+
+.xq-shop-price s {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.xq-shop-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
   color: #6b7280;
 }
 
-.xq-detail-info {
+.xq-shop-spec {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.xq-detail-info .row {
-  display: grid;
-  grid-template-columns: 88px 1fr;
   gap: 8px;
-  font-size: 14px;
 }
 
-.xq-detail-info label {
+.xq-spec-label {
+  font-size: 13px;
   color: #6b7280;
 }
 
-.xq-sale-text {
-  font-weight: 700;
-  color: #dc2626;
+.xq-spec-hint {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
 }
 
-.xq-detail-copy {
+.xq-spec-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.xq-spec-item {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  max-width: 100%;
+  padding: 4px 8px 4px 4px;
+  font-size: 12px;
+  color: #111;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.xq-spec-item.active {
+  border-color: #ff6a00;
+}
+
+.xq-spec-item img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.xq-spec-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.xq-shop-copy {
   grid-column: 1 / -1;
-  padding-top: 8px;
+  padding-top: 16px;
   border-top: 1px solid #eee;
 }
 
@@ -1319,6 +1590,48 @@ onMounted(async () => {
   height: auto;
 }
 
+.xq-spec-table {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0;
+  margin: 0;
+}
+
+.xq-spec-table dt,
+.xq-spec-table dd {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.xq-spec-table dt {
+  color: #6b7280;
+  background: #fafafa;
+}
+
+.xq-spec-table dd {
+  margin: 0;
+  color: #111827;
+  overflow-wrap: anywhere;
+}
+
+.xq-exclusive {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b45309;
+}
+
+.xq-pager {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.xq-empty {
+  padding: 48px 0;
+}
+
 @media (max-width: 1100px) {
   .category-cascader {
     grid-template-columns: 1fr;
@@ -1337,8 +1650,14 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .xq-detail {
+  .xq-shop,
+  .xq-shop-media {
     grid-template-columns: 1fr;
+  }
+
+  .xq-shop-thumbs {
+    flex-direction: row;
+    max-height: none;
   }
 }
 </style>

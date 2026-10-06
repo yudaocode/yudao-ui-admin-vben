@@ -325,11 +325,12 @@ function clearSelection() {
 }
 
 async function batchGenerateCopy() {
-  const ids = Object.keys(selectedMap.value)
-    .map(Number)
+  const ids = Object.values(selectedMap.value)
+    .filter((row) => row.status === 10 && !row.parentWorkOrderId && row.id)
+    .map((row) => Number(row.id))
     .filter((id) => !Number.isNaN(id));
   if (ids.length === 0) {
-    message.warning('请先勾选要生成文案的任务');
+    message.warning('请勾选主体任务（变体不用跑文案）');
     return;
   }
   batching.value = true;
@@ -646,6 +647,9 @@ onUnmounted(() => {
                 <div class="xq-item-code">
                   Item Code:
                   <b>{{ row.externalSku || '—' }}</b>
+                </div>
+                <div v-if="row.variants?.length" class="xq-listing-meta">
+                  {{ row.variants.length }} 个变体
                 </div>
                 <div class="xq-title" :title="row.title">{{ row.title }}</div>
                 <div

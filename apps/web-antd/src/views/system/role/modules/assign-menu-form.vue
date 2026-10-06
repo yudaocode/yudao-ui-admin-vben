@@ -8,11 +8,7 @@ import { nextTick, ref } from 'vue';
 
 import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemMenuTypeEnum } from '@vben/constants';
-import {
-  getTreeCheckedValues,
-  getTreeValuesWithAncestors,
-  handleTree,
-} from '@vben/utils';
+import { getTreeValuesWithAncestors, handleTree } from '@vben/utils';
 
 import { Checkbox, message, Spin } from 'ant-design-vue';
 
@@ -26,6 +22,7 @@ import { useAssignMenuFormSchema } from '../data';
 const emit = defineEmits(['success']);
 
 const menuTree = ref<SystemMenuApi.Menu[]>([]); // 菜单树
+const checkedMenuIds = ref<Array<number | string>>([]);
 const menuLoading = ref(false); // 加载菜单列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
@@ -53,14 +50,30 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = await formApi.getValues();
+    const rawIds = (
+      checkedMenuIds.value?.length ? checkedMenuIds.value : (data.menuIds ?? [])
+    ) as Array<number | string>;
+    const menuIds = getTreeValuesWithAncestors(
+      menuTree.value,
+      rawIds.map(Number).filter((id) => Number.isFinite(id)),
+      (menu) => Number(menu.id),
+    );
+    if (menuTree.value.length === 0) {
+      message.warning(
+        '当前租户套餐未开通任何菜单，无法分配。请先切回系统租户，给该租户套餐勾选菜单后再分配。',
+      );
+      modalApi.unlock();
+      return;
+    }
+    if (menuIds.length === 0) {
+      message.warning('未勾选任何菜单，权限不会写入。请勾选或点全选后再确认。');
+      modalApi.unlock();
+      return;
+    }
     try {
       await assignRoleMenu({
-        roleId: data.id,
-        menuIds: getTreeValuesWithAncestors(
-          menuTree.value,
-          data.menuIds ?? [],
-          (menu) => menu.id,
-        ),
+        roleId: Number(data.id),
+        menuIds,
       });
       // 关闭并提示
       await modalApi.close();
@@ -72,6 +85,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
+      checkedMenuIds.value = [];
       return;
     }
     // 加载菜单列表
@@ -83,11 +97,11 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       // 加载角色菜单
-      const menuIds = await getRoleMenuList(data.id);
-      await formApi.setFieldValue(
-        'menuIds',
-        getTreeCheckedValues(menuTree.value, menuIds, (menu) => menu.id),
-      );
+      const menuIds = (
+        (await getRoleMenuList(data.id)) as Array<number | string>
+      ).map(Number);
+      checkedMenuIds.value = menuIds.filter((id) => Number.isFinite(id));
+      await formApi.setFieldValue('menuIds', checkedMenuIds.value);
 
       await formApi.setValues(data);
     } finally {
@@ -114,8 +128,10 @@ function handleSelectAll() {
   if (isAllSelected.value) {
     const allIds = getAllNodeIds(menuTree.value);
     formApi.setFieldValue('menuIds', allIds);
+    checkedMenuIds.value = allIds;
   } else {
     formApi.setFieldValue('menuIds', []);
+    checkedMenuIds.value = [];
   }
 }
 
@@ -152,15 +168,15 @@ function getNodeClass(node: Recordable<any>) {
 <template>
   <Modal title="菜单权限" class="w-2/5">
     <Form class="mx-4">
-      <template #menuIds="slotProps">
+      <template #menuIds>
         <Spin :spinning="menuLoading" wrapper-class-name="w-full">
           <Tree
             :tree-data="menuTree"
             multiple
             bordered
+            v-model="checkedMenuIds"
             :default-expanded-keys="expandedKeys"
             :get-node-class="getNodeClass"
-            v-bind="slotProps.componentProps"
             value-field="id"
             label-field="name"
           />

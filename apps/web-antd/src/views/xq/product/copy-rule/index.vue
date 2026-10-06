@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { XqListingApi } from '#/api/xq/listing';
 
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
@@ -23,6 +23,7 @@ import {
   getXqListingPlatforms,
   saveXqCopyRule,
 } from '#/api/xq/listing';
+import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 
 type SectionKey = 'description' | 'feature' | 'title';
 
@@ -51,6 +52,7 @@ const showRawJson = ref(false);
 const activeSection = ref<SectionKey>('title');
 const platforms = ref<XqListingApi.Platform[]>([]);
 const rules = ref<XqListingApi.CopyRule[]>([]);
+const lockedPlatformId = useDeskPlatformId();
 const activePlatformId = ref<string>('');
 
 const form = reactive({
@@ -286,6 +288,9 @@ async function loadAll() {
     ]);
     platforms.value = p || [];
     rules.value = r || [];
+    if (lockedPlatformId.value) {
+      activePlatformId.value = lockedPlatformId.value;
+    }
     fillForm(activeRule.value);
   } catch (error: any) {
     message.error(error?.message || '加载平台/规则失败（请确认原库已配置）');
@@ -321,6 +326,11 @@ async function handleSave() {
 }
 
 onMounted(loadAll);
+
+watch(lockedPlatformId, (pid) => {
+  if (!pid) return;
+  onSelectPlatform(pid);
+});
 </script>
 
 <template>
@@ -330,9 +340,11 @@ onMounted(loadAll);
         <div>
           <h2>文案管理</h2>
           <p>
-            每个文案段（标题 / 描述 /
-            卖点）单独配置提示规则、字符规则、标点规则；写入原库
-            t_giga_copy_gen_rule。
+            {{
+              lockedPlatformId
+                ? '当前平台文案规则：按标题 / 描述 / 卖点配置提示、字数与标点。'
+                : '每个文案段（标题 / 描述 / 卖点）单独配置提示规则、字符规则、标点规则；写入原库 t_giga_copy_gen_rule。'
+            }}
           </p>
         </div>
         <Button type="primary" :loading="saving" @click="handleSave">
@@ -341,8 +353,12 @@ onMounted(loadAll);
       </div>
 
       <Spin :spinning="loading">
-        <div v-if="platforms.length || rules.length" class="xq-rule-layout">
-          <div class="xq-rule-side">
+        <div
+          v-if="platforms.length || rules.length"
+          class="xq-rule-layout"
+          :class="{ 'is-locked': !!lockedPlatformId }"
+        >
+          <div v-if="!lockedPlatformId" class="xq-rule-side">
             <div class="side-title">平台</div>
             <button
               class="side-item"
@@ -369,10 +385,15 @@ onMounted(loadAll);
             <div class="field">
               <label>当前平台</label>
               <Select
+                v-if="!lockedPlatformId"
                 :value="activePlatformId"
                 :options="platformOptions"
                 @change="(v: any) => onSelectPlatform(v)"
               />
+              <b v-else>{{
+                platforms.find((p) => p.id === lockedPlatformId)?.name ||
+                '当前平台'
+              }}</b>
             </div>
             <div class="grid-2">
               <div class="field">
@@ -697,6 +718,10 @@ onMounted(loadAll);
   grid-template-columns: 240px 1fr;
   gap: 16px;
   min-height: 560px;
+}
+
+.xq-rule-layout.is-locked {
+  grid-template-columns: 1fr;
 }
 
 .xq-rule-side,

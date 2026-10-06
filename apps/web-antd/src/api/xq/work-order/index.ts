@@ -21,12 +21,17 @@ export namespace XqWorkOrderApi {
     assigneeUserId?: number;
     copyUserId?: number;
     imageUserId?: number;
+    imageStatus?: string;
+    listingValuesJson?: string;
+    listingResultJson?: string;
     listingPlatformId?: string;
     listingShopId?: string;
     listingCategoryId?: string;
     listingPlatformName?: string;
     listingShopName?: string;
     listingCategoryName?: string;
+    listingCountryCode?: string;
+    listingCountryName?: string;
     workflowPhase?: string;
     sourceDescription?: string;
     sourceImageUrls?: string;
@@ -35,6 +40,19 @@ export namespace XqWorkOrderApi {
     rpaCopyWorkUuid?: string;
     rpaCopyStatus?: string;
     rpaCopyError?: string;
+    parentWorkOrderId?: number;
+    parentSku?: string;
+    variantLabel?: string;
+    itemCode?: string;
+    mainColor?: string;
+    upc?: string;
+    price?: number;
+    currency?: string;
+    qtyAvailable?: number;
+    lengthCm?: number;
+    widthCm?: number;
+    heightCm?: number;
+    variants?: WorkOrder[];
     createTime?: string;
   }
 
@@ -50,10 +68,8 @@ export namespace XqWorkOrderApi {
   export interface DispatchReq {
     listingPlatformId: string;
     listingShopId?: string;
-    listingCategoryId: string;
     listingPlatformName?: string;
     listingShopName?: string;
-    listingCategoryName?: string;
     items: DispatchItem[];
   }
 
@@ -78,6 +94,11 @@ export namespace XqWorkOrderApi {
     listingPlatformId?: string;
     listingShopId?: string;
     listingCategoryId?: string;
+    mineUserId?: number;
+    imageStatus?: string;
+    listingReady?: boolean;
+    mineImageUserId?: number;
+    flowStatus?: string;
   }
 
   export interface AssignImageReq {
@@ -113,7 +134,15 @@ export function updateXqWorkOrder(
     contentDescription?: string;
     contentHighlight?: string;
     copyResultJson?: string;
+    generatedImageUrl?: string;
     imagePromptJson?: string;
+    listingCategoryId?: string;
+    listingCategoryName?: string;
+    listingCountryCode?: string;
+    listingCountryName?: string;
+    listingShopId?: string;
+    listingShopName?: string;
+    listingValuesJson?: string;
   },
 ) {
   return requestClient.put('/xq/work-order/update', data);
@@ -132,10 +161,38 @@ export function batchGenerateXqWorkOrderCopy(ids: number[]) {
   );
 }
 
+export function getXqAssignableImageUsers() {
+  return requestClient.get<
+    Array<{ id: number; nickname?: string; username?: string }>
+  >('/xq/work-order/assignable-image-users');
+}
+
 export function batchAssignXqWorkOrderImage(
   data: XqWorkOrderApi.AssignImageReq,
 ) {
   return requestClient.post<number>('/xq/work-order/batch-assign-image', data);
+}
+
+export function updateXqWorkOrderImageStatus(data: {
+  id: number;
+  imageStatus:
+    | 'done'
+    | 'generated'
+    | 'pending'
+    | 'rejected'
+    | 'revised'
+    | 'todo';
+}) {
+  return requestClient.post<boolean>('/xq/work-order/image-status', data);
+}
+
+export function listXqWorkOrder(data: {
+  id: number;
+  productName?: string;
+  productSku?: string;
+  values: Record<string, string>;
+}) {
+  return requestClient.post<number>('/xq/work-order/list', data);
 }
 
 export function generateXqWorkOrderImage(id: number) {

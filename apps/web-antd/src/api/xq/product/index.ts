@@ -25,6 +25,43 @@ export namespace XqProductApi {
     status: number;
     remark?: string;
     createTime?: string;
+    mainColor?: string;
+    familySku?: string;
+    upc?: string;
+    lengthCm?: number;
+    widthCm?: number;
+    heightCm?: number;
+    lengthIn?: number;
+    widthIn?: number;
+    heightIn?: number;
+    lengthUnit?: string;
+    weight?: number;
+    weightKg?: number;
+    weightUnit?: string;
+    assembledLength?: number;
+    assembledWidth?: number;
+    assembledHeight?: number;
+    assembledWeight?: number;
+    assembledLengthUnit?: string;
+    assembledWeightUnit?: string;
+    mainMaterial?: string;
+    placeOfOrigin?: string;
+    brandName?: string;
+    characteristics?: string;
+    attributesJson?: string;
+    variants?: Variant[];
+  }
+
+  export interface Variant {
+    id?: string;
+    sku: string;
+    itemCode?: string;
+    name?: string;
+    imageUrl?: string;
+    mainColor?: string;
+    qtyAvailable?: number;
+    price?: number;
+    discountedPrice?: number;
   }
 
   export interface CategoryNode {
