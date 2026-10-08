@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { SystemUserApi } from '#/api/system/user';
 import type { XqWorkOrderApi } from '#/api/xq/work-order';
+import type { ImageSlot } from '#/views/xq/product/image-slot-rule';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 
@@ -23,6 +24,7 @@ import {
 
 import { uploadFile } from '#/api/infra/file';
 import { getSimpleUserList } from '#/api/system/user';
+import { getXqImageRule } from '#/api/xq/listing';
 import {
   generateXqWorkOrderImage,
   getXqWorkOrderPage,
@@ -30,6 +32,13 @@ import {
   updateXqWorkOrderImageStatus,
 } from '#/api/xq/work-order';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
+import {
+  alignPromptsToSlots,
+  DEFAULT_IMAGE_SLOTS,
+  imageSlotTypeLabel,
+  parseImageSlotConfig,
+  summarizeImageSlots,
+} from '#/views/xq/product/image-slot-rule';
 
 defineOptions({ name: 'XqImagePool' });
 
@@ -39,6 +48,7 @@ type ImageStatus =
   | 'pending'
   | 'rejected'
   | 'revised'
+  | 'running'
   | 'todo';
 
 interface ImagePromptItem {
@@ -55,8 +65,9 @@ interface ImagePromptItem {
 const STATUS_OPTS: Array<{ color: string; label: string; value: ImageStatus }> =
   [
     { value: 'pending', label: '待执行', color: 'processing' },
-    { value: 'generated', label: '已出图', color: 'cyan' },
     { value: 'todo', label: '未完成', color: 'default' },
+    { value: 'running', label: '执行中', color: 'processing' },
+    { value: 'generated', label: '已出图', color: 'cyan' },
     { value: 'rejected', label: '已驳回', color: 'error' },
     { value: 'revised', label: '已修改', color: 'warning' },
     { value: 'done', label: '已完成', color: 'success' },
@@ -85,6 +96,13 @@ const activeId = ref<number | undefined>();
 const uploading = ref<null | number>(null);
 const queryParams = reactive({ keyword: '' as string | undefined });
 const promptDraft = ref<ImagePromptItem[]>([]);
+/** 突出风格标签（与文案池同源：copyResultJson.highlightStyle） */
+const highlightTags = ref<string[]>([]);
+const selectedHighlight = ref<string[]>([]);
+const tagDraft = ref('');
+/** 当前任务平台/类目出图槽位 */
+const imageSlots = ref<ImageSlot[]>([...DEFAULT_IMAGE_SLOTS]);
+const slotSummary = computed(() => summarizeImageSlots(imageSlots.value));
 
 const userNameMap = computed(() => {
   const map = new Map<number, string>();
@@ -100,6 +118,47 @@ const userOptions = computed(() =>
     value: u.id,
   })),
 );
+
+/** 左侧扁平：主体 + 已分美工的变体都单独成行 */
+const displayTasks = computed(() => {
+  const uid = myUserId.value;
+  const out: XqWorkOrderApi.WorkOrder[] = [];
+  const seen = new Set<number>();
+  const push = (m?: null | XqWorkOrderApi.WorkOrder) => {
+    if (!m?.id || seen.has(m.id)) return;
+    // 图片池：只展示已分给当前美工（或筛选美工）的 SKU；无 imageUserId 的不进列表
+    const filterUid = filterImageUserId.value || uid;
+    if (filterUid && m.imageUserId && m.imageUserId !== filterUid) return;
+    if (!m.imageUserId) return;
+    seen.add(m.id);
+    out.push(m);
+  };
+  for (const row of tasks.value) {
+    const kids = row.variants || [];
+    if (kids.length === 0) {
+      push(row);
+      continue;
+    }
+    const parentOffer = Boolean(
+      row.mainColor ||
+      row.variantLabel ||
+      (row.price !== null && row.price !== undefined) ||
+      (row.qtyAvailable !== null && row.qtyAvailable !== undefined),
+    );
+    const childOffer = kids.some((k) =>
+      Boolean(
+        k.mainColor ||
+        k.variantLabel ||
+        (k.price !== null && k.price !== undefined) ||
+        (k.qtyAvailable !== null && k.qtyAvailable !== undefined),
+      ),
+    );
+    const sellableParent = !(childOffer && !parentOffer);
+    if (sellableParent) push(row);
+    for (const k of kids) push(k);
+  }
+  return out;
+});
 
 const activeTask = computed(() => findTask(activeId.value));
 const isArtist = computed(
@@ -164,29 +223,81 @@ function aiUrlOf(p: ImagePromptItem) {
 const comparePairs = computed(() => {
   const row = activeTask.value;
   const src = sourceImages.value;
-  const prompts = parsePrompts(row);
-  const n = Math.max(src.length, prompts.length, 1);
-  const pairs = [];
-  for (let i = 0; i < n; i++) {
-    const p = prompts[i];
-    pairs.push({
+  const prompts = shapePromptsToSlots(parsePrompts(row), imageSlots.value, src);
+  return prompts.map((p, i) => {
+    const binds = (p.bindIndexes || []).filter(
+      (n) => Number.isFinite(n) && n >= 0 && n < src.length,
+    );
+    const originals =
+      binds.length > 0
+        ? binds.map((n) => src[n]!).filter(Boolean)
+        : [src[i] || src[0] || ''].filter(Boolean);
+    return {
       index: i,
-      original: src[p?.bindIndexes?.[0] ?? i] || src[i] || src[0] || '',
-      ai: aiUrlOf(p || {}) || (i === 0 ? row?.generatedImageUrl || '' : ''),
-      label: imageTypeLabel(p?.imageType, i),
+      original: originals[0] || '',
+      originals,
+      ai: aiUrlOf(p) || (i === 0 ? row?.generatedImageUrl || '' : ''),
+      label: imageSlotTypeLabel(p.imageType) || `槽位 ${i + 1}`,
       prompt: p,
-    });
-  }
-  return pairs;
+    };
+  });
 });
 
-function imageTypeLabel(type?: string, i = 0) {
-  const t = String(type || '').toLowerCase();
-  if (t.includes('main') || i === 0) return '主图';
-  if (t.includes('size') || t.includes('dim')) return '尺寸图';
-  if (t.includes('detail')) return '细节图';
-  if (t.includes('scene')) return '场景图';
-  return `附图 ${i}`;
+function imageTypeLabel(type?: string, _i = 0) {
+  return imageSlotTypeLabel(type);
+}
+
+function shapePromptsToSlots(
+  prompts: ImagePromptItem[],
+  slots: ImageSlot[],
+  src: string[],
+): ImagePromptItem[] {
+  const list = Array.isArray(prompts) ? prompts : [];
+  if (slots.length === 0) {
+    return list.map((p, i) => ({
+      ...p,
+      index: p.index ?? i,
+      imageType: p.imageType || (i === 0 ? 'main' : 'detail'),
+    }));
+  }
+  const aligned = alignPromptsToSlots(list, slots);
+  return aligned.map((row, i) => {
+    const p = row.prompt;
+    let bindIndexes = p?.bindIndexes;
+    if (!bindIndexes?.length) {
+      if (src[i]) bindIndexes = [i];
+      else if (src[0]) bindIndexes = [0];
+      else bindIndexes = [];
+    }
+    return {
+      index: i,
+      imageType: row.imageType,
+      imageUrl: p?.imageUrl || src[bindIndexes[0] ?? i] || src[i],
+      resultUrl: p?.resultUrl,
+      generatedImageUrl: p?.generatedImageUrl,
+      marker: p?.marker,
+      promptText: p?.promptText || '',
+      bindIndexes,
+    };
+  });
+}
+
+async function loadImageSlots(row?: null | XqWorkOrderApi.WorkOrder) {
+  const platformId = String(
+    row?.listingPlatformId || lockedPlatformId.value || '',
+  );
+  const categoryId = String(row?.listingCategoryId || '');
+  if (!platformId) {
+    imageSlots.value = [...DEFAULT_IMAGE_SLOTS];
+    return;
+  }
+  try {
+    const rule = await getXqImageRule(platformId, categoryId);
+    const slots = parseImageSlotConfig(rule?.configJson);
+    imageSlots.value = slots.length > 0 ? slots : [...DEFAULT_IMAGE_SLOTS];
+  } catch {
+    imageSlots.value = [...DEFAULT_IMAGE_SLOTS];
+  }
 }
 
 function findTask(id?: number): null | XqWorkOrderApi.WorkOrder {
@@ -230,37 +341,117 @@ function toggleCheck(row: XqWorkOrderApi.WorkOrder, checked?: boolean) {
       );
 }
 
+function parseHighlightTags(raw: unknown): string[] {
+  if (Array.isArray(raw)) {
+    return raw
+      .map((x) => String(x || '').trim())
+      .filter((s) => s && s.length <= 12);
+  }
+  const text = String(raw || '').trim();
+  if (!text) return [];
+  if (text.startsWith('[')) {
+    try {
+      return parseHighlightTags(JSON.parse(text));
+    } catch {
+      // ignore
+    }
+  }
+  const parts = text
+    .split(/[,，、;；|/]+/)
+    .map((s) => s.trim())
+    .filter((s) => s && s.length <= 12);
+  return parts.length >= 2 ? [...new Set(parts)] : [];
+}
+
+function hydrateHighlight(row: null | XqWorkOrderApi.WorkOrder) {
+  if (!row?.copyResultJson) {
+    highlightTags.value = [];
+    selectedHighlight.value = [];
+    tagDraft.value = '';
+    return;
+  }
+  try {
+    const obj = JSON.parse(row.copyResultJson);
+    const tags = parseHighlightTags(obj.highlightStyle);
+    highlightTags.value = tags;
+    selectedHighlight.value = [...tags];
+  } catch {
+    highlightTags.value = [];
+    selectedHighlight.value = [];
+  }
+  tagDraft.value = '';
+}
+
 function hydratePrompts(row: XqWorkOrderApi.WorkOrder) {
   const src = sourceImagesOf(row);
   const parsed = parsePrompts(row);
-  if (parsed.length > 0) {
-    promptDraft.value = parsed.map((p, i) => {
-      let bindIndexes = p.bindIndexes;
-      if (!bindIndexes?.length) {
-        if (src[i]) bindIndexes = [i];
-        else if (src[0]) bindIndexes = [0];
-        else bindIndexes = [];
-      }
-      return {
-        ...p,
-        index: p.index ?? i,
-        bindIndexes,
-      };
-    });
-    return;
-  }
-  promptDraft.value = src.map((url, i) => ({
-    index: i,
-    imageType: i === 0 ? 'main' : 'detail',
-    imageUrl: url,
-    promptText: '',
-    bindIndexes: [i],
-  }));
+  const raw =
+    parsed.length > 0
+      ? parsed
+      : src.map((url, i) => ({
+          index: i,
+          imageType: i === 0 ? 'main' : 'detail',
+          imageUrl: url,
+          promptText: '',
+          bindIndexes: [i],
+        }));
+  promptDraft.value = shapePromptsToSlots(raw, imageSlots.value, src);
 }
 
-function selectTask(row: XqWorkOrderApi.WorkOrder) {
+function toggleHighlight(tag: string, checked: boolean) {
+  if (checked) {
+    if (!selectedHighlight.value.includes(tag)) {
+      selectedHighlight.value.push(tag);
+    }
+    return;
+  }
+  selectedHighlight.value = selectedHighlight.value.filter((t) => t !== tag);
+}
+
+function addHighlightTag() {
+  const tag = tagDraft.value.trim().replaceAll(/[。.!！?？]/g, '');
+  if (!tag) return;
+  if (tag.length > 12) {
+    message.warning('标签不超过 12 个字');
+    return;
+  }
+  if (!highlightTags.value.includes(tag)) {
+    highlightTags.value.push(tag);
+  }
+  if (!selectedHighlight.value.includes(tag)) {
+    selectedHighlight.value.push(tag);
+  }
+  tagDraft.value = '';
+}
+
+function removeHighlightTag(tag: string) {
+  highlightTags.value = highlightTags.value.filter((t) => t !== tag);
+  selectedHighlight.value = selectedHighlight.value.filter((t) => t !== tag);
+}
+
+async function saveHighlight() {
+  const row = activeTask.value;
+  if (!row?.id) return;
+  saving.value = true;
+  try {
+    await updateXqWorkOrder({
+      id: row.id,
+      contentHighlight: JSON.stringify(selectedHighlight.value),
+    });
+    message.success('突出风格已保存');
+    await loadTasks();
+  } catch (error: any) {
+    message.error(error?.message || '保存失败');
+  } finally {
+    saving.value = false;
+  }
+}
+
+async function selectTask(row: XqWorkOrderApi.WorkOrder) {
   activeId.value = row.id;
+  await loadImageSlots(row);
   hydratePrompts(row);
+  hydrateHighlight(row);
 }
 
 function bindOriginal(promptIndex: number, srcIndex: number) {
@@ -273,24 +464,23 @@ function bindOriginal(promptIndex: number, srcIndex: number) {
   p.imageUrl = sourceImages.value[srcIndex] || p.imageUrl;
 }
 
-function addPrompt() {
-  promptDraft.value.push({
-    index: promptDraft.value.length,
-    imageType: 'detail',
-    promptText: '',
-    bindIndexes: sourceImages.value[0] ? [0] : [],
-    imageUrl: sourceImages.value[0],
-  });
-}
-
-function removePrompt(i: number) {
-  promptDraft.value.splice(i, 1);
-}
-
 function boundLabel(p: ImagePromptItem) {
   const idx = p.bindIndexes || [];
   if (idx.length === 0) return '未绑定';
   return idx.map((n) => `Giga 原图 ${n + 1}`).join('、');
+}
+
+/** 提示词左侧：展示全部已绑原图缩略图，不只一张 */
+function boundThumbUrls(p: ImagePromptItem, fallbackIndex = 0) {
+  const src = sourceImages.value;
+  const idx = (p.bindIndexes || []).filter(
+    (n) => Number.isFinite(n) && n >= 0 && n < src.length,
+  );
+  if (idx.length > 0) {
+    return idx.map((n) => src[n]!).filter(Boolean);
+  }
+  const one = src[fallbackIndex] || p.imageUrl;
+  return one ? [String(one)] : [];
 }
 
 async function loadUsers() {
@@ -319,12 +509,19 @@ async function loadTasks() {
     if (activeId.value && !findTask(activeId.value)) {
       activeId.value = undefined;
       promptDraft.value = [];
+      hydrateHighlight(null);
     }
-    if (!activeId.value && tasks.value[0]?.id) {
-      selectTask(tasks.value[0]!);
+    if (!activeId.value && displayTasks.value[0]?.id) {
+      await selectTask(displayTasks.value[0]!);
     } else if (activeId.value) {
       const row = findTask(activeId.value);
-      if (row) hydratePrompts(row);
+      if (row) {
+        await loadImageSlots(row);
+        hydratePrompts(row);
+        hydrateHighlight(row);
+      } else if (displayTasks.value[0]?.id) {
+        await selectTask(displayTasks.value[0]!);
+      }
     }
   } catch (error: any) {
     message.error(error?.message || '加载失败');
@@ -353,6 +550,7 @@ async function savePrompts() {
     await updateXqWorkOrder({
       id: row.id,
       imagePromptJson: JSON.stringify(promptDraft.value),
+      contentHighlight: JSON.stringify(selectedHighlight.value),
     });
     if (row.imageStatus === 'todo' || !row.imageStatus) {
       await updateXqWorkOrderImageStatus({
@@ -360,7 +558,7 @@ async function savePrompts() {
         imageStatus: 'pending',
       });
     }
-    message.success('提示词已保存');
+    message.success('提示词与突出风格已保存');
     await loadTasks();
   } catch (error: any) {
     message.error(error?.message || '保存失败');
@@ -476,12 +674,12 @@ watch(lockedPlatformId, () => {
     <div class="xq-copy-pool">
       <div class="xq-toolbar">
         <div class="xq-title-block">
-          <h2>{{ lockedPlatformId ? '图片' : '我的图片' }}</h2>
+          <h2>{{ lockedPlatformId ? '图片' : '编辑图片' }}</h2>
           <p>
             {{
               lockedPlatformId
                 ? '本平台图片任务：待执行看提示词，出图后原图对照。'
-                : '待执行看提示词；AI 出图后原图对照。分配人与美工都能看。'
+                : '已分配给你的图片任务：待执行看提示词并出图，跑完可对照与完结。'
             }}
           </p>
         </div>
@@ -530,9 +728,13 @@ watch(lockedPlatformId, () => {
       </div>
 
       <Spin :spinning="loading">
-        <div v-if="tasks.length" class="xq-split">
+        <div v-if="displayTasks.length" class="xq-split">
           <aside class="xq-list">
-            <div v-for="row in tasks" :key="row.id" class="xq-list-group">
+            <div
+              v-for="row in displayTasks"
+              :key="row.id"
+              class="xq-list-group"
+            >
               <div
                 class="xq-list-item"
                 :class="{
@@ -651,96 +853,119 @@ watch(lockedPlatformId, () => {
               </div>
             </div>
 
+            <div class="xq-edit-block xq-highlight-block">
+              <label class="xq-field-label">
+                突出风格
+                <span class="xq-muted">（可选标签，勾选后给生图用，不要写成句子）</span>
+              </label>
+              <div class="xq-tag-row">
+                <Tag
+                  v-for="tag in highlightTags"
+                  :key="tag"
+                  class="xq-style-tag"
+                  :color="selectedHighlight.includes(tag) ? 'blue' : 'default'"
+                  closable
+                  @close="removeHighlightTag(tag)"
+                  @click="
+                    toggleHighlight(tag, !selectedHighlight.includes(tag))
+                  "
+                >
+                  {{ tag }}
+                </Tag>
+                <span v-if="!highlightTags.length" class="xq-muted">
+                  暂无标签，可手加或到文案池重新生成
+                </span>
+              </div>
+              <div class="xq-tag-add">
+                <Input
+                  v-model:value="tagDraft"
+                  placeholder="添加风格标签，如 釉面陶瓷"
+                  allow-clear
+                  class="xq-tag-input"
+                  @press-enter="addHighlightTag"
+                />
+                <Button @click="addHighlightTag">添加</Button>
+                <Button
+                  v-if="canEdit"
+                  type="primary"
+                  ghost
+                  :loading="saving"
+                  @click="saveHighlight"
+                >
+                  保存风格
+                </Button>
+              </div>
+            </div>
+
             <!-- 待执行：图片提示词 -->
             <div v-if="showPrompts" class="xq-prompt-work">
-              <div class="xq-edit-block">
-                <label class="xq-field-label">
-                  Giga 原图
-                  <span class="xq-muted">先点右侧提示词，再点原图绑定</span>
-                </label>
-                <div v-if="sourceImages.length" class="xq-src-row">
-                  <button
-                    v-for="(url, i) in sourceImages"
-                    :key="`src-${i}`"
-                    class="xq-src-thumb"
-                    type="button"
-                    @click="
-                      promptDraft.length &&
-                      bindOriginal(Math.max(0, promptDraft.length - 1), i)
-                    "
-                  >
-                    <Image :src="url" :preview="false" />
-                    <span>{{ i === 0 ? '主图' : i + 1 }}</span>
-                  </button>
-                </div>
-                <Empty v-else description="没有原图" />
-              </div>
-
               <div class="xq-edit-block">
                 <div class="xq-prompt-toolbar">
                   <label class="xq-field-label">
                     图片提示词
-                    <span class="xq-muted">{{ promptDraft.length }} 条</span>
+                    <span class="xq-muted">
+                      按平台规则 {{ promptDraft.length }} 槽 ·
+                      {{ slotSummary }}
+                    </span>
                   </label>
-                  <Button size="small" @click="addPrompt">新增一条</Button>
                 </div>
                 <div v-if="promptDraft.length" class="xq-prompt-list">
                   <div
                     v-for="(p, i) in promptDraft"
-                    :key="`p-${i}`"
+                    :key="`slot-${i}-${p.imageType}`"
                     class="xq-prompt-card"
                   >
                     <div class="xq-prompt-thumb">
-                      <Image
-                        v-if="
-                          sourceImages[p.bindIndexes?.[0] ?? i] || p.imageUrl
-                        "
-                        :src="
-                          sourceImages[p.bindIndexes?.[0] ?? i] || p.imageUrl
-                        "
-                        :preview="true"
-                      />
+                      <div
+                        v-if="boundThumbUrls(p, i).length"
+                        class="xq-prompt-thumb-grid"
+                      >
+                        <Image
+                          v-for="(url, ui) in boundThumbUrls(p, i)"
+                          :key="`pt-${i}-${ui}`"
+                          :src="url"
+                          :preview="true"
+                        />
+                      </div>
                       <span v-else class="xq-muted">未绑原图</span>
                     </div>
                     <div class="xq-prompt-body">
                       <div class="xq-prompt-head">
-                        <Tag>{{ imageTypeLabel(p.imageType, i) }}</Tag>
-                        <span class="xq-muted">绑定 {{ boundLabel(p) }}</span>
-                        <Button
-                          size="small"
-                          type="link"
-                          danger
-                          @click="removePrompt(i)"
-                        >
-                          删除
-                        </Button>
+                        <Tag color="blue">
+                          {{
+                            imageSlots[i]?.label ||
+                            imageTypeLabel(p.imageType, i)
+                          }}
+                        </Tag>
+                        <span class="xq-muted">槽位 {{ i + 1 }} · 绑定 {{ boundLabel(p) }}</span>
                       </div>
-                      <div class="xq-bind-row">
-                        <Button
-                          v-for="(_, si) in sourceImages"
+                      <div v-if="sourceImages.length" class="xq-bind-thumbs">
+                        <button
+                          v-for="(url, si) in sourceImages"
                           :key="`b-${i}-${si}`"
-                          size="small"
-                          :type="
-                            (p.bindIndexes || []).includes(si)
-                              ? 'primary'
-                              : 'default'
-                          "
+                          type="button"
+                          class="xq-bind-thumb"
+                          :class="{
+                            active: (p.bindIndexes || []).includes(si),
+                          }"
                           @click="bindOriginal(i, si)"
                         >
-                          原图 {{ si + 1 }}
-                        </Button>
+                          <Image :src="url" :preview="false" />
+                          <span>{{ si === 0 ? '主图' : si + 1 }}</span>
+                        </button>
                       </div>
+                      <p v-else class="xq-muted">没有原图可绑定</p>
                       <Input.TextArea
                         v-model:value="p.promptText"
                         :rows="4"
-                        placeholder="图片提示词"
+                        :placeholder="`${imageSlots[i]?.label || imageTypeLabel(p.imageType, i)}提示词`"
                       />
                     </div>
                   </div>
                 </div>
                 <Empty
                   v-else
-                  description="暂无提示词，可新增或先在文案侧生成"
+                  description="暂无出图规则或提示词，请先在「图片管理」配置平台规则"
                 />
               </div>
             </div>
@@ -759,13 +984,20 @@ watch(lockedPlatformId, () => {
                 <div class="xq-compare-pair">
                   <div class="xq-compare-col">
                     <div class="xq-compare-cap">Giga 原图（本地同步）</div>
-                    <div class="xq-compare-img">
-                      <Image
-                        v-if="pair.original"
-                        :src="pair.original"
-                        :preview="true"
-                      />
-                      <span v-else>无原图</span>
+                    <div
+                      v-if="pair.originals?.length"
+                      class="xq-compare-thumbs"
+                    >
+                      <div
+                        v-for="(url, oi) in pair.originals"
+                        :key="`co-${pair.index}-${oi}`"
+                        class="xq-compare-img"
+                      >
+                        <Image :src="url" :preview="true" />
+                      </div>
+                    </div>
+                    <div v-else class="xq-compare-img">
+                      <span>无原图</span>
                     </div>
                   </div>
                   <div class="xq-compare-col ai">
@@ -832,6 +1064,33 @@ watch(lockedPlatformId, () => {
   color: #9ca3af;
 }
 
+.xq-highlight-block {
+  margin: 12px 0 16px;
+}
+
+.xq-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 32px;
+}
+
+.xq-style-tag {
+  cursor: pointer;
+}
+
+.xq-tag-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 480px;
+}
+
+.xq-tag-input {
+  flex: 1;
+}
+
 .xq-prompt-toolbar {
   display: flex;
   gap: 8px;
@@ -887,10 +1146,25 @@ watch(lockedPlatformId, () => {
 }
 
 .xq-prompt-thumb {
-  aspect-ratio: 1;
+  min-height: 108px;
   overflow: hidden;
   background: #e5e7eb;
   border-radius: 8px;
+}
+
+.xq-prompt-thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 4px;
+  padding: 4px;
+}
+
+.xq-prompt-thumb-grid :deep(.ant-image),
+.xq-prompt-thumb-grid :deep(img) {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 .xq-prompt-thumb :deep(.ant-image),
@@ -908,11 +1182,53 @@ watch(lockedPlatformId, () => {
   margin-bottom: 6px;
 }
 
-.xq-bind-row {
+.xq-bind-thumbs {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  max-height: 200px;
+  padding: 4px;
   margin-bottom: 8px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.xq-bind-thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 56px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 8px;
+}
+
+.xq-bind-thumb.active {
+  border-color: #2563eb;
+}
+
+.xq-bind-thumb :deep(.ant-image),
+.xq-bind-thumb :deep(img) {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.xq-bind-thumb span {
+  font-size: 11px;
+  line-height: 1.2;
+  color: #6b7280;
+  text-align: center;
+}
+
+.xq-bind-thumb.active span {
+  font-weight: 600;
+  color: #2563eb;
 }
 
 .xq-compare-grid {
@@ -950,6 +1266,12 @@ watch(lockedPlatformId, () => {
 
 .xq-compare-cap.ai-cap {
   color: #16a34a;
+}
+
+.xq-compare-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
 }
 
 .xq-compare-img {

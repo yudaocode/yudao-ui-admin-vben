@@ -22,6 +22,8 @@ export namespace XqWorkOrderApi {
     copyUserId?: number;
     imageUserId?: number;
     imageStatus?: string;
+    /** export_pending_confirm=导表成功待确认 / listed */
+    listingStatus?: string;
     listingValuesJson?: string;
     listingResultJson?: string;
     listingPlatformId?: string;
@@ -40,6 +42,8 @@ export namespace XqWorkOrderApi {
     rpaCopyWorkUuid?: string;
     rpaCopyStatus?: string;
     rpaCopyError?: string;
+    /** 是否勾选独立跑文案 RPA */
+    copyRpaSelected?: boolean;
     parentWorkOrderId?: number;
     parentSku?: string;
     variantLabel?: string;
@@ -68,9 +72,38 @@ export namespace XqWorkOrderApi {
   export interface DispatchReq {
     listingPlatformId: string;
     listingShopId?: string;
+    listingCategoryId?: string;
     listingPlatformName?: string;
     listingShopName?: string;
+    listingCategoryName?: string;
+    /** SKU → 复用文案来源任务 ID */
+    reuseCopyFromIds?: Record<string, number>;
+    /** SKU → 复用图片来源任务 ID */
+    reuseImageFromIds?: Record<string, number>;
     items: DispatchItem[];
+  }
+
+  export interface ReuseCandidate {
+    workOrderId: number;
+    no?: string;
+    listingPlatformId?: string;
+    listingPlatformName?: string;
+    listingShopName?: string;
+    status?: number;
+    workflowPhase?: string;
+    imageStatus?: string;
+    hasCopy?: boolean;
+    hasImage?: boolean;
+    contentTitle?: string;
+    contentSellingPoints?: string;
+    description?: string;
+    coverUrl?: string;
+    imageUrls?: string[];
+  }
+
+  export interface ReuseSkuGroup {
+    sku: string;
+    candidates: ReuseCandidate[];
   }
 
   export interface CompleteReq {
@@ -106,6 +139,8 @@ export namespace XqWorkOrderApi {
     imageUserId: number;
     listingPlatformId?: string;
     listingShopId?: string;
+    /** 默认 true：整家族；编辑页勾选分配传 false */
+    expandFamily?: boolean;
   }
 }
 
@@ -125,6 +160,17 @@ export function getXqWorkOrder(id: number) {
 export function dispatchXqWorkOrder(data: XqWorkOrderApi.DispatchReq) {
   return requestClient.post<XqWorkOrderApi.WorkOrder[]>(
     '/xq/work-order/dispatch',
+    data,
+  );
+}
+
+/** 下发前反查其它平台可复用文案/图片 */
+export function lookupXqWorkOrderReuseCandidates(data: {
+  excludePlatformIds?: string[];
+  skus: string[];
+}) {
+  return requestClient.post<XqWorkOrderApi.ReuseSkuGroup[]>(
+    '/xq/work-order/reuse-candidates',
     data,
   );
 }
@@ -154,6 +200,30 @@ export function generateXqWorkOrderCopy(id: number) {
   );
 }
 
+export function regenerateXqWorkOrderCopy(data: {
+  contentDescription?: string;
+  contentSellingPoints?: string;
+  contentTitle?: string;
+  featureIndex?: number;
+  id: number;
+  revisionPrompt?: string;
+  /** all | title | description | feature */
+  target?: string;
+}) {
+  return requestClient.post<XqWorkOrderApi.WorkOrder>(
+    '/xq/work-order/regenerate-copy',
+    data,
+  );
+}
+
+/** 勾选变体入队文案 RPA；未勾选变体沿用主体文案 */
+export function enqueueXqWorkOrderCopyRpa(data: {
+  rootId: number;
+  selectedIds: number[];
+}) {
+  return requestClient.post<number>('/xq/work-order/enqueue-copy-rpa', data);
+}
+
 export function batchGenerateXqWorkOrderCopy(ids: number[]) {
   return requestClient.post<XqWorkOrderApi.WorkOrder[]>(
     '/xq/work-order/batch-generate-copy',
@@ -181,6 +251,7 @@ export function updateXqWorkOrderImageStatus(data: {
     | 'pending'
     | 'rejected'
     | 'revised'
+    | 'running'
     | 'todo';
 }) {
   return requestClient.post<boolean>('/xq/work-order/image-status', data);
@@ -188,11 +259,17 @@ export function updateXqWorkOrderImageStatus(data: {
 
 export function listXqWorkOrder(data: {
   id: number;
+  /** api=程序判定成功；export=导表待用户确认 */
+  listingMode?: 'api' | 'export';
   productName?: string;
   productSku?: string;
   values: Record<string, string>;
 }) {
   return requestClient.post<number>('/xq/work-order/list', data);
+}
+
+export function confirmXqWorkOrderListing(id: number) {
+  return requestClient.post<number>(`/xq/work-order/confirm-listing?id=${id}`);
 }
 
 export function generateXqWorkOrderImage(id: number) {

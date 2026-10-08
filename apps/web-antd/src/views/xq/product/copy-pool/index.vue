@@ -10,6 +10,7 @@ import { useUserStore } from '@vben/stores';
 
 import {
   Button,
+  Checkbox,
   Empty,
   Image,
   Input,
@@ -18,14 +19,17 @@ import {
   Pagination,
   Select,
   Spin,
+  Switch,
   Tag,
   TreeSelect,
   Upload,
 } from 'ant-design-vue';
 
 import { uploadFile } from '#/api/infra/file';
+import { getSimpleUser } from '#/api/system/user';
 import {
   getXqCategoryFieldTemplate,
+  getXqFieldPool,
   getXqListingCategories,
   getXqListingShops,
 } from '#/api/xq/listing';
@@ -33,16 +37,22 @@ import {
   batchAssignXqWorkOrderImage,
   batchCloseXqWorkOrder,
   closeXqWorkOrder,
+  enqueueXqWorkOrderCopyRpa,
   getXqAssignableImageUsers,
   getXqWorkOrder,
   getXqWorkOrderPage,
+  regenerateXqWorkOrderCopy,
   updateXqWorkOrder,
 } from '#/api/xq/work-order';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 import {
+  dedupeListingFieldsByCode,
   isListingImageField,
   resolveListingFieldZone,
 } from '#/views/xq/product/listing-field-zone';
+import { translateFieldLabel } from '#/views/xq/product/template-config/field-label-zh';
+
+import EditFieldRow from './edit-field-row.vue';
 
 defineOptions({ name: 'XqCopyPool' });
 
@@ -81,9 +91,31 @@ const activeId = ref<number | undefined>();
 
 const assignOpen = ref(false);
 const imageUserId = ref<number | undefined>();
+const assignTargetIds = ref<number[]>([]);
 const users = ref<Array<{ id: number; nickname?: string; username?: string }>>(
   [],
 );
+/** imageUserId → 展示名（含非美工列表用户的补查） */
+const imageUserNameMap = reactive<Record<number, string>>({});
+const regenerateOpen = ref(false);
+const regenerating = ref(false);
+const revisionPrompt = ref('');
+/** all | title | description | feature */
+const reviseTarget = ref<'all' | 'description' | 'feature' | 'title'>('all');
+const reviseFeatureIndex = ref(0);
+/** 左侧勾选：独立跑文案 RPA 的变体 id（主体始终包含） */
+const rpaSelectedMap = reactive<Record<number, boolean>>({});
+const enqueueingRpa = ref(false);
+const refreshing = ref(false);
+
+const reviseTargetLabel = computed(() => {
+  if (reviseTarget.value === 'title') return '标题';
+  if (reviseTarget.value === 'description') return '长描述';
+  if (reviseTarget.value === 'feature') {
+    return `卖点 ${reviseFeatureIndex.value + 1}`;
+  }
+  return '标题 / 卖点 / 长描述（全部）';
+});
 
 const form = reactive({
   contentTitle: '',
@@ -110,8 +142,10 @@ const listingCountryCode = ref<string | undefined>();
 const listingShops = ref<XqListingApi.Shop[]>([]);
 const listingCategories = ref<XqListingApi.CategoryNode[]>([]);
 const categoryTemplate = ref<null | XqListingApi.CategoryFieldTemplate>(null);
+const fieldPool = ref<null | XqListingApi.FieldPool>(null);
 const templateLoading = ref(false);
 const templateLoaded = ref(false);
+const fieldValues = reactive<Record<string, string>>({});
 
 const activeTask = computed(() => findTask(activeId.value));
 
@@ -205,6 +239,7 @@ const COUNTRY_OPTIONS = [
   { value: 'US', label: '美国 US' },
   { value: 'CA', label: '加拿大 CA' },
   { value: 'MX', label: '墨西哥 MX' },
+  { value: 'UK', label: '英国 UK' },
   { value: 'GB', label: '英国 GB' },
   { value: 'DE', label: '德国 DE' },
   { value: 'FR', label: '法国 FR' },
@@ -262,9 +297,14 @@ function findCategoryName(
 
 const showCopyEditor = computed(() => Boolean(activeTask.value));
 
-const hasCategoryTemplate = computed(
-  () => (categoryTemplate.value?.fields?.length || 0) > 0,
-);
+const templateFields = computed(() => {
+  const pool = fieldPool.value?.fields;
+  const raw =
+    pool && pool.length > 0 ? pool : categoryTemplate.value?.fields || [];
+  return dedupeListingFieldsByCode(raw);
+});
+
+const hasCategoryTemplate = computed(() => templateFields.value.length > 0);
 
 type TplBucket = 'copy' | 'dim' | 'image' | 'other' | 'required';
 type TplField = XqListingApi.CategoryField & {
@@ -468,8 +508,10 @@ const tplGroups = computed(() => {
     attr: [] as TplField[],
     unset: [] as TplField[],
     image: [] as TplField[],
+    custom: [] as Array<{ fields: TplField[]; id: string; name: string }>,
   };
-  for (const f of categoryTemplate.value?.fields || []) {
+  const customMap = new Map<string, TplField[]>();
+  for (const f of templateFields.value) {
     const row = classifyTplField(f);
     const zone = resolveListingFieldZone(f);
     if (zone === 'copy') {
@@ -478,6 +520,10 @@ const tplGroups = computed(() => {
         row.copyKind === 'description' ||
         row.copyKind === 'feature'
       ) {
+        continue;
+      }
+      // 卖点已有固定表单，不再重复展示 bullet_point 等
+      if (/bullet|卖点|selling point|highlight/.test(fieldHay(f))) {
         continue;
       }
       groups.copyExtra.push(row);
@@ -495,7 +541,24 @@ const tplGroups = computed(() => {
       groups.image.push(row);
       continue;
     }
+    if (/^u_[a-z0-9_]{1,40}$/.test(zone)) {
+      const list = customMap.get(zone) || [];
+      list.push(row);
+      customMap.set(zone, list);
+      continue;
+    }
+    // other / 空分区 / 历史未分区 → 其他属性
     groups.unset.push(row);
+  }
+  const names = new Map(
+    (fieldPool.value?.partitions || []).map((p) => [p.id, p.name || p.id]),
+  );
+  for (const [id, fields] of customMap) {
+    groups.custom.push({
+      id,
+      name: names.get(id) || id,
+      fields,
+    });
   }
   return groups;
 });
@@ -503,7 +566,7 @@ const tplGroups = computed(() => {
 const headerFacts = computed(() => {
   const out: Array<{ key: string; label: string; value: string }> = [];
   const seen = new Set<string>();
-  for (const f of categoryTemplate.value?.fields || []) {
+  for (const f of templateFields.value) {
     const hay = fieldHay(f);
     let key = '';
     if (/\bbrand\b|品牌/.test(hay)) key = 'brand';
@@ -544,7 +607,86 @@ const showCopyInTemplate = computed(
   () => hasCategoryTemplate.value || Boolean(listingCategoryId.value),
 );
 
-const otherTplOpen = ref(false);
+const zoneCollapsed = reactive<Record<string, boolean>>({ other: true });
+const zoneQuery = reactive<Record<string, string>>({ other: '' });
+const showZh = ref(true);
+
+type EditZone = {
+  color: string;
+  fields: TplField[];
+  hasCopyForm?: boolean;
+  hint: string;
+  key: string;
+  label: string;
+};
+
+const editZones = computed((): EditZone[] => {
+  const g = tplGroups.value;
+  const zones: EditZone[] = [
+    {
+      key: 'copy',
+      label: '产品文案',
+      hint: '标题 · 卖点 · 长描述',
+      color: '#2563eb',
+      hasCopyForm: true,
+      fields: g.copyExtra,
+    },
+    {
+      key: 'product',
+      label: '产品基本信息',
+      hint: 'SKU · UPC · 颜色 · 库存',
+      color: '#059669',
+      fields: g.product,
+    },
+    {
+      key: 'attr',
+      label: '产品规格',
+      hint: '尺寸 · 重量 · 品牌 · 材质',
+      color: '#d97706',
+      fields: g.attr,
+    },
+    {
+      key: 'other',
+      label: '其他属性',
+      hint: '其余上架字段',
+      color: '#94a3b8',
+      fields: g.unset,
+    },
+  ];
+  for (const z of g.custom) {
+    zones.push({
+      key: z.id,
+      label: z.name,
+      hint: '自定义分区',
+      color: '#7c3aed',
+      fields: z.fields,
+    });
+  }
+  return zones;
+});
+
+function zoneOpen(key: string) {
+  return zoneCollapsed[key] !== true;
+}
+
+function toggleZone(key: string) {
+  zoneCollapsed[key] = zoneOpen(key);
+}
+
+function zoneCount(zone: EditZone) {
+  return (zone.hasCopyForm ? 3 : 0) + zone.fields.length;
+}
+
+function zoneFieldVisible(zoneKey: string, f: TplField) {
+  const q = (zoneQuery[zoneKey] || '').trim().toLowerCase();
+  if (!q) return true;
+  const zh = translateFieldLabel(f.label, f.code).toLowerCase();
+  return (
+    (f.label || '').toLowerCase().includes(q) ||
+    (f.code || '').toLowerCase().includes(q) ||
+    zh.includes(q)
+  );
+}
 
 function textStats(text?: string) {
   const s = String(text || '').trim();
@@ -553,24 +695,60 @@ function textStats(text?: string) {
   return `${chars} 字符 · ${words} 词`;
 }
 
+function parseSavedListingValues(row?: null | XqWorkOrderApi.WorkOrder) {
+  if (!row?.listingValuesJson) return {} as Record<string, string>;
+  try {
+    const obj = JSON.parse(row.listingValuesJson);
+    const out: Record<string, string> = {};
+    if (obj && typeof obj === 'object') {
+      for (const [k, v] of Object.entries(obj)) {
+        out[k] = v === null || v === undefined ? '' : String(v);
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function resolveTplSource(src: string, row: XqWorkOrderApi.WorkOrder) {
+  const copy = parseCopyJson(row);
+  const points = parseSellingPoints(row.contentSellingPoints);
+  const map: Record<string, string> = {
+    erp_sku: row.productSku || row.externalSku || '',
+    upc: row.upc || '',
+    ai_title: row.contentTitle || form.contentTitle || '',
+    ai_description: String(copy.description || form.description || ''),
+    ai_style: row.variantLabel || '',
+    giga_sku: row.externalSku || '',
+    product_name: row.title || '',
+    brand: parseSavedListingValues(row).brand || '',
+    color: row.mainColor || '',
+    inventory:
+      row.qtyAvailable === null || row.qtyAvailable === undefined
+        ? ''
+        : String(row.qtyAvailable),
+    product_length: dimText(row.lengthCm),
+    product_width: dimText(row.widthCm),
+    product_height: dimText(row.heightCm),
+    unit_inches: 'Inches',
+    unit_pounds: 'Pounds',
+  };
+  for (let i = 1; i <= 8; i++) {
+    map[`ai_bullet_${i}`] = points[i - 1] || '';
+  }
+  return map[src] || '';
+}
+
 function tplAttrValue(f: TplField) {
   const hay = fieldHay(f);
   const row = activeTask.value;
   if (!row) return '';
   if (/brand|品牌/.test(hay)) {
-    try {
-      const obj = row.listingValuesJson
-        ? JSON.parse(row.listingValuesJson)
-        : {};
-      return String(obj.brand || obj.Brand || '').trim();
-    } catch {
-      return '';
-    }
+    return parseSavedListingValues(row).brand || '';
   }
   if (/upc|gtin/.test(hay)) return row.upc || '';
-  if (
-    /seller sku|shop sku|vendor style|item code|platform sku|shop sku/.test(hay)
-  ) {
+  if (/seller sku|shop sku|vendor style|item code|platform sku/.test(hay)) {
     return row.externalSku || '';
   }
   if (/display color|color family|\bcolor\b|main color/.test(hay)) {
@@ -585,6 +763,35 @@ function tplAttrValue(f: TplField) {
   if (/width|宽/.test(hay)) return dimText(row.widthCm);
   if (/height|高/.test(hay)) return dimText(row.heightCm);
   return '';
+}
+
+function fillTplFieldValues() {
+  const row = activeTask.value;
+  const saved = parseSavedListingValues(row);
+  const next: Record<string, string> = {};
+  for (const f of templateFields.value) {
+    const code = f.code;
+    if (!code) continue;
+    const fromSaved = saved[code];
+    if (fromSaved) {
+      next[code] = fromSaved;
+      continue;
+    }
+    if (f.valueSource && row) {
+      next[code] = resolveTplSource(f.valueSource, row) || f.defaultValue || '';
+      continue;
+    }
+    if (f.defaultValue) {
+      next[code] = f.defaultValue;
+      continue;
+    }
+    next[code] = row ? tplAttrValue({ ...f, bucket: 'other' }) : '';
+  }
+  const staleKeys = Object.keys(fieldValues).filter((k) => !(k in next));
+  Object.assign(fieldValues, next);
+  for (const key of staleKeys) {
+    Reflect.deleteProperty(fieldValues, key);
+  }
 }
 
 function dimText(v?: number) {
@@ -621,15 +828,6 @@ function sourceImagesOf(row?: null | XqWorkOrderApi.WorkOrder) {
     }
   }
   return urls;
-}
-
-function promptImageUrl(p: ImagePromptItem, i: number) {
-  return (
-    p.imageUrl ||
-    sourceImages.value[p.index ?? i] ||
-    sourceImages.value[i] ||
-    ''
-  );
 }
 
 const imagePrompts = computed<ImagePromptItem[]>(() => {
@@ -669,19 +867,106 @@ function clearSelection() {
 }
 
 function statusText(row: XqWorkOrderApi.WorkOrder) {
-  if (row.imageUserId) return '已分配美工';
   if (row.rpaCopyStatus === 'fail') return '文案失败';
   if (row.rpaCopyStatus === 'running') return '生成中';
-  if (row.rpaCopyStatus === 'queued') return '待手动跑RPA';
-  return '待分配美工';
+  if (row.rpaCopyStatus === 'queued') return '排队中';
+  if (row.rpaCopyStatus === 'inherited') return '沿用主体';
+  if (row.rpaCopyStatus === 'success') return '文案完成';
+  if (row.imageUserId) return '已分配美工';
+  return '待跑文案';
 }
 
 function statusColor(row: XqWorkOrderApi.WorkOrder) {
-  if (row.imageUserId) return 'success';
   if (row.rpaCopyStatus === 'fail') return 'error';
   if (row.rpaCopyStatus === 'running') return 'processing';
   if (row.rpaCopyStatus === 'queued') return 'warning';
-  return 'processing';
+  if (row.rpaCopyStatus === 'inherited') return 'default';
+  if (row.rpaCopyStatus === 'success') return 'success';
+  if (row.imageUserId) return 'success';
+  return 'default';
+}
+
+function isFamilyMain(
+  member: XqWorkOrderApi.WorkOrder,
+  root: XqWorkOrderApi.WorkOrder,
+) {
+  const members = comboMembers(root);
+  return members[0]?.id === member.id;
+}
+
+function syncRpaSelectionFromTasks() {
+  for (const root of tasks.value) {
+    for (const m of comboMembers(root)) {
+      if (!m.id) continue;
+      // 主体始终勾选；变体跟库里的勾选状态
+      rpaSelectedMap[m.id] = isFamilyMain(m, root) || !!m.copyRpaSelected;
+    }
+  }
+}
+
+function familyRootOfActive() {
+  const row = activeTask.value;
+  if (!row) return null;
+  return comboRootOf(row);
+}
+
+function familyProgress(root: XqWorkOrderApi.WorkOrder) {
+  const members = comboMembers(root);
+  const done = members.filter((m) =>
+    ['inherited', 'success'].includes(String(m.rpaCopyStatus || '')),
+  ).length;
+  const running = members.filter((m) =>
+    ['queued', 'running'].includes(String(m.rpaCopyStatus || '')),
+  ).length;
+  return { total: members.length, done, running };
+}
+
+function familyProgressText(root: XqWorkOrderApi.WorkOrder) {
+  const p = familyProgress(root);
+  if (p.running > 0) return `${p.done}/${p.total} · ${p.running} 进行中`;
+  if (p.done > 0) return `${p.done}/${p.total} 已完成`;
+  return `${p.total} 个变体`;
+}
+
+function toggleRpaSelect(
+  member: XqWorkOrderApi.WorkOrder,
+  root: XqWorkOrderApi.WorkOrder,
+  on: boolean,
+) {
+  if (!member.id) return;
+  if (isFamilyMain(member, root)) {
+    rpaSelectedMap[member.id] = true;
+    return;
+  }
+  rpaSelectedMap[member.id] = on;
+}
+
+async function enqueueFamilyCopyRpa() {
+  const root = familyRootOfActive();
+  if (!root?.id) {
+    message.warning('请先选择左侧任务');
+    return;
+  }
+  const members = comboMembers(root);
+  const selectedIds = members
+    .filter((m) => m.id && (isFamilyMain(m, root) || rpaSelectedMap[m.id!]))
+    .map((m) => m.id!)
+    .filter(Boolean);
+  enqueueingRpa.value = true;
+  try {
+    const n = await enqueueXqWorkOrderCopyRpa({
+      rootId: root.id,
+      selectedIds,
+    });
+    message.success(
+      `已入队 ${n} 条文案 RPA（扁平拉取）；未勾选变体将在主体完成后沿用主体文案`,
+    );
+    await loadTasks({ soft: true });
+  } catch (error: any) {
+    message.error(error?.message || '入队失败');
+  } finally {
+    enqueueingRpa.value = false;
+  }
 }
 
 function parseSellingPoints(raw?: string) {
@@ -759,6 +1044,8 @@ function fillForm(row: null | XqWorkOrderApi.WorkOrder) {
   listingShopId.value = asId(row.listingShopId) || asId(root?.listingShopId);
   listingCountryCode.value =
     asId(row.listingCountryCode) || asId(root?.listingCountryCode);
+  ensureDefaultCountry();
+  fillTplFieldValues();
 }
 
 function selectTask(row: XqWorkOrderApi.WorkOrder) {
@@ -774,8 +1061,55 @@ function isLeftActive(row: XqWorkOrderApi.WorkOrder) {
   return row.id === activeId.value;
 }
 
+function ensureDefaultCountry() {
+  if (listingShopId.value && !listingCountryCode.value) {
+    listingCountryCode.value = 'US';
+  }
+}
+
+async function loadTemplates() {
+  const platformId = listingPlatformId.value;
+  const shopId = listingShopId.value;
+  const country = listingCountryCode.value;
+  const categoryId = listingCategoryId.value;
+  fieldPool.value = null;
+  categoryTemplate.value = null;
+  templateLoaded.value = false;
+  if (!platformId) return;
+  templateLoading.value = true;
+  try {
+    const pool = await getXqFieldPool({
+      platformId,
+      shopId,
+      country,
+    });
+    fieldPool.value = pool || null;
+    if ((pool?.fields?.length || 0) === 0 && categoryId) {
+      categoryTemplate.value = await getXqCategoryFieldTemplate(categoryId);
+    }
+    templateLoaded.value = true;
+    fillTplFieldValues();
+  } catch {
+    fieldPool.value = null;
+    if (categoryId) {
+      try {
+        categoryTemplate.value = await getXqCategoryFieldTemplate(categoryId);
+      } catch {
+        categoryTemplate.value = null;
+      }
+    }
+    templateLoaded.value = true;
+    fillTplFieldValues();
+  } finally {
+    templateLoading.value = false;
+  }
+}
+
 watch(activeTask, (row) => {
   if (row) fillForm(row);
+  if (row?.imageUserId) {
+    void resolveImageUserName(row.imageUserId);
+  }
 });
 
 watch(
@@ -783,6 +1117,7 @@ watch(
   async (platformId) => {
     listingCategories.value = [];
     listingShops.value = [];
+    fieldPool.value = null;
     categoryTemplate.value = null;
     templateLoaded.value = false;
     if (!platformId) return;
@@ -795,13 +1130,12 @@ watch(
     try {
       listingShops.value = (await getXqListingShops(platformId)) || [];
       if (!listingShopId.value && listingShops.value.length === 1) {
-        await onListingShopChange(asId(listingShops.value[0]!.id));
+        listingShopId.value = asId(listingShops.value[0]!.id);
+        ensureDefaultCountry();
+        await persistListingMeta();
       }
     } catch {
       listingShops.value = [];
-    }
-    if (listingCategoryId.value) {
-      await loadCategoryTemplates(platformId, listingCategoryId.value);
     }
   },
   { immediate: true },
@@ -810,34 +1144,17 @@ watch(
 watch(
   () =>
     [
-      activeTask.value?.listingPlatformId ||
-        familyParent.value?.listingPlatformId,
+      listingPlatformId.value,
+      listingShopId.value,
+      listingCountryCode.value,
       listingCategoryId.value,
     ] as const,
-  async ([platformId, categoryId]) => {
-    await loadCategoryTemplates(platformId, categoryId);
+  async () => {
+    ensureDefaultCountry();
+    await loadTemplates();
   },
+  { immediate: true },
 );
-
-async function loadCategoryTemplates(
-  _platformId?: string,
-  categoryId?: string,
-) {
-  categoryTemplate.value = null;
-  templateLoaded.value = false;
-  otherTplOpen.value = false;
-  if (!categoryId) return;
-  templateLoading.value = true;
-  try {
-    categoryTemplate.value = await getXqCategoryFieldTemplate(categoryId);
-    templateLoaded.value = true;
-  } catch {
-    categoryTemplate.value = null;
-    templateLoaded.value = true;
-  } finally {
-    templateLoading.value = false;
-  }
-}
 
 async function persistListingMeta() {
   const row = activeTask.value;
@@ -875,6 +1192,7 @@ async function persistListingMeta() {
 
 async function onListingShopChange(id?: string) {
   listingShopId.value = asId(id);
+  ensureDefaultCountry();
   await persistListingMeta();
 }
 
@@ -888,8 +1206,10 @@ async function onListingCountryChange(code?: string) {
   await persistListingMeta();
 }
 
-async function loadTasks() {
-  loading.value = true;
+async function loadTasks(opts?: { soft?: boolean }) {
+  const soft = !!opts?.soft;
+  if (soft) refreshing.value = true;
+  else loading.value = true;
   try {
     const fid = Number(route.query.id);
     if (Number.isFinite(fid) && fid > 0) {
@@ -901,9 +1221,20 @@ async function loadTasks() {
       tasks.value = root ? [root] : [];
       total.value = root ? 1 : 0;
       const members = root ? comboMembers(root) : [];
-      const hit = members.find((m) => m.id === fid) || members[0];
-      if (hit) selectTask(hit);
-      else fillForm(null);
+      const keep =
+        (activeId.value && members.find((m) => m.id === activeId.value)) ||
+        members.find((m) => m.id === fid) ||
+        members[0];
+      if (keep) {
+        if (soft && keep.id === activeId.value) {
+          // 软刷新：只回填当前条，避免整页 Spin + 重选导致闪烁
+          fillForm(keep);
+        } else {
+          selectTask(keep);
+        }
+      } else {
+        fillForm(null);
+      }
       return;
     }
     const res = await getXqWorkOrderPage({
@@ -922,12 +1253,22 @@ async function loadTasks() {
     if (!activeId.value && tasks.value[0]) {
       const first = comboMembers(tasks.value[0]!)[0];
       if (first) selectTask(first);
+    } else if (activeId.value) {
+      // 软/硬刷新都要回填当前选中条，否则 RPA 回调写库后右侧仍是旧空表单
+      const keep = findTask(activeId.value);
+      if (keep) fillForm(keep);
     }
   } catch (error: any) {
     message.error(error?.message || '加载失败');
   } finally {
     loading.value = false;
+    refreshing.value = false;
+    syncRpaSelectionFromTasks();
   }
+}
+
+function refreshTasks() {
+  loadTasks({ soft: true });
 }
 
 function handleSearch() {
@@ -942,16 +1283,67 @@ function onPageChange(page: number, size: number) {
   loadTasks();
 }
 
+function buildSellingText() {
+  return form.sellingPoints
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => (p.startsWith('•') ? p : `• ${p}`))
+    .join('\n');
+}
+
+function openRegenerateCopy(
+  target: 'all' | 'description' | 'feature' | 'title' = 'all',
+  featureIndex = 0,
+) {
+  if (!activeTask.value?.id) {
+    message.warning('请先选择左侧任务');
+    return;
+  }
+  reviseTarget.value = target;
+  reviseFeatureIndex.value =
+    target === 'feature'
+      ? Math.max(0, Math.min(FEATURE_COUNT - 1, featureIndex))
+      : 0;
+  revisionPrompt.value = '';
+  regenerateOpen.value = true;
+}
+
+async function confirmRegenerateCopy() {
+  const row = activeTask.value;
+  if (!row?.id) return;
+  regenerating.value = true;
+  try {
+    await regenerateXqWorkOrderCopy({
+      id: row.id,
+      target: reviseTarget.value,
+      featureIndex:
+        reviseTarget.value === 'feature' ? reviseFeatureIndex.value : undefined,
+      revisionPrompt: revisionPrompt.value.trim(),
+      contentTitle: form.contentTitle.trim(),
+      contentSellingPoints: buildSellingText(),
+      contentDescription: form.description.trim(),
+    });
+    regenerateOpen.value = false;
+    message.success(
+      `已提交「${reviseTargetLabel.value}」的 AI 改写，将参考现有内容与提示词，其它字段保持不变`,
+    );
+    await loadTasks();
+    const next = findTask(row.id);
+    if (next) selectTask(next);
+  } catch (error: any) {
+    message.error(error?.message || '提交重新生成失败');
+  } finally {
+    regenerating.value = false;
+  }
+}
+
 async function saveCurrent() {
   const row = activeTask.value;
   if (!row?.id) {
     message.warning('请先选择左侧任务');
     return;
   }
-  const points = form.sellingPoints.map((p) => p.trim()).filter(Boolean);
-  const sellingText = points
-    .map((p) => (p.startsWith('•') ? p : `• ${p}`))
-    .join('\n');
+  const sellingText = buildSellingText();
   saving.value = true;
   try {
     await updateXqWorkOrder({
@@ -971,6 +1363,10 @@ async function saveCurrent() {
         '',
       listingCountryCode: listingCountryCode.value || '',
       listingCountryName: countryNameOf(listingCountryCode.value),
+      listingValuesJson: JSON.stringify({
+        ...parseSavedListingValues(row),
+        ...fieldValues,
+      }),
     });
     message.success('文案已保存');
     await loadTasks();
@@ -983,19 +1379,142 @@ async function saveCurrent() {
   }
 }
 
+function hasCopyReady(row?: null | XqWorkOrderApi.WorkOrder) {
+  if (!row) return false;
+  if (row.contentTitle?.trim()) return true;
+  return ['inherited', 'success'].includes(String(row.rpaCopyStatus || ''));
+}
+
+function isImageStarted(row?: null | XqWorkOrderApi.WorkOrder) {
+  if (!row?.imageUserId) return false;
+  return ['done', 'generated', 'rejected', 'revised', 'running'].includes(
+    String(row.imageStatus || '').toLowerCase(),
+  );
+}
+
+/** 家族内：主体有文案则变体一并分配；美工未开跑可改派 */
+function collectAssignableIds(rows: XqWorkOrderApi.WorkOrder[]) {
+  const main = rows[0];
+  const mainReady = hasCopyReady(main);
+  return rows
+    .filter((t) => {
+      if (!t.id || t.status !== 10) return false;
+      if (isImageStarted(t)) return false;
+      if (hasCopyReady(t)) return true;
+      return (
+        mainReady && Boolean(t.parentWorkOrderId || (main && t.id !== main.id))
+      );
+    })
+    .map((t) => t.id!)
+    .filter(Boolean);
+}
+
+function rememberImageUserName(
+  uid?: null | number,
+  nickname?: null | string,
+  username?: null | string,
+) {
+  if (!uid) return;
+  const name = String(nickname || username || '').trim();
+  if (name) imageUserNameMap[uid] = name;
+}
+
+async function ensureImageUsersLoaded() {
+  if (users.value.length > 0) return users.value;
+  users.value = (await getXqAssignableImageUsers()) || [];
+  for (const u of users.value) {
+    rememberImageUserName(u.id, u.nickname, u.username);
+  }
+  return users.value;
+}
+
+async function resolveImageUserName(uid?: null | number) {
+  if (!uid) return '';
+  if (imageUserNameMap[uid]) return imageUserNameMap[uid];
+  const hit = users.value.find((u) => u.id === uid);
+  if (hit?.nickname || hit?.username) {
+    rememberImageUserName(uid, hit.nickname, hit.username);
+    return imageUserNameMap[uid] || '';
+  }
+  try {
+    await ensureImageUsersLoaded();
+    const again = users.value.find((u) => u.id === uid);
+    if (again?.nickname || again?.username) {
+      rememberImageUserName(uid, again.nickname, again.username);
+      return imageUserNameMap[uid] || '';
+    }
+    const simple = await getSimpleUser(uid);
+    rememberImageUserName(uid, simple?.nickname, simple?.username);
+  } catch {
+    /* 兜底显示 #id */
+  }
+  return imageUserNameMap[uid] || '';
+}
+
+function imageUserLabel(uid?: null | number) {
+  if (!uid) return '';
+  const name = imageUserNameMap[uid] || '';
+  return name ? `已分配 ${name}` : `已分配 #${uid}`;
+}
+
+async function loadAssignableUsers() {
+  await ensureImageUsersLoaded();
+  if (myUserId.value && users.value.some((u) => u.id === myUserId.value)) {
+    imageUserId.value = myUserId.value;
+  } else if (users.value[0]?.id) {
+    imageUserId.value = users.value[0].id;
+  } else {
+    imageUserId.value = undefined;
+  }
+}
+
+/** 列表勾选批量分配 */
 async function openAssign() {
-  if (unassignedSelected.value.length === 0) {
+  const ids = collectAssignableIds(unassignedSelected.value);
+  if (ids.length === 0) {
     message.warning('请勾选尚未分配美工、且文案已完成的任务');
     return;
   }
+  assignTargetIds.value = ids;
   assignOpen.value = true;
   try {
-    users.value = (await getXqAssignableImageUsers()) || [];
-    if (myUserId.value && users.value.some((u) => u.id === myUserId.value)) {
-      imageUserId.value = myUserId.value;
-    } else if (users.value[0]?.id) {
-      imageUserId.value = users.value[0].id;
+    await loadAssignableUsers();
+  } catch (error: any) {
+    users.value = [];
+    message.error(error?.message || '加载美工列表失败');
+  }
+}
+
+/** 编辑页：仅左侧勾选的 SKU 可分配美工（不整家族扩展） */
+async function openAssignCurrent() {
+  const row = activeTask.value;
+  if (!row?.id) {
+    message.warning('请先选择任务');
+    return;
+  }
+  const root = familyRootOfActive() || row;
+  const checked = comboMembers(root).filter(
+    (m) => m.id && rpaSelectedMap[m.id],
+  );
+  if (checked.length === 0) {
+    message.warning('请先勾选要分配的主体/变体');
+    return;
+  }
+  const ids = collectAssignableIds(checked);
+  if (ids.length === 0) {
+    if (checked.some((m) => m.imageUserId && isImageStarted(m))) {
+      message.warning('勾选项中美工已开始执行，无法改派');
+    } else if (checked.some((m) => hasCopyReady(m))) {
+      message.warning('勾选项没有可分配/改派的任务');
+    } else {
+      message.warning('请先完成文案再分配美工');
     }
+    return;
+  }
+  assignTargetIds.value = ids;
+  assignOpen.value = true;
+  try {
+    await loadAssignableUsers();
   } catch (error: any) {
     users.value = [];
     message.error(error?.message || '加载美工列表失败');
@@ -1005,28 +1524,51 @@ async function openAssign() {
 async function confirmAssign() {
   if (!imageUserId.value) {
     message.warning('请选择美工人员');
-    return;
+    throw new Error('请选择美工人员');
   }
-  const ids = unassignedSelected.value
-    .map((t) => t.id)
-    .filter((id): id is number => Boolean(id));
-  if (ids.length === 0) return;
+  const ids = assignTargetIds.value.filter(Boolean);
+  if (ids.length === 0) {
+    message.warning('没有可分配的任务');
+    throw new Error('没有可分配的任务');
+  }
   assigning.value = true;
   try {
     const n = await batchAssignXqWorkOrderImage({
       ids,
       imageUserId: imageUserId.value,
       listingPlatformId: lockedPlatformId.value || undefined,
+      expandFamily: false,
     });
-    message.success(`已分配 ${n} 个任务给美工`);
+    const picked = users.value.find((u) => u.id === imageUserId.value);
+    rememberImageUserName(
+      imageUserId.value,
+      picked?.nickname,
+      picked?.username,
+    );
+    message.success(
+      `已分配 ${n} 个任务给${imageUserNameMap[imageUserId.value!] || '美工'}`,
+    );
     assignOpen.value = false;
     clearSelection();
     await loadTasks();
   } catch (error: any) {
     message.error(error?.message || '分配失败');
+    throw error instanceof Error
+      ? error
+      : new Error(error?.message || '分配失败');
   } finally {
     assigning.value = false;
   }
+}
+
+function canAssignCurrent() {
+  const row = activeTask.value;
+  if (!row?.id || row.status !== 10) return false;
+  const root = familyRootOfActive() || row;
+  const checked = comboMembers(root).filter(
+    (m) => m.id && rpaSelectedMap[m.id],
+  );
+  return collectAssignableIds(checked).length > 0;
 }
 
 async function closeOneTask(row: XqWorkOrderApi.WorkOrder) {
@@ -1125,19 +1667,12 @@ function removeHighlightTag(tag: string) {
   form.selectedHighlight = form.selectedHighlight.filter((t) => t !== tag);
 }
 
-function imageTypeLabel(t?: string) {
-  const map: Record<string, string> = {
-    main: '主图',
-    dimension: '尺寸图',
-    detail: '细节图',
-    scene: '场景图',
-    package: '包装图',
-    other: '其它',
-  };
-  return map[String(t || '').toLowerCase()] || t || '图';
-}
-
-onMounted(loadTasks);
+onMounted(async () => {
+  void ensureImageUsersLoaded().catch(() => {
+    /* 姓名展示兜底用 #id，失败不挡主流程 */
+  });
+  await loadTasks();
+});
 
 watch(lockedPlatformId, () => {
   handleSearch();
@@ -1154,13 +1689,8 @@ watch(
 <template>
   <Page auto-content-height>
     <div class="xq-copy-pool">
-      <div class="xq-toolbar">
-        <div class="xq-title-block">
-          <h2>编辑产品</h2>
-          <p>左侧点选组合内任一 SKU，右侧展示并保存该条信息。</p>
-        </div>
+      <div v-if="!route.query.id" class="xq-toolbar">
         <Input.Search
-          v-if="!route.query.id"
           v-model:value="keyword"
           allow-clear
           class="xq-search"
@@ -1174,27 +1704,82 @@ watch(
         <div v-if="tasks.length" class="xq-split">
           <!-- 左：任务列表 -->
           <aside class="xq-list">
+            <div v-if="familyRootOfActive()" class="xq-list-rpa-bar">
+              <div class="xq-list-rpa-meta">
+                <div>
+                  <b>主体进度</b>
+                  <span>{{ familyProgressText(familyRootOfActive()!) }}</span>
+                </div>
+                <Button
+                  type="text"
+                  size="small"
+                  :loading="refreshing"
+                  @click="refreshTasks"
+                >
+                  刷新
+                </Button>
+              </div>
+              <Button
+                type="primary"
+                size="small"
+                block
+                :loading="enqueueingRpa"
+                @click="enqueueFamilyCopyRpa"
+              >
+                执行文案
+              </Button>
+            </div>
             <div v-for="row in tasks" :key="row.id" class="xq-list-group">
               <div
                 v-for="member in comboMembers(row)"
                 :key="member.id"
                 class="xq-list-item"
-                :class="{ active: isLeftActive(member) }"
+                :class="{
+                  active: isLeftActive(member),
+                  main: isFamilyMain(member, row),
+                }"
                 role="button"
                 tabindex="0"
                 @click="selectTask(member)"
                 @keydown.enter="selectTask(member)"
               >
+                <label class="xq-list-check" @click.stop>
+                  <Checkbox
+                    :checked="
+                      !!member.id &&
+                      (isFamilyMain(member, row) || !!rpaSelectedMap[member.id])
+                    "
+                    :disabled="isFamilyMain(member, row)"
+                    @change="
+                      (e: any) =>
+                        toggleRpaSelect(member, row, !!e?.target?.checked)
+                    "
+                  />
+                </label>
                 <div class="xq-list-thumb">
                   <Image
                     :src="coverOf(member)"
                     :preview="false"
-                    :width="72"
-                    :height="72"
+                    :width="40"
+                    :height="40"
                   />
                 </div>
-                <div class="xq-list-sku" :title="member.externalSku">
-                  {{ member.externalSku || '—' }}
+                <div class="xq-list-body">
+                  <div class="xq-list-sku" :title="member.externalSku">
+                    {{ member.externalSku || '—' }}
+                  </div>
+                  <div class="xq-list-flags">
+                    <Tag
+                      v-if="isFamilyMain(member, row)"
+                      color="blue"
+                      class="xq-mini-tag"
+                    >
+                      主体
+                    </Tag>
+                    <Tag :color="statusColor(member)" class="xq-mini-tag">
+                      {{ statusText(member) }}
+                    </Tag>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1226,8 +1811,8 @@ watch(
                     <Image
                       :src="slot.url"
                       :preview="true"
-                      :width="88"
-                      :height="88"
+                      :width="80"
+                      :height="80"
                     />
                     <button
                       type="button"
@@ -1256,70 +1841,89 @@ watch(
                   </Upload>
                 </div>
               </div>
-              <p class="xq-head-hint">
-                请上传大小不超过 5MB 格式为 png/jpg/jpeg 的文件
-              </p>
+              <p class="xq-head-hint">图片 ≤ 5MB，支持 png / jpg / jpeg</p>
               <div class="xq-head-meta">
-                <div class="xq-listing-field">
-                  <span class="xq-listing-flag">平台</span>
-                  <b class="xq-plat-name">{{
-                    listingPlatformName || '当前平台'
-                  }}</b>
+                <div class="xq-head-fields">
+                  <div class="xq-listing-field">
+                    <span class="xq-listing-flag">平台</span>
+                    <b class="xq-plat-name">{{
+                      listingPlatformName || '当前平台'
+                    }}</b>
+                  </div>
+                  <div class="xq-listing-field">
+                    <span class="xq-listing-flag">店铺</span>
+                    <Select
+                      :value="listingShopId"
+                      allow-clear
+                      show-search
+                      option-filter-prop="label"
+                      placeholder="选择店铺"
+                      style="min-width: 132px"
+                      :options="shopOptions"
+                      :disabled="!listingPlatformId"
+                      @change="(v: any) => onListingShopChange(v)"
+                    />
+                  </div>
+                  <div class="xq-listing-field">
+                    <span class="xq-listing-flag">分类</span>
+                    <TreeSelect
+                      :value="listingCategoryId"
+                      allow-clear
+                      show-search
+                      tree-default-expand-all
+                      tree-node-filter-prop="title"
+                      :tree-data="categoryTreeData"
+                      :disabled="!listingPlatformId"
+                      placeholder="选择分类"
+                      style="min-width: 160px"
+                      :dropdown-style="{ maxHeight: '360px', overflow: 'auto' }"
+                      @change="(v: any) => onListingCategoryChange(v)"
+                    />
+                  </div>
+                  <div class="xq-listing-field">
+                    <span class="xq-listing-flag">国家</span>
+                    <Select
+                      :value="listingCountryCode"
+                      allow-clear
+                      show-search
+                      option-filter-prop="label"
+                      placeholder="选择国家"
+                      style="min-width: 120px"
+                      :options="countryOptions"
+                      @change="(v: any) => onListingCountryChange(v)"
+                    />
+                  </div>
+                  <div
+                    v-for="fact in headerFacts"
+                    :key="fact.key"
+                    class="xq-listing-field xq-listing-fact"
+                  >
+                    <span class="xq-listing-flag">{{ fact.label }}</span>
+                    <b>{{ fact.value || '—' }}</b>
+                  </div>
                 </div>
-                <div class="xq-listing-field">
-                  <span class="xq-listing-flag">店铺</span>
-                  <Select
-                    :value="listingShopId"
-                    allow-clear
-                    show-search
-                    option-filter-prop="label"
-                    placeholder="选择店铺"
-                    style="min-width: 140px"
-                    :options="shopOptions"
-                    :disabled="!listingPlatformId"
-                    @change="(v: any) => onListingShopChange(v)"
-                  />
+                <div class="xq-head-actions">
+                  <Tag
+                    v-if="activeTask?.imageUserId"
+                    color="purple"
+                    :title="`用户 #${activeTask.imageUserId}`"
+                  >
+                    {{ imageUserLabel(activeTask.imageUserId) }}
+                  </Tag>
+                  <Button
+                    :disabled="!canAssignCurrent()"
+                    @click="openAssignCurrent"
+                  >
+                    {{
+                      activeTask?.imageUserId && !isImageStarted(activeTask)
+                        ? '改派美工'
+                        : '分配美工'
+                    }}
+                  </Button>
+                  <Button type="primary" :loading="saving" @click="saveCurrent">
+                    保存
+                  </Button>
                 </div>
-                <div class="xq-listing-field">
-                  <span class="xq-listing-flag">分类</span>
-                  <TreeSelect
-                    :value="listingCategoryId"
-                    allow-clear
-                    show-search
-                    tree-default-expand-all
-                    tree-node-filter-prop="title"
-                    :tree-data="categoryTreeData"
-                    :disabled="!listingPlatformId"
-                    placeholder="选择分类"
-                    style="min-width: 180px"
-                    :dropdown-style="{ maxHeight: '360px', overflow: 'auto' }"
-                    @change="(v: any) => onListingCategoryChange(v)"
-                  />
-                </div>
-                <div class="xq-listing-field">
-                  <span class="xq-listing-flag">国家</span>
-                  <Select
-                    :value="listingCountryCode"
-                    allow-clear
-                    show-search
-                    option-filter-prop="label"
-                    placeholder="选择国家"
-                    style="min-width: 128px"
-                    :options="countryOptions"
-                    @change="(v: any) => onListingCountryChange(v)"
-                  />
-                </div>
-                <div
-                  v-for="fact in headerFacts"
-                  :key="fact.key"
-                  class="xq-listing-field"
-                >
-                  <span class="xq-listing-flag">{{ fact.label }}</span>
-                  <b>{{ fact.value || '—' }}</b>
-                </div>
-                <Button type="primary" :loading="saving" @click="saveCurrent">
-                  保存
-                </Button>
               </div>
             </div>
 
@@ -1329,170 +1933,144 @@ watch(
               <div class="xq-edit-block">
                 <!-- <label class="xq-field-label">类目模板</label> -->
                 <Spin :spinning="templateLoading">
-                  <div v-if="!listingCategoryId" class="xq-tpl-empty">
-                    请先选择上架类目，再加载该类目字段模板
+                  <div v-if="!listingPlatformId" class="xq-tpl-empty">
+                    请从平台工作台进入后再加载模板字段
                   </div>
-                  <div v-else-if="listingCategoryId" class="xq-wb">
-                    <section class="xq-wb-sec">
-                      <div class="xq-wb-copy wide">
-                        <div class="xq-wb-copy-h">
-                          <em>标题</em>
-                          <span>{{ textStats(form.contentTitle) }}</span>
-                          <i>自动</i>
-                        </div>
-                        <Input
-                          v-model:value="form.contentTitle"
-                          placeholder="优化后的产品标题"
-                        />
+                  <div v-else class="xq-zone-board">
+                    <section
+                      v-for="zone in editZones"
+                      :key="zone.key"
+                      class="xq-zone-col"
+                      :class="{ collapsed: !zoneOpen(zone.key) }"
+                      :style="{ '--zone-color': zone.color }"
+                    >
+                      <div class="xq-zone-h" @click="toggleZone(zone.key)">
+                        <span class="caret">{{
+                          zoneOpen(zone.key) ? '▾' : '▸'
+                        }}</span>
+                        <b>{{ zone.label }}</b>
+                        <span>{{ zoneCount(zone) }}</span>
                       </div>
-                      <div class="xq-wb-copy wide">
-                        <div class="xq-wb-copy-h">
-                          <em>卖点</em>
-                          <span>{{
-                              form.sellingPoints.filter((p) => p.trim()).length
-                            }}/{{ form.sellingPoints.length }}</span>
-                          <i>自动</i>
-                        </div>
-                        <div class="xq-points-stack">
-                          <Input
-                            v-for="(_, idx) in form.sellingPoints"
-                            :key="`tpl-sp-${idx}`"
-                            v-model:value="form.sellingPoints[idx]"
-                            :placeholder="`卖点 ${idx + 1}`"
-                            allow-clear
-                          />
-                        </div>
-                      </div>
-                      <div class="xq-wb-copy wide">
-                        <div class="xq-wb-copy-h">
-                          <em>长描述</em>
-                          <span>{{ textStats(form.description) }}</span>
-                          <i>自动</i>
-                        </div>
-                        <Input.TextArea
-                          v-model:value="form.description"
-                          :rows="8"
-                          placeholder="英文 Product Description，完整句子"
-                          allow-clear
-                        />
-                      </div>
-                      <div v-if="tplGroups.copyExtra.length" class="xq-wb-grid">
-                        <div
-                          v-for="f in tplGroups.copyExtra"
-                          :key="`copy-${f.code}`"
-                          class="xq-wb-card"
-                        >
-                          <div class="xq-wb-card-h">
-                            <em>{{ f.label }}</em>
-                            <span class="tag">{{
-                              f.groupLabel || '选填'
-                            }}</span>
+                      <template v-if="zoneOpen(zone.key)">
+                        <div class="xq-zone-meta">
+                          <p class="xq-zone-hint">{{ zone.hint }}</p>
+                          <div class="xq-zone-tools" @click.stop>
+                            <Input
+                              v-model:value="zoneQuery[zone.key]"
+                              allow-clear
+                              size="small"
+                              class="xq-zone-search"
+                              placeholder="搜索字段名 / 编码"
+                            />
+                            <label class="xq-zh-switch">
+                              翻译
+                              <Switch v-model:checked="showZh" size="small" />
+                            </label>
+                            <Button
+                              v-if="zone.hasCopyForm"
+                              type="primary"
+                              size="small"
+                              ghost
+                              @click.stop="openRegenerateCopy('all')"
+                            >
+                              AI 全部重写
+                            </Button>
                           </div>
-                          <Input
-                            size="small"
-                            :value="tplAttrValue(f)"
-                            :placeholder="f.code"
-                            readonly
-                          />
                         </div>
-                      </div>
-                    </section>
-
-                    <section v-if="tplGroups.product.length" class="xq-wb-sec">
-                      <div class="xq-wb-sec-title">
-                        产品
-                        <span>SKU · UPC · 组</span>
-                        <b>{{ tplGroups.product.length }}</b>
-                      </div>
-                      <div class="xq-wb-grid">
-                        <div
-                          v-for="f in tplGroups.product"
-                          :key="`prod-${f.code}`"
-                          class="xq-wb-card"
-                          :class="{ req: f.required }"
-                        >
-                          <div class="xq-wb-card-h">
-                            <em>{{ f.label }}</em>
-                            <span v-if="f.required" class="tag red">必填</span>
-                            <span v-else class="tag">{{
-                              f.groupLabel || '选填'
-                            }}</span>
+                        <div v-if="zone.hasCopyForm" class="xq-zone-copy">
+                          <div class="xq-wb-copy wide">
+                            <div class="xq-wb-copy-h">
+                              <em>标题</em>
+                              <span>{{ textStats(form.contentTitle) }}</span>
+                              <button
+                                type="button"
+                                class="xq-auto-link"
+                                @click.stop="openRegenerateCopy('title')"
+                              >
+                                AI 改写
+                              </button>
+                            </div>
+                            <Input
+                              v-model:value="form.contentTitle"
+                              placeholder="优化后的产品标题"
+                            />
                           </div>
-                          <Input
-                            size="small"
-                            :value="tplAttrValue(f)"
-                            :placeholder="f.code"
-                            readonly
-                          />
-                        </div>
-                      </div>
-                    </section>
-
-                    <section v-if="tplGroups.attr.length" class="xq-wb-sec">
-                      <div class="xq-wb-sec-title">
-                        属性
-                        <span>尺寸 · 重量 · 品牌</span>
-                        <b>{{ tplGroups.attr.length }}</b>
-                      </div>
-                      <div class="xq-wb-grid">
-                        <div
-                          v-for="f in tplGroups.attr"
-                          :key="`attr-${f.code}`"
-                          class="xq-wb-card"
-                          :class="{ req: f.required }"
-                        >
-                          <div class="xq-wb-card-h">
-                            <em>{{ f.label }}</em>
-                            <span v-if="f.required" class="tag red">必填</span>
-                            <span v-else class="tag">{{
-                              f.groupLabel || '选填'
-                            }}</span>
+                          <div class="xq-wb-copy wide">
+                            <div class="xq-wb-copy-h">
+                              <em>卖点</em>
+                              <span>{{
+                                  form.sellingPoints.filter((p) => p.trim())
+                                    .length
+                                }}/{{ form.sellingPoints.length }}</span>
+                            </div>
+                            <div class="xq-points-stack">
+                              <div
+                                v-for="(_, idx) in form.sellingPoints"
+                                :key="`tpl-sp-${idx}`"
+                                class="xq-point-row"
+                              >
+                                <Input
+                                  v-model:value="form.sellingPoints[idx]"
+                                  :placeholder="`卖点 ${idx + 1}`"
+                                  allow-clear
+                                />
+                                <button
+                                  type="button"
+                                  class="xq-auto-link"
+                                  @click.stop="
+                                    openRegenerateCopy('feature', idx)
+                                  "
+                                >
+                                  AI 改写
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                          <Input
-                            size="small"
-                            :value="tplAttrValue(f)"
-                            :placeholder="f.code"
-                            readonly
-                          />
-                        </div>
-                      </div>
-                    </section>
-
-                    <section v-if="tplGroups.unset.length" class="xq-wb-sec">
-                      <button
-                        type="button"
-                        class="xq-wb-sec-title more"
-                        @click="otherTplOpen = !otherTplOpen"
-                      >
-                        未分区
-                        <span>{{ tplGroups.unset.length }} ·
-                          请在模板配置中拆分</span>
-                        <b>{{ otherTplOpen ? '收起' : '展开' }}</b>
-                      </button>
-                      <div v-show="otherTplOpen" class="xq-wb-grid scroll">
-                        <div
-                          v-for="f in tplGroups.unset"
-                          :key="`unset-${f.code}`"
-                          class="xq-wb-card"
-                        >
-                          <div class="xq-wb-card-h">
-                            <em>{{ f.label }}</em>
-                            <span class="tag">{{
-                              f.groupLabel || '选填'
-                            }}</span>
+                          <div class="xq-wb-copy wide">
+                            <div class="xq-wb-copy-h">
+                              <em>长描述</em>
+                              <span>{{ textStats(form.description) }}</span>
+                              <button
+                                type="button"
+                                class="xq-auto-link"
+                                @click.stop="openRegenerateCopy('description')"
+                              >
+                                AI 改写
+                              </button>
+                            </div>
+                            <Input.TextArea
+                              v-model:value="form.description"
+                              :rows="6"
+                              placeholder="英文 Product Description，完整句子"
+                              allow-clear
+                            />
                           </div>
-                          <Input
-                            size="small"
-                            :value="tplAttrValue(f)"
-                            :placeholder="f.code"
-                            readonly
+                        </div>
+                        <div
+                          v-if="zone.fields.length"
+                          class="xq-zone-list"
+                          :class="{ tall: zone.key === 'other' }"
+                        >
+                          <EditFieldRow
+                            v-for="f in zone.fields"
+                            v-show="zoneFieldVisible(zone.key, f)"
+                            :key="`${zone.key}-${f.code}`"
+                            v-model="fieldValues[f.code]"
+                            :code="f.code"
+                            :label="f.label || f.code"
+                            :required="!!f.required"
+                            :show-zh="showZh"
+                            :placeholder="f.defaultValue || f.code"
                           />
                         </div>
-                      </div>
+                        <div
+                          v-else-if="!zone.hasCopyForm"
+                          class="xq-tpl-empty thin"
+                        >
+                          本分区暂无字段
+                        </div>
+                      </template>
                     </section>
-                  </div>
-                  <div v-else-if="templateLoaded" class="xq-tpl-empty">
-                    该类目暂无字段模板（源库未同步 Mirakl 分类模板）
                   </div>
                 </Spin>
               </div>
@@ -1569,45 +2147,6 @@ watch(
                 </div>
               </div>
             </div>
-
-            <div class="xq-edit-block">
-              <label class="xq-field-label">
-                图片提示词
-                <span class="xq-muted">
-                  （{{ imagePrompts.length }} 条 · 由文案 RPA 生成）
-                </span>
-              </label>
-              <div v-if="imagePrompts.length" class="xq-prompt-list">
-                <div
-                  v-for="(p, i) in imagePrompts"
-                  :key="`ip-${i}`"
-                  class="xq-prompt-card"
-                >
-                  <div class="xq-prompt-thumb">
-                    <Image
-                      v-if="promptImageUrl(p, i)"
-                      :src="promptImageUrl(p, i)"
-                      :preview="true"
-                    />
-                    <span v-else class="xq-muted">无图</span>
-                    <span class="xq-source-idx">{{ (p.index ?? i) + 1 }}</span>
-                  </div>
-                  <div class="xq-prompt-body">
-                    <div class="xq-prompt-head">
-                      <Tag>{{ imageTypeLabel(p.imageType) }}</Tag>
-                      <span v-if="p.marker" class="xq-marker">{{
-                        p.marker
-                      }}</span>
-                    </div>
-                    <pre class="xq-prompt-text">{{ p.promptText || '—' }}</pre>
-                  </div>
-                </div>
-              </div>
-              <Empty
-                v-else
-                description="暂无图片提示词，请先在任务列表触发「批量生成文案」"
-              />
-            </div>
           </section>
 
           <Empty v-else class="xq-detail-empty" description="请选择左侧任务" />
@@ -1621,19 +2160,25 @@ watch(
 
     <Modal
       v-model:open="assignOpen"
-      title="批量分配美工"
+      title="分配美工"
       :confirm-loading="assigning"
       ok-text="确认分配"
+      destroy-on-close
       @ok="confirmAssign"
     >
+      <p class="xq-assign-tip">
+        仅分配左侧勾选的 {{ assignTargetIds.length }} 个
+        SKU（不含未勾选变体）；分配后进入图片池待执行。
+      </p>
       <div class="xq-assign-form">
-        <label>美工人员（有「我的图片」权限的用户 / 自己）</label>
+        <label>美工人员（有图片权限的用户 / 自己）</label>
         <div class="xq-assign-user-row">
           <Select
             v-model:value="imageUserId"
             show-search
             option-filter-prop="label"
             placeholder="选择美工（可搜姓名）"
+            style="flex: 1"
             :options="
               users.map((u) => ({
                 label: `${u.nickname || u.username || '用户'} (#${u.id})`,
@@ -1646,6 +2191,34 @@ watch(
           </Button>
         </div>
       </div>
+    </Modal>
+
+    <Modal
+      v-model:open="regenerateOpen"
+      :title="`AI 改写 · ${reviseTargetLabel}`"
+      :confirm-loading="regenerating"
+      ok-text="开始改写"
+      cancel-text="取消"
+      @ok="confirmRegenerateCopy"
+    >
+      <p class="xq-regen-tip">
+        本次只改写<strong>{{ reviseTargetLabel }}</strong>，会参考该项现有内容与你的提示词做二次修改；其它字段保持不变。
+      </p>
+      <label class="xq-regen-label">修改提示词（可选）</label>
+      <Input.TextArea
+        v-model:value="revisionPrompt"
+        :rows="5"
+        allow-clear
+        :placeholder="
+          reviseTarget === 'title'
+            ? '例如：更突出复古风格与抽屉收纳，控制在 150 字符内'
+            : reviseTarget === 'description'
+              ? '例如：补充尺寸与适用场景，语气更专业，保持英文完整句子'
+              : reviseTarget === 'feature'
+                ? `例如：第 ${reviseFeatureIndex + 1} 条卖点强调易组装与承重`
+                : '例如：标题更突出复古；卖点强调收纳；长描述补充场景'
+        "
+      />
     </Modal>
   </Page>
 </template>
@@ -1667,29 +2240,13 @@ watch(
   align-items: center;
 }
 
-.xq-title-block {
-  flex: 1;
-  min-width: 220px;
-}
-
-.xq-title-block h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.xq-title-block p {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: #6b7280;
-}
-
 .xq-search {
   width: 280px;
 }
 
 .xq-split {
   display: grid;
-  grid-template-columns: 112px 1fr;
+  grid-template-columns: 228px minmax(0, 1fr);
   gap: 12px;
   align-items: stretch;
   min-height: 560px;
@@ -1698,26 +2255,67 @@ watch(
 .xq-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: calc(100vh - 220px);
-  padding: 8px;
+  gap: 6px;
+  max-height: calc(100vh - 200px);
+  padding: 10px;
   overflow: auto;
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid #e8eaed;
   border-radius: 12px;
+}
+
+.xq-list-rpa-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  margin-bottom: 2px;
+  background: linear-gradient(180deg, #f0f7ff 0%, #f8fbff 100%);
+  border: 1px solid #d6e8ff;
+  border-radius: 10px;
+}
+
+.xq-list-rpa-meta {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  justify-content: space-between;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.xq-list-rpa-meta b {
+  display: block;
+  margin-bottom: 2px;
+  color: #0f172a;
+}
+
+.xq-list-rpa-hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #64748b;
 }
 
 .xq-list-item {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  gap: 8px;
   align-items: center;
-  padding: 8px 6px;
-  text-align: center;
+  padding: 8px;
+  text-align: left;
   cursor: pointer;
   background: #fafafa;
   border: 1px solid transparent;
   border-radius: 10px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.xq-list-item.main {
+  background: #f8fafc;
 }
 
 .xq-list-item:hover {
@@ -1726,7 +2324,60 @@ watch(
 
 .xq-list-item.active {
   background: #eef5ff;
-  border-color: #1677ff;
+  border-color: #91caff;
+  box-shadow: inset 3px 0 0 #1677ff;
+}
+
+.xq-list-check {
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.xq-list-thumb {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+
+.xq-list-thumb :deep(.ant-image),
+.xq-list-thumb :deep(img) {
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: cover;
+}
+
+.xq-list-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.xq-list-sku {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.xq-list-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.xq-mini-tag.ant-tag,
+.xq-list-flags :deep(.ant-tag) {
+  padding: 0 5px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 18px;
 }
 
 .xq-list-group {
@@ -1785,10 +2436,11 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 12px;
-  background: #f8fafc;
-  border: 1px solid #eef0f3;
-  border-radius: 10px;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e8eaed;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
 }
 
 .xq-tpl-stack {
@@ -1804,6 +2456,136 @@ watch(
   background: #fff;
   border: 1px dashed #e5e7eb;
   border-radius: 8px;
+}
+
+.xq-tpl-empty.thin {
+  padding: 8px;
+  margin: 0 0 4px;
+}
+
+.xq-zone-board {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.xq-zone-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 12px;
+  background: #fafbfc;
+  border: 1px solid #e8eaed;
+  border-top: 3px solid var(--zone-color, #94a3b8);
+  border-radius: 10px;
+}
+
+.xq-zone-col.collapsed {
+  padding-bottom: 6px;
+}
+
+.xq-zone-h {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.xq-zone-h .caret {
+  flex: 0 0 auto;
+  width: 12px;
+  font-size: 12px;
+  color: var(--zone-color, #6b7280);
+}
+
+.xq-zone-h b {
+  flex: 1;
+  font-size: 14px;
+  color: #111827;
+}
+
+.xq-zone-h span {
+  font-size: 12px;
+  color: var(--zone-color, #6b7280);
+}
+
+.xq-zone-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 0 8px;
+}
+
+.xq-zone-hint {
+  flex: 1;
+  min-width: 120px;
+  margin: 0;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.xq-zone-tools {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+}
+
+.xq-zone-search {
+  width: 180px;
+}
+
+.xq-zone-tools :deep(.ant-input-affix-wrapper.xq-zone-search) {
+  flex: 0 0 180px;
+  width: 180px;
+}
+
+.xq-zh-switch {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.xq-zone-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.xq-regen-tip {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.xq-regen-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.xq-zone-list {
+  max-height: 360px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+}
+
+.xq-zone-list.tall {
+  max-height: 420px;
 }
 
 .xq-wb {
@@ -1929,11 +2711,38 @@ watch(
   color: #d97706;
 }
 
-.xq-wb-copy-h i {
+.xq-wb-copy-h i,
+.xq-auto-link {
+  padding: 0;
   margin-left: auto;
   font-size: 12px;
   font-style: normal;
   color: #16a34a;
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.xq-auto-link:hover {
+  color: #059669;
+  text-decoration: underline;
+}
+
+.xq-point-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.xq-point-row :deep(.ant-input-affix-wrapper),
+.xq-point-row :deep(.ant-input) {
+  flex: 1;
+  min-width: 0;
+}
+
+.xq-point-row .xq-auto-link {
+  flex-shrink: 0;
+  margin-left: 0;
 }
 
 .xq-wb-copy :deep(.ant-input),
@@ -1955,7 +2764,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 88px;
+  width: 80px;
   font-size: 11px;
   color: #6b7280;
   text-align: center;
@@ -1985,8 +2794,8 @@ watch(
   gap: 4px;
   align-items: center;
   justify-content: center;
-  width: 88px;
-  height: 88px;
+  width: 80px;
+  height: 80px;
   color: #9ca3af;
   cursor: pointer;
   background: #fafafa;
@@ -2009,8 +2818,8 @@ watch(
 
 .xq-wb-img :deep(.ant-image),
 .xq-wb-img :deep(img) {
-  width: 88px;
-  height: 88px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -2032,41 +2841,6 @@ watch(
   white-space: pre-wrap;
 }
 
-.xq-list-thumb {
-  flex: 0 0 72px;
-  width: 72px;
-  height: 72px;
-  overflow: hidden;
-  background: #f3f4f6;
-  border-radius: 8px;
-}
-
-.xq-list-thumb :deep(.ant-image) {
-  display: block;
-  width: 72px !important;
-  height: 72px !important;
-}
-
-.xq-list-thumb :deep(.ant-image-img),
-.xq-list-thumb :deep(img) {
-  width: 72px !important;
-  max-width: 72px !important;
-  height: 72px !important;
-  max-height: 72px !important;
-  object-fit: cover;
-}
-
-.xq-list-sku {
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #1f2937;
-  white-space: nowrap;
-}
-
 .xq-list-pager {
   display: flex;
   justify-content: center;
@@ -2077,11 +2851,11 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-height: calc(100vh - 220px);
+  max-height: calc(100vh - 200px);
   padding: 16px;
   overflow: auto;
   background: #fff;
-  border: 1px solid #eee;
+  border: 1px solid #e8eaed;
   border-radius: 12px;
 }
 
@@ -2098,6 +2872,9 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #f0f2f5;
 }
 
 .xq-head-imgs {
@@ -2108,28 +2885,59 @@ watch(
 
 .xq-head-imgs .xq-wb-img-fill :deep(.ant-image),
 .xq-head-imgs .xq-wb-img-fill :deep(img) {
-  width: 88px !important;
-  height: 88px !important;
+  width: 80px !important;
+  height: 80px !important;
   object-fit: cover;
 }
 
 .xq-head-hint {
   margin: 0;
   font-size: 12px;
-  color: #f43f5e;
+  color: #94a3b8;
 }
 
 .xq-head-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 14px;
+  gap: 10px 12px;
   align-items: center;
+  justify-content: space-between;
+}
+
+.xq-head-fields {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.xq-head-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
 }
 
 .xq-head-meta .xq-listing-field {
   display: flex;
   gap: 6px;
   align-items: center;
+  min-width: auto;
+  padding: 4px 8px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+}
+
+.xq-listing-fact b {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .xq-detail-cover {
@@ -2236,76 +3044,6 @@ watch(
   gap: 8px;
 }
 
-.xq-prompt-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.xq-prompt-card {
-  display: grid;
-  grid-template-columns: 108px 1fr;
-  gap: 12px;
-  align-items: start;
-  padding: 10px 12px;
-  background: #f9fafb;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-
-.xq-prompt-thumb {
-  position: relative;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: #e5e7eb;
-  border-radius: 8px;
-}
-
-.xq-prompt-thumb :deep(.ant-image),
-.xq-prompt-thumb :deep(img) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.xq-prompt-body {
-  min-width: 0;
-}
-
-.xq-prompt-head {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.xq-marker {
-  font-size: 12px;
-  color: #4b5563;
-}
-
-.xq-prompt-text {
-  margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #374151;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.xq-source-idx {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  padding: 0 6px;
-  font-size: 11px;
-  color: #fff;
-  background: rgb(0 0 0 / 55%);
-  border-radius: 999px;
-}
-
 .xq-tag-row {
   display: flex;
   flex-wrap: wrap;
@@ -2326,6 +3064,12 @@ watch(
 
 .xq-tag-input {
   flex: 1;
+}
+
+.xq-assign-tip {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #6b7280;
 }
 
 .xq-assign-form {

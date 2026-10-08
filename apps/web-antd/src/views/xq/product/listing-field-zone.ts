@@ -1,4 +1,4 @@
-export type SystemListingFieldZone = 'attr' | 'copy' | 'product';
+export type SystemListingFieldZone = 'attr' | 'copy' | 'other' | 'product';
 export type ListingFieldZone = string;
 
 export const LISTING_FIELD_ZONE_OPTIONS: Array<{
@@ -6,15 +6,18 @@ export const LISTING_FIELD_ZONE_OPTIONS: Array<{
   label: string;
   value: SystemListingFieldZone;
 }> = [
-  { value: 'copy', label: '描述', color: 'blue' },
-  { value: 'product', label: '产品', color: 'green' },
-  { value: 'attr', label: '属性', color: 'orange' },
+  { value: 'copy', label: '产品文案', color: 'blue' },
+  { value: 'product', label: '产品基本信息', color: 'green' },
+  { value: 'attr', label: '产品规格', color: 'orange' },
+  { value: 'other', label: '其他属性', color: 'default' },
 ];
 
 export function isSystemListingFieldZone(
   zone?: string,
 ): zone is SystemListingFieldZone {
-  return zone === 'copy' || zone === 'product' || zone === 'attr';
+  return (
+    zone === 'copy' || zone === 'product' || zone === 'attr' || zone === 'other'
+  );
 }
 
 export function listingFieldZoneLabel(zone?: string) {
@@ -41,7 +44,7 @@ export function isListingImageField(field: {
   );
 }
 
-/** 未人工分区时的建议：描述 / 产品 / 属性 */
+/** 未人工分区时的建议：产品文案 / 产品基本信息 / 产品规格 / 其他属性 */
 export function guessListingFieldZone(field: {
   code?: string;
   label?: string;
@@ -71,7 +74,7 @@ export function guessListingFieldZone(field: {
   ) {
     return 'attr';
   }
-  return '';
+  return 'other';
 }
 
 export function resolveListingFieldZone(field: {
@@ -83,6 +86,33 @@ export function resolveListingFieldZone(field: {
   const z = String(field.zone || '').trim();
   if (isSystemListingFieldZone(z) || /^u_[a-z0-9_]{1,40}$/.test(z)) return z;
   return guessListingFieldZone(field);
+}
+
+/** 亚马逊多实例编码：bullet_point_2 → bullet_point */
+export function normalizeListingFieldCode(code?: string) {
+  return String(code || '')
+    .trim()
+    .replace(/_(?:[1-9]\d*)$/, '');
+}
+
+/** 按基础编码去重，保留第一条（必填优先可在调用方排序） */
+export function dedupeListingFieldsByCode<
+  T extends { code?: string; required?: boolean },
+>(fields: T[]): T[] {
+  const map = new Map<string, T>();
+  for (const f of fields || []) {
+    const code = normalizeListingFieldCode(f.code);
+    if (!code) continue;
+    const exist = map.get(code);
+    if (!exist) {
+      map.set(code, { ...f, code });
+      continue;
+    }
+    if (f.required && !exist.required) {
+      map.set(code, { ...exist, ...f, code, required: true });
+    }
+  }
+  return [...map.values()];
 }
 
 export function matchFieldByKeywords(

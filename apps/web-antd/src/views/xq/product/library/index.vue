@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { XqListingApi } from '#/api/xq/listing';
+import type { XqListingApi, XqWorkbenchPlatform } from '#/api/xq/listing';
 import type { XqProductApi } from '#/api/xq/product';
+import type { XqWorkOrderApi } from '#/api/xq/work-order';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -20,17 +20,19 @@ import {
   Select,
   Spin,
   Tag,
+  TreeSelect,
 } from 'ant-design-vue';
 
-import { getXqListingPlatforms, getXqListingShops } from '#/api/xq/listing';
+import { getXqListingCategories, getXqWorkbenchScope } from '#/api/xq/listing';
 import {
   getXqCategoryTree,
   getXqProduct,
   getXqProductPage,
 } from '#/api/xq/product';
-import { dispatchXqWorkOrder } from '#/api/xq/work-order';
-
-const router = useRouter();
+import {
+  dispatchXqWorkOrder,
+  lookupXqWorkOrderReuseCandidates,
+} from '#/api/xq/work-order';
 
 const loading = ref(false);
 const catLoading = ref(false);
@@ -61,11 +63,23 @@ const dispatching = ref(false);
 const dispatchOpen = ref(false);
 const dispatchExtra = ref<null | XqProductApi.Product>(null);
 
-const platforms = ref<XqListingApi.Platform[]>([]);
-const shops = ref<XqListingApi.Shop[]>([]);
-const listingPlatformId = ref<string | undefined>();
-const listingShopId = ref<string | undefined>();
+/** 当前用户工作台可见平台（含绑定店铺） */
+const scopePlatforms = ref<XqWorkbenchPlatform[]>([]);
+const listingPlatformIds = ref<string[]>([]);
+const listingShopIds = ref<string[]>([]);
+/** platformId → categoryId */
+const listingCategoryByPlatform = ref<Record<string, string | undefined>>({});
+/** platformId → 类目树 */
+const categoryTreeByPlatform = ref<Record<string, XqListingApi.CategoryNode[]>>(
+  {},
+);
 const listingLoading = ref(false);
+const reuseLoading = ref(false);
+const reuseGroups = ref<XqWorkOrderApi.ReuseSkuGroup[]>([]);
+/** SKU → 复用文案任务 ID */
+const reuseCopyMap = ref<Record<string, number | undefined>>({});
+/** SKU → 复用图片任务 ID */
+const reuseImageMap = ref<Record<string, number | undefined>>({});
 
 const selectedList = computed(() => Object.values(selectedMap.value));
 const selectedCount = computed(() => selectedList.value.length);
@@ -88,11 +102,39 @@ const pageIndeterminate = computed(
 );
 
 const platformOptions = computed(() =>
-  platforms.value.map((p) => ({ label: p.name, value: p.id })),
+  scopePlatforms.value.map((p) => ({ label: p.name, value: p.id })),
 );
-const shopOptions = computed(() =>
-  shops.value.map((s) => ({ label: s.name, value: s.id })),
-);
+const shopOptions = computed(() => {
+  const set = new Set(listingPlatformIds.value);
+  const out: Array<{ label: string; value: string }> = [];
+  for (const p of scopePlatforms.value) {
+    if (!set.has(p.id)) continue;
+    for (const s of p.shops || []) {
+      out.push({
+        label: `${p.name} / ${s.name}`,
+        value: s.id,
+      });
+    }
+  }
+  return out;
+});
+const selectedScopePlatforms = computed(() => {
+  const set = new Set(listingPlatformIds.value);
+  return scopePlatforms.value.filter((p) => set.has(p.id));
+});
+
+/** 排除即将下发的目标平台后，展示其它平台可复用内容 */
+const visibleReuseGroups = computed(() => {
+  const exclude = new Set(listingPlatformIds.value);
+  return reuseGroups.value
+    .map((g) => ({
+      ...g,
+      candidates: (g.candidates || []).filter(
+        (c) => !exclude.has(String(c.listingPlatformId || '')),
+      ),
+    }))
+    .filter((g) => (g.candidates || []).length > 0);
+});
 
 function productKey(item: XqProductApi.Product) {
   return item.itemCode || item.sku || String(item.id || '');
@@ -136,29 +178,196 @@ function toggleSelectPage(checked: boolean) {
   );
 }
 
-async function ensureListingPlatforms() {
-  if (platforms.value.length > 0) return;
-  platforms.value = (await getXqListingPlatforms()) || [];
+function mapListingCategoryTree(
+  nodes: XqListingApi.CategoryNode[],
+): Array<Record<string, any>> {
+  return (nodes || []).map((n) => ({
+    title: n.name,
+    value: n.id,
+    key: n.id,
+    children: n.children?.length
+      ? mapListingCategoryTree(n.children)
+      : undefined,
+  }));
 }
 
-async function onListingPlatformChange(id?: string) {
-  listingPlatformId.value = id;
-  listingShopId.value = undefined;
-  shops.value = [];
-  if (!id) return;
+function findCategoryName(
+  nodes: XqListingApi.CategoryNode[],
+  id?: string,
+): string {
+  if (!id) return '';
+  for (const n of nodes || []) {
+    if (n.id === id) return n.name || '';
+    const hit = findCategoryName(n.children || [], id);
+    if (hit) return hit;
+  }
+  return '';
+}
+
+function categoryTreeDataFor(platformId: string) {
+  return mapListingCategoryTree(categoryTreeByPlatform.value[platformId] || []);
+}
+
+async function ensureUserListingScope() {
+  const res = await getXqWorkbenchScope();
+  scopePlatforms.value = (res?.platforms || []).filter(
+    (p) => (p.shops || []).length > 0,
+  );
+  if (scopePlatforms.value.length === 0) {
+    throw new Error('当前账号未绑定可用平台/店铺，请先在配置里绑店');
+  }
+}
+
+async function loadCategoriesForPlatforms(platformIds: string[]) {
+  const need = platformIds.filter((id) => !categoryTreeByPlatform.value[id]);
+  if (need.length === 0) return;
   listingLoading.value = true;
   try {
-    const shopRes = await getXqListingShops(id).catch((error: any) => {
-      message.error(error?.message || '加载店铺失败（原库）');
-      return [] as XqListingApi.Shop[];
-    });
-    shops.value = shopRes || [];
-    if (shops.value.length === 1) {
-      listingShopId.value = shops.value[0]!.id;
+    const results = await Promise.all(
+      need.map(async (id) => {
+        const tree = await getXqListingCategories(id).catch((error: any) => {
+          message.error(error?.message || `加载类目失败（平台 ${id}）`);
+          return [] as XqListingApi.CategoryNode[];
+        });
+        return [id, tree || []] as const;
+      }),
+    );
+    const next = { ...categoryTreeByPlatform.value };
+    for (const [id, tree] of results) {
+      next[id] = tree;
     }
+    categoryTreeByPlatform.value = next;
   } finally {
     listingLoading.value = false;
   }
+}
+
+/** 每个平台最多保留一家店（后选覆盖先选） */
+function enforceOneShopPerPlatform(shopIds: string[]) {
+  const shopPlatform = new Map<string, string>();
+  for (const p of scopePlatforms.value) {
+    for (const s of p.shops || []) {
+      if (s.id) shopPlatform.set(s.id, p.id);
+    }
+  }
+  const pickedByPlatform = new Map<string, string>();
+  for (const sid of shopIds || []) {
+    const pid = shopPlatform.get(sid);
+    if (!pid) continue;
+    // 同一平台后出现的店铺覆盖先前选择
+    pickedByPlatform.set(pid, sid);
+  }
+  return [...pickedByPlatform.values()];
+}
+
+function onListingShopsChange(ids: string[]) {
+  const next = enforceOneShopPerPlatform(ids || []);
+  if ((ids || []).length > next.length) {
+    message.info('每个平台只能选 1 家店铺');
+  }
+  listingShopIds.value = next;
+}
+
+async function onListingPlatformsChange(ids: string[]) {
+  listingPlatformIds.value = ids || [];
+  const allowedShop = new Set(shopOptions.value.map((o) => o.value));
+  listingShopIds.value = enforceOneShopPerPlatform(
+    listingShopIds.value.filter((id) => allowedShop.has(id)),
+  );
+  // 各平台若仅一店则自动勾上
+  const autoShops: string[] = [...listingShopIds.value];
+  for (const p of selectedScopePlatforms.value) {
+    const shops = p.shops || [];
+    if (
+      shops.length === 1 &&
+      shops[0]?.id &&
+      !autoShops.includes(shops[0].id)
+    ) {
+      autoShops.push(shops[0].id);
+    }
+  }
+  listingShopIds.value = enforceOneShopPerPlatform(autoShops);
+  listingCategoryByPlatform.value = Object.fromEntries(
+    Object.entries(listingCategoryByPlatform.value).filter(([id]) =>
+      listingPlatformIds.value.includes(id),
+    ),
+  );
+  await loadCategoriesForPlatforms(listingPlatformIds.value);
+  // 目标平台变更后，清掉落在目标平台上的复用勾选
+  const exclude = new Set(listingPlatformIds.value);
+  const validIds = new Set<number>();
+  for (const g of reuseGroups.value) {
+    for (const c of g.candidates || []) {
+      if (!exclude.has(String(c.listingPlatformId || '')) && c.workOrderId) {
+        validIds.add(c.workOrderId);
+      }
+    }
+  }
+  const nextCopy = { ...reuseCopyMap.value };
+  const nextImage = { ...reuseImageMap.value };
+  for (const sku of Object.keys(nextCopy)) {
+    const id = nextCopy[sku];
+    if (id && !validIds.has(id)) nextCopy[sku] = undefined;
+  }
+  for (const sku of Object.keys(nextImage)) {
+    const id = nextImage[sku];
+    if (id && !validIds.has(id)) nextImage[sku] = undefined;
+  }
+  reuseCopyMap.value = nextCopy;
+  reuseImageMap.value = nextImage;
+}
+
+function onListingCategoryChange(platformId: string, categoryId?: string) {
+  listingCategoryByPlatform.value = {
+    ...listingCategoryByPlatform.value,
+    [platformId]: categoryId || undefined,
+  };
+}
+
+async function loadReuseCandidates(skus: string[]) {
+  reuseLoading.value = true;
+  try {
+    reuseGroups.value =
+      (await lookupXqWorkOrderReuseCandidates({
+        skus,
+        excludePlatformIds: listingPlatformIds.value,
+      })) || [];
+  } catch (error: any) {
+    reuseGroups.value = [];
+    message.error(error?.message || '反查其它平台成品失败');
+  } finally {
+    reuseLoading.value = false;
+  }
+}
+
+function refreshReuseCandidates() {
+  const map = { ...selectedMap.value };
+  if (dispatchExtra.value) {
+    const key = productKey(dispatchExtra.value);
+    if (key) map[key] = dispatchExtra.value;
+  }
+  return loadReuseCandidates(Object.keys(map));
+}
+
+function setReuseCopy(sku: string, workOrderId?: number) {
+  const cur = reuseCopyMap.value[sku];
+  reuseCopyMap.value = {
+    ...reuseCopyMap.value,
+    [sku]: cur === workOrderId ? undefined : workOrderId,
+  };
+}
+
+function setReuseImage(sku: string, workOrderId?: number) {
+  const cur = reuseImageMap.value[sku];
+  reuseImageMap.value = {
+    ...reuseImageMap.value,
+    [sku]: cur === workOrderId ? undefined : workOrderId,
+  };
+}
+
+function clearReuseForSku(sku: string) {
+  reuseCopyMap.value = { ...reuseCopyMap.value, [sku]: undefined };
+  reuseImageMap.value = { ...reuseImageMap.value, [sku]: undefined };
 }
 
 async function openDispatchModal(extra?: XqProductApi.Product) {
@@ -172,19 +381,31 @@ async function openDispatchModal(extra?: XqProductApi.Product) {
     return;
   }
   dispatchExtra.value = extra || null;
+  listingPlatformIds.value = [];
+  listingShopIds.value = [];
+  listingCategoryByPlatform.value = {};
+  reuseCopyMap.value = {};
+  reuseImageMap.value = {};
+  reuseGroups.value = [];
   try {
-    await ensureListingPlatforms();
+    await ensureUserListingScope();
   } catch (error: any) {
     message.error(error?.message || '加载平台失败');
     return;
   }
+  // 仅一个平台时默认选中
+  if (scopePlatforms.value.length === 1) {
+    await onListingPlatformsChange([scopePlatforms.value[0]!.id]);
+  }
   dispatchOpen.value = true;
+  const skus = Object.keys(map);
+  await loadReuseCandidates(skus);
 }
 
 async function confirmDispatch() {
-  if (!listingPlatformId.value) {
+  if (listingPlatformIds.value.length === 0) {
     message.warning('请选择上架平台');
-    return;
+    throw new Error('请选择上架平台');
   }
   const map = { ...selectedMap.value };
   if (dispatchExtra.value) {
@@ -201,26 +422,74 @@ async function confirmDispatch() {
   }));
   if (items.length === 0) {
     message.warning('请先勾选要跑的产品');
-    return;
+    throw new Error('请先勾选要跑的产品');
   }
-  const platformName = platforms.value.find(
-    (p) => p.id === listingPlatformId.value,
-  )?.name;
-  const shopName = shops.value.find((s) => s.id === listingShopId.value)?.name;
+  const reuseCopyFromIds: Record<string, number> = {};
+  const reuseImageFromIds: Record<string, number> = {};
+  for (const [sku, id] of Object.entries(reuseCopyMap.value)) {
+    if (id) reuseCopyFromIds[sku] = id;
+  }
+  for (const [sku, id] of Object.entries(reuseImageMap.value)) {
+    if (id) reuseImageFromIds[sku] = id;
+  }
+  for (const p of selectedScopePlatforms.value) {
+    const cid = listingCategoryByPlatform.value[p.id];
+    if (!cid) {
+      message.warning(`请选择平台「${p.name}」的类目`);
+      throw new Error(`请选择平台「${p.name}」的类目`);
+    }
+  }
+  type ShopTarget = { platform: XqWorkbenchPlatform; shop: XqListingApi.Shop };
+  const targets: ShopTarget[] = [];
+  for (const platform of selectedScopePlatforms.value) {
+    let platformShops = (platform.shops || []).filter((s) =>
+      listingShopIds.value.includes(s.id),
+    );
+    if (platformShops.length === 0 && (platform.shops || []).length === 1) {
+      platformShops = [platform.shops![0]!];
+    }
+    if (platformShops.length === 0) {
+      message.warning(`请选择平台「${platform.name}」的店铺`);
+      throw new Error(`请选择平台「${platform.name}」的店铺`);
+    }
+    if (platformShops.length > 1) {
+      message.warning(`平台「${platform.name}」只能选择 1 家店铺`);
+      throw new Error(`平台「${platform.name}」只能选择 1 家店铺`);
+    }
+    targets.push({ platform, shop: platformShops[0]! });
+  }
   dispatching.value = true;
+  let totalCreated = 0;
   try {
-    const list = await dispatchXqWorkOrder({
-      listingPlatformId: listingPlatformId.value,
-      listingShopId: listingShopId.value || undefined,
-      listingPlatformName: platformName,
-      listingShopName: shopName,
-      items,
-    });
-    message.success(`已下发 ${list?.length ?? items.length} 个任务到工作台`);
+    for (const { platform, shop } of targets) {
+      const categoryId = listingCategoryByPlatform.value[platform.id];
+      const categoryName = findCategoryName(
+        categoryTreeByPlatform.value[platform.id] || [],
+        categoryId,
+      );
+      const list = await dispatchXqWorkOrder({
+        listingPlatformId: platform.id,
+        listingShopId: shop.id,
+        listingCategoryId: categoryId,
+        listingPlatformName: platform.name,
+        listingShopName: shop.name,
+        listingCategoryName: categoryName || undefined,
+        reuseCopyFromIds:
+          Object.keys(reuseCopyFromIds).length > 0
+            ? reuseCopyFromIds
+            : undefined,
+        reuseImageFromIds:
+          Object.keys(reuseImageFromIds).length > 0
+            ? reuseImageFromIds
+            : undefined,
+        items,
+      });
+      totalCreated += list?.length ?? items.length;
+    }
+    message.success(`已下发 ${totalCreated} 个任务到工作台`);
     clearSelection();
     dispatchOpen.value = false;
     detailOpen.value = false;
-    await router.push('/xq-product/workspace/work-order');
   } catch (error: any) {
     const msg = error?.message || '下发失败';
     message.error(
@@ -228,6 +497,7 @@ async function confirmDispatch() {
         ? `${msg}（可在任务列表关闭后重试）`
         : msg,
     );
+    throw error instanceof Error ? error : new Error(msg);
   } finally {
     dispatching.value = false;
   }
@@ -955,45 +1225,221 @@ onMounted(async () => {
 
     <Modal
       v-model:open="dispatchOpen"
-      title="选择上架平台 / 店铺"
+      title="下发到工作台"
       ok-text="确认下发"
       :confirm-loading="dispatching"
       destroy-on-close
+      centered
+      width="920px"
+      class="xq-dispatch-modal"
+      :body-style="{ padding: '12px 16px 8px' }"
       @ok="confirmDispatch"
     >
-      <p class="xq-dispatch-hint">
-        勾选时会把 associateProductList 里的同品 SKU 一并下发到工作台。
-      </p>
-      <Spin :spinning="listingLoading">
-        <div class="xq-dispatch-form">
-          <label>上架平台（原库）</label>
-          <Select
-            v-model:value="listingPlatformId"
-            allow-clear
-            show-search
-            option-filter-prop="label"
-            placeholder="从原库选择平台"
-            :options="platformOptions"
-            @change="(v: any) => onListingPlatformChange(v)"
-          />
-          <label>上架店铺（原库 sys_store）</label>
-          <Select
-            v-model:value="listingShopId"
-            allow-clear
-            show-search
-            option-filter-prop="label"
-            :placeholder="
-              listingPlatformId
-                ? shopOptions.length
-                  ? '选择店铺'
-                  : '该平台在店铺管理中暂无店铺'
-                : '请先选平台'
-            "
-            :options="shopOptions"
-            :disabled="!listingPlatformId"
-          />
-        </div>
-      </Spin>
+      <div class="xq-dispatch-layout">
+        <section class="xq-dispatch-pane xq-dispatch-pane--form">
+          <div class="xq-pane-title">目标配置</div>
+          <p class="xq-dispatch-hint">
+            仅本人已绑平台/店铺；平台可多选，每个平台只选 1 家店铺并选类目。
+          </p>
+          <Spin :spinning="listingLoading">
+            <div class="xq-dispatch-form">
+              <div class="xq-field">
+                <label>上架平台</label>
+                <Select
+                  v-model:value="listingPlatformIds"
+                  mode="multiple"
+                  allow-clear
+                  show-search
+                  max-tag-count="responsive"
+                  option-filter-prop="label"
+                  placeholder="可多选平台"
+                  :options="platformOptions"
+                  @change="(v: any) => onListingPlatformsChange(v || [])"
+                />
+              </div>
+              <div class="xq-field">
+                <label>上架店铺</label>
+                <Select
+                  v-model:value="listingShopIds"
+                  mode="multiple"
+                  allow-clear
+                  show-search
+                  max-tag-count="responsive"
+                  option-filter-prop="label"
+                  :placeholder="
+                    listingPlatformIds.length
+                      ? shopOptions.length
+                        ? '每平台选 1 家店'
+                        : '暂无绑定店铺'
+                      : '请先选平台'
+                  "
+                  :options="shopOptions"
+                  :disabled="listingPlatformIds.length === 0"
+                  @change="(v: any) => onListingShopsChange(v || [])"
+                />
+              </div>
+              <div
+                v-if="selectedScopePlatforms.length"
+                class="xq-category-grid"
+              >
+                <div
+                  v-for="p in selectedScopePlatforms"
+                  :key="p.id"
+                  class="xq-field"
+                >
+                  <label>
+                    类目
+                    <em>{{ p.name }}</em>
+                  </label>
+                  <TreeSelect
+                    :value="listingCategoryByPlatform[p.id]"
+                    allow-clear
+                    show-search
+                    tree-default-expand-all
+                    tree-node-filter-prop="title"
+                    placeholder="选择类目"
+                    :tree-data="categoryTreeDataFor(p.id)"
+                    :dropdown-style="{ maxHeight: '280px', overflow: 'auto' }"
+                    @change="(v: any) => onListingCategoryChange(p.id, v)"
+                  />
+                </div>
+              </div>
+            </div>
+          </Spin>
+        </section>
+
+        <section class="xq-dispatch-pane xq-dispatch-pane--reuse">
+          <div class="xq-reuse-head">
+            <div class="xq-pane-title">其它平台已做内容</div>
+            <Button
+              type="link"
+              size="small"
+              :loading="reuseLoading"
+              @click="refreshReuseCandidates"
+            >
+              刷新
+            </Button>
+          </div>
+          <p class="xq-dispatch-hint">
+            同 SKU 可分别复用文案/图片；不勾则从零做。
+          </p>
+          <Spin :spinning="reuseLoading">
+            <div class="xq-reuse-scroll">
+              <Empty
+                v-if="!visibleReuseGroups.length"
+                :image="Empty.PRESENTED_IMAGE_SIMPLE"
+                description="暂无可复用文案或图片"
+              />
+              <div
+                v-for="group in visibleReuseGroups"
+                :key="group.sku"
+                class="xq-reuse-sku"
+              >
+                <div class="xq-reuse-sku-title">
+                  <code>{{ group.sku }}</code>
+                  <Button
+                    type="link"
+                    size="small"
+                    @click="clearReuseForSku(group.sku)"
+                  >
+                    清除
+                  </Button>
+                </div>
+                <div
+                  v-for="c in group.candidates"
+                  :key="c.workOrderId"
+                  class="xq-reuse-card"
+                  :class="{
+                    'is-copy': reuseCopyMap[group.sku] === c.workOrderId,
+                    'is-image': reuseImageMap[group.sku] === c.workOrderId,
+                  }"
+                >
+                  <div class="xq-reuse-meta">
+                    <Tag color="processing">
+                      {{ c.listingPlatformName || '平台' }}
+                    </Tag>
+                    <span class="xq-reuse-shop">{{
+                      c.listingShopName || '—'
+                    }}</span>
+                    <span class="xq-reuse-no" :title="c.no">{{ c.no }}</span>
+                  </div>
+                  <div
+                    class="xq-reuse-body"
+                    :class="{
+                      'has-imgs': c.hasImage && (c.imageUrls?.length || 0) > 0,
+                    }"
+                  >
+                    <div
+                      v-if="c.hasImage && c.imageUrls?.length"
+                      class="xq-reuse-imgs"
+                    >
+                      <Image.PreviewGroup>
+                        <Image
+                          v-for="(url, idx) in c.imageUrls.slice(0, 4)"
+                          :key="`${c.workOrderId}-${idx}`"
+                          :src="url"
+                          :width="48"
+                          :height="48"
+                          class="xq-reuse-thumb"
+                        />
+                      </Image.PreviewGroup>
+                      <span
+                        v-if="(c.imageUrls?.length || 0) > 4"
+                        class="xq-reuse-more"
+                      >
+                        +{{ (c.imageUrls?.length || 0) - 4 }}
+                      </span>
+                    </div>
+                    <div v-if="c.hasCopy" class="xq-reuse-copy">
+                      <div class="xq-reuse-copy-title">
+                        {{ c.contentTitle || '（无标题）' }}
+                      </div>
+                      <pre
+                        v-if="c.contentSellingPoints"
+                        class="xq-reuse-points"
+                        >{{ c.contentSellingPoints }}</pre>
+                      <p v-if="c.description" class="xq-reuse-desc">
+                        {{ c.description }}
+                      </p>
+                    </div>
+                    <div v-else-if="!c.hasImage" class="xq-reuse-empty-tip">
+                      无文案与图片
+                    </div>
+                  </div>
+                  <div class="xq-reuse-actions">
+                    <button
+                      type="button"
+                      class="xq-reuse-chip"
+                      :class="{
+                        active: reuseCopyMap[group.sku] === c.workOrderId,
+                      }"
+                      :disabled="!c.hasCopy"
+                      @click="
+                        c.hasCopy && setReuseCopy(group.sku, c.workOrderId)
+                      "
+                    >
+                      使用文案
+                    </button>
+                    <button
+                      type="button"
+                      class="xq-reuse-chip"
+                      :class="{
+                        active: reuseImageMap[group.sku] === c.workOrderId,
+                      }"
+                      :disabled="!c.hasImage"
+                      @click="
+                        c.hasImage && setReuseImage(group.sku, c.workOrderId)
+                      "
+                    >
+                      使用图片
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Spin>
+        </section>
+      </div>
     </Modal>
   </Page>
 </template>
@@ -1007,22 +1453,270 @@ onMounted(async () => {
   padding: 4px 2px 16px;
 }
 
+.xq-dispatch-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 12px;
+  max-height: min(68vh, 640px);
+}
+
+.xq-dispatch-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px;
+  background: #fafbfc;
+  border: 1px solid #e8eaed;
+  border-radius: 10px;
+}
+
+.xq-dispatch-pane--reuse {
+  background: #fff;
+}
+
+.xq-pane-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #111827;
+}
+
 .xq-dispatch-hint {
-  margin: 0 0 12px;
-  font-size: 13px;
-  color: #6b7280;
+  margin: 4px 0 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #8b93a1;
 }
 
 .xq-dispatch-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-.xq-dispatch-form label {
-  margin-top: 4px;
+.xq-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.xq-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.xq-field label em {
+  margin-left: 4px;
+  font-style: normal;
+  font-weight: 400;
+  color: #1677ff;
+}
+
+.xq-category-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.xq-reuse-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.xq-reuse-scroll {
+  flex: 1;
+  min-height: 180px;
+  max-height: min(52vh, 480px);
+  padding-right: 2px;
+  overflow: auto;
+}
+
+.xq-reuse-sku {
+  margin-bottom: 10px;
+}
+
+.xq-reuse-sku-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.xq-reuse-sku-title code {
+  padding: 1px 6px;
+  font-size: 12px;
+  color: #1f2937;
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.xq-reuse-card {
+  padding: 10px;
+  margin-bottom: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.xq-reuse-card.is-copy,
+.xq-reuse-card.is-image {
+  background: #f0f7ff;
+  border-color: #91caff;
+  box-shadow: 0 0 0 1px rgb(22 119 255 / 12%);
+}
+
+.xq-reuse-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.xq-reuse-shop {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.xq-reuse-no {
+  max-width: 120px;
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.xq-reuse-body {
+  display: block;
+}
+
+.xq-reuse-body.has-imgs {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.xq-reuse-imgs {
+  display: grid;
+  grid-template-columns: repeat(2, 48px);
+  gap: 4px;
+  align-content: start;
+}
+
+.xq-reuse-thumb {
+  display: block;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.xq-reuse-more {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.xq-reuse-copy {
+  min-width: 0;
+}
+
+.xq-reuse-copy-title {
+  display: -webkit-box;
+  margin-bottom: 4px;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
   font-size: 13px;
-  color: #374151;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #111827;
+  -webkit-box-orient: vertical;
+}
+
+.xq-reuse-points {
+  max-height: 52px;
+  margin: 0 0 4px;
+  overflow: auto;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #4b5563;
+  white-space: pre-wrap;
+}
+
+.xq-reuse-desc {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #9ca3af;
+  -webkit-box-orient: vertical;
+}
+
+.xq-reuse-empty-tip {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.xq-reuse-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.xq-reuse-chip {
+  padding: 2px 10px;
+  font-size: 12px;
+  line-height: 22px;
+  color: #4b5563;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+}
+
+.xq-reuse-chip:hover:not(:disabled) {
+  color: #1677ff;
+  border-color: #91caff;
+}
+
+.xq-reuse-chip.active {
+  color: #fff;
+  background: #1677ff;
+  border-color: #1677ff;
+}
+
+.xq-reuse-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 800px) {
+  .xq-dispatch-layout {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  .xq-reuse-scroll {
+    max-height: 40vh;
+  }
 }
 
 .xq-search-bar {

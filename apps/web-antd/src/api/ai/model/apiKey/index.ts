@@ -3,17 +3,35 @@ import type { PageParam, PageResult } from '@vben/request';
 import { requestClient } from '#/api/request';
 
 export namespace AiModelApiKeyApi {
+  /**
+   * 一条密钥 = 一个接入源（官方 API 或某一个中转）。
+   * 不同 gatewayType 字段含义/必填不同，勿套同一套中转专有配置。
+   */
   export interface ApiKey {
-    id: number; // 编号
-    name: string; // 名称
-    apiKey: string; // 密钥
-    platform: string; // 平台
-    url: string; // 自定义 API 地址
-    status: number; // 状态
+    id?: number;
+    name: string;
+    apiKey: string;
+    platform: string;
+    url?: string;
+    /** openai_official / aixoras / hao / toapis / cun / openai_compatible / custom */
+    gatewayType?: string;
+    /** 逗号串或前端用数组再拼接 */
+    capabilities?: string | string[];
+    chatModel?: string;
+    visionModel?: string;
+    imageModel?: string;
+    imageEditModel?: string;
+    imageBodyStyle?: string;
+    supportsAsync?: null | number;
+    preferResponsesApi?: null | number;
+    visionImageDetail?: string;
+    /** 扩展 JSON 字符串 */
+    extraConfig?: string;
+    remark?: string;
+    status: number;
   }
 }
 
-/** 查询 API 密钥分页 */
 export function getApiKeyPage(params: PageParam) {
   return requestClient.get<PageResult<AiModelApiKeyApi.ApiKey>>(
     '/ai/api-key/page',
@@ -21,29 +39,24 @@ export function getApiKeyPage(params: PageParam) {
   );
 }
 
-/** 获得 API 密钥列表 */
 export function getApiKeySimpleList() {
   return requestClient.get<AiModelApiKeyApi.ApiKey[]>(
     '/ai/api-key/simple-list',
   );
 }
 
-/** 查询 API 密钥详情 */
 export function getApiKey(id: number) {
   return requestClient.get<AiModelApiKeyApi.ApiKey>(`/ai/api-key/get?id=${id}`);
 }
 
-/** 新增 API 密钥 */
 export function createApiKey(data: AiModelApiKeyApi.ApiKey) {
   return requestClient.post('/ai/api-key/create', data);
 }
 
-/** 修改 API 密钥 */
 export function updateApiKey(data: AiModelApiKeyApi.ApiKey) {
   return requestClient.put('/ai/api-key/update', data);
 }
 
-/** 删除 API 密钥 */
 export function deleteApiKey(id: number) {
   return requestClient.delete(`/ai/api-key/delete?id=${id}`);
 }

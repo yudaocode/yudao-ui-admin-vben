@@ -39,6 +39,30 @@ function leaf(
 /** 平台工作台挂到 产品 > 工作台，取代原任务列表 */
 const WORKBENCH_MENU_ID = 12_810;
 
+/** 美工：工作台根级「编辑图片」，跨平台看已分配（待执行 + 已出图） */
+export function buildArtistEditImageMenu(
+  permissions: string[],
+): AppRouteRecordRaw | null {
+  if (
+    !hasPerm(permissions, 'xq:work-order:my-image') &&
+    !hasPerm(permissions, 'xq:work-order:list') &&
+    !hasPerm(permissions, 'xq:work-order:query') &&
+    !hasPerm(permissions, '*:*:*')
+  ) {
+    return null;
+  }
+  return leaf(
+    880_999_010,
+    WORKBENCH_MENU_ID,
+    '编辑图片',
+    'xq-edit-image',
+    'xq/product/image-pool/index',
+    'XqEditImagePool',
+    'lucide:images',
+    50,
+  );
+}
+
 export function buildXqDeskMenus(
   platforms: XqWorkbenchPlatform[],
   permissions: string[],
@@ -57,65 +81,52 @@ export function buildXqDeskMenus(
       hasPerm(permissions, 'xq:work-order:query');
 
     if (canOrder) {
-      const taskParentId = baseId + 10;
-      children.push({
-        id: taskParentId,
-        parentId: baseId,
-        name: '任务列表',
-        path: 'tasks',
-        component: '',
-        componentName: `XqDeskTasks${pid}`,
-        icon: 'lucide:list',
-        visible: true,
-        keepAlive: true,
-        alwaysShow: true,
-        sort: 1,
-        children: [
-          leaf(
-            baseId + 11,
-            taskParentId,
-            '产品',
-            'list',
-            `xq/product/task-list/index?platformId=${pid}`,
-            `XqDeskTaskList${pid}`,
-            'lucide:layout-list',
-            1,
-          ),
-          leaf(
-            baseId + 1,
-            taskParentId,
-            '编辑产品',
-            'copy',
-            `xq/product/copy-pool/index?platformId=${pid}`,
-            `XqDeskCopy${pid}`,
-            'lucide:file-text',
-            2,
-            { visible: false },
-          ),
-          leaf(
-            baseId + 12,
-            taskParentId,
-            '产品详情',
-            'detail',
-            `xq/product/work-detail/index?platformId=${pid}`,
-            `XqDeskTaskDetail${pid}`,
-            'lucide:package',
-            3,
-            { visible: false, keepAlive: false },
-          ),
-        ],
-      } as unknown as AppRouteRecordRaw);
+      // 任务列表直接进产品列表，不再套「产品」子层；编辑/详情隐藏路由同级挂靠
+      children.push(
+        leaf(
+          baseId + 11,
+          baseId,
+          '任务列表',
+          'list',
+          `xq/product/task-list/index?platformId=${pid}`,
+          `XqDeskTaskList${pid}`,
+          'lucide:list',
+          1,
+        ),
+        leaf(
+          baseId + 1,
+          baseId,
+          '编辑产品',
+          'copy',
+          `xq/product/copy-pool/index?platformId=${pid}`,
+          `XqDeskCopy${pid}`,
+          'lucide:file-text',
+          2,
+          { visible: false },
+        ),
+        leaf(
+          baseId + 12,
+          baseId,
+          '产品详情',
+          'detail',
+          `xq/product/work-detail/index?platformId=${pid}`,
+          `XqDeskTaskDetail${pid}`,
+          'lucide:package',
+          3,
+          { visible: false, keepAlive: false },
+        ),
+      );
     }
     if (canOrder) {
       children.push(
         leaf(
           baseId + 2,
           baseId,
-          '上架',
-          'listing',
-          `xq/product/listing-pool/index?platformId=${pid}`,
-          `XqDeskListing${pid}`,
-          'lucide:upload',
+          '图片',
+          'image',
+          `xq/product/image-pool/index?platformId=${pid}`,
+          `XqDeskImage${pid}`,
+          'lucide:images',
           3,
         ),
       );
@@ -216,7 +227,14 @@ export function buildXqDeskMenus(
   return menus;
 }
 
-const HIDE_WORKBENCH = new Set(['上架', '任务列表', '我的图片', '我的文案']);
+const HIDE_WORKBENCH = new Set([
+  '上架',
+  '任务列表',
+  '图片',
+  '我的图片',
+  '我的文案',
+  '编辑图片', // 由 buildArtistEditImageMenu 统一注入，避免与库内旧菜单重复
+]);
 const HIDE_WORKBENCH_CONFIG = new Set([
   '图片管理',
   '文案管理',
@@ -252,13 +270,21 @@ export function pruneWorkbenchMenus(menus: AppRouteRecordRaw[]) {
 export function attachDesksToWorkbench(
   menus: AppRouteRecordRaw[],
   desks: AppRouteRecordRaw[],
+  permissions: string[] = [],
 ) {
   pruneWorkbenchMenus(menus);
+  const artistImage = buildArtistEditImageMenu(permissions);
+  const inject = [...desks, ...(artistImage ? [artistImage] : [])];
   const walk = (list: AppRouteRecordRaw[]): boolean => {
     for (const menu of list || []) {
       if (String((menu as any).name || '') === '工作台') {
         const rest = ((menu as any).children || []) as AppRouteRecordRaw[];
-        (menu as any).children = [...desks, ...rest];
+        // 去掉旧「我的图片/编辑图片」避免重复
+        const cleaned = rest.filter(
+          (c) =>
+            !['我的图片', '编辑图片'].includes(String((c as any).name || '')),
+        );
+        (menu as any).children = [...inject, ...cleaned];
         return true;
       }
       const kids = (menu as any).children as AppRouteRecordRaw[] | undefined;
@@ -266,8 +292,8 @@ export function attachDesksToWorkbench(
     }
     return false;
   };
-  if (!walk(menus) && desks.length > 0) {
-    menus.push(...desks);
+  if (!walk(menus) && inject.length > 0) {
+    menus.push(...inject);
   }
   return menus;
 }

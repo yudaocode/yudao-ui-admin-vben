@@ -26,8 +26,12 @@ import {
 } from '#/api/xq/listing';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 
-import { matchFieldByKeywords } from '../listing-field-zone';
-import { VALUE_SOURCE_SELECT_OPTIONS } from './value-sources';
+import {
+  dedupeListingFieldsByCode,
+  matchFieldByKeywords,
+} from '../listing-field-zone';
+import FieldFormRow from './field-form-row.vue';
+import { translateFieldLabel } from './field-label-zh';
 
 interface FieldRow {
   code: string;
@@ -86,24 +90,31 @@ const USER_COLORS = [
 const SYSTEM_PARTITIONS: PartitionRow[] = [
   {
     id: 'copy',
-    name: '描述',
+    name: '产品文案',
     keywords: 'title,description,bullet,卖点,长描述',
     system: true,
     color: '#2563eb',
   },
   {
     id: 'product',
-    name: '产品',
+    name: '产品基本信息',
     keywords: 'sku,upc,gtin,inventory,库存,color',
     system: true,
     color: '#059669',
   },
   {
     id: 'attr',
-    name: '属性',
+    name: '产品规格',
     keywords: 'length,width,height,weight,brand,material,尺寸',
     system: true,
     color: '#d97706',
+  },
+  {
+    id: 'other',
+    name: '其他属性',
+    keywords: '',
+    system: true,
+    color: '#94a3b8',
   },
 ];
 
@@ -127,46 +138,71 @@ const createOpen = ref(false);
 const createForm = reactive({ name: '', keywords: '' });
 
 const buckets = reactive<Record<string, FieldRow[]>>({
-  unset: [],
   copy: [],
   product: [],
   attr: [],
+  other: [],
 });
 
 const leftZones = computed(() => {
-  const attr = partitions.value.find((p) => p.id === 'attr');
-  const rest = partitions.value.filter((p) => p.id !== 'attr');
-  const toZone = (p: PartitionRow) => ({
-    key: p.id,
-    label: p.name,
-    hint: p.system ? p.keywords : p.keywords || '用户分组 · 可按关键词归入',
-    color: p.color || '#7c3aed',
-    system: p.system,
-    keywords: p.keywords,
-  });
-  return [...(attr ? [toZone(attr)] : []), ...rest.map((p) => toZone(p))];
+  const order = ['copy', 'product', 'attr', 'other'];
+  const listed = new Set(order);
+  const byId = new Map(partitions.value.map((p) => [p.id, p]));
+  const system = order
+    .map((id) => byId.get(id))
+    .filter((p): p is PartitionRow => !!p);
+  const custom = partitions.value.filter((p) => !listed.has(p.id));
+  const toZone = (p: PartitionRow) => {
+    let hint = p.keywords || '用户分组 · 可按关键词归入';
+    if (p.id === 'other') {
+      hint = '未归入文案 / 基本信息 / 规格的字段';
+    } else if (p.system) {
+      hint = p.keywords;
+    }
+    return {
+      key: p.id,
+      label: p.name,
+      hint,
+      color: p.color || '#7c3aed',
+      system: p.system,
+      keywords: p.keywords,
+    };
+  };
+  return [...system, ...custom].map((p) => toZone(p));
 });
 
-const unsetZone = {
-  key: 'unset',
-  label: '未分区',
-  hint: '拖到左侧描述 / 产品 / 属性或自建分组',
-  color: '#94a3b8',
-};
+const collapsed = reactive<Record<string, boolean>>({ other: true });
+const zoneQuery = reactive<Record<string, string>>({ other: '' });
+const showZh = ref(true);
+
+function zoneOpen(key: string) {
+  return collapsed[key] !== true;
+}
+
+function toggleZone(key: string) {
+  collapsed[key] = zoneOpen(key);
+}
 
 function ensureBucketKeys() {
-  if (!buckets.unset) buckets.unset = [];
   for (const p of partitions.value) {
     if (!buckets[p.id]) buckets[p.id] = [];
+    if (zoneQuery[p.id] === undefined) zoneQuery[p.id] = '';
   }
 }
 
 function syncBucketsFromFields() {
   ensureBucketKeys();
   const known = new Set(partitions.value.map((p) => p.id));
-  buckets.unset = fields.value.filter((r) => !r.zone || !known.has(r.zone));
   for (const p of partitions.value) {
-    buckets[p.id] = fields.value.filter((r) => r.zone === p.id);
+    buckets[p.id] = [];
+  }
+  for (const row of fields.value) {
+    const zone = row.zone && known.has(row.zone) ? row.zone : 'other';
+    if (!buckets[zone]) buckets[zone] = [];
+    buckets[zone]!.push(row);
+    if (!row.zone || !known.has(row.zone)) {
+      row.zone = 'other';
+    }
   }
 }
 
@@ -176,7 +212,6 @@ function collectFieldsFromBuckets() {
   for (const p of partitions.value) {
     ordered.push(...(buckets[p.id] || []));
   }
-  ordered.push(...(buckets.unset || []));
   const seen = new Set(ordered.map((r) => r.code));
   const missing = fields.value.filter((r) => !seen.has(r.code));
   fields.value = [...ordered, ...missing];
@@ -184,7 +219,7 @@ function collectFieldsFromBuckets() {
 
 function onDragChange(zone: string, evt: { added?: { element: FieldRow } }) {
   if (evt.added?.element) {
-    evt.added.element.zone = zone === 'unset' ? '' : zone;
+    evt.added.element.zone = zone || 'other';
   }
 }
 
@@ -193,15 +228,26 @@ function onRequiredChange(row: FieldRow, checked: boolean) {
   row.groupLabel = checked ? '必填' : '选填';
 }
 
-function fieldVisible(row: FieldRow) {
-  if (onlyRequired.value && !row.required) return false;
-  const q = keyword.value.trim().toLowerCase();
+function matchQuery(row: FieldRow, raw: string) {
+  const q = raw.trim().toLowerCase();
   if (!q) return true;
+  const zh = translateFieldLabel(row.label, row.code).toLowerCase();
   return (
     row.label.toLowerCase().includes(q) ||
     row.code.toLowerCase().includes(q) ||
+    zh.includes(q) ||
     (row.groupLabel || '').toLowerCase().includes(q)
   );
+}
+
+function fieldVisible(row: FieldRow) {
+  if (onlyRequired.value && !row.required) return false;
+  return matchQuery(row, keyword.value);
+}
+
+function zoneFieldVisible(zoneKey: string, row: FieldRow) {
+  if (!fieldVisible(row)) return false;
+  return matchQuery(row, zoneQuery[zoneKey] || '');
 }
 
 const requiredCount = computed(
@@ -214,9 +260,7 @@ const mappedCount = computed(
 );
 
 const zoneCounts = computed(() => {
-  const out: Record<string, number> = {
-    unset: buckets.unset?.length || 0,
-  };
+  const out: Record<string, number> = {};
   for (const p of partitions.value) {
     out[p.id] = buckets[p.id]?.length || 0;
   }
@@ -247,7 +291,7 @@ function mergePartitions(raw?: XqListingApi.FieldPartition[]): PartitionRow[] {
 function assignByKeywords(partitionId: string, keywords: string) {
   let n = 0;
   for (const row of fields.value) {
-    if (row.zone) continue;
+    if (row.zone && row.zone !== 'other') continue;
     if (matchFieldByKeywords(row, keywords)) {
       row.zone = partitionId;
       n += 1;
@@ -282,6 +326,7 @@ function confirmCreatePartition() {
     },
   ];
   ensureBucketKeys();
+  collapsed[id] = false;
   const n = keywords ? assignByKeywords(id, keywords) : 0;
   createOpen.value = false;
   message.success(
@@ -296,10 +341,10 @@ function removePartition(id: string) {
   if (!p || p.system) return;
   Modal.confirm({
     title: `删除分区「${p.name}」？`,
-    content: '该分区内字段会回到未分区。',
+    content: '该分区内字段会回到「其他属性」。',
     onOk() {
       for (const row of fields.value) {
-        if (row.zone === id) row.zone = '';
+        if (row.zone === id) row.zone = 'other';
       }
       partitions.value = partitions.value.filter((x) => x.id !== id);
       buckets[id] = [];
@@ -372,7 +417,7 @@ async function loadPool() {
     categoryCount.value = pool?.categoryCount || 0;
     sourceHint.value = pool?.sourceHint || '';
     partitions.value = mergePartitions(pool?.partitions);
-    fields.value = (pool?.fields || []).map((f) => ({
+    fields.value = dedupeListingFieldsByCode(pool?.fields || []).map((f) => ({
       code: f.code,
       label: f.label || f.code,
       type: f.type,
@@ -385,6 +430,7 @@ async function loadPool() {
       sourceCount: f.sourceCount,
       zone: f.zone || '',
     }));
+    totalCount.value = fields.value.length;
     syncBucketsFromFields();
   } catch (error: any) {
     fields.value = [];
@@ -470,8 +516,9 @@ watch(activeCountry, async () => {
         <div>
           <h2>模板配置</h2>
           <p>
-            已把平台全部原分类字段杂糅成字段池。按店铺和国家编辑；系统固定描述 /
-            产品 / 属性三类，其余分区自行创建并用关键词从池中自动归入。
+            已把平台全部原分类字段杂糅成字段池。按店铺和国家编辑；系统固定产品文案
+            / 产品基本信息 / 产品规格 /
+            其他属性四类，其余分区自行创建并用关键词自动归入。
           </p>
         </div>
         <Button
@@ -576,7 +623,7 @@ watch(activeCountry, async () => {
               <Button size="small" @click="openCreatePartition">
                 新建分区
               </Button>
-              <span class="toolbar-hint">系统三类固定，其余可自建</span>
+              <span class="toolbar-hint">系统四类固定，其余可自建</span>
             </div>
             <div v-if="activeShopId" class="zone-board">
               <div class="zone-main">
@@ -584,16 +631,20 @@ watch(activeCountry, async () => {
                   v-for="col in leftZones"
                   :key="col.key"
                   class="zone-col is-row"
+                  :class="{ collapsed: !zoneOpen(col.key) }"
                   :style="{ '--zone-color': col.color }"
                 >
-                  <div class="zone-col-h">
+                  <div class="zone-col-h" @click="toggleZone(col.key)">
+                    <span class="caret">{{
+                      zoneOpen(col.key) ? '▾' : '▸'
+                    }}</span>
                     <b>{{ col.label }}</b>
                     <span>{{ zoneCounts[col.key] || 0 }}</span>
                     <template v-if="!col.system">
                       <Button
                         type="link"
                         size="small"
-                        @click="rerunPartition(col.key)"
+                        @click.stop="rerunPartition(col.key)"
                       >
                         再归入
                       </Button>
@@ -601,75 +652,53 @@ watch(activeCountry, async () => {
                         type="link"
                         size="small"
                         danger
-                        @click="removePartition(col.key)"
+                        @click.stop="removePartition(col.key)"
                       >
                         删除
                       </Button>
                     </template>
                   </div>
-                  <p class="zone-col-hint">{{ col.hint }}</p>
-                  <draggable
-                    v-model="buckets[col.key]"
-                    class="zone-list is-wrap"
-                    group="xqTplFieldZone"
-                    item-key="code"
-                    handle=".drag-handle"
-                    :animation="160"
-                    ghost-class="zone-card-ghost"
-                    drag-class="zone-card-drag"
-                    @change="(e: any) => onDragChange(col.key, e)"
-                  >
-                    <template #item="{ element }">
-                      <div
-                        v-show="fieldVisible(element)"
-                        class="zone-card"
-                        :class="{ req: element.required }"
-                      >
-                        <span class="drag-handle" title="拖动">⋮⋮</span>
-                        <div class="zone-card-body">
-                          <div class="zone-card-title">
-                            <em>{{ element.label }}</em>
-                            <label class="req-switch">
-                              必填
-                              <Switch
-                                :checked="!!element.required"
-                                size="small"
-                                @change="
-                                  (v: any) => onRequiredChange(element, !!v)
-                                "
-                              />
-                            </label>
-                          </div>
-                          <span class="field-code">
-                            {{ element.code }}
-                            <template
-                              v-if="
-                                element.sourceCount && element.sourceCount > 1
-                              "
-                            >
-                              · {{ element.sourceCount }} 类
-                            </template>
-                          </span>
-                          <Input
-                            v-model:value="element.defaultValue"
-                            allow-clear
-                            size="small"
-                            placeholder="默认值"
-                          />
-                          <Select
-                            v-model:value="element.valueSource"
-                            allow-clear
-                            show-search
-                            size="small"
-                            option-filter-prop="label"
-                            :options="VALUE_SOURCE_SELECT_OPTIONS"
-                            placeholder="AI / 商品映射"
-                            style="width: 100%"
-                          />
-                        </div>
-                      </div>
-                    </template>
-                  </draggable>
+                  <template v-if="zoneOpen(col.key)">
+                    <p class="zone-col-hint">{{ col.hint }}</p>
+                    <div class="zone-tools" @click.stop>
+                      <Input
+                        v-model:value="zoneQuery[col.key]"
+                        allow-clear
+                        size="small"
+                        placeholder="搜索本分区字段名 / 编码 / 中文"
+                      />
+                      <label class="zh-switch">
+                        翻译
+                        <Switch v-model:checked="showZh" size="small" />
+                      </label>
+                    </div>
+                    <draggable
+                      v-model="buckets[col.key]"
+                      class="zone-list is-form"
+                      group="xqTplFieldZone"
+                      item-key="code"
+                      handle=".drag-handle"
+                      :animation="160"
+                      ghost-class="zone-card-ghost"
+                      drag-class="zone-card-drag"
+                      @change="(e: any) => onDragChange(col.key, e)"
+                    >
+                      <template #item="{ element }">
+                        <FieldFormRow
+                          v-show="zoneFieldVisible(col.key, element)"
+                          :element="element"
+                          :show-zh="showZh"
+                          @required-change="(v) => onRequiredChange(element, v)"
+                          @update:default-value="
+                            (v) => (element.defaultValue = v)
+                          "
+                          @update:value-source="
+                            (v) => (element.valueSource = v)
+                          "
+                        />
+                      </template>
+                    </draggable>
+                  </template>
                 </section>
                 <button
                   class="add-group"
@@ -679,78 +708,6 @@ watch(activeCountry, async () => {
                   + 新增分组
                 </button>
               </div>
-              <section
-                class="zone-col is-attr"
-                :style="{ '--zone-color': unsetZone.color }"
-              >
-                <div class="zone-col-h">
-                  <b>{{ unsetZone.label }}</b>
-                  <span>{{ zoneCounts.unset || 0 }}</span>
-                </div>
-                <p class="zone-col-hint">{{ unsetZone.hint }}</p>
-                <draggable
-                  v-model="buckets.unset"
-                  class="zone-list"
-                  group="xqTplFieldZone"
-                  item-key="code"
-                  handle=".drag-handle"
-                  :animation="160"
-                  ghost-class="zone-card-ghost"
-                  drag-class="zone-card-drag"
-                  @change="(e: any) => onDragChange('unset', e)"
-                >
-                  <template #item="{ element }">
-                    <div
-                      v-show="fieldVisible(element)"
-                      class="zone-card"
-                      :class="{ req: element.required }"
-                    >
-                      <span class="drag-handle" title="拖动">⋮⋮</span>
-                      <div class="zone-card-body">
-                        <div class="zone-card-title">
-                          <em>{{ element.label }}</em>
-                          <label class="req-switch">
-                            必填
-                            <Switch
-                              :checked="!!element.required"
-                              size="small"
-                              @change="
-                                (v: any) => onRequiredChange(element, !!v)
-                              "
-                            />
-                          </label>
-                        </div>
-                        <span class="field-code">
-                          {{ element.code }}
-                          <template
-                            v-if="
-                              element.sourceCount && element.sourceCount > 1
-                            "
-                          >
-                            · {{ element.sourceCount }} 类
-                          </template>
-                        </span>
-                        <Input
-                          v-model:value="element.defaultValue"
-                          allow-clear
-                          size="small"
-                          placeholder="默认值"
-                        />
-                        <Select
-                          v-model:value="element.valueSource"
-                          allow-clear
-                          show-search
-                          size="small"
-                          option-filter-prop="label"
-                          :options="VALUE_SOURCE_SELECT_OPTIONS"
-                          placeholder="AI / 商品映射"
-                          style="width: 100%"
-                        />
-                      </div>
-                    </div>
-                  </template>
-                </draggable>
-              </section>
             </div>
             <Empty
               v-else
@@ -769,7 +726,7 @@ watch(activeCountry, async () => {
       @ok="confirmCreatePartition"
     >
       <p class="modal-hint">
-        填写名称和模糊关键词（如农业、farm、seed、肥料）。创建后会在当前字段池检索，匹配到的未分区字段自动归入。
+        填写名称和模糊关键词（如农业、farm、seed、肥料）。创建后会在「其他属性」中检索，匹配到的字段自动归入。
       </p>
       <div class="modal-form">
         <label>分区名称</label>
@@ -885,7 +842,15 @@ watch(activeCountry, async () => {
   min-height: 0;
 }
 
+.zone-col.collapsed {
+  padding-bottom: 6px;
+}
+
 .zone-col.is-attr {
+  min-height: 0;
+}
+
+.zone-col.is-attr:not(.collapsed) {
   min-height: 560px;
 }
 
@@ -908,11 +873,24 @@ watch(activeCountry, async () => {
 .zone-col-h {
   display: flex;
   gap: 8px;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+}
+
+.zone-col-h .caret {
+  flex: 0 0 auto;
+  width: 12px;
+  font-size: 12px;
+  color: var(--zone-color, #6b7280);
 }
 
 .zone-col-h b {
+  flex: 1;
   font-size: 14px;
   color: #111827;
 }
@@ -938,84 +916,38 @@ watch(activeCountry, async () => {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   min-height: 88px;
-  max-height: 62vh;
-  padding: 2px;
+  max-height: 52vh;
   overflow: auto;
-}
-
-.zone-list.is-wrap {
-  flex-flow: row wrap;
-  align-content: flex-start;
-  max-height: 280px;
-}
-
-.zone-list.is-wrap .zone-card {
-  width: 240px;
-}
-
-.zone-card {
-  display: flex;
-  gap: 6px;
-  padding: 8px;
   background: #fff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #eef0f3;
   border-radius: 8px;
 }
 
-.zone-card.req {
-  border-color: #fca5a5;
+.zone-list.is-form {
+  max-height: 420px;
 }
 
-.drag-handle {
-  flex: 0 0 auto;
-  padding: 2px 4px;
-  font-size: 14px;
-  line-height: 1.2;
-  color: #9ca3af;
-  letter-spacing: -2px;
-  cursor: grab;
-  user-select: none;
-}
-
-.zone-card-body {
+.zone-tools {
   display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 8px;
+}
+
+.zone-tools :deep(.ant-input-affix-wrapper) {
   flex: 1;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
 }
 
-.zone-card-title {
-  display: flex;
-  gap: 6px;
-  align-items: flex-start;
-}
-
-.zone-card-title em {
-  flex: 1;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 1.3;
-  color: #111827;
-}
-
-.zone-tag {
-  flex-shrink: 0;
-  margin: 0;
-}
-
-.req-switch {
+.zh-switch {
   display: inline-flex;
   flex-shrink: 0;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
   font-size: 12px;
-  color: #6b7280;
-  cursor: pointer;
-  user-select: none;
+  color: #4b5563;
+  white-space: nowrap;
 }
 
 .zone-card-ghost {

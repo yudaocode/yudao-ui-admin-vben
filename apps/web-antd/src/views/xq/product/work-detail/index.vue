@@ -291,7 +291,7 @@ const attrFields = computed(() => {
   return fields.filter((f) => {
     if (isListingImageField(f)) return false;
     const zone = resolveListingFieldZone(f);
-    return zone === 'attr' || zone === 'product' || !zone;
+    return zone === 'attr' || zone === 'product' || zone === 'other' || !zone;
   });
 });
 
@@ -352,7 +352,10 @@ watch(workId, () => {
 });
 
 function goBack() {
-  const parentPath = route.path.replace(/\/detail$/, '/list');
+  // 兼容旧路径 …/tasks/detail → …/tasks/list；新路径 …/detail → …/list
+  const parentPath = route.path
+    .replace(/\/tasks\/detail$/, '/list')
+    .replace(/\/detail$/, '/list');
   router.push({
     path: parentPath,
     query: { platformId: lockedPlatformId.value || undefined },

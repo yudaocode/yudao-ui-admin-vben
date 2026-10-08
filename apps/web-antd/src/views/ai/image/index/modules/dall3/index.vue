@@ -20,6 +20,7 @@ import {
 import { Button, Image, message, Space, Textarea } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
+import { ImageUpload } from '#/components/upload';
 
 const props = defineProps({
   models: {
@@ -30,6 +31,7 @@ const props = defineProps({
 const emits = defineEmits(['onDrawStart', 'onDrawComplete']);
 
 const prompt = ref<string>('');
+const referImageUrl = ref<string>('');
 const drawIn = ref<boolean>(false);
 const selectHotWord = ref<string>('');
 const selectModel = ref<string>('');
@@ -48,13 +50,19 @@ const openaiModels = computed(() =>
 const displayModels = computed(() => {
   if (openaiModels.value.length > 0) {
     return openaiModels.value.map((m) => {
+      const bare = String(m.model || '')
+        .toLowerCase()
+        .replace(/^openai\//, '');
       const meta =
         Dall3Models.find((d) => d.key === m.model) ||
+        Dall3Models.find(
+          (d) => d.key.toLowerCase().replace(/^openai\//, '') === bare,
+        ) ||
         Dall3Models.find(
           (d) =>
             isGptImageModel(m.model) &&
             isGptImageModel(d.key) &&
-            d.key === 'gpt-image-2',
+            d.key === 'gpt-image-2.5-flare',
         ) ||
         Dall3Models.find(
           (d) => isGptImageModel(m.model) && isGptImageModel(d.key),
@@ -140,13 +148,21 @@ async function handleGenerateImage() {
     const imageSize = sizeList.value.find(
       (item) => item.key === selectSize.value,
     ) as ImageSize;
+    const options: Record<string, string> = {};
+    if (showStyle.value) {
+      options.style = style.value;
+    }
+    if (referImageUrl.value) {
+      options.referImageUrl = referImageUrl.value;
+    }
     const form = {
       platform: AiPlatformEnum.OPENAI,
       prompt: prompt.value,
       modelId: matchedModel.id,
       width: Number(imageSize.width),
       height: Number(imageSize.height),
-      options: showStyle.value ? { style: style.value } : {},
+      referImageUrl: referImageUrl.value || undefined,
+      options,
     } as AiImageApi.ImageDrawReqVO;
     await drawImage(form);
   } finally {
@@ -159,6 +175,7 @@ async function settingValues(detail: AiImageApi.Image) {
   prompt.value = detail.prompt;
   selectModel.value = detail.model;
   style.value = detail.options?.style || 'vivid';
+  referImageUrl.value = detail.options?.referImageUrl || '';
   const imageSize = getOpenAiImageSizeList(detail.model).find(
     (item) => item.key === `${detail.width}x${detail.height}`,
   );
@@ -271,6 +288,17 @@ defineExpose({ settingValues });
           {{ imageSize.name }}
         </div>
       </div>
+    </Space>
+  </div>
+
+  <div class="mt-8">
+    <div><b>参考图</b></div>
+    <p class="mt-1 text-xs text-gray-500">
+      可选。上传后走图生图/改图（有参考图时调用 images/edits 或
+      reference_images）
+    </p>
+    <Space wrap class="mt-4">
+      <ImageUpload v-model:value="referImageUrl" :show-description="false" />
     </Space>
   </div>
 

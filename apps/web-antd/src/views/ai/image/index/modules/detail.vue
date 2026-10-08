@@ -192,10 +192,7 @@ watch(
   </div>
 
   <div
-    v-if="
-      detail.platform === AiPlatformEnum.MIDJOURNEY &&
-      detail?.options?.referImageUrl
-    "
+    v-if="detail?.options?.referImageUrl"
     class="mb-5 w-full overflow-hidden break-words"
   >
     <div class="text-lg font-bold">参考图</div>

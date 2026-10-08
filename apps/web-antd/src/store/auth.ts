@@ -148,15 +148,21 @@ export const useAuthStore = defineStore('auth', () => {
     userStore.setUserRoles(authPermissionInfo.roles);
     try {
       const scope = await getXqWorkbenchScope();
-      const desks = buildXqDeskMenus(
-        scope?.platforms || [],
-        authPermissionInfo.permissions || [],
-      );
-      if (desks.length > 0) {
-        attachDesksToWorkbench(authPermissionInfo.menus || [], desks);
-      }
+      const perms = authPermissionInfo.permissions || [];
+      const desks = buildXqDeskMenus(scope?.platforms || [], perms);
+      // 即使无绑店也注入「编辑图片」，供美工看已分配任务
+      attachDesksToWorkbench(authPermissionInfo.menus || [], desks, perms);
     } catch {
-      // 无绑店或无 listing 权限时不注入平台工作台
+      // listing 失败时仍尝试挂美工「编辑图片」
+      try {
+        attachDesksToWorkbench(
+          authPermissionInfo.menus || [],
+          [],
+          authPermissionInfo.permissions || [],
+        );
+      } catch {
+        // ignore
+      }
     }
     accessStore.setAccessMenus(authPermissionInfo.menus);
     accessStore.setAccessCodes(authPermissionInfo.permissions);

@@ -7,7 +7,7 @@ import { ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Avatar, Button, Card, Dropdown, Menu } from 'ant-design-vue';
+import { Avatar, Button, Card, Dropdown, Empty, Menu } from 'ant-design-vue';
 
 const props = defineProps({
   loading: {
@@ -58,20 +58,24 @@ async function handleTabsScroll() {
 
 <template>
   <div
-    class="relative flex h-full flex-wrap content-start items-start overflow-auto pb-36"
     ref="tabsRef"
+    class="relative h-full min-h-0 overflow-auto"
     @scroll="handleTabsScroll"
   >
-    <div class="mb-3 mr-3 inline-block" v-for="role in roleList" :key="role.id">
+    <Empty
+      v-if="!loading && roleList.length === 0"
+      class="mt-16"
+      description="暂无角色"
+    />
+    <div v-else class="flex flex-wrap content-start items-start gap-3 pb-8">
       <Card
-        class="relative rounded-lg"
+        v-for="role in roleList"
+        :key="role.id"
+        class="w-60 rounded-lg"
         :body-style="{
-          position: 'relative',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          width: '240px',
-          maxWidth: '240px',
           padding: '15px',
         }"
       >
@@ -81,7 +85,9 @@ async function handleTabsScroll() {
             <Avatar
               :src="role.avatar"
               class="h-8 w-8 flex-shrink-0 overflow-hidden"
-            />
+            >
+              {{ role.name?.slice(0, 2) }}
+            </Avatar>
             <div class="ml-2 truncate text-base font-medium">
               {{ role.name }}
             </div>
@@ -94,7 +100,7 @@ async function handleTabsScroll() {
           {{ role.description }}
         </div>
         <!-- 底部操作按钮 -->
-        <div class="flex items-center justify-end gap-2">
+        <div class="mt-2 flex items-center justify-end gap-2">
           <Dropdown v-if="showMore">
             <Button size="small">
               <IconifyIcon icon="lucide:ellipsis" />

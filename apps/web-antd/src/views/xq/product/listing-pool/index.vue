@@ -24,9 +24,14 @@ import {
   getXqListingCategories,
   getXqListingShops,
 } from '#/api/xq/listing';
-import { getXqWorkOrderPage, listXqWorkOrder } from '#/api/xq/work-order';
+import {
+  confirmXqWorkOrderListing,
+  getXqWorkOrderPage,
+  listXqWorkOrder,
+} from '#/api/xq/work-order';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 import {
+  isListingImageField,
   LISTING_FIELD_ZONE_OPTIONS,
   resolveListingFieldZone,
 } from '#/views/xq/product/listing-field-zone';
@@ -66,14 +71,14 @@ const zonedFieldGroups = computed(() => {
     ...z,
     fields: [] as XqListingApi.CategoryField[],
   }));
-  const unset: XqListingApi.CategoryField[] = [];
+  const other = groups.find((g) => g.value === 'other');
   for (const f of fields.value) {
-    const zone = resolveListingFieldZone(f);
-    const hit = groups.find((g) => g.value === zone);
-    if (hit) hit.fields.push(f);
-    else unset.push(f);
+    if (isListingImageField(f)) continue;
+    const zone = resolveListingFieldZone(f) || 'other';
+    const hit = groups.find((g) => g.value === zone) || other;
+    hit?.fields.push(f);
   }
-  return { groups, unset };
+  return { groups };
 });
 const isListed = computed(
   () => listingTab.value === 'listed' || activeTask.value?.status === 20,
@@ -255,7 +260,7 @@ function onPageChange(page: number, size: number) {
   loadTasks();
 }
 
-async function submitListing() {
+async function submitListing(mode: 'api' | 'export') {
   const row = activeTask.value;
   if (!row?.id) return;
   if (!row.listingCategoryId) {
@@ -266,12 +271,17 @@ async function submitListing() {
   try {
     await listXqWorkOrder({
       id: row.id,
+      listingMode: mode,
       productSku: row.externalSku || undefined,
       productName: row.contentTitle || row.title || undefined,
       values: { ...fieldValues.value },
     });
-    message.success('已提交上架');
-    listingTab.value = 'listed';
+    if (mode === 'export') {
+      message.success('导表成功，请确认是否已上架');
+    } else {
+      message.success('API 上架成功');
+      listingTab.value = 'listed';
+    }
     pageNo.value = 1;
     await loadTasks();
   } catch (error: any) {
@@ -280,6 +290,27 @@ async function submitListing() {
     listing.value = false;
   }
 }
+
+async function confirmExportListed() {
+  const row = activeTask.value;
+  if (!row?.id) return;
+  listing.value = true;
+  try {
+    await confirmXqWorkOrderListing(row.id);
+    message.success('已确认上架');
+    listingTab.value = 'listed';
+    pageNo.value = 1;
+    await loadTasks();
+  } catch (error: any) {
+    message.error(error?.message || '确认失败');
+  } finally {
+    listing.value = false;
+  }
+}
+
+const exportPendingConfirm = computed(
+  () => activeTask.value?.listingStatus === 'export_pending_confirm',
+);
 
 watch(activeId, () => {
   const row = activeTask.value;
@@ -365,14 +396,28 @@ onMounted(async () => {
             已上架
           </Button>
         </div>
-        <Button
-          type="primary"
-          :disabled="!activeTask || isListed"
-          :loading="listing"
-          @click="submitListing"
-        >
-          提交上架
-        </Button>
+        <template v-if="activeTask && !isListed">
+          <Button
+            v-if="exportPendingConfirm"
+            type="primary"
+            :loading="listing"
+            @click="confirmExportListed"
+          >
+            确认已上架
+          </Button>
+          <template v-else>
+            <Button :loading="listing" @click="submitListing('export')">
+              导表上架
+            </Button>
+            <Button
+              type="primary"
+              :loading="listing"
+              @click="submitListing('api')"
+            >
+              API 上架
+            </Button>
+          </template>
+        </template>
       </div>
 
       <Spin :spinning="loading">
@@ -394,8 +439,22 @@ onMounted(async () => {
               <div class="xq-list-body">
                 <div class="xq-list-top">
                   <span class="xq-list-sku">{{ row.externalSku || '—' }}</span>
-                  <Tag :color="isListed ? 'success' : 'processing'">
-                    {{ isListed ? '已上架' : '待上架' }}
+                  <Tag
+                    :color="
+                      isListed
+                        ? 'success'
+                        : row.listingStatus === 'export_pending_confirm'
+                          ? 'warning'
+                          : 'processing'
+                    "
+                  >
+                    {{
+                      isListed
+                        ? '已上架'
+                        : row.listingStatus === 'export_pending_confirm'
+                          ? '导表待确认'
+                          : '待上架'
+                    }}
                   </Tag>
                 </div>
                 <div class="xq-list-title">
@@ -447,14 +506,31 @@ onMounted(async () => {
                   </span>
                 </div>
                 <div class="xq-detail-actions">
-                  <Button
-                    v-if="!isListed"
-                    type="primary"
-                    :loading="listing"
-                    @click="submitListing"
-                  >
-                    提交上架
-                  </Button>
+                  <template v-if="!isListed">
+                    <Button
+                      v-if="exportPendingConfirm"
+                      type="primary"
+                      :loading="listing"
+                      @click="confirmExportListed"
+                    >
+                      确认已上架
+                    </Button>
+                    <template v-else>
+                      <Button
+                        :loading="listing"
+                        @click="submitListing('export')"
+                      >
+                        导表上架
+                      </Button>
+                      <Button
+                        type="primary"
+                        :loading="listing"
+                        @click="submitListing('api')"
+                      >
+                        API 上架
+                      </Button>
+                    </template>
+                  </template>
                   <Tag v-else color="success">已上架</Tag>
                 </div>
               </div>
@@ -499,27 +575,6 @@ onMounted(async () => {
                     </div>
                   </div>
                 </template>
-                <div v-if="zonedFieldGroups.unset.length" class="xq-zone-block">
-                  <div class="xq-zone-title">
-                    未分区
-                    <span>{{ zonedFieldGroups.unset.length }}</span>
-                  </div>
-                  <div
-                    v-for="f in zonedFieldGroups.unset"
-                    :key="f.code"
-                    class="xq-list-field"
-                  >
-                    <div class="xq-list-field-h">
-                      <em>{{ f.label || f.code }}</em>
-                      <Tag v-if="f.required" color="red">必填</Tag>
-                    </div>
-                    <Input
-                      v-model:value="fieldValues[f.code]"
-                      :readonly="isListed"
-                      :placeholder="f.defaultValue || f.label"
-                    />
-                  </div>
-                </div>
               </div>
               <Empty
                 v-else
