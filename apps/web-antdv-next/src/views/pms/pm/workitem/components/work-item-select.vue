@@ -37,6 +37,10 @@ const workItemList = ref<PmsWorkItemApi.WorkItem[]>([]); // 工作项选项
 
 /** 查询工作项选项 */
 async function getWorkItemList() {
+  if (!props.projectId || props.type === undefined) {
+    workItemList.value = [];
+    return;
+  }
   loading.value = true;
   try {
     const list = await getAllPageItems<PmsWorkItemApi.WorkItem>(

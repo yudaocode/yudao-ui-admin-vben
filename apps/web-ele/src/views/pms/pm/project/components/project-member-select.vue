@@ -34,6 +34,10 @@ const memberList = ref<PmsProjectMemberApi.ProjectMember[]>([]); // 项目成员
 
 /** 查询项目成员选项 */
 async function getMemberList() {
+  if (!props.projectId) {
+    memberList.value = [];
+    return;
+  }
   loading.value = true;
   try {
     memberList.value = await getProjectMemberList(props.projectId);
