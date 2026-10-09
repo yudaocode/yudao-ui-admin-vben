@@ -23,7 +23,7 @@ const employeeId = ref<number>();
 const editingId = ref<number>();
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112 },
+  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: useEducationFormSchema(),
   showDefaultActions: false,
