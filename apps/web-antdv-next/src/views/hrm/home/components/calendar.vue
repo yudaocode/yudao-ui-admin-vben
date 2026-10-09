@@ -70,9 +70,17 @@ async function refreshCalendar() {
       endDate: month.endOf('month').format('YYYY-MM-DD'),
       startDate: month.startOf('month').format('YYYY-MM-DD'),
     });
+    const normalizedItems = items.map((item) => ({
+      ...item,
+      date: Array.isArray(item.date)
+        ? dayjs(new Date(item.date[0], item.date[1] - 1, item.date[2])).format(
+            'YYYY-MM-DD',
+          )
+        : item.date,
+    }));
     calendarItems.value = props.itemFilter
-      ? items.filter((item) => props.itemFilter!(item))
-      : items;
+      ? normalizedItems.filter((item) => props.itemFilter!(item))
+      : normalizedItems;
   } finally {
     loading.value = false;
   }
