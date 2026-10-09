@@ -3,7 +3,7 @@ import type { HrmHomeApi } from '#/api/hrm/home';
 import type { HrmPortalEmployeeApi } from '#/api/hrm/portal/employee';
 import type { HrmPortalSalarySlipApi } from '#/api/hrm/portal/salary/slip';
 
-import { onActivated, ref } from 'vue';
+import { nextTick, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page } from '@vben/common-ui';
@@ -23,6 +23,7 @@ defineOptions({ name: 'HrmPortalHome' });
 
 const router = useRouter();
 const accessible = ref(false);
+const initialized = ref(false);
 const loading = ref(false);
 const employee = ref<HrmPortalEmployeeApi.PortalEmployee>();
 const salarySlipSummary = ref<HrmPortalSalarySlipApi.UnreadSummary>();
@@ -49,12 +50,27 @@ async function refreshAll() {
   }
 }
 
+/** 初始化个人工作台 */
+onMounted(async () => {
+  accessible.value = await checkHrmPortalAccess(router);
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await refreshAll();
+});
+
 /** 页面激活时刷新个人工作台 */
 onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
   accessible.value = await checkHrmPortalAccess(router);
   if (!accessible.value) {
     return;
   }
+  await nextTick();
   await refreshAll();
 });
 </script>
