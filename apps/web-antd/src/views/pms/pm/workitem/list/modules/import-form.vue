@@ -33,7 +33,7 @@ const workItemTypeName = computed(
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     formItemClass: 'col-span-2',
-    labelWidth: 120,
+    labelWidth: 150,
   },
   layout: 'horizontal',
   schema: useWorkItemImportFormSchema(),
@@ -103,7 +103,7 @@ const [ModalComponent, modalApi] = useVbenModal({
 </script>
 
 <template>
-  <ModalComponent :title="`${workItemTypeName}导入`" class="w-[460px]">
+  <ModalComponent :title="`${workItemTypeName}导入`" class="w-[560px]">
     <Form class="mx-4">
       <template #file>
         <div class="w-full">
