@@ -182,15 +182,17 @@ async function beforeUpload(file: File) {
     return Upload.LIST_IGNORE;
   }
 
-  // 只有在验证通过后才增加计数器
-  uploadNumber.value++;
+  // 读取文件内容时不上传文件
   if (props.returnText) {
     const fileContent =
       props.returnTextType === 'base64'
         ? await readFileAsBase64(file)
         : await file.text();
     emit('returnText', fileContent);
+    return Upload.LIST_IGNORE;
   }
+  // 只有在验证通过后才增加计数器
+  uploadNumber.value++;
   return true;
 }
 
