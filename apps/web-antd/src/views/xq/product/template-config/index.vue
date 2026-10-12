@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FieldFillMode } from './field-form-row.vue';
+
 import type { XqListingApi } from '#/api/xq/listing';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
@@ -36,8 +38,11 @@ import { translateFieldLabel } from './field-label-zh';
 interface FieldRow {
   code: string;
   defaultValue: string;
+  fixed?: boolean;
   groupLabel?: string;
   label: string;
+  options?: XqListingApi.FieldEnumOption[];
+  remark?: string;
   required?: boolean;
   requirementLevel?: string;
   sourceCount?: number;
@@ -98,7 +103,7 @@ const SYSTEM_PARTITIONS: PartitionRow[] = [
   {
     id: 'product',
     name: '产品基本信息',
-    keywords: 'sku,upc,gtin,inventory,库存,color',
+    keywords: 'sku,upc,gtin,inventory,库存,color,price,售价',
     system: true,
     color: '#059669',
   },
@@ -136,6 +141,8 @@ const sourceHint = ref('');
 const partitions = ref<PartitionRow[]>([...SYSTEM_PARTITIONS]);
 const createOpen = ref(false);
 const createForm = reactive({ name: '', keywords: '' });
+const renameOpen = ref(false);
+const renameForm = reactive({ id: '', name: '' });
 
 const buckets = reactive<Record<string, FieldRow[]>>({
   copy: [],
@@ -144,34 +151,57 @@ const buckets = reactive<Record<string, FieldRow[]>>({
   other: [],
 });
 
-const leftZones = computed(() => {
-  const order = ['copy', 'product', 'attr', 'other'];
-  const listed = new Set(order);
-  const byId = new Map(partitions.value.map((p) => [p.id, p]));
-  const system = order
+/** 系统三区 + 用户分组；「其他属性」永远独立置尾，不进左侧主列 */
+function orderedPartitions(list: PartitionRow[]): PartitionRow[] {
+  const byId = new Map(list.map((p) => [p.id, p]));
+  const mainSys = ['copy', 'product', 'attr']
     .map((id) => byId.get(id))
     .filter((p): p is PartitionRow => !!p);
-  const custom = partitions.value.filter((p) => !listed.has(p.id));
-  const toZone = (p: PartitionRow) => {
-    let hint = p.keywords || '用户分组 · 可按关键词归入';
-    if (p.id === 'other') {
-      hint = '未归入文案 / 基本信息 / 规格的字段';
-    } else if (p.system) {
-      hint = p.keywords;
-    }
-    return {
-      key: p.id,
-      label: p.name,
-      hint,
-      color: p.color || '#7c3aed',
-      system: p.system,
-      keywords: p.keywords,
-    };
+  const custom = list.filter(
+    (p) =>
+      p.id !== 'copy' &&
+      p.id !== 'product' &&
+      p.id !== 'attr' &&
+      p.id !== 'other',
+  );
+  const other =
+    byId.get('other') ||
+    SYSTEM_PARTITIONS.find((p) => p.id === 'other') ||
+    null;
+  return other ? [...mainSys, ...custom, other] : [...mainSys, ...custom];
+}
+
+function toZoneCol(p: PartitionRow) {
+  let hint = p.keywords || '用户分组 · 可按关键词归入';
+  if (p.id === 'other') {
+    hint = '未归入任何分组的字段 · 独立侧栏';
+  } else if (p.system) {
+    hint = p.keywords;
+  }
+  return {
+    key: p.id,
+    label: p.name,
+    hint,
+    color: p.color || '#7c3aed',
+    system: p.system,
+    keywords: p.keywords,
   };
-  return [...system, ...custom].map((p) => toZone(p));
+}
+
+const leftZones = computed(() =>
+  orderedPartitions(partitions.value)
+    .filter((p) => p.id !== 'other')
+    .map((p) => toZoneCol(p)),
+);
+
+const otherZone = computed(() => {
+  const p =
+    partitions.value.find((x) => x.id === 'other') ||
+    SYSTEM_PARTITIONS.find((x) => x.id === 'other')!;
+  return toZoneCol(p);
 });
 
-const collapsed = reactive<Record<string, boolean>>({ other: true });
+const collapsed = reactive<Record<string, boolean>>({});
 const zoneQuery = reactive<Record<string, string>>({ other: '' });
 const showZh = ref(true);
 
@@ -209,7 +239,7 @@ function syncBucketsFromFields() {
 function collectFieldsFromBuckets() {
   ensureBucketKeys();
   const ordered: FieldRow[] = [];
-  for (const p of partitions.value) {
+  for (const p of orderedPartitions(partitions.value)) {
     ordered.push(...(buckets[p.id] || []));
   }
   const seen = new Set(ordered.map((r) => r.code));
@@ -223,9 +253,16 @@ function onDragChange(zone: string, evt: { added?: { element: FieldRow } }) {
   }
 }
 
-function onRequiredChange(row: FieldRow, checked: boolean) {
-  row.required = checked;
-  row.groupLabel = checked ? '必填' : '选填';
+function fillModeLabel(mode: FieldFillMode) {
+  if (mode === 'fixed') return '固定';
+  if (mode === 'required') return '必填';
+  return '非必填';
+}
+
+/** 仅打展示标记（标签+备注），不改 required 校验、不锁定输入 */
+function onFillModeChange(row: FieldRow, mode: FieldFillMode) {
+  row.fixed = mode === 'fixed';
+  row.groupLabel = fillModeLabel(mode);
 }
 
 function matchQuery(row: FieldRow, raw: string) {
@@ -236,7 +273,8 @@ function matchQuery(row: FieldRow, raw: string) {
     row.label.toLowerCase().includes(q) ||
     row.code.toLowerCase().includes(q) ||
     zh.includes(q) ||
-    (row.groupLabel || '').toLowerCase().includes(q)
+    (row.groupLabel || '').toLowerCase().includes(q) ||
+    (row.remark || '').toLowerCase().includes(q)
   );
 }
 
@@ -273,7 +311,10 @@ function mergePartitions(raw?: XqListingApi.FieldPartition[]): PartitionRow[] {
   for (const p of raw || []) {
     if (!p?.id) continue;
     if (map.has(p.id) && map.get(p.id)!.system) {
-      if (p.keywords) map.get(p.id)!.keywords = p.keywords;
+      const sys = map.get(p.id)!;
+      if (p.keywords) sys.keywords = p.keywords;
+      if (p.name?.trim()) sys.name = p.name.trim();
+      if (p.color) sys.color = p.color;
       continue;
     }
     if (p.system) continue;
@@ -285,7 +326,7 @@ function mergePartitions(raw?: XqListingApi.FieldPartition[]): PartitionRow[] {
       color: p.color || USER_COLORS[map.size % USER_COLORS.length]!,
     });
   }
-  return [...map.values()];
+  return orderedPartitions([...map.values()]);
 }
 
 function assignByKeywords(partitionId: string, keywords: string) {
@@ -315,16 +356,19 @@ function confirmCreatePartition() {
     return;
   }
   const id = `u_${Date.now().toString(36)}`;
-  partitions.value = [
-    ...partitions.value,
-    {
-      id,
-      name,
-      keywords,
-      system: false,
-      color: USER_COLORS[partitions.value.length % USER_COLORS.length]!,
-    },
-  ];
+  const next: PartitionRow = {
+    id,
+    name,
+    keywords,
+    system: false,
+    color: USER_COLORS[partitions.value.length % USER_COLORS.length]!,
+  };
+  // 插在「其他属性」之前，保证 other 永远在尾
+  const withoutOther = partitions.value.filter((p) => p.id !== 'other');
+  const other = partitions.value.find((p) => p.id === 'other');
+  partitions.value = orderedPartitions(
+    other ? [...withoutOther, next, other] : [...withoutOther, next],
+  );
   ensureBucketKeys();
   collapsed[id] = false;
   const n = keywords ? assignByKeywords(id, keywords) : 0;
@@ -338,7 +382,10 @@ function confirmCreatePartition() {
 
 function removePartition(id: string) {
   const p = partitions.value.find((x) => x.id === id);
-  if (!p || p.system) return;
+  if (!p || p.system) {
+    message.warning('系统分区不可删除，仅可改名');
+    return;
+  }
   Modal.confirm({
     title: `删除分区「${p.name}」？`,
     content: '该分区内字段会回到「其他属性」。',
@@ -351,6 +398,30 @@ function removePartition(id: string) {
       syncBucketsFromFields();
     },
   });
+}
+
+function openRenamePartition(id: string) {
+  const p = partitions.value.find((x) => x.id === id);
+  if (!p) return;
+  renameForm.id = id;
+  renameForm.name = p.name;
+  renameOpen.value = true;
+}
+
+function confirmRenamePartition() {
+  const name = renameForm.name.trim();
+  if (!name) {
+    message.warning('请填写分区名称');
+    return;
+  }
+  const p = partitions.value.find((x) => x.id === renameForm.id);
+  if (!p) {
+    renameOpen.value = false;
+    return;
+  }
+  p.name = name;
+  renameOpen.value = false;
+  message.success(`已改名为「${name}」`);
 }
 
 function rerunPartition(id: string) {
@@ -423,10 +494,18 @@ async function loadPool() {
       type: f.type,
       requirementLevel: f.requirementLevel,
       required: !!f.required,
-      groupLabel: f.groupLabel || (f.required ? '必填' : '选填'),
+      fixed: !!f.fixed,
+      remark: f.remark || '',
+      groupLabel: (() => {
+        if (f.groupLabel) return f.groupLabel;
+        if (f.fixed) return '固定';
+        if (f.required) return '必填';
+        return '非必填';
+      })(),
       defaultValue: f.defaultValue || '',
       valueSource: f.valueSource || undefined,
       valuesList: f.valuesList,
+      options: f.options || [],
       sourceCount: f.sourceCount,
       zone: f.zone || '',
     }));
@@ -471,9 +550,13 @@ async function handleSave() {
         defaultValue: row.defaultValue,
         valueSource: row.valueSource || '',
         zone: row.zone || '',
+        // required 保持平台原值；fixed/remark/groupLabel 仅作展示标记
         required: !!row.required,
+        fixed: !!row.fixed,
+        remark: row.remark || '',
+        groupLabel: row.groupLabel || '',
       })),
-      partitions: partitions.value.map((p) => ({
+      partitions: orderedPartitions(partitions.value).map((p) => ({
         id: p.id,
         name: p.name,
         keywords: p.keywords,
@@ -516,9 +599,9 @@ watch(activeCountry, async () => {
         <div>
           <h2>模板配置</h2>
           <p>
-            已把平台全部原分类字段杂糅成字段池。按店铺和国家编辑；系统固定产品文案
-            / 产品基本信息 / 产品规格 /
-            其他属性四类，其余分区自行创建并用关键词自动归入。
+            字段池按店铺和国家编辑。左侧为产品文案 / 基本信息 /
+            规格与自建分组；右侧「其他属性」为未分组字段，独立侧栏且排序始终在尾。文案页只展示有字段的分区；相同编码去重。价格映射请选一件代发价格或自提价格，提到顶栏与
+            SKU/UPC 一起展示。
           </p>
         </div>
         <Button
@@ -623,7 +706,7 @@ watch(activeCountry, async () => {
               <Button size="small" @click="openCreatePartition">
                 新建分区
               </Button>
-              <span class="toolbar-hint">系统四类固定，其余可自建</span>
+              <span class="toolbar-hint">左侧：系统区+自建分组；右侧：未分组（始终在尾）</span>
             </div>
             <div v-if="activeShopId" class="zone-board">
               <div class="zone-main">
@@ -640,6 +723,13 @@ watch(activeCountry, async () => {
                     }}</span>
                     <b>{{ col.label }}</b>
                     <span>{{ zoneCounts[col.key] || 0 }}</span>
+                    <Button
+                      type="link"
+                      size="small"
+                      @click.stop="openRenamePartition(col.key)"
+                    >
+                      改名
+                    </Button>
                     <template v-if="!col.system">
                       <Button
                         type="link"
@@ -657,6 +747,7 @@ watch(activeCountry, async () => {
                         删除
                       </Button>
                     </template>
+                    <Tag v-else color="processing">系统</Tag>
                   </div>
                   <template v-if="zoneOpen(col.key)">
                     <p class="zone-col-hint">{{ col.hint }}</p>
@@ -688,13 +779,16 @@ watch(activeCountry, async () => {
                           v-show="zoneFieldVisible(col.key, element)"
                           :element="element"
                           :show-zh="showZh"
-                          @required-change="(v) => onRequiredChange(element, v)"
+                          @fill-mode-change="
+                            (v) => onFillModeChange(element, v)
+                          "
                           @update:default-value="
                             (v) => (element.defaultValue = v)
                           "
                           @update:value-source="
                             (v) => (element.valueSource = v)
                           "
+                          @update:remark="(v) => (element.remark = v)"
                         />
                       </template>
                     </draggable>
@@ -708,6 +802,70 @@ watch(activeCountry, async () => {
                   + 新增分组
                 </button>
               </div>
+
+              <!-- 未分组：独立右侧栏，始终在尾，不随用户分组插入 -->
+              <aside
+                class="zone-col zone-other-side"
+                :class="{ collapsed: !zoneOpen(otherZone.key) }"
+                :style="{ '--zone-color': otherZone.color }"
+              >
+                <div class="zone-col-h" @click="toggleZone(otherZone.key)">
+                  <span class="caret">{{
+                    zoneOpen(otherZone.key) ? '▾' : '▸'
+                  }}</span>
+                  <b>{{ otherZone.label }}</b>
+                  <span>{{ zoneCounts[otherZone.key] || 0 }}</span>
+                  <Button
+                    type="link"
+                    size="small"
+                    @click.stop="openRenamePartition(otherZone.key)"
+                  >
+                    改名
+                  </Button>
+                  <Tag color="processing">系统</Tag>
+                </div>
+                <template v-if="zoneOpen(otherZone.key)">
+                  <p class="zone-col-hint">{{ otherZone.hint }}</p>
+                  <div class="zone-tools" @click.stop>
+                    <Input
+                      v-model:value="zoneQuery[otherZone.key]"
+                      allow-clear
+                      size="small"
+                      placeholder="搜索未分组字段"
+                    />
+                    <label class="zh-switch">
+                      翻译
+                      <Switch v-model:checked="showZh" size="small" />
+                    </label>
+                  </div>
+                  <draggable
+                    v-model="buckets[otherZone.key]"
+                    class="zone-list is-form is-other-side"
+                    group="xqTplFieldZone"
+                    item-key="code"
+                    handle=".drag-handle"
+                    :animation="160"
+                    ghost-class="zone-card-ghost"
+                    drag-class="zone-card-drag"
+                    @change="(e: any) => onDragChange(otherZone.key, e)"
+                  >
+                    <template #item="{ element }">
+                      <FieldFormRow
+                        v-show="zoneFieldVisible(otherZone.key, element)"
+                        compact
+                        :element="element"
+                        :show-zh="showZh"
+                        @fill-mode-change="(v) => onFillModeChange(element, v)"
+                        @update:default-value="
+                          (v) => (element.defaultValue = v)
+                        "
+                        @update:value-source="(v) => (element.valueSource = v)"
+                        @update:remark="(v) => (element.remark = v)"
+                      />
+                    </template>
+                  </draggable>
+                </template>
+              </aside>
             </div>
             <Empty
               v-else
@@ -740,6 +898,26 @@ watch(activeCountry, async () => {
           v-model:value="createForm.keywords"
           :rows="4"
           placeholder="逗号或空格分隔，例如：agriculture, farm, soil, seed, 肥料, 种子"
+        />
+      </div>
+    </Modal>
+
+    <Modal
+      v-model:open="renameOpen"
+      title="修改分组名称"
+      ok-text="保存名称"
+      @ok="confirmRenamePartition"
+    >
+      <p class="modal-hint">
+        系统三分组可按习惯改名，保存后文案池等展示同步；系统分组不可删除。
+      </p>
+      <div class="modal-form">
+        <label>分区名称</label>
+        <Input
+          v-model:value="renameForm.name"
+          placeholder="例如：文案 / 基础信息 / 规格参数"
+          allow-clear
+          @press-enter="confirmRenamePartition"
         />
       </div>
     </Modal>
@@ -814,9 +992,9 @@ watch(activeCountry, async () => {
 .zone-board {
   display: grid;
   flex: 1;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 10px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 12px;
+  align-items: start;
   min-height: 0;
 }
 
@@ -825,6 +1003,41 @@ watch(activeCountry, async () => {
   flex-direction: column;
   gap: 10px;
   min-width: 0;
+}
+
+.zone-other-side {
+  position: sticky;
+  top: 8px;
+  align-self: start;
+  max-height: calc(100vh - 180px);
+  overflow: hidden;
+}
+
+.zone-other-side:not(.collapsed) {
+  display: flex;
+  flex-direction: column;
+}
+
+.zone-list.is-other-side {
+  flex: 1;
+  min-height: 240px;
+  max-height: none;
+  overflow: auto;
+}
+
+@media (max-width: 1100px) {
+  .zone-board {
+    grid-template-columns: 1fr;
+  }
+
+  .zone-other-side {
+    position: static;
+    max-height: none;
+  }
+
+  .zone-list.is-other-side {
+    max-height: 420px;
+  }
 }
 
 .zone-col {

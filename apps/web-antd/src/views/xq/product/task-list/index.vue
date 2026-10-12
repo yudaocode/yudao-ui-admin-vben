@@ -23,13 +23,19 @@ import {
   TreeSelect,
 } from 'ant-design-vue';
 
-import { getXqListingCategories } from '#/api/xq/listing';
+import {
+  getXqListingCategories,
+  getXqListingPlatforms,
+} from '#/api/xq/listing';
 import {
   batchAssignXqWorkOrderImage,
   closeXqWorkOrder,
+  confirmXqWorkOrderListing,
   enqueueXqWorkOrderCopyRpa,
+  exportXqWorkOrderListing,
   getXqAssignableImageUsers,
   getXqWorkOrderPage,
+  listXqWorkOrder,
 } from '#/api/xq/work-order';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 import {
@@ -54,13 +60,17 @@ const loading = ref(false);
 const keyword = ref('');
 const flowStatus = ref<string | undefined>();
 const filterListingCategoryId = ref<string | undefined>();
+/** undefined=全部 / true=已选 / false=未选 */
+const filterCategorySelected = ref<boolean | undefined>();
 const listingCategoryTree = ref<XqListingApi.CategoryNode[]>([]);
+const platforms = ref<XqListingApi.Platform[]>([]);
 const tasks = ref<XqWorkOrderApi.WorkOrder[]>([]);
 const total = ref(0);
 const pageNo = ref(1);
 const pageSize = ref(20);
 
 const executingId = ref<null | number>(null);
+const listingBusyId = ref<null | number>(null);
 const batchExecuting = ref(false);
 const assignOpen = ref(false);
 const assigning = ref(false);
@@ -135,6 +145,24 @@ function coverOf(row: XqWorkOrderApi.WorkOrder) {
   return row.generatedImageUrl || row.coverUrl || undefined;
 }
 
+/** 过滤 Giga JSON null 被读成字面量 "null" 的脏值 */
+function cleanText(v?: null | number | string) {
+  const s = String(v ?? '').trim();
+  if (!s || s.toLowerCase() === 'null' || s.toLowerCase() === 'undefined') {
+    return '';
+  }
+  return s;
+}
+
+function skuLabel(row: XqWorkOrderApi.WorkOrder) {
+  return (
+    cleanText(row.itemCode) ||
+    cleanText(row.externalSku) ||
+    cleanText(row.title) ||
+    (row.id === null || row.id === undefined ? '—' : String(row.id))
+  );
+}
+
 function skuCount(row: XqWorkOrderApi.WorkOrder) {
   const kids = row.variants?.length || 0;
   if (!kids) return 1;
@@ -159,12 +187,45 @@ function templateLoaded(row: XqWorkOrderApi.WorkOrder) {
   return Boolean(row.listingCategoryId);
 }
 
+function platformListingMode(row: XqWorkOrderApi.WorkOrder): 'api' | 'export' {
+  const pid = String(row.listingPlatformId || lockedPlatformId.value || '');
+  const hit = platforms.value.find((p) => String(p.id) === pid);
+  return hit?.listingMode === 'api' ? 'api' : 'export';
+}
+
+function parseListingValues(row: XqWorkOrderApi.WorkOrder) {
+  try {
+    const obj = row.listingValuesJson ? JSON.parse(row.listingValuesJson) : {};
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return {};
+    const out: Record<string, string> = {};
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      if (k) out[k] = v === null || v === undefined ? '' : String(v);
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function actionText(row: XqWorkOrderApi.WorkOrder) {
   const step = flowStep(row);
   if (step === '已上架') return '查看';
+  if (step === '审核中') return '确认图文';
   if (step === '待分配美工' || step === '待执行图片') return '审核';
   if (step === '已关闭') return '查看';
-  if (step === '待上架') return '去上架';
+  if (step === '待上架') {
+    if (row.listingStatus === 'export_pending_confirm') return '确认已上架';
+    return platformListingMode(row) === 'api' ? 'API上架' : '导表上架';
+  }
   return '编辑';
 }
 
@@ -276,6 +337,7 @@ async function loadTasks() {
       status: flowStatus.value ? undefined : 10,
       listingPlatformId: lockedPlatformId.value || undefined,
       listingCategoryId: filterListingCategoryId.value,
+      listingCategorySelected: filterCategorySelected.value,
     });
     tasks.value = res?.list || [];
     total.value = Number(res?.total || 0);
@@ -300,11 +362,129 @@ function onPageChange(page: number, size: number) {
   loadTasks();
 }
 
-function goEdit(row: XqWorkOrderApi.WorkOrder) {
+async function submitListingFromList(row: XqWorkOrderApi.WorkOrder) {
+  if (!row.id || listingBusyId.value === row.id) return;
+  if (!row.listingCategoryId) {
+    message.warning('请先在文案侧选择上架类目');
+    return;
+  }
+  if (row.listingStatus === 'export_pending_confirm') {
+    Modal.confirm({
+      title: '确认已完成上架？',
+      content: '导表文件已导出过，确认后任务将标记为已上架。',
+      okText: '确认已上架',
+      async onOk() {
+        listingBusyId.value = row.id!;
+        try {
+          await confirmXqWorkOrderListing(row.id!);
+          message.success('已确认上架');
+          await loadTasks();
+        } catch (error: any) {
+          message.error(error?.message || '确认失败');
+          throw error;
+        } finally {
+          listingBusyId.value = null;
+        }
+      },
+    });
+    return;
+  }
+  const mode = platformListingMode(row);
+  listingBusyId.value = row.id;
+  try {
+    const values = parseListingValues(row);
+    if (mode === 'export') {
+      const blob = await exportXqWorkOrderListing({
+        id: row.id,
+        productSku: row.externalSku || undefined,
+        productName: row.contentTitle || row.title || undefined,
+        values,
+      });
+      downloadBlob(blob, `${row.externalSku || row.id}_listing.xlsx`);
+      message.success('导表成功，请确认是否已上架');
+    } else {
+      await listXqWorkOrder({
+        id: row.id,
+        listingMode: 'api',
+        productSku: row.externalSku || undefined,
+        productName: row.contentTitle || row.title || undefined,
+        values,
+      });
+      message.success('API 上架成功');
+    }
+    await loadTasks();
+  } catch (error: any) {
+    message.error(error?.message || '上架失败');
+  } finally {
+    listingBusyId.value = null;
+  }
+}
+
+/** 点列表行：始终进入对应编辑/查看页，不跑上架等按钮动作 */
+function openTaskEdit(row: XqWorkOrderApi.WorkOrder) {
   if (!row.id) return;
   const parentPath = route.path.replace(/\/[^/]+$/, '');
+  const step = flowStep(row);
+  // 审核中 / 待上架 / 已上架 → 编辑产品（desk 无 listing 路由，勿再跳 /listing）
+  if (step === '审核中' || step === '待上架' || step === '已上架') {
+    router.push({
+      path: `${parentPath}/copy`,
+      query: {
+        platformId: lockedPlatformId.value || undefined,
+        id: String(row.id),
+        ...(step === '审核中' ? { review: '1' } : {}),
+      },
+    });
+    return;
+  }
+  const pathSuffix =
+    step === '图片执行中' || step === '待执行图片' ? 'image' : 'copy';
   router.push({
-    path: `${parentPath}/copy`,
+    path: `${parentPath}/${pathSuffix}`,
+    query: {
+      platformId: lockedPlatformId.value || undefined,
+      id: String(row.id),
+    },
+  });
+}
+
+/** 点右侧主按钮：上架 / 确认图文 / 查看等，与行点击分离 */
+function runTaskAction(row: XqWorkOrderApi.WorkOrder) {
+  if (!row.id) return;
+  const parentPath = route.path.replace(/\/[^/]+$/, '');
+  const step = flowStep(row);
+  // 待上架：有 API 调接口，无接口导表，不跳转
+  if (step === '待上架') {
+    void submitListingFromList(row);
+    return;
+  }
+  // 审核中 → 编辑产品页核对图文后再确认
+  if (step === '审核中') {
+    router.push({
+      path: `${parentPath}/copy`,
+      query: {
+        platformId: lockedPlatformId.value || undefined,
+        id: String(row.id),
+        review: '1',
+      },
+    });
+    return;
+  }
+  // 已上架 → 编辑产品查看；图片阶段进图片池；其余进编辑产品
+  if (step === '已上架') {
+    router.push({
+      path: `${parentPath}/copy`,
+      query: {
+        platformId: lockedPlatformId.value || undefined,
+        id: String(row.id),
+      },
+    });
+    return;
+  }
+  const pathSuffix =
+    step === '图片执行中' || step === '待执行图片' ? 'image' : 'copy';
+  router.push({
+    path: `${parentPath}/${pathSuffix}`,
     query: {
       platformId: lockedPlatformId.value || undefined,
       id: String(row.id),
@@ -353,7 +533,7 @@ async function openAssign(row: XqWorkOrderApi.WorkOrder) {
     return;
   }
   assignTargetIds.value = ids;
-  assignSkuLabel.value = row.itemCode || row.externalSku || String(row.id);
+  assignSkuLabel.value = skuLabel(row);
   assignOpen.value = true;
   try {
     await loadAssignableUsers();
@@ -404,7 +584,7 @@ async function batchExecuteCopy() {
     }
     message.success(
       totalN > 0
-        ? `已批量入队 ${totalN} 条文案（勾选任务的整家族含变体）`
+        ? `已批量入队 ${totalN} 条并自动触发文案 RPA（含变体）`
         : '未入队任何任务',
     );
     clearRowSelection();
@@ -472,6 +652,11 @@ const emptyDesc = computed(() =>
 );
 
 onMounted(async () => {
+  try {
+    platforms.value = (await getXqListingPlatforms()) || [];
+  } catch {
+    platforms.value = [];
+  }
   if (lockedPlatformId.value) {
     try {
       listingCategoryTree.value =
@@ -506,6 +691,17 @@ onMounted(async () => {
           placeholder="类目"
           :tree-data="listingCategoryTreeData"
           :dropdown-style="{ maxHeight: '360px', overflow: 'auto' }"
+          @change="handleSearch"
+        />
+        <Select
+          v-model:value="filterCategorySelected"
+          allow-clear
+          class="xq-list-cat-selected"
+          placeholder="类目是否选择"
+          :options="[
+            { label: '已选类目', value: true },
+            { label: '未选类目', value: false },
+          ]"
           @change="handleSearch"
         />
       </div>
@@ -560,8 +756,8 @@ onMounted(async () => {
             :class="{ 'is-checked': isRowChecked(row) }"
             role="button"
             tabindex="0"
-            @click="goEdit(row)"
-            @keydown.enter="goEdit(row)"
+            @click="openTaskEdit(row)"
+            @keydown.enter="openTaskEdit(row)"
           >
             <label class="xq-card-check" @click.stop>
               <Checkbox
@@ -573,92 +769,101 @@ onMounted(async () => {
               <Image
                 :src="coverOf(row)"
                 :preview="false"
-                :width="72"
-                :height="72"
+                :width="40"
+                :height="40"
               />
             </div>
-            <div class="xq-card-main">
-              <div class="xq-card-head">
-                <div class="xq-card-sku">
-                  {{ row.itemCode || row.externalSku || '—' }}
-                </div>
-                <span class="xq-card-badge">{{ skuCount(row) }} 个 SKU</span>
-                <span class="xq-card-status" :data-step="flowStep(row)">
-                  {{ flowStep(row) }}
-                </span>
-              </div>
-              <div class="xq-card-meta">
-                <div class="xq-meta-cell">
-                  <span>站点</span>
-                  <b>{{ siteOf(row) }}</b>
-                </div>
-                <div class="xq-meta-cell">
-                  <span>类目</span>
-                  <b>{{ categoryOf(row) }}</b>
-                </div>
-                <div class="xq-meta-cell">
-                  <span>店铺</span>
-                  <b>{{ shopOf(row) }}</b>
-                </div>
-                <div class="xq-meta-cell">
-                  <span>模板</span>
-                  <b :class="{ on: templateLoaded(row) }">
-                    {{ templateLoaded(row) ? '已加载' : '未加载' }}
-                  </b>
-                </div>
-              </div>
-              <div class="xq-flow" :title="flowStep(row)">
-                <template v-for="(step, idx) in FLOW_STEPS" :key="step">
-                  <div
-                    v-if="idx > 0"
-                    class="xq-flow-line"
-                    :class="flowTone(row, step)"
-                  ></div>
-                  <div class="xq-flow-node" :class="flowTone(row, step)">
-                    <i class="xq-flow-dot"></i>
-                    <em>{{ FLOW_STEP_SHORT[step] }}</em>
-                  </div>
-                </template>
-              </div>
-              <div v-if="listSubLabel(row)" class="xq-flow-sub">
-                {{ listSubLabel(row) }}
-              </div>
+            <div class="xq-card-sku" :title="skuLabel(row)">
+              {{ skuLabel(row) }}
             </div>
+            <span class="xq-card-badge">{{ skuCount(row) }}SKU</span>
+            <span class="xq-meta" :title="siteOf(row)">
+              <i>站点</i>{{ siteOf(row) }}
+            </span>
+            <span class="xq-meta" :title="categoryOf(row)">
+              <i>类目</i>{{ categoryOf(row) }}
+            </span>
+            <span class="xq-meta" :title="shopOf(row)">
+              <i>店铺</i>{{ shopOf(row) }}
+            </span>
+            <span class="xq-meta" :class="{ on: templateLoaded(row) }">
+              <i>模板</i>{{ templateLoaded(row) ? '已加载' : '未加载' }}
+            </span>
+            <span class="xq-card-status">{{ flowStep(row) }}</span>
             <div class="xq-card-side" @click.stop>
-              <div class="xq-card-actions">
-                <button
-                  v-if="
-                    canExecute(row) ||
-                    row.rpaCopyStatus === 'running' ||
-                    row.rpaCopyStatus === 'queued'
-                  "
-                  type="button"
-                  class="xq-exec"
-                  :disabled="!canExecute(row) || executingId === row.id"
-                  @click="executeTask(row)"
+              <button
+                v-if="
+                  canExecute(row) ||
+                  row.rpaCopyStatus === 'running' ||
+                  row.rpaCopyStatus === 'queued'
+                "
+                type="button"
+                class="xq-exec"
+                :disabled="!canExecute(row) || executingId === row.id"
+                @click.stop="executeTask(row)"
+              >
+                {{ executingId === row.id ? '入队中…' : executeLabel(row) }}
+              </button>
+              <button
+                v-if="canAssignImage(row)"
+                type="button"
+                class="xq-assign"
+                @click.stop="openAssign(row)"
+              >
+                {{ assignButtonText(row) }}
+              </button>
+              <button
+                type="button"
+                class="xq-write"
+                :disabled="listingBusyId === row.id"
+                @click.stop="runTaskAction(row)"
+              >
+                {{
+                  listingBusyId === row.id
+                    ? platformListingMode(row) === 'api'
+                      ? '上架中…'
+                      : row.listingStatus === 'export_pending_confirm'
+                        ? '确认中…'
+                        : '导表中…'
+                    : actionText(row)
+                }}
+              </button>
+              <button
+                v-if="canCancel(row)"
+                type="button"
+                class="xq-cancel"
+                @click.stop="cancelTask(row)"
+              >
+                取消
+              </button>
+            </div>
+            <div class="xq-card-flow" aria-hidden="true">
+              <div class="xq-flow" :style="{ '--flow-n': FLOW_STEPS.length }">
+                <div
+                  v-for="(step, idx) in FLOW_STEPS"
+                  :key="step"
+                  class="xq-flow-node"
+                  :class="flowTone(row, step)"
                 >
-                  {{ executingId === row.id ? '入队中…' : executeLabel(row) }}
-                </button>
-                <button
-                  v-if="canAssignImage(row)"
-                  type="button"
-                  class="xq-assign"
-                  @click="openAssign(row)"
-                >
-                  {{ assignButtonText(row) }}
-                </button>
-                <button type="button" class="xq-write" @click="goEdit(row)">
-                  {{ actionText(row) }}
-                </button>
-                <button
-                  v-if="canCancel(row)"
-                  type="button"
-                  class="xq-cancel"
-                  @click="cancelTask(row)"
-                >
-                  取消任务
-                </button>
+                  <span
+                    class="xq-flow-seg"
+                    :class="[idx === 0 ? 'is-edge' : flowTone(row, step)]"
+                  ></span>
+                  <i class="xq-flow-dot"></i>
+                  <span
+                    class="xq-flow-seg"
+                    :class="[
+                      idx >= FLOW_STEPS.length - 1
+                        ? 'is-edge'
+                        : flowTone(row, FLOW_STEPS[idx + 1]!),
+                    ]"
+                  ></span>
+                  <em>{{ FLOW_STEP_SHORT[step] }}</em>
+                </div>
               </div>
+              <span v-if="listSubLabel(row)" class="xq-flow-sub">{{
+                listSubLabel(row)
+              }}</span>
             </div>
           </div>
         </div>
@@ -738,6 +943,10 @@ onMounted(async () => {
   width: 240px;
 }
 
+.xq-list-cat-selected {
+  width: 140px;
+}
+
 .xq-status-tabs {
   display: flex;
   flex-shrink: 0;
@@ -791,26 +1000,39 @@ onMounted(async () => {
 .xq-cards {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
+/* 左密排网格：列宽按内容收紧，末列吃掉空白，状态/操作贴信息 */
 .xq-card {
-  display: flex;
-  gap: 14px;
-  align-items: stretch;
-  padding: 14px 16px;
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    20px
+    40px
+    minmax(5.5rem, 7.5rem)
+    2.6rem
+    minmax(3.5rem, 5rem)
+    minmax(3.5rem, 5.5rem)
+    minmax(3.5rem, 5rem)
+    4.2rem
+    5.5rem
+    1fr
+    auto;
+  gap: 0 8px;
+  align-items: center;
+  min-height: 52px;
+  padding: 6px 10px;
   cursor: pointer;
   background: #fff;
   border: 1px solid #e8eaed;
-  border-radius: 12px;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
 }
 
 .xq-card:hover {
-  border-color: #c7d2fe;
-  box-shadow: 0 2px 10px rgb(15 23 42 / 4%);
+  z-index: 3;
+  border-color: #bfdbfe;
 }
 
 .xq-card.is-checked {
@@ -820,148 +1042,151 @@ onMounted(async () => {
 
 .xq-card-check {
   display: flex;
-  flex: 0 0 auto;
   align-items: center;
-  align-self: center;
+  justify-content: center;
   margin: 0;
   cursor: pointer;
 }
 
 .xq-card-thumb {
-  flex: 0 0 72px;
-  width: 72px;
-  height: 72px;
+  width: 40px;
+  height: 40px;
   overflow: hidden;
   background: #f3f4f6;
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 .xq-card-thumb :deep(.ant-image) {
   display: block;
-  width: 72px !important;
-  height: 72px !important;
+  width: 40px !important;
+  height: 40px !important;
 }
 
 .xq-card-thumb :deep(.ant-image-img),
 .xq-card-thumb :deep(img) {
-  width: 72px !important;
-  height: 72px !important;
+  width: 40px !important;
+  height: 40px !important;
   object-fit: cover;
 }
 
-.xq-card-main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-.xq-card-head {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
 .xq-card-sku {
-  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
   font-weight: 650;
   line-height: 1.2;
   color: #111827;
+  white-space: nowrap;
 }
 
 .xq-card-badge {
-  padding: 1px 8px;
-  font-size: 12px;
-  color: #4b5563;
-  background: #f3f4f6;
-  border-radius: 999px;
-}
-
-.xq-card-status {
-  padding: 2px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #047857;
-  background: #d1fae5;
-  border-radius: 999px;
-}
-
-.xq-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-}
-
-.xq-meta-cell {
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-  min-width: 0;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.xq-meta-cell span {
+  font-size: 11px;
+  line-height: 1;
   color: #9ca3af;
   white-space: nowrap;
 }
 
-.xq-meta-cell b {
-  font-weight: 600;
-  color: #1f2937;
+.xq-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #374151;
+  white-space: nowrap;
 }
 
-.xq-meta-cell b.on {
+.xq-meta i {
+  margin-right: 3px;
+  font-style: normal;
+  font-weight: 400;
+  color: #9ca3af;
+}
+
+.xq-meta.on {
   color: #059669;
+}
+
+.xq-card-status {
+  justify-self: start;
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #047857;
+  text-align: center;
+  white-space: nowrap;
+  background: #d1fae5;
+  border-radius: 999px;
 }
 
 .xq-card-side {
   display: flex;
-  flex-shrink: 0;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
-  justify-content: center;
+  flex-wrap: nowrap;
+  grid-column: -1;
+  gap: 4px;
+  align-items: center;
+  justify-self: end;
+  white-space: nowrap;
 }
 
-.xq-card-actions {
+.xq-card-flow {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 68px;
+  z-index: 4;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  width: min(420px, calc(100% - 80px));
+  padding: 8px 10px 6px;
+  pointer-events: none;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgb(15 23 42 / 10%);
+}
+
+.xq-card:hover .xq-card-flow {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: flex-end;
 }
 
 .xq-flow {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 0;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 640px;
-  padding-bottom: 2px;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: repeat(var(--flow-n, 7), minmax(0, 1fr));
 }
 
 .xq-flow-node {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  min-width: 64px;
+  min-width: 0;
+}
+
+.xq-flow-seg {
+  height: 2px;
+  background: #e5e7eb;
+}
+
+.xq-flow-seg.is-edge {
+  background: transparent;
 }
 
 .xq-flow-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: #d1d5db;
   border-radius: 50%;
 }
 
 .xq-flow-node em {
-  font-size: 11px;
+  grid-column: 1 / -1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
   font-style: normal;
   line-height: 1.2;
   color: #9ca3af;
@@ -969,18 +1194,9 @@ onMounted(async () => {
   white-space: nowrap;
 }
 
-.xq-flow-line {
-  flex: 1 1 12px;
-  min-width: 10px;
-  max-width: 28px;
-  height: 2px;
-  margin-top: 3px;
-  background: #e5e7eb;
-}
-
 .xq-flow-node.done .xq-flow-dot,
-.xq-flow-line.done,
-.xq-flow-line.active {
+.xq-flow-seg.done,
+.xq-flow-seg.active {
   background: #6ee7b7;
 }
 
@@ -989,10 +1205,10 @@ onMounted(async () => {
 }
 
 .xq-flow-node.active .xq-flow-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   background: #059669;
-  box-shadow: 0 0 0 3px rgb(16 185 129 / 18%);
+  box-shadow: 0 0 0 2px rgb(16 185 129 / 16%);
 }
 
 .xq-flow-node.active em {
@@ -1001,7 +1217,7 @@ onMounted(async () => {
 }
 
 .xq-flow-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: #d97706;
 }
 
@@ -1009,11 +1225,12 @@ onMounted(async () => {
 .xq-assign,
 .xq-write,
 .xq-cancel {
-  padding: 4px 12px;
-  font-size: 13px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 24px;
   cursor: pointer;
   background: #fff;
-  border-radius: 999px;
+  border-radius: 6px;
 }
 
 .xq-exec {
@@ -1086,18 +1303,21 @@ onMounted(async () => {
   margin-top: 14px;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .xq-card {
-    flex-wrap: wrap;
-  }
-
-  .xq-card-side {
-    justify-content: flex-end;
-    width: 100%;
-  }
-
-  .xq-flow {
-    max-width: 100%;
+    grid-template-columns:
+      20px
+      40px
+      minmax(5rem, 7rem)
+      2.6rem
+      minmax(3rem, 4.5rem)
+      minmax(3rem, 5rem)
+      minmax(3rem, 4.5rem)
+      4rem
+      5.5rem
+      1fr
+      auto;
+    gap: 0 6px;
   }
 }
 </style>

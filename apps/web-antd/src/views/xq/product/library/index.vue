@@ -20,6 +20,7 @@ import {
   Select,
   Spin,
   Tag,
+  Tooltip,
   TreeSelect,
 } from 'ant-design-vue';
 
@@ -38,6 +39,10 @@ const loading = ref(false);
 const catLoading = ref(false);
 const catOpen = ref(false);
 const keyword = ref('');
+/** 筛选：本平台 */
+const filterPlatformId = ref<string | undefined>();
+/** 筛出本平台已选取的商品 */
+const excludePicked = ref(false);
 const categoryTree = ref<XqProductApi.CategoryNode[]>([]);
 /** 面板内浏览态（展开 hover 用，不直接筛产品） */
 const browseL1 = ref<null | XqProductApi.CategoryNode>(null);
@@ -85,7 +90,7 @@ const selectedList = computed(() => Object.values(selectedMap.value));
 const selectedCount = computed(() => selectedList.value.length);
 
 const pageSelectable = computed(() =>
-  products.value.filter((p) => Boolean(productKey(p))),
+  products.value.filter((p) => Boolean(productKey(p)) && canSelect(p)),
 );
 const pageSelectedCount = computed(
   () => pageSelectable.value.filter((p) => isSelected(p)).length,
@@ -136,8 +141,22 @@ const visibleReuseGroups = computed(() => {
     .filter((g) => (g.candidates || []).length > 0);
 });
 
+function cleanText(v?: null | number | string) {
+  const s = String(v ?? '').trim();
+  if (!s || s.toLowerCase() === 'null' || s.toLowerCase() === 'undefined') {
+    return '';
+  }
+  return s;
+}
+
 function productKey(item: XqProductApi.Product) {
-  return item.itemCode || item.sku || String(item.id || '');
+  return (
+    cleanText(item.itemCode) || cleanText(item.sku) || String(item.id || '')
+  );
+}
+
+function productCodeLabel(item: XqProductApi.Product) {
+  return cleanText(item.itemCode) || cleanText(item.sku) || '—';
 }
 
 function isSelected(item: XqProductApi.Product) {
@@ -145,10 +164,45 @@ function isSelected(item: XqProductApi.Product) {
   return Boolean(key && selectedMap.value[key]);
 }
 
+function pickedPlatformIds(item?: null | XqProductApi.Product) {
+  return new Set(
+    (item?.pickedPlatforms || []).map((p) => String(p.id)).filter(Boolean),
+  );
+}
+
+/** 卡片上平台已选：只显示首字母，悬停看全名 */
+function pickedPlatformAbbr(p: XqProductApi.PickedPlatform) {
+  const name = String(p?.name || p?.id || '').trim();
+  const letter = name.replaceAll(/[^A-Za-z0-9\u4E00-\u9FFF]/g, '').charAt(0);
+  return (letter || '?').toUpperCase();
+}
+
+function pickedPlatformTitle(p: XqProductApi.PickedPlatform) {
+  const name = String(p?.name || p?.id || '').trim() || '未知平台';
+  return `${name} 已选`;
+}
+
+/** 账号下仍有尚未选取的平台，才允许勾选 */
+function canSelect(item: XqProductApi.Product) {
+  const bound = scopePlatforms.value.map((p) => p.id);
+  if (bound.length === 0) return true;
+  const picked = pickedPlatformIds(item);
+  return bound.some((id) => !picked.has(String(id)));
+}
+
+function isPickedByPlatform(item: XqProductApi.Product, platformId?: string) {
+  if (!platformId) return false;
+  return pickedPlatformIds(item).has(String(platformId));
+}
+
 function toggleSelect(item: XqProductApi.Product, checked?: boolean) {
   const key = productKey(item);
   if (!key) return;
   const on = checked === undefined ? !selectedMap.value[key] : checked;
+  if (on && !canSelect(item)) {
+    message.warning('该商品在你绑定的平台均已选取，不能再下发');
+    return;
+  }
   selectedMap.value = on
     ? { ...selectedMap.value, [key]: item }
     : Object.fromEntries(
@@ -412,15 +466,8 @@ async function confirmDispatch() {
     const key = productKey(dispatchExtra.value);
     if (key) map[key] = dispatchExtra.value;
   }
-  const items = Object.values(map).map((p) => ({
-    productId: p.id ? String(p.id) : undefined,
-    sku: productKey(p),
-    title: p.name || productKey(p),
-    coverUrl: p.imageUrl,
-    categoryName: p.categoryName,
-    gigaCategoryId: p.gigaCategoryId,
-  }));
-  if (items.length === 0) {
+  const selectedProducts = Object.values(map);
+  if (selectedProducts.length === 0) {
     message.warning('请先勾选要跑的产品');
     throw new Error('请先勾选要跑的产品');
   }
@@ -467,6 +514,18 @@ async function confirmDispatch() {
         categoryTreeByPlatform.value[platform.id] || [],
         categoryId,
       );
+      const remain = selectedProducts.filter(
+        (p) => !isPickedByPlatform(p, platform.id),
+      );
+      if (remain.length === 0) {
+        message.warning(`所选商品在「${platform.name}」均已选取，已跳过该平台`);
+        continue;
+      }
+      if (remain.length < selectedProducts.length) {
+        message.info(
+          `「${platform.name}」已跳过 ${selectedProducts.length - remain.length} 个已选取商品`,
+        );
+      }
       const list = await dispatchXqWorkOrder({
         listingPlatformId: platform.id,
         listingShopId: shop.id,
@@ -482,14 +541,26 @@ async function confirmDispatch() {
           Object.keys(reuseImageFromIds).length > 0
             ? reuseImageFromIds
             : undefined,
-        items,
+        items: remain.map((p) => ({
+          productId: p.id ? String(p.id) : undefined,
+          sku: productKey(p),
+          title: p.name || productKey(p),
+          coverUrl: p.imageUrl,
+          categoryName: p.categoryName,
+          gigaCategoryId: p.gigaCategoryId,
+        })),
       });
-      totalCreated += list?.length ?? items.length;
+      totalCreated += list?.length ?? remain.length;
+    }
+    if (totalCreated === 0) {
+      message.warning('没有可下发的商品（所选平台均已选取）');
+      throw new Error('没有可下发的商品');
     }
     message.success(`已下发 ${totalCreated} 个任务到工作台`);
     clearSelection();
     dispatchOpen.value = false;
     detailOpen.value = false;
+    await loadProducts();
   } catch (error: any) {
     const msg = error?.message || '下发失败';
     message.error(
@@ -574,6 +645,10 @@ async function loadProducts() {
       pageSize: pageSize.value,
       name: queryParams.name || undefined,
       gigaCategoryId: queryParams.gigaCategoryId,
+      excludePickedPlatformId:
+        excludePicked.value && filterPlatformId.value
+          ? filterPlatformId.value
+          : undefined,
     });
     products.value = res?.list || [];
     total.value = Number(res?.total || 0);
@@ -858,8 +933,36 @@ function onPageChange(page: number, size: number) {
   loadProducts();
 }
 
+function reloadFiltered() {
+  pageNo.value = 1;
+  loadProducts();
+}
+
+function onFilterPlatformChange() {
+  if (!filterPlatformId.value) {
+    excludePicked.value = false;
+  }
+  reloadFiltered();
+}
+
+function onExcludePickedChange(checked: boolean) {
+  excludePicked.value = checked;
+  if (checked && !filterPlatformId.value && scopePlatforms.value[0]) {
+    filterPlatformId.value = scopePlatforms.value[0]!.id;
+  }
+  reloadFiltered();
+}
+
 onMounted(async () => {
   await loadCategories();
+  try {
+    await ensureUserListingScope();
+    if (!filterPlatformId.value && scopePlatforms.value[0]) {
+      filterPlatformId.value = scopePlatforms.value[0]!.id;
+    }
+  } catch {
+    // 未绑店仍可浏览选品库
+  }
   await loadProducts();
 });
 </script>
@@ -897,6 +1000,24 @@ onMounted(async () => {
           enter-button="搜索"
           @search="handleSearch"
         />
+        <Select
+          v-model:value="filterPlatformId"
+          allow-clear
+          class="xq-filter-platform"
+          placeholder="本平台"
+          :options="platformOptions"
+          @change="onFilterPlatformChange"
+        />
+        <label class="xq-select-all">
+          <Checkbox
+            :checked="excludePicked"
+            :disabled="!filterPlatformId"
+            @change="
+              (e: any) => onExcludePickedChange(Boolean(e?.target?.checked))
+            "
+          />
+          <span>筛出本平台已选</span>
+        </label>
         <label class="xq-select-all">
           <Checkbox
             :checked="pageAllSelected"
@@ -1016,14 +1137,20 @@ onMounted(async () => {
             v-for="item in products"
             :key="item.id"
             class="xq-product-card"
-            :class="{ selected: isSelected(item) }"
+            :class="{
+              selected: isSelected(item),
+              locked: !canSelect(item),
+            }"
             @click="openDetail(item)"
           >
             <div
               class="xq-card-check"
               @click.stop="toggleSelect(item, !isSelected(item))"
             >
-              <Checkbox :checked="isSelected(item)" />
+              <Checkbox
+                :checked="isSelected(item)"
+                :disabled="!canSelect(item)"
+              />
             </div>
             <div class="xq-card-cover">
               <Image
@@ -1038,23 +1165,32 @@ onMounted(async () => {
             <div class="xq-card-body">
               <div class="xq-item-code">
                 Item Code:
-                <b>{{ item.itemCode || item.sku }}</b>
+                <b>{{ productCodeLabel(item) }}</b>
               </div>
               <div class="xq-price-block">
                 <div class="xq-price-line">
-                  <span class="xq-price-label">原价</span>
-                  <span v-if="formatMoney(item.price)" class="xq-price-main">
-                    ${{ formatMoney(item.price) }}
+                  <span class="xq-price-label">自提</span>
+                  <span
+                    v-if="formatMoney(item.pickupPrice ?? item.price)"
+                    class="xq-price-main"
+                  >
+                    ${{ formatMoney(item.pickupPrice ?? item.price) }}
                   </span>
                   <span v-else class="xq-price-muted">—</span>
                 </div>
                 <div class="xq-price-line">
-                  <span class="xq-price-label">折扣价</span>
+                  <span class="xq-price-label">代发</span>
                   <span
-                    v-if="formatMoney(item.discountedPrice)"
+                    v-if="formatMoney(item.dropshipPrice)"
                     class="xq-price-sale"
                   >
-                    ${{ formatMoney(item.discountedPrice) }}
+                    ${{ formatMoney(item.dropshipPrice) }}
+                  </span>
+                  <span
+                    v-else-if="formatMoney(item.discountedPrice ?? item.price)"
+                    class="xq-price-sale"
+                  >
+                    ${{ formatMoney(item.discountedPrice ?? item.price) }}
                   </span>
                   <span v-else class="xq-price-muted">—</span>
                 </div>
@@ -1062,6 +1198,17 @@ onMounted(async () => {
               <div class="xq-qty">
                 Qty Available
                 <span>{{ item.qtyAvailable ?? '---' }}</span>
+              </div>
+              <div v-if="item.pickedPlatforms?.length" class="xq-picked-row">
+                <Tooltip
+                  v-for="p in item.pickedPlatforms"
+                  :key="p.id"
+                  :title="pickedPlatformTitle(p)"
+                >
+                  <span class="xq-picked-dot" :title="pickedPlatformTitle(p)">
+                    {{ pickedPlatformAbbr(p) }}
+                  </span>
+                </Tooltip>
               </div>
               <Tag v-if="item.listedTag" color="orange" class="xq-listed-tag">
                 {{ item.listedTag }}
@@ -1107,11 +1254,21 @@ onMounted(async () => {
       width="1080px"
       destroy-on-close
       class="xq-detail-modal"
-      ok-text="下发工作台"
-      :confirm-loading="dispatching"
-      @ok="detail && openDispatchModal(detail)"
+      wrap-class-name="xq-detail-modal-wrap"
+      :footer="null"
     >
       <Spin :spinning="detailLoading">
+        <div v-if="detail" class="xq-detail-toolbar">
+          <Button
+            type="primary"
+            :disabled="!canSelect(detail)"
+            :loading="dispatching"
+            @click="openDispatchModal(detail)"
+          >
+            下发
+          </Button>
+          <Button @click="detailOpen = false">取消</Button>
+        </div>
         <div v-if="detail" class="xq-shop">
           <div class="xq-shop-media">
             <div v-if="displayGallery.length" class="xq-shop-thumbs">
@@ -1138,33 +1295,85 @@ onMounted(async () => {
           <div class="xq-shop-buy">
             <h3 class="xq-shop-title">{{ detail.name }}</h3>
             <div class="xq-shop-price">
-              <strong
+              <div class="xq-shop-price-roles">
+                <div class="xq-shop-price-role">
+                  <span class="xq-shop-price-role-label">自提</span>
+                  <strong
+                    v-if="
+                      formatMoney(
+                        selectedVariant?.pickupPrice ||
+                          detail.pickupPrice ||
+                          selectedVariant?.price ||
+                          detail.price,
+                      )
+                    "
+                  >
+                    ${{
+                      formatMoney(
+                        selectedVariant?.pickupPrice ||
+                          detail.pickupPrice ||
+                          selectedVariant?.price ||
+                          detail.price,
+                      )
+                    }}
+                  </strong>
+                  <strong v-else>—</strong>
+                </div>
+                <div class="xq-shop-price-role">
+                  <span class="xq-shop-price-role-label">一件代发</span>
+                  <strong
+                    v-if="
+                      formatMoney(
+                        selectedVariant?.dropshipPrice || detail.dropshipPrice,
+                      )
+                    "
+                    class="xq-price-sale"
+                  >
+                    ${{
+                      formatMoney(
+                        selectedVariant?.dropshipPrice || detail.dropshipPrice,
+                      )
+                    }}
+                  </strong>
+                  <strong
+                    v-else-if="
+                      formatMoney(
+                        selectedVariant?.discountedPrice ||
+                          detail.discountedPrice ||
+                          selectedVariant?.price ||
+                          detail.price,
+                      )
+                    "
+                    class="xq-price-sale"
+                  >
+                    ${{
+                      formatMoney(
+                        selectedVariant?.discountedPrice ||
+                          detail.discountedPrice ||
+                          selectedVariant?.price ||
+                          detail.price,
+                      )
+                    }}
+                  </strong>
+                  <strong v-else>—</strong>
+                </div>
+              </div>
+              <span
                 v-if="
                   formatMoney(
-                    selectedVariant?.discountedPrice || detail.discountedPrice,
+                    selectedVariant?.dropshipShippingFee ||
+                      detail.dropshipShippingFee,
                   )
                 "
+                class="xq-exclusive"
               >
-                ${{
+                代发运费 ${{
                   formatMoney(
-                    selectedVariant?.discountedPrice || detail.discountedPrice,
+                    selectedVariant?.dropshipShippingFee ||
+                      detail.dropshipShippingFee,
                   )
                 }}
-              </strong>
-              <strong
-                v-else-if="formatMoney(selectedVariant?.price || detail.price)"
-              >
-                ${{ formatMoney(selectedVariant?.price || detail.price) }}
-              </strong>
-              <strong v-else>—</strong>
-              <s
-                v-if="
-                  formatMoney(detail.price) &&
-                  formatMoney(detail.discountedPrice)
-                "
-              >
-                ${{ formatMoney(detail.price) }}
-              </s>
+              </span>
               <span
                 v-if="formatMoney(detail.exclusivePrice)"
                 class="xq-exclusive"
@@ -1181,6 +1390,21 @@ onMounted(async () => {
                 {{
                   selectedVariant?.qtyAvailable ?? detail.qtyAvailable ?? '—'
                 }}</span>
+            </div>
+            <div
+              v-if="detail.pickedPlatforms?.length"
+              class="xq-picked-row xq-picked-row--detail"
+            >
+              <span class="xq-spec-label">已选平台</span>
+              <Tooltip
+                v-for="p in detail.pickedPlatforms"
+                :key="`d-${p.id}`"
+                :title="pickedPlatformTitle(p)"
+              >
+                <span class="xq-picked-dot" :title="pickedPlatformTitle(p)">
+                  {{ pickedPlatformAbbr(p) }}
+                </span>
+              </Tooltip>
             </div>
 
             <div v-if="familyBar.length > 1" class="xq-shop-spec">
@@ -1725,6 +1949,12 @@ onMounted(async () => {
 
 .xq-search-input {
   width: 100%;
+  min-width: 220px;
+  max-width: 360px;
+}
+
+.xq-filter-platform {
+  width: 168px;
 }
 
 .xq-toolbar {
@@ -1961,6 +2191,45 @@ onMounted(async () => {
   box-shadow: 0 6px 18px rgb(22 119 255 / 12%);
 }
 
+.xq-product-card.locked {
+  cursor: default;
+}
+
+.xq-picked-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.xq-picked-row--detail {
+  margin: 8px 0 4px;
+}
+
+.xq-picked-dot {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #1677ff;
+  cursor: default;
+  user-select: none;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+  border-radius: 999px;
+}
+
+.xq-picked-dot:hover {
+  color: #fff;
+  background: #1677ff;
+  border-color: #1677ff;
+}
+
 .xq-card-check {
   position: absolute;
   top: 10px;
@@ -2036,7 +2305,8 @@ onMounted(async () => {
 }
 
 .xq-price-label {
-  width: 42px;
+  flex-shrink: 0;
+  width: 36px;
   font-size: 12px;
   color: #9ca3af;
 }
@@ -2178,17 +2448,39 @@ onMounted(async () => {
 
 .xq-shop-price {
   display: flex;
-  gap: 10px;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 8px;
   padding: 10px 12px;
   margin-bottom: 14px;
   background: #fff7f2;
 }
 
+.xq-shop-price-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  align-items: baseline;
+}
+
+.xq-shop-price-role {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.xq-shop-price-role-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
 .xq-shop-price strong {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   color: #ff5000;
+}
+
+.xq-shop-price strong.xq-price-sale {
+  color: #dc2626;
 }
 
 .xq-shop-price s {
@@ -2271,12 +2563,27 @@ onMounted(async () => {
   font-weight: 700;
 }
 
+.xq-detail-toolbar {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: -4px 0 14px;
+}
+
 .xq-copy-body {
-  max-height: 360px;
-  overflow: auto;
   font-size: 13px;
   line-height: 1.6;
   color: #333;
+}
+
+:global(.xq-detail-modal-wrap) .ant-modal {
+  top: 24px;
+  padding-bottom: 24px;
+}
+
+:global(.xq-detail-modal-wrap) .ant-modal-body {
+  max-height: none;
+  overflow: visible;
 }
 
 .xq-copy-body :deep(img) {

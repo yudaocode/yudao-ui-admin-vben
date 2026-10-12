@@ -18,9 +18,16 @@ export namespace XqProductApi {
     supplierCode?: string;
     supplierName?: string;
     listedTag?: string;
+    pickedPlatforms?: PickedPlatform[];
     price?: number;
     exclusivePrice?: number;
     discountedPrice?: number;
+    /** 自提价 */
+    pickupPrice?: number;
+    /** 一件代发价（含运费合计优先） */
+    dropshipPrice?: number;
+    /** 一件代发运费 */
+    dropshipShippingFee?: number;
     currency?: string;
     status: number;
     remark?: string;
@@ -52,6 +59,11 @@ export namespace XqProductApi {
     variants?: Variant[];
   }
 
+  export interface PickedPlatform {
+    id: string;
+    name?: string;
+  }
+
   export interface Variant {
     id?: string;
     sku: string;
@@ -62,6 +74,9 @@ export namespace XqProductApi {
     qtyAvailable?: number;
     price?: number;
     discountedPrice?: number;
+    pickupPrice?: number;
+    dropshipPrice?: number;
+    dropshipShippingFee?: number;
   }
 
   export interface CategoryNode {
@@ -79,7 +94,13 @@ export namespace XqProductApi {
   }
 }
 
-export function getXqProductPage(params: PageParam) {
+export function getXqProductPage(
+  params: PageParam & {
+    excludePickedPlatformId?: string;
+    gigaCategoryId?: number;
+    name?: string;
+  },
+) {
   return requestClient.get<PageResult<XqProductApi.Product>>(
     '/xq/product/page',
     {

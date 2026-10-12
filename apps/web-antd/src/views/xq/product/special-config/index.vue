@@ -96,8 +96,8 @@ const skuColumns = [
   { title: '规则名称', dataIndex: 'name' },
   { title: '拼装', key: 'segs' },
   { title: '示例', key: 'example', width: 180 },
-  { title: '状态', key: 'status', width: 110 },
-  { title: '操作', key: 'action', width: 120 },
+  { title: '状态', key: 'status', width: 130 },
+  { title: '操作', key: 'action', width: 180 },
 ];
 const markupColumns = [
   { title: '店铺', dataIndex: 'shopName', width: 140 },
@@ -107,8 +107,8 @@ const markupColumns = [
   { title: '公式', dataIndex: 'summary' },
   { title: '示例(货价100)', key: 'sample', width: 130 },
   { title: '作用', key: 'applyTo', width: 110 },
-  { title: '状态', key: 'status', width: 90 },
-  { title: '操作', key: 'action', width: 120 },
+  { title: '状态', key: 'status', width: 110 },
+  { title: '操作', key: 'action', width: 180 },
 ];
 const upcColumns = [
   { title: '规则名称', dataIndex: 'name' },
@@ -143,6 +143,7 @@ function emptySkuForm() {
     name: '',
     enabled: true,
     skipSku: false,
+    isDefault: false,
     segments: [] as SkuSegment[],
   };
 }
@@ -158,6 +159,7 @@ function emptyMarkupForm() {
     freightRate: 0.85,
     applyTo: 'both',
     enabled: true,
+    isDefault: false,
   };
 }
 
@@ -316,12 +318,32 @@ function openSku(row?: XqSpecialConfigApi.SkuRule) {
       name: row.name || '',
       enabled: row.enabled !== false,
       skipSku: !!row.skipSku,
+      isDefault: !!row.isDefault,
       segments: (row.segments || []).map((s) => ({ ...s })),
     });
   } else if (shops.value[0]) {
     skuForm.shopId = shops.value[0].id;
+    // 新建：同店尚无默认时，勾上默认
+    skuForm.isDefault = !skuRules.value.some(
+      (r) => r.shopId === skuForm.shopId && r.isDefault,
+    );
   }
   skuModal.value = true;
+}
+
+async function setSkuDefault(row: XqSpecialConfigApi.SkuRule) {
+  if (!row.id || row.isDefault) return;
+  try {
+    await saveXqSkuRule({
+      ...row,
+      platformId: lockedPlatformId.value,
+      isDefault: true,
+    });
+    message.success('已设为该店铺默认 SKU 规则');
+    await loadSku();
+  } catch (error: any) {
+    message.error(error?.message || '设置失败');
+  }
 }
 
 function addSegment(type: string) {
@@ -385,11 +407,30 @@ function openMarkup(row?: XqSpecialConfigApi.MarkupRule) {
       freightRate: Number(row.freightRate ?? 0.85),
       applyTo: row.applyTo || 'both',
       enabled: row.enabled !== false,
+      isDefault: !!row.isDefault,
     });
   } else if (shops.value[0]) {
     markupForm.shopId = shops.value[0].id;
+    markupForm.isDefault = !markupRules.value.some(
+      (r) => r.shopId === markupForm.shopId && r.isDefault,
+    );
   }
   markupModal.value = true;
+}
+
+async function setMarkupDefault(row: XqSpecialConfigApi.MarkupRule) {
+  if (!row.id || row.isDefault) return;
+  try {
+    await saveXqPriceMarkupRule({
+      ...row,
+      platformId: lockedPlatformId.value,
+      isDefault: true,
+    });
+    message.success('已设为该店铺默认价格规则');
+    await loadMarkup();
+  } catch (error: any) {
+    message.error(error?.message || '设置失败');
+  }
 }
 
 const markupSample = computed(() => {
@@ -577,6 +618,7 @@ onMounted(async () => {
                 <code>{{ skuExample(record) }}</code>
               </template>
               <template v-else-if="column.key === 'status'">
+                <Tag v-if="record.isDefault" color="blue">默认</Tag>
                 <Tag v-if="record.skipSku" color="orange">不生成</Tag>
                 <Tag v-else :color="record.enabled ? 'green' : 'default'">
                   {{ record.enabled ? '启用' : '停用' }}
@@ -584,6 +626,13 @@ onMounted(async () => {
               </template>
               <template v-else-if="column.key === 'action'">
                 <Button type="link" @click="openSku(record)">编辑</Button>
+                <Button
+                  v-if="!record.isDefault"
+                  type="link"
+                  @click="setSkuDefault(record)"
+                >
+                  设默认
+                </Button>
                 <Button type="link" danger @click="removeSku(record)">
                   删除
                 </Button>
@@ -630,12 +679,20 @@ onMounted(async () => {
                 {{ applyToLabel(record.applyTo) }}
               </template>
               <template v-else-if="column.key === 'status'">
+                <Tag v-if="record.isDefault" color="blue">默认</Tag>
                 <Tag :color="record.enabled ? 'green' : 'default'">
                   {{ record.enabled ? '启用' : '停用' }}
                 </Tag>
               </template>
               <template v-else-if="column.key === 'action'">
                 <Button type="link" @click="openMarkup(record)">编辑</Button>
+                <Button
+                  v-if="!record.isDefault"
+                  type="link"
+                  @click="setMarkupDefault(record)"
+                >
+                  设默认
+                </Button>
                 <Button type="link" danger @click="removeMarkup(record)">
                   删除
                 </Button>
@@ -781,6 +838,8 @@ onMounted(async () => {
         <Switch v-model:checked="skuForm.skipSku" />
         <label>启用</label>
         <Switch v-model:checked="skuForm.enabled" />
+        <label>设为店铺默认</label>
+        <Switch v-model:checked="skuForm.isDefault" />
         <template v-if="!skuForm.skipSku">
           <label>规则段</label>
           <div class="seg-add">
@@ -866,6 +925,8 @@ onMounted(async () => {
         />
         <label>启用</label>
         <Switch v-model:checked="markupForm.enabled" />
+        <label>设为店铺默认</label>
+        <Switch v-model:checked="markupForm.isDefault" />
         <p class="hint">货价 100 示例售价：{{ markupSample }}</p>
       </div>
     </Modal>

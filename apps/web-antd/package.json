@@ -59,6 +59,7 @@
     "fast-xml-parser": "catalog:",
     "highlight.js": "catalog:",
     "livekit-client": "catalog:",
+    "mammoth": "catalog:",
     "pinia": "catalog:",
     "sortablejs": "catalog:",
     "steady-xml": "catalog:",
@@ -70,7 +71,8 @@
     "vue-router": "catalog:",
     "vue3-print-nb": "catalog:",
     "vue3-signature": "catalog:",
-    "vuedraggable": "catalog:"
+    "vuedraggable": "catalog:",
+    "xlsx": "catalog:"
   },
   "devDependencies": {
     "@types/sortablejs": "catalog:"

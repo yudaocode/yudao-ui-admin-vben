@@ -160,6 +160,7 @@ catalog:
   markmap-lib: ^0.18.12
   markmap-toolbar: ^0.18.12
   markmap-view: ^0.18.12
+  mammoth: ^1.13.0
   nitropack: ^2.13.4
   nprogress: ^0.2.0
   ora: ^9.4.1
@@ -226,6 +227,7 @@ catalog:
   vxe-pc-ui: ^4.16.19
   vxe-table: ^4.20.6
   watermark-js-plus: ^1.6.6
+  xlsx: ^0.18.5
   yaml-eslint-parser: ^2.1.0
   zod: ^4.4.3
   zod-defaults: ^0.2.3

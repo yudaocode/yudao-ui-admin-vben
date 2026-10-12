@@ -7,6 +7,7 @@ export const FLOW_STEPS = [
   '待分配美工',
   '待执行图片',
   '图片执行中',
+  '审核中',
   '待上架',
   '已上架',
 ] as const;
@@ -20,6 +21,7 @@ export const FLOW_STEP_SHORT: Record<FlowStep, string> = {
   待分配美工: '待分美工',
   待执行图片: '待出图',
   图片执行中: '出图中',
+  审核中: '审核中',
   待上架: '待上架',
   已上架: '已上架',
 };
@@ -35,6 +37,7 @@ export const FLOW_STATUS_OPTIONS = [
   { label: '待分配美工', value: 'assign_image' },
   { label: '待执行图片', value: 'image_pending' },
   { label: '图片执行中', value: 'image_running' },
+  { label: '审核中', value: 'review_pending' },
   { label: '待上架', value: 'list_pending' },
   { label: '已上架', value: 'listed' },
   { label: '已关闭', value: 'closed' },
@@ -66,6 +69,13 @@ export function hasCopyReady(row?: null | XqWorkOrderApi.WorkOrder) {
   return ['inherited', 'success'].includes(String(row.rpaCopyStatus || ''));
 }
 
+/** 已出图、待运营确认图文 */
+export function isReviewPending(row?: null | XqWorkOrderApi.WorkOrder) {
+  if (!row || row.status !== 10) return false;
+  const img = String(row.imageStatus || '').toLowerCase();
+  return img === 'generated' || img === 'revised';
+}
+
 export function flowStep(row: XqWorkOrderApi.WorkOrder): '已关闭' | FlowStep {
   if (row.status === 20) return '已上架';
   if (row.status === 30) return '已关闭';
@@ -79,15 +89,15 @@ export function flowStep(row: XqWorkOrderApi.WorkOrder): '已关闭' | FlowStep 
   if (!row.imageUserId) return '待分配美工';
 
   const img = String(row.imageStatus || '').toLowerCase();
+  // 已确认图文 → 待上架；导表待确认也算待上架
   if (img === 'done' || row.listingStatus === 'export_pending_confirm') {
     return '待上架';
   }
-  if (
-    img === 'running' ||
-    img === 'generated' ||
-    img === 'revised' ||
-    img === 'rejected'
-  ) {
+  // 已出图/改完待审 → 审核中（确认图片+文案无误后才进待上架）
+  if (img === 'generated' || img === 'revised') {
+    return '审核中';
+  }
+  if (img === 'running' || img === 'rejected') {
     return '图片执行中';
   }
   // todo / pending / 空

@@ -88,6 +88,53 @@ export function resolveListingFieldZone(field: {
   return guessListingFieldZone(field);
 }
 
+/** 模板 valueSource 或字段名识别为价格（顶栏展示，不再进分区列表） */
+export function isListingPriceField(field: {
+  code?: string;
+  label?: string;
+  type?: string;
+  valueSource?: string;
+}) {
+  const src = String(field.valueSource || '').trim();
+  if (src === 'price_dropship' || src === 'price_pickup') return true;
+  const h = hay(field.code, field.label, field.type);
+  if (/price.?role|price.?range|price.?unit|compare at|msrp|currency/.test(h)) {
+    return false;
+  }
+  return /\b(list\s*)?price\b|售价|单价|标价|销售价|selling price|item price|your price|standard price/.test(
+    h,
+  );
+}
+
+export type ListingHeaderFactKey = 'brand' | 'price' | 'sku' | 'upc';
+
+/** 顶栏摘要字段：SKU / UPC / 品牌 / 价格；同 key 只保留一条 */
+export function resolveListingHeaderFactKey(field: {
+  code?: string;
+  label?: string;
+  type?: string;
+  valueSource?: string;
+}): '' | ListingHeaderFactKey {
+  const src = String(field.valueSource || '').trim();
+  if (src === 'price_dropship' || src === 'price_pickup') return 'price';
+  if (src === 'brand') return 'brand';
+  if (src === 'upc') return 'upc';
+  if (src === 'erp_sku' || src === 'giga_sku') return 'sku';
+  if (isListingPriceField(field)) return 'price';
+  const h = hay(field.code, field.label, field.type);
+  if (/\bbrand\b|品牌/.test(h)) return 'brand';
+  if (/\bupc\b|\bgtin\b/.test(h)) return 'upc';
+  if (
+    /(seller sku|shop sku|vendor style|item code|platform sku|\bsku\b)/.test(
+      h,
+    ) &&
+    !/parent sku/.test(h)
+  ) {
+    return 'sku';
+  }
+  return '';
+}
+
 /** 亚马逊多实例编码：bullet_point_2 → bullet_point */
 export function normalizeListingFieldCode(code?: string) {
   return String(code || '')

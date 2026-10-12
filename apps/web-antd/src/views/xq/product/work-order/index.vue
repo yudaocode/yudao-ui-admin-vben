@@ -287,7 +287,12 @@ function stageText(row: XqWorkOrderApi.WorkOrder) {
   if (row.rpaCopyStatus === 'fail') return '文案失败';
   if (!isCopyReady(row)) return '待文案';
   if (!isImageReady(row)) return '待图片';
-  return '待上架';
+  const img = String(row.imageStatus || '').toLowerCase();
+  if (img === 'done' || row.listingStatus === 'export_pending_confirm') {
+    return '待上架';
+  }
+  if (img === 'generated' || img === 'revised') return '审核中';
+  return '出图中';
 }
 
 function stageColor(row: XqWorkOrderApi.WorkOrder) {

@@ -3,6 +3,7 @@ import type { XqListingApi } from '#/api/xq/listing';
 import type { XqWorkOrderApi } from '#/api/xq/work-order';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
@@ -22,14 +23,17 @@ import {
 import {
   getXqCategoryFieldTemplate,
   getXqListingCategories,
+  getXqListingPlatforms,
   getXqListingShops,
 } from '#/api/xq/listing';
 import {
   confirmXqWorkOrderListing,
+  exportXqWorkOrderListing,
   getXqWorkOrderPage,
   listXqWorkOrder,
 } from '#/api/xq/work-order';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
+import { normalizeEnumOptions } from '#/views/xq/product/enum-options';
 import {
   isListingImageField,
   LISTING_FIELD_ZONE_OPTIONS,
@@ -41,6 +45,7 @@ defineOptions({ name: 'XqListingPool' });
 type ListingTab = 'listed' | 'pending';
 
 const userStore = useUserStore();
+const route = useRoute();
 const lockedPlatformId = useDeskPlatformId();
 const shopId = ref<string | undefined>();
 const shops = ref<{ label: string; value: string }[]>([]);
@@ -63,9 +68,16 @@ const queryParams = reactive({ keyword: '' as string | undefined });
 const categoryTemplate = ref<null | XqListingApi.CategoryFieldTemplate>(null);
 const fieldValues = ref<Record<string, string>>({});
 const listingCategories = ref<XqListingApi.CategoryNode[]>([]);
+const platforms = ref<XqListingApi.Platform[]>([]);
 
 const activeTask = computed(() => findTask(activeId.value));
 const fields = computed(() => categoryTemplate.value?.fields || []);
+const activeListingMode = computed<'api' | 'export'>(() => {
+  const row = activeTask.value;
+  const pid = String(row?.listingPlatformId || lockedPlatformId.value || '');
+  const hit = platforms.value.find((p) => String(p.id) === pid);
+  return hit?.listingMode === 'api' ? 'api' : 'export';
+});
 const zonedFieldGroups = computed(() => {
   const groups = LISTING_FIELD_ZONE_OPTIONS.map((z) => ({
     ...z,
@@ -165,6 +177,13 @@ function resolveSource(src: string, row: XqWorkOrderApi.WorkOrder) {
   return map[src] || '';
 }
 
+function fieldEnumOptions(f: XqListingApi.CategoryField) {
+  return normalizeEnumOptions(f.options, {
+    type: f.type,
+    valuesList: f.valuesList,
+  });
+}
+
 function fillValues(
   row: XqWorkOrderApi.WorkOrder,
   tplFields: XqListingApi.CategoryField[],
@@ -239,7 +258,12 @@ async function loadTasks() {
     });
     tasks.value = res?.list || [];
     total.value = Number(res?.total || 0);
-    if (activeId.value && !findTask(activeId.value)) activeId.value = undefined;
+    const qid = Number(route.query.id || 0) || undefined;
+    if (qid && findTask(qid)) {
+      selectTask(findTask(qid)!);
+    } else if (activeId.value && !findTask(activeId.value)) {
+      activeId.value = undefined;
+    }
     if (!activeId.value && tasks.value[0]?.id) selectTask(tasks.value[0]!);
   } catch (error: any) {
     message.error(error?.message || '加载失败');
@@ -260,25 +284,43 @@ function onPageChange(page: number, size: number) {
   loadTasks();
 }
 
-async function submitListing(mode: 'api' | 'export') {
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function submitListing(mode?: 'api' | 'export') {
   const row = activeTask.value;
   if (!row?.id) return;
   if (!row.listingCategoryId) {
     message.warning('请先在文案侧选择上架类目');
     return;
   }
+  const resolved = mode || activeListingMode.value;
   listing.value = true;
   try {
-    await listXqWorkOrder({
-      id: row.id,
-      listingMode: mode,
-      productSku: row.externalSku || undefined,
-      productName: row.contentTitle || row.title || undefined,
-      values: { ...fieldValues.value },
-    });
-    if (mode === 'export') {
+    if (resolved === 'export') {
+      const blob = await exportXqWorkOrderListing({
+        id: row.id,
+        productSku: row.externalSku || undefined,
+        productName: row.contentTitle || row.title || undefined,
+        values: { ...fieldValues.value },
+      });
+      const filename = `${row.externalSku || row.id}_listing.xlsx`;
+      downloadBlob(blob, filename);
       message.success('导表成功，请确认是否已上架');
     } else {
+      await listXqWorkOrder({
+        id: row.id,
+        listingMode: 'api',
+        productSku: row.externalSku || undefined,
+        productName: row.contentTitle || row.title || undefined,
+        values: { ...fieldValues.value },
+      });
       message.success('API 上架成功');
       listingTab.value = 'listed';
     }
@@ -331,6 +373,14 @@ async function loadShops() {
   }
 }
 
+async function loadPlatforms() {
+  try {
+    platforms.value = (await getXqListingPlatforms()) || [];
+  } catch {
+    platforms.value = [];
+  }
+}
+
 watch(lockedPlatformId, async () => {
   shopId.value = undefined;
   await loadShops();
@@ -338,6 +388,7 @@ watch(lockedPlatformId, async () => {
 });
 
 onMounted(async () => {
+  await loadPlatforms();
   await loadShops();
   await loadTasks();
 });
@@ -405,18 +456,14 @@ onMounted(async () => {
           >
             确认已上架
           </Button>
-          <template v-else>
-            <Button :loading="listing" @click="submitListing('export')">
-              导表上架
-            </Button>
-            <Button
-              type="primary"
-              :loading="listing"
-              @click="submitListing('api')"
-            >
-              API 上架
-            </Button>
-          </template>
+          <Button
+            v-else
+            type="primary"
+            :loading="listing"
+            @click="submitListing()"
+          >
+            {{ activeListingMode === 'api' ? 'API 上架' : '导表上架' }}
+          </Button>
         </template>
       </div>
 
@@ -515,21 +562,16 @@ onMounted(async () => {
                     >
                       确认已上架
                     </Button>
-                    <template v-else>
-                      <Button
-                        :loading="listing"
-                        @click="submitListing('export')"
-                      >
-                        导表上架
-                      </Button>
-                      <Button
-                        type="primary"
-                        :loading="listing"
-                        @click="submitListing('api')"
-                      >
-                        API 上架
-                      </Button>
-                    </template>
+                    <Button
+                      v-else
+                      type="primary"
+                      :loading="listing"
+                      @click="submitListing()"
+                    >
+                      {{
+                        activeListingMode === 'api' ? 'API 上架' : '导表上架'
+                      }}
+                    </Button>
                   </template>
                   <Tag v-else color="success">已上架</Tag>
                 </div>
@@ -554,13 +596,49 @@ onMounted(async () => {
                     >
                       <div class="xq-list-field-h">
                         <em>{{ f.label || f.code }}</em>
-                        <Tag v-if="f.required" color="red">必填</Tag>
+                        <Tag
+                          v-if="f.fixed || f.groupLabel === '固定'"
+                          color="purple"
+                        >
+                          固定
+                        </Tag>
+                        <Tag
+                          v-else-if="
+                            f.groupLabel === '必填' ||
+                            (!f.groupLabel && f.required)
+                          "
+                          color="red"
+                        >
+                          必填
+                        </Tag>
+                        <Tag v-else>
+                          {{
+                            f.groupLabel === '选填'
+                              ? '非必填'
+                              : f.groupLabel || '非必填'
+                          }}
+                        </Tag>
                         <span v-if="f.valueSource" class="xq-map">{{
                           f.valueSource
                         }}</span>
                       </div>
+                      <p v-if="f.remark" class="xq-list-field-remark">
+                        {{ f.remark }}
+                      </p>
+                      <Select
+                        v-if="fieldEnumOptions(f).length"
+                        v-model:value="fieldValues[f.code]"
+                        allow-clear
+                        show-search
+                        option-filter-prop="label"
+                        :disabled="isListed"
+                        :options="fieldEnumOptions(f)"
+                        :placeholder="f.defaultValue || f.label || '选择枚举值'"
+                      />
                       <Input.TextArea
-                        v-if="(f.type || '').toUpperCase().includes('LONG')"
+                        v-else-if="
+                          (f.type || '').toUpperCase().includes('LONG')
+                        "
                         v-model:value="fieldValues[f.code]"
                         :rows="3"
                         :readonly="isListed"
@@ -589,7 +667,7 @@ onMounted(async () => {
           :description="
             listingTab === 'listed'
               ? '暂无已上架产品'
-              : '暂无待上架产品（图片需已出图或已完成）'
+              : '暂无待上架产品（须审核确认图文无误后进入）'
           "
         />
       </Spin>
@@ -605,6 +683,17 @@ onMounted(async () => {
   gap: 6px;
   padding: 8px 0;
   border-bottom: 1px solid #f3f4f6;
+}
+
+.xq-list-field :deep(.ant-select) {
+  width: 100%;
+}
+
+.xq-list-field-remark {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #7c3aed;
 }
 
 .xq-zone-title {

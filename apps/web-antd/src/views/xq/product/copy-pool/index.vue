@@ -1,14 +1,17 @@
-<script lang="ts" setup>
-import type { XqListingApi } from '#/api/xq/listing';
+﻿<script lang="ts" setup>
+import type { XqListingApi, XqSpecialConfigApi } from '#/api/xq/listing';
 import type { XqWorkOrderApi } from '#/api/xq/work-order';
+import type { CopyPromptPack } from '#/views/xq/product/copy-prompt-file';
 
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
 
 import {
+  Alert,
   Button,
   Checkbox,
   Empty,
@@ -21,6 +24,7 @@ import {
   Spin,
   Switch,
   Tag,
+  Textarea,
   TreeSelect,
   Upload,
 } from 'ant-design-vue';
@@ -32,6 +36,8 @@ import {
   getXqFieldPool,
   getXqListingCategories,
   getXqListingShops,
+  getXqPriceMarkupRules,
+  getXqSkuRules,
 } from '#/api/xq/listing';
 import {
   batchAssignXqWorkOrderImage,
@@ -41,16 +47,28 @@ import {
   getXqAssignableImageUsers,
   getXqWorkOrder,
   getXqWorkOrderPage,
+  pullXqWorkOrderCopyRpa,
   regenerateXqWorkOrderCopy,
   updateXqWorkOrder,
+  updateXqWorkOrderImageStatus,
 } from '#/api/xq/work-order';
 import { useDeskPlatformId } from '#/views/xq/desk/use-desk-scope';
 import {
+  copyPromptCount,
+  exportCopyPromptTemplate,
+  normalizeCopyPromptPack,
+  parseCopyPromptsFromFile,
+} from '#/views/xq/product/copy-prompt-file';
+import { imageSlotTypeLabel } from '#/views/xq/product/image-slot-rule';
+import {
   dedupeListingFieldsByCode,
   isListingImageField,
+  LISTING_FIELD_ZONE_OPTIONS,
   resolveListingFieldZone,
+  resolveListingHeaderFactKey,
 } from '#/views/xq/product/listing-field-zone';
 import { translateFieldLabel } from '#/views/xq/product/template-config/field-label-zh';
+import XqSourceProductDrawer from '#/views/xq/product/xq-source-product-drawer.vue';
 
 import EditFieldRow from './edit-field-row.vue';
 
@@ -67,6 +85,7 @@ interface ImagePromptItem {
   marker?: string;
   promptText?: string;
   bindIndexes?: number[];
+  rejectReason?: string;
 }
 
 const userStore = useUserStore();
@@ -103,10 +122,23 @@ const revisionPrompt = ref('');
 /** all | title | description | feature */
 const reviseTarget = ref<'all' | 'description' | 'feature' | 'title'>('all');
 const reviseFeatureIndex = ref(0);
+/** 文案提示词弹窗 */
+const promptOpen = ref(false);
+const promptSaving = ref(false);
+const copyPrompts = reactive<CopyPromptPack>({
+  title: '',
+  features: Array.from({ length: FEATURE_COUNT }, () => ''),
+  description: '',
+});
+const batchPromptOpen = ref(false);
+const batchPromptBusy = ref(false);
 /** 左侧勾选：独立跑文案 RPA 的变体 id（主体始终包含） */
 const rpaSelectedMap = reactive<Record<number, boolean>>({});
 const enqueueingRpa = ref(false);
 const refreshing = ref(false);
+const pullTestOpen = ref(false);
+const pullTestBusy = ref(false);
+const pullTestJson = ref('');
 
 const reviseTargetLabel = computed(() => {
   if (reviseTarget.value === 'title') return '标题';
@@ -176,20 +208,15 @@ function comboMembers(row: XqWorkOrderApi.WorkOrder) {
 function isSellableParent(row: XqWorkOrderApi.WorkOrder) {
   const kids = row.variants || [];
   if (kids.length === 0) return true;
-  const parentOffer = Boolean(
-    row.mainColor ||
-    row.variantLabel ||
-    (row.price !== null && row.price !== undefined) ||
-    (row.qtyAvailable !== null && row.qtyAvailable !== undefined),
-  );
-  const childOffer = kids.some((k) =>
+  const hasOffer = (r: XqWorkOrderApi.WorkOrder) =>
     Boolean(
-      k.mainColor ||
-      k.variantLabel ||
-      (k.price !== null && k.price !== undefined) ||
-      (k.qtyAvailable !== null && k.qtyAvailable !== undefined),
-    ),
-  );
+      cleanText(r.mainColor) ||
+      cleanText(r.variantLabel) ||
+      (r.price !== null && r.price !== undefined) ||
+      (r.qtyAvailable !== null && r.qtyAvailable !== undefined),
+    );
+  const parentOffer = hasOffer(row);
+  const childOffer = kids.some((k) => hasOffer(k));
   if (childOffer && !parentOffer) return false;
   return true;
 }
@@ -297,11 +324,18 @@ function findCategoryName(
 
 const showCopyEditor = computed(() => Boolean(activeTask.value));
 
+/**
+ * 编辑区字段来源（与 listing-pool / 上架模板一致）：
+ * - 已选类目 → 只用该类目模板（category-template）
+ * - 未选类目 → 不展示全平台 field-pool（否则会出现几十个「Color」分属不同类目）
+ * field-pool 仍用于分区配置（partitions），不直接当表单字段源
+ */
 const templateFields = computed(() => {
-  const pool = fieldPool.value?.fields;
-  const raw =
-    pool && pool.length > 0 ? pool : categoryTemplate.value?.fields || [];
-  return dedupeListingFieldsByCode(raw);
+  const cid = asId(listingCategoryId.value);
+  if (cid) {
+    return dedupeListingFieldsByCode(categoryTemplate.value?.fields || []);
+  }
+  return [];
 });
 
 const hasCategoryTemplate = computed(() => templateFields.value.length > 0);
@@ -382,62 +416,47 @@ const wbCopyFilled = computed(() => {
 
 const hasCopyContent = computed(() => wbCopyFilled.value > 0);
 
-function isOriginalProductUrl(url?: string) {
-  const u = String(url || '').trim();
-  if (!u) return true;
-  if (sourceImages.value.includes(u)) return true;
-  const row = activeTask.value || familyParent.value;
-  return Boolean(row?.coverUrl && row.coverUrl === u);
+function promptAiUrl(p?: ImagePromptItem) {
+  return String(p?.resultUrl || p?.generatedImageUrl || '').trim();
 }
-
-const aiImages = computed(() => {
-  const urls: string[] = [];
-  const row = activeTask.value;
-  const push = (url?: string) => {
-    const u = String(url || '').trim();
-    if (!u || isOriginalProductUrl(u) || urls.includes(u)) return;
-    urls.push(u);
-  };
-  push(row?.generatedImageUrl);
-  for (const p of imagePrompts.value) {
-    push(p.resultUrl);
-    push(p.generatedImageUrl);
-    if (p.marker === 'ai' || p.imageType === 'generated') {
-      push(p.imageUrl);
-    }
-  }
-  try {
-    const obj = row?.copyResultJson ? JSON.parse(row.copyResultJson) : {};
-    const extra = obj.generatedImages || obj.aiImages;
-    if (Array.isArray(extra)) extra.forEach((x: any) => push(String(x)));
-  } catch {
-    // ignore
-  }
-  return urls;
-});
 
 const uploadedAiImages = ref<string[]>([]);
 const imageUploading = ref<null | number>(null);
 
-const wbImageFieldLabels = computed(() => {
-  const fromTpl = (tplGroups.value.image || [])
-    .map((f) => f.label || f.code)
-    .filter(Boolean);
-  if (!hasCopyContent.value && fromTpl.length > 0) {
-    return fromTpl.slice(0, 12);
-  }
-  if (fromTpl.length > 0) {
-    return fromTpl.slice(0, 5);
-  }
-  return ['主图', '附图 1', '附图 2', '附图 3', '附图 4'];
-});
-
+/** 与图片页同一套槽位序号：按 imagePromptJson 下标，避免驳回绑错图 */
 const wbImageSlots = computed(() => {
-  const labels = wbImageFieldLabels.value;
-  return labels.map((label, i) => ({
-    label: i === 0 && label === labels[0] ? label : label,
-    url: uploadedAiImages.value[i] || aiImages.value[i] || '',
-  }));
+  const prompts = imagePrompts.value;
+  const uploaded = uploadedAiImages.value;
+  const row = activeTask.value;
+  const n = Math.max(
+    prompts.length,
+    uploaded.length,
+    promptAiUrl(prompts[0] as ImagePromptItem) || row?.generatedImageUrl
+      ? 1
+      : 0,
+  );
+  const slots = Array.from({ length: n }, (_, i) => {
+    const p = prompts[i];
+    const typeLabel =
+      imageSlotTypeLabel(p?.imageType) || (i === 0 ? '主图' : '附图');
+    return {
+      label: `${typeLabel} ${String(i + 1).padStart(2, '0')}`,
+      url:
+        String(uploaded[i] || '').trim() ||
+        promptAiUrl(p) ||
+        (i === 0 ? String(row?.generatedImageUrl || '').trim() : ''),
+      rejectReason: String(p?.rejectReason || '').trim(),
+    };
+  });
+  const filled = slots.filter((s) => s.url).length;
+  if (filled === slots.length) {
+    slots.push({
+      label: `附图 ${String(slots.length + 1).padStart(2, '0')}`,
+      url: '',
+      rejectReason: '',
+    });
+  }
+  return slots;
 });
 
 const wbImageFilled = computed(
@@ -447,10 +466,15 @@ const wbImageFilled = computed(
 async function persistAiImages(urls: string[]) {
   const row = activeTask.value;
   if (!row?.id) return;
-  const prompts = imagePrompts.value.map((p, i) => ({
-    ...p,
-    resultUrl: urls[i] || (p as ImagePromptItem).resultUrl || '',
-  }));
+  const prompts = imagePrompts.value.map((p, i) => {
+    const nextUrl = urls[i] || (p as ImagePromptItem).resultUrl || '';
+    const prevUrl = String(p.resultUrl || p.generatedImageUrl || '');
+    return {
+      ...p,
+      resultUrl: nextUrl,
+      rejectReason: nextUrl === prevUrl ? p.rejectReason : undefined,
+    };
+  });
   while (prompts.length < urls.length) {
     const i = prompts.length;
     prompts.push({
@@ -501,6 +525,13 @@ watch(activeId, () => {
   uploadedAiImages.value = [];
 });
 
+const HEADER_FACT_LABEL: Record<string, string> = {
+  sku: 'SKU',
+  upc: 'UPC',
+  brand: '品牌',
+  price: '价格',
+};
+
 const tplGroups = computed(() => {
   const groups = {
     copyExtra: [] as TplField[],
@@ -511,7 +542,15 @@ const tplGroups = computed(() => {
     custom: [] as Array<{ fields: TplField[]; id: string; name: string }>,
   };
   const customMap = new Map<string, TplField[]>();
+  const headerSeen = new Set<string>();
   for (const f of templateFields.value) {
+    const factKey = resolveListingHeaderFactKey(f);
+    // SKU / UPC / 品牌 / 价格：只在顶栏展示一次，不进分区
+    if (factKey) {
+      if (headerSeen.has(factKey)) continue;
+      headerSeen.add(factKey);
+      continue;
+    }
     const row = classifyTplField(f);
     const zone = resolveListingFieldZone(f);
     if (zone === 'copy') {
@@ -563,51 +602,311 @@ const tplGroups = computed(() => {
   return groups;
 });
 
+/** 顶栏仅保留 UPC/品牌只读摘要；SKU/价格改由特殊配置规则下拉 */
 const headerFacts = computed(() => {
   const out: Array<{ key: string; label: string; value: string }> = [];
-  const seen = new Set<string>();
+  const order = ['upc', 'brand'] as const;
+  const picked = new Map<string, TplField>();
   for (const f of templateFields.value) {
-    const hay = fieldHay(f);
-    let key = '';
-    if (/\bbrand\b|品牌/.test(hay)) key = 'brand';
-    else if (/\bupc\b|\bgtin\b/.test(hay)) key = 'upc';
-    else if (
-      /(seller sku|shop sku|vendor style|item code|platform sku|\bsku\b)/.test(
-        hay,
-      ) &&
-      !/parent sku/.test(hay)
-    ) {
-      key = 'sku';
-    }
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
+    const key = resolveListingHeaderFactKey(f);
+    if (!key || key === 'sku' || key === 'price' || picked.has(key)) continue;
+    picked.set(key, classifyTplField(f));
+  }
+  for (const key of order) {
+    const f = picked.get(key);
+    if (!f) continue;
     out.push({
       key,
-      label: f.label || key,
-      value: tplAttrValue(classifyTplField(f)),
+      label: HEADER_FACT_LABEL[key] || f.label || key,
+      value: tplAttrValue(f),
     });
   }
   return out;
 });
 
-const headerImageSlots = computed(() => {
-  const slots = wbImageSlots.value;
-  const n = Math.max(slots.length, 8);
-  return Array.from({ length: n }, (_, i) => {
-    return (
-      slots[i] || {
-        label: i === 0 ? '主图' : `附图 ${i}`,
-        url: '',
-      }
-    );
-  });
+const skuRules = ref<XqSpecialConfigApi.SkuRule[]>([]);
+const markupRules = ref<XqSpecialConfigApi.MarkupRule[]>([]);
+const selectedSkuRuleId = ref<string | undefined>();
+const selectedMarkupRuleId = ref<string | undefined>();
+
+function pickDefaultRuleId(
+  rules: Array<{
+    enabled?: boolean;
+    id?: string;
+    isDefault?: boolean;
+    ownerUserId?: string;
+  }>,
+) {
+  const enabled = rules.filter((r) => r.enabled !== false && r.id);
+  if (enabled.length === 0) return undefined;
+  const me = myUserId.value ? String(myUserId.value) : '';
+  const mineDefault = enabled.find(
+    (r) => String(r.ownerUserId || '') === me && r.isDefault,
+  );
+  if (mineDefault?.id) return mineDefault.id;
+  const mine = enabled.find((r) => String(r.ownerUserId || '') === me);
+  if (mine?.id) return mine.id;
+  const shopDefault = enabled.find((r) => r.isDefault);
+  if (shopDefault?.id) return shopDefault.id;
+  const shop = enabled.find((r) => !r.ownerUserId);
+  if (shop?.id) return shop.id;
+  return enabled[0]?.id;
+}
+
+async function loadSpecialRules() {
+  const pid = listingPlatformId.value || lockedPlatformId.value;
+  const shopId = listingShopId.value;
+  if (!pid || !shopId) {
+    skuRules.value = [];
+    markupRules.value = [];
+    selectedSkuRuleId.value = undefined;
+    selectedMarkupRuleId.value = undefined;
+    return;
+  }
+  try {
+    const [sku, markup] = await Promise.all([
+      getXqSkuRules(pid, shopId),
+      getXqPriceMarkupRules(pid, shopId),
+    ]);
+    skuRules.value = (sku || []).filter((r) => r.enabled !== false);
+    markupRules.value = (markup || []).filter((r) => r.enabled !== false);
+    selectedSkuRuleId.value = pickDefaultRuleId(skuRules.value);
+    selectedMarkupRuleId.value = pickDefaultRuleId(markupRules.value);
+  } catch {
+    skuRules.value = [];
+    markupRules.value = [];
+  }
+}
+
+const selectedSkuRule = computed(() =>
+  skuRules.value.find((r) => r.id === selectedSkuRuleId.value),
+);
+const selectedMarkupRule = computed(() =>
+  markupRules.value.find((r) => r.id === selectedMarkupRuleId.value),
+);
+
+function previewSkuByRule(rule?: XqSpecialConfigApi.SkuRule) {
+  if (!rule) return '—';
+  if (rule.skipSku) return '不生成';
+  const shop =
+    listingShops.value.find(
+      (s) => s.id === (rule.shopId || listingShopId.value),
+    )?.name || 'SHOP';
+  const info = userStore.userInfo as null | Record<string, any>;
+  const owner = rule.ownerUserName || info?.nickname || info?.username || 'xx';
+  const today = new Date();
+  const ymd = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+  return (
+    (rule.segments || [])
+      .map((seg) => {
+        if (seg.type === 'text') return seg.value || '';
+        if (seg.type === 'shopCode') return shop;
+        if (seg.type === 'ownerInitials') return String(owner).slice(0, 2);
+        if (seg.type === 'date') return ymd;
+        if (seg.type === 'seq')
+          return String(seg.start || 1).padStart(seg.width || 3, '0');
+        if (seg.type === 'randomDigits')
+          return ''.padStart(seg.width || 5, '0');
+        return '';
+      })
+      .join('') || '—'
+  );
+}
+
+/** 涨幅利润比文案，如 ×175%÷0.85 */
+function markupRatioText(rule?: XqSpecialConfigApi.MarkupRule) {
+  if (!rule) return '';
+  if (rule.summary) return rule.summary.replaceAll(/货价\s*/g, '').trim();
+  const v = Number(rule.value);
+  const r = Number(rule.freightRate) || 0.85;
+  if (!Number.isFinite(v) || r <= 0) return '';
+  const rate = String(r);
+  if (rule.mode === 'fixed') return `(+${v})÷${rate}`;
+  if (rule.mode === 'percent') return `×${v}%÷${rate}`;
+  if (rule.mode === 'ratio') return `×${v}÷${rate}`;
+  return '';
+}
+
+function calcSellByMarkupRule(rule?: XqSpecialConfigApi.MarkupRule) {
+  const base = Number(activeTask.value?.price);
+  if (!rule || !Number.isFinite(base)) return '';
+  const v = Number(rule.value);
+  const r = Number(rule.freightRate) || 0.85;
+  if (!Number.isFinite(v) || r <= 0) return '';
+  let marked: number;
+  if (rule.mode === 'fixed') marked = base + v;
+  else if (rule.mode === 'percent') marked = base * (v / 100);
+  else marked = base * v;
+  return String(Math.round((marked / r) * 100) / 100);
+}
+
+/** 兼容字段映射：优先售价，否则只回涨幅比 */
+function previewPriceByRule(rule?: XqSpecialConfigApi.MarkupRule) {
+  return calcSellByMarkupRule(rule) || markupRatioText(rule) || '—';
+}
+
+const skuRuleOptions = computed(() =>
+  skuRules.value.map((r) => {
+    const who = r.ownerUserId ? r.ownerUserName || r.ownerUserId : '店铺通用';
+    const name = r.name || 'SKU 规则';
+    return {
+      value: r.id!,
+      label: r.isDefault ? `${name}（默认）` : name,
+      title: `${name} · ${who}`,
+    };
+  }),
+);
+
+const markupRuleOptions = computed(() =>
+  markupRules.value.map((r) => {
+    const who = r.ownerUserId ? r.ownerUserName || r.ownerUserId : '店铺通用';
+    const name = r.name || '价格规则';
+    return {
+      value: r.id!,
+      label: r.isDefault ? `${name}（默认）` : name,
+      title: `${name} · ${who}${r.summary ? ` · ${r.summary}` : ''}`,
+    };
+  }),
+);
+
+const headerImageSlots = computed(() => wbImageSlots.value);
+
+/** 运营审图：对比原图 / AI 图，可写驳回原因 */
+/** 右侧原内容侧栏：弹出 / 收起 */
+const sourcePanelOpen = ref(false);
+const sourceSku = computed(
+  () => String(activeTask.value?.externalSku || '').trim() || '原内容',
+);
+const sourceFamily = computed(() => {
+  const root = comboRootOf(activeTask.value);
+  return root ? comboMembers(root) : [];
 });
+
+function toggleSourcePanel(force?: boolean) {
+  sourcePanelOpen.value = force === undefined ? !sourcePanelOpen.value : force;
+}
+
+function onSelectSourceMember(row: XqWorkOrderApi.WorkOrder) {
+  if (!row?.id) return;
+  const root = comboRootOf(row);
+  if (root?.id) expandedIds.value[root.id] = true;
+  activeId.value = row.id;
+}
+
+const reviewOpen = ref(false);
+const reviewIndex = ref(0);
+const reviewRejectReason = ref('');
+const reviewBusy = ref(false);
+
+const reviewSlot = computed(
+  () => headerImageSlots.value[reviewIndex.value] || null,
+);
+
+function openImageReview(index: number) {
+  reviewIndex.value = index;
+  reviewRejectReason.value = headerImageSlots.value[index]?.rejectReason || '';
+  reviewOpen.value = true;
+}
+
+watch(reviewIndex, (i) => {
+  if (!reviewOpen.value) return;
+  reviewRejectReason.value = headerImageSlots.value[i]?.rejectReason || '';
+});
+
+async function submitImageReject() {
+  const row = activeTask.value;
+  if (!row?.id) return;
+  const reason = reviewRejectReason.value.trim();
+  if (!reason) {
+    message.warning('请填写驳回原因');
+    return;
+  }
+  reviewBusy.value = true;
+  try {
+    await updateXqWorkOrderImageStatus({
+      id: row.id,
+      imageStatus: 'rejected',
+      rejectReason: reason,
+      rejectIndex: reviewIndex.value,
+    });
+    message.success('已驳回该图，美工可在图片页红框中看到原因');
+    reviewOpen.value = false;
+    await loadTasks();
+  } catch (error: any) {
+    message.error(error?.message || '驳回失败');
+  } finally {
+    reviewBusy.value = false;
+  }
+}
+
+/** 审核中：当前任务（及同家族已出图成员）可确认图文进待上架 */
+const isReviewPendingActive = computed(() => {
+  const img = String(activeTask.value?.imageStatus || '').toLowerCase();
+  return img === 'generated' || img === 'revised';
+});
+
+function reviewConfirmIds() {
+  const root = comboRootOf(activeTask.value);
+  let members: XqWorkOrderApi.WorkOrder[] = [];
+  if (root) {
+    members = comboMembers(root);
+  } else if (activeTask.value) {
+    members = [activeTask.value];
+  }
+  return members
+    .filter((m) => {
+      if (!m.id) return false;
+      const img = String(m.imageStatus || '').toLowerCase();
+      return img === 'generated' || img === 'revised';
+    })
+    .map((m) => m.id!);
+}
+
+function confirmReviewDone() {
+  const row = activeTask.value;
+  if (!row?.id) return;
+  const ids = reviewConfirmIds();
+  if (ids.length === 0) {
+    message.warning('没有待确认的已出图任务');
+    return;
+  }
+  Modal.confirm({
+    title: '确认图文无误',
+    content: `已核对「${row.itemCode || row.externalSku || row.title || row.id}」图片与文案？确认后 ${ids.length} 条将进入「待上架」。`,
+    okText: '确认进入待上架',
+    cancelText: '再看看',
+    async onOk() {
+      let ok = 0;
+      let fail = 0;
+      for (const id of ids) {
+        try {
+          await updateXqWorkOrderImageStatus({ id, imageStatus: 'done' });
+          ok += 1;
+        } catch {
+          fail += 1;
+        }
+      }
+      if (ok) {
+        message.success(
+          `已确认 ${ok} 条进入待上架${fail ? `，失败 ${fail}` : ''}`,
+        );
+        await loadTasks();
+      } else {
+        message.error('确认失败，请检查文案与图片是否齐全');
+        throw new Error('确认失败');
+      }
+    },
+  });
+}
 
 const showCopyInTemplate = computed(
   () => hasCategoryTemplate.value || Boolean(listingCategoryId.value),
 );
 
-const zoneCollapsed = reactive<Record<string, boolean>>({ other: true });
+const zoneCollapsed = reactive<Record<string, boolean>>({
+  attr: true,
+  other: true,
+});
 const zoneQuery = reactive<Record<string, string>>({ other: '' });
 const showZh = ref(true);
 
@@ -620,49 +919,89 @@ type EditZone = {
   label: string;
 };
 
+function fieldSortLeaf(f: TplField) {
+  const code = String(f.code || '');
+  const i = code.lastIndexOf('.');
+  return (i === -1 ? code : code.slice(i + 1)).toLowerCase();
+}
+
+/** 两层：先字段名（color / sku），再类目编码；必填 → 固定 → 非必填 */
+function sortZoneFields(fields: TplField[]) {
+  const rank = (f: TplField) => {
+    if (f.fixed) return 1;
+    if (f.required) return 0;
+    return 2;
+  };
+  return [...fields].toSorted((a, b) => {
+    const ar = rank(a);
+    const br = rank(b);
+    if (ar !== br) return ar - br;
+    const leaf = fieldSortLeaf(a).localeCompare(fieldSortLeaf(b), 'en');
+    if (leaf !== 0) return leaf;
+    return String(a.code || '').localeCompare(String(b.code || ''), 'en');
+  });
+}
+
 const editZones = computed((): EditZone[] => {
   const g = tplGroups.value;
-  const zones: EditZone[] = [
-    {
-      key: 'copy',
-      label: '产品文案',
-      hint: '标题 · 卖点 · 长描述',
-      color: '#2563eb',
-      hasCopyForm: true,
-      fields: g.copyExtra,
-    },
-    {
-      key: 'product',
-      label: '产品基本信息',
-      hint: 'SKU · UPC · 颜色 · 库存',
-      color: '#059669',
-      fields: g.product,
-    },
-    {
-      key: 'attr',
-      label: '产品规格',
-      hint: '尺寸 · 重量 · 品牌 · 材质',
-      color: '#d97706',
-      fields: g.attr,
-    },
-    {
-      key: 'other',
-      label: '其他属性',
-      hint: '其余上架字段',
-      color: '#94a3b8',
-      fields: g.unset,
-    },
+  const partMap = new Map(
+    (fieldPool.value?.partitions || []).map((p) => [p.id, p]),
+  );
+  const zoneOf = (
+    key: string,
+    fallbackLabel: string,
+    fallbackColor: string,
+    fallbackHint: string,
+    fields: TplField[],
+    hasCopyForm?: boolean,
+  ): EditZone => {
+    const fromOpt = LISTING_FIELD_ZONE_OPTIONS.find((z) => z.value === key);
+    const p = partMap.get(key);
+    return {
+      key,
+      label: p?.name || fromOpt?.label || fallbackLabel,
+      color: p?.color || fallbackColor,
+      hint: p?.keywords || fallbackHint,
+      fields: sortZoneFields(fields),
+      hasCopyForm,
+    };
+  };
+  // 系统三区 → 用户自定义 →「其他属性」永远在尾
+  const candidates: EditZone[] = [
+    zoneOf(
+      'copy',
+      '产品文案',
+      '#2563eb',
+      '标题 · 卖点 · 长描述',
+      g.copyExtra,
+      true,
+    ),
+    zoneOf(
+      'product',
+      '产品基本信息',
+      '#059669',
+      '颜色 · 库存 · 其它基本信息',
+      g.product,
+    ),
+    zoneOf('attr', '产品规格', '#d97706', '尺寸 · 重量 · 材质', g.attr),
   ];
   for (const z of g.custom) {
-    zones.push({
+    const p = partMap.get(z.id);
+    candidates.push({
       key: z.id,
-      label: z.name,
-      hint: '自定义分区',
-      color: '#7c3aed',
-      fields: z.fields,
+      label: p?.name || z.name,
+      hint: p?.keywords || '自定义分区',
+      color: p?.color || '#7c3aed',
+      fields: sortZoneFields(z.fields),
     });
   }
-  return zones;
+  candidates.push(
+    zoneOf('other', '其他属性', '#94a3b8', '未归入任何分组的字段', g.unset),
+  );
+  // 只展示模板里实际有字段的分区；文案区有固定表单时保留
+  return candidates.filter(
+    (z) => z.fields.length > 0 || (z.hasCopyForm && showCopyInTemplate.value),
+  );
 });
 
 function zoneOpen(key: string) {
@@ -714,8 +1053,19 @@ function parseSavedListingValues(row?: null | XqWorkOrderApi.WorkOrder) {
 function resolveTplSource(src: string, row: XqWorkOrderApi.WorkOrder) {
   const copy = parseCopyJson(row);
   const points = parseSellingPoints(row.contentSellingPoints);
+  const rawPrice =
+    row.price === null || row.price === undefined ? '' : String(row.price);
+  const marked = previewPriceByRule(selectedMarkupRule.value);
+  const priceText = marked && marked !== '—' ? marked : rawPrice;
+  const skuByRule = previewSkuByRule(selectedSkuRule.value);
   const map: Record<string, string> = {
-    erp_sku: row.productSku || row.externalSku || '',
+    erp_sku:
+      (skuByRule && skuByRule !== '—' && skuByRule !== '不生成'
+        ? skuByRule
+        : '') ||
+      row.productSku ||
+      row.externalSku ||
+      '',
     upc: row.upc || '',
     ai_title: row.contentTitle || form.contentTitle || '',
     ai_description: String(copy.description || form.description || ''),
@@ -728,6 +1078,8 @@ function resolveTplSource(src: string, row: XqWorkOrderApi.WorkOrder) {
       row.qtyAvailable === null || row.qtyAvailable === undefined
         ? ''
         : String(row.qtyAvailable),
+    price_dropship: priceText,
+    price_pickup: priceText,
     product_length: dimText(row.lengthCm),
     product_width: dimText(row.widthCm),
     product_height: dimText(row.heightCm),
@@ -744,12 +1096,25 @@ function tplAttrValue(f: TplField) {
   const hay = fieldHay(f);
   const row = activeTask.value;
   if (!row) return '';
+  if (f.valueSource) {
+    const fromSrc = resolveTplSource(f.valueSource, row);
+    if (fromSrc) return fromSrc;
+  }
   if (/brand|品牌/.test(hay)) {
     return parseSavedListingValues(row).brand || '';
   }
   if (/upc|gtin/.test(hay)) return row.upc || '';
   if (/seller sku|shop sku|vendor style|item code|platform sku/.test(hay)) {
     return row.externalSku || '';
+  }
+  if (
+    /\b(list\s*)?price\b|售价|单价|标价|销售价|selling price|item price|your price|standard price/.test(
+      hay,
+    )
+  ) {
+    return row.price === null || row.price === undefined
+      ? ''
+      : String(row.price);
   }
   if (/display color|color family|\bcolor\b|main color/.test(hay)) {
     return row.mainColor || row.variantLabel || '';
@@ -922,10 +1287,35 @@ function familyProgress(root: XqWorkOrderApi.WorkOrder) {
 }
 
 function familyProgressText(root: XqWorkOrderApi.WorkOrder) {
+  const members = comboMembers(root);
+  const variantN = Math.max(0, members.length - 1);
   const p = familyProgress(root);
-  if (p.running > 0) return `${p.done}/${p.total} · ${p.running} 进行中`;
-  if (p.done > 0) return `${p.done}/${p.total} 已完成`;
-  return `${p.total} 个变体`;
+  const shape = variantN > 0 ? `1 主体 · ${variantN} 变体` : '单品';
+  if (p.running > 0)
+    return `${shape} · ${p.done}/${p.total} · ${p.running} 进行中`;
+  if (p.done > 0) return `${shape} · ${p.done}/${p.total} 已完成`;
+  return shape;
+}
+
+function cleanText(v?: null | number | string) {
+  const s = String(v ?? '').trim();
+  if (!s || s.toLowerCase() === 'null' || s.toLowerCase() === 'undefined') {
+    return '';
+  }
+  return s;
+}
+
+function skuLabel(row: XqWorkOrderApi.WorkOrder) {
+  return (
+    cleanText(row.externalSku) ||
+    cleanText(row.itemCode) ||
+    cleanText(row.title) ||
+    (row.id === null || row.id === undefined ? '—' : String(row.id))
+  );
+}
+
+function variantCaption(member: XqWorkOrderApi.WorkOrder) {
+  return cleanText(member.variantLabel) || cleanText(member.mainColor) || '';
 }
 
 function toggleRpaSelect(
@@ -959,7 +1349,7 @@ async function enqueueFamilyCopyRpa() {
       selectedIds,
     });
     message.success(
-      `已入队 ${n} 条文案 RPA（扁平拉取）；未勾选变体将在主体完成后沿用主体文案`,
+      `已入队 ${n} 条并自动触发文案 RPA；未勾选变体将在主体完成后沿用主体文案`,
     );
     await loadTasks({ soft: true });
   } catch (error: any) {
@@ -969,16 +1359,62 @@ async function enqueueFamilyCopyRpa() {
   }
 }
 
-function parseSellingPoints(raw?: string) {
-  const lines = String(raw || '')
-    .split(/\r?\n+/)
-    .map((l) => l.replace(/^\s*[•\-*]\s*/, '').trim())
-    .filter(Boolean);
-  const points = Array.from(
-    { length: FEATURE_COUNT },
-    (_, i) => lines[i] || '',
-  );
-  return points;
+async function testCopyPull(dryRun = true) {
+  pullTestBusy.value = true;
+  pullTestOpen.value = true;
+  pullTestJson.value = '请求中…';
+  try {
+    const data = await pullXqWorkOrderCopyRpa({ dryRun, limit: 20 });
+    pullTestJson.value = JSON.stringify(data, null, 2);
+  } catch (error: any) {
+    pullTestJson.value = error?.message || '拉取失败';
+  } finally {
+    pullTestBusy.value = false;
+  }
+}
+
+function parseSellingPoints(raw?: unknown) {
+  let lines: string[] = [];
+  if (Array.isArray(raw)) {
+    lines = raw
+      .map((x) =>
+        String(x ?? '')
+          .replace(/^\s*[•·\-*\d.、)]+\s*/, '')
+          .trim(),
+      )
+      .filter(Boolean);
+  } else {
+    const text = String(raw ?? '').trim();
+    if (text.startsWith('[')) {
+      try {
+        return parseSellingPoints(JSON.parse(text));
+      } catch {
+        // fall through
+      }
+    }
+    lines = text
+      .split(/\r?\n+/)
+      .map((l) => l.replace(/^\s*[•·\-*\d.、)]+\s*/, '').trim())
+      .filter(Boolean);
+  }
+  return Array.from({ length: FEATURE_COUNT }, (_, i) => lines[i] || '');
+}
+
+function sellingPointsFromRow(row: XqWorkOrderApi.WorkOrder) {
+  const fromCol = parseSellingPoints(row.contentSellingPoints);
+  if (fromCol.some((p) => p.trim())) return fromCol;
+  try {
+    const raw = row.copyResultJson ? JSON.parse(row.copyResultJson) : null;
+    if (raw && typeof raw === 'object') {
+      const fromJson = parseSellingPoints(
+        raw.sellingPoints ?? raw.bulletPoints ?? raw.bullets,
+      );
+      if (fromJson.some((p) => p.trim())) return fromJson;
+    }
+  } catch {
+    // ignore
+  }
+  return fromCol;
 }
 
 function parseHighlightTags(raw: unknown): string[] {
@@ -1005,17 +1441,38 @@ function parseHighlightTags(raw: unknown): string[] {
 
 function parseCopyJson(row: XqWorkOrderApi.WorkOrder) {
   if (!row.copyResultJson) {
-    return { highlightTags: [] as string[], description: '' };
+    return {
+      highlightTags: [] as string[],
+      description: '',
+      copyPrompts: normalizeCopyPromptPack(null),
+      raw: {} as Record<string, unknown>,
+    };
   }
   try {
     const obj = JSON.parse(row.copyResultJson);
     return {
       highlightTags: parseHighlightTags(obj.highlightStyle),
       description: String(obj.description || '').trim(),
+      copyPrompts: normalizeCopyPromptPack(obj.copyPrompts),
+      raw: obj && typeof obj === 'object' ? obj : {},
     };
   } catch {
-    return { highlightTags: [] as string[], description: '' };
+    return {
+      highlightTags: [] as string[],
+      description: '',
+      copyPrompts: normalizeCopyPromptPack(null),
+      raw: {} as Record<string, unknown>,
+    };
   }
+}
+
+function applyCopyPrompts(pack: CopyPromptPack) {
+  copyPrompts.title = pack.title || '';
+  copyPrompts.description = pack.description || '';
+  copyPrompts.features = Array.from(
+    { length: FEATURE_COUNT },
+    (_, i) => pack.features[i] || '',
+  );
 }
 
 function fillForm(row: null | XqWorkOrderApi.WorkOrder) {
@@ -1026,18 +1483,20 @@ function fillForm(row: null | XqWorkOrderApi.WorkOrder) {
     form.styleDescription = '';
     form.highlightTags = [];
     form.selectedHighlight = [];
+    applyCopyPrompts(normalizeCopyPromptPack(null));
     listingCategoryId.value = undefined;
     listingShopId.value = undefined;
     listingCountryCode.value = undefined;
     return;
   }
   form.contentTitle = row.contentTitle || row.title || '';
-  form.sellingPoints = parseSellingPoints(row.contentSellingPoints);
+  form.sellingPoints = sellingPointsFromRow(row);
   const parsed = parseCopyJson(row);
   form.description = parsed.description;
   form.styleDescription = row.variantLabel || row.mainColor || '';
   form.highlightTags = parsed.highlightTags;
   form.selectedHighlight = [...parsed.highlightTags];
+  applyCopyPrompts(parsed.copyPrompts);
   const root = comboRootOf(row);
   listingCategoryId.value =
     asId(row.listingCategoryId) || asId(root?.listingCategoryId);
@@ -1046,6 +1505,174 @@ function fillForm(row: null | XqWorkOrderApi.WorkOrder) {
     asId(row.listingCountryCode) || asId(root?.listingCountryCode);
   ensureDefaultCountry();
   fillTplFieldValues();
+}
+
+const activePromptCount = computed(() => copyPromptCount(copyPrompts));
+
+function buildMergedCopyResultJson(
+  row: XqWorkOrderApi.WorkOrder,
+  prompts: CopyPromptPack,
+) {
+  const parsed = parseCopyJson(row);
+  const next = {
+    ...parsed.raw,
+    title: form.contentTitle.trim() || parsed.raw.title,
+    sellingPoints:
+      buildSellingText() ||
+      parsed.raw.sellingPoints ||
+      row.contentSellingPoints,
+    description: form.description.trim() || parsed.description,
+    highlightStyle: form.selectedHighlight,
+    copyPrompts: {
+      title: prompts.title.trim(),
+      features: prompts.features.map((f) => String(f || '').trim()),
+      description: prompts.description.trim(),
+    },
+  };
+  return JSON.stringify(next);
+}
+
+async function saveCopyPrompts() {
+  const row = activeTask.value;
+  if (!row?.id) {
+    message.warning('请先选择左侧任务');
+    return;
+  }
+  promptSaving.value = true;
+  try {
+    await updateXqWorkOrder({
+      id: row.id,
+      copyResultJson: buildMergedCopyResultJson(row, copyPrompts),
+    });
+    message.success('文案提示词已保存');
+    promptOpen.value = false;
+    await loadTasks({ soft: true });
+    const next = findTask(row.id);
+    if (next) selectTask(next);
+  } catch (error: any) {
+    message.error(error?.message || '保存提示词失败');
+    throw error instanceof Error
+      ? error
+      : new Error(error?.message || '保存失败');
+  } finally {
+    promptSaving.value = false;
+  }
+}
+
+function openPromptModal() {
+  if (!activeTask.value) {
+    message.warning('请先选择左侧任务');
+    return;
+  }
+  promptOpen.value = true;
+}
+
+function promptForRevise(
+  target: 'all' | 'description' | 'feature' | 'title',
+  featureIndex = 0,
+) {
+  if (target === 'title') return copyPrompts.title.trim();
+  if (target === 'description') return copyPrompts.description.trim();
+  if (target === 'feature') {
+    return String(copyPrompts.features[featureIndex] || '').trim();
+  }
+  const parts = [
+    copyPrompts.title && `【标题】${copyPrompts.title}`,
+    ...copyPrompts.features
+      .map((f, i) => (f.trim() ? `【卖点${i + 1}】${f.trim()}` : ''))
+      .filter(Boolean),
+    copyPrompts.description && `【长描述】${copyPrompts.description}`,
+  ].filter(Boolean);
+  return parts.join('\n');
+}
+
+async function persistCopyPromptsToOrder(
+  order: XqWorkOrderApi.WorkOrder,
+  pack: CopyPromptPack,
+) {
+  if (!order.id) return;
+  let raw: Record<string, unknown>;
+  try {
+    raw = order.copyResultJson ? JSON.parse(order.copyResultJson) : {};
+  } catch {
+    raw = {};
+  }
+  const next = {
+    ...raw,
+    copyPrompts: {
+      title: pack.title.trim(),
+      features: pack.features.map((f) => String(f || '').trim()),
+      description: pack.description.trim(),
+    },
+  };
+  await updateXqWorkOrder({
+    id: order.id,
+    copyResultJson: JSON.stringify(next),
+  });
+}
+
+function flatTaskMembers() {
+  const out: XqWorkOrderApi.WorkOrder[] = [];
+  for (const row of tasks.value) {
+    out.push(...comboMembers(row));
+  }
+  return out;
+}
+
+async function onBatchCopyPromptFile(file: File) {
+  batchPromptBusy.value = true;
+  try {
+    const rows = await parseCopyPromptsFromFile(file);
+    const members = flatTaskMembers();
+    const bySku = new Map(
+      members
+        .filter((m) => m.externalSku)
+        .map((m) => [String(m.externalSku).trim(), m] as const),
+    );
+    let ok = 0;
+    let skip = 0;
+    for (const row of rows) {
+      let sku = row.sku.trim();
+      let pack: CopyPromptPack = {
+        title: row.title,
+        features: row.features,
+        description: row.description,
+      };
+      if (!sku) {
+        const cur = activeTask.value;
+        if (!cur?.externalSku) {
+          skip += 1;
+          continue;
+        }
+        sku = cur.externalSku;
+      }
+      const target = bySku.get(sku);
+      if (!target) {
+        skip += 1;
+        continue;
+      }
+      await persistCopyPromptsToOrder(target, pack);
+      ok += 1;
+      if (target.id === activeTask.value?.id) {
+        applyCopyPrompts(pack);
+      }
+    }
+    message.success(
+      `已导入 ${ok} 条文案提示词${skip ? `，跳过 ${skip} 条（无匹配 SKU）` : ''}`,
+    );
+    batchPromptOpen.value = false;
+    promptOpen.value = true;
+    await loadTasks({ soft: true });
+    if (activeTask.value?.id) {
+      const next = findTask(activeTask.value.id);
+      if (next) selectTask(next);
+    }
+  } catch (error: any) {
+    message.error(error?.message || '导入失败');
+  } finally {
+    batchPromptBusy.value = false;
+  }
+  return false;
 }
 
 function selectTask(row: XqWorkOrderApi.WorkOrder) {
@@ -1071,26 +1698,32 @@ async function loadTemplates() {
   const platformId = listingPlatformId.value;
   const shopId = listingShopId.value;
   const country = listingCountryCode.value;
-  const categoryId = listingCategoryId.value;
+  const categoryId = asId(listingCategoryId.value);
   fieldPool.value = null;
   categoryTemplate.value = null;
   templateLoaded.value = false;
   if (!platformId) return;
   templateLoading.value = true;
   try {
-    const pool = await getXqFieldPool({
-      platformId,
-      shopId,
-      country,
-    });
-    fieldPool.value = pool || null;
-    if ((pool?.fields?.length || 0) === 0 && categoryId) {
-      categoryTemplate.value = await getXqCategoryFieldTemplate(categoryId);
+    // 分区配置仍可从 field-pool 取；表单字段必须以类目模板为准
+    try {
+      const pool = await getXqFieldPool({
+        platformId,
+        shopId,
+        country,
+      });
+      fieldPool.value = pool || null;
+    } catch {
+      fieldPool.value = null;
     }
+    categoryTemplate.value = categoryId
+      ? await getXqCategoryFieldTemplate(categoryId)
+      : null;
     templateLoaded.value = true;
     fillTplFieldValues();
   } catch {
     fieldPool.value = null;
+    categoryTemplate.value = null;
     if (categoryId) {
       try {
         categoryTemplate.value = await getXqCategoryFieldTemplate(categoryId);
@@ -1132,7 +1765,9 @@ watch(
       if (!listingShopId.value && listingShops.value.length === 1) {
         listingShopId.value = asId(listingShops.value[0]!.id);
         ensureDefaultCountry();
-        await persistListingMeta();
+        await Promise.all([persistListingMeta(), loadSpecialRules()]);
+      } else {
+        await loadSpecialRules();
       }
     } catch {
       listingShops.value = [];
@@ -1140,6 +1775,10 @@ watch(
   },
   { immediate: true },
 );
+
+watch(listingShopId, () => {
+  void loadSpecialRules();
+});
 
 watch(
   () =>
@@ -1193,7 +1832,7 @@ async function persistListingMeta() {
 async function onListingShopChange(id?: string) {
   listingShopId.value = asId(id);
   ensureDefaultCountry();
-  await persistListingMeta();
+  await Promise.all([persistListingMeta(), loadSpecialRules()]);
 }
 
 async function onListingCategoryChange(id?: string) {
@@ -1304,7 +1943,7 @@ function openRegenerateCopy(
     target === 'feature'
       ? Math.max(0, Math.min(FEATURE_COUNT - 1, featureIndex))
       : 0;
-  revisionPrompt.value = '';
+  revisionPrompt.value = promptForRevise(target, reviseFeatureIndex.value);
   regenerateOpen.value = true;
 }
 
@@ -1728,6 +2367,9 @@ watch(
               >
                 执行文案
               </Button>
+              <Button size="small" block @click="batchPromptOpen = true">
+                批量导入提示词
+              </Button>
             </div>
             <div v-for="row in tasks" :key="row.id" class="xq-list-group">
               <div
@@ -1737,6 +2379,7 @@ watch(
                 :class="{
                   active: isLeftActive(member),
                   main: isFamilyMain(member, row),
+                  variant: !isFamilyMain(member, row),
                 }"
                 role="button"
                 tabindex="0"
@@ -1765,8 +2408,15 @@ watch(
                   />
                 </div>
                 <div class="xq-list-body">
-                  <div class="xq-list-sku" :title="member.externalSku">
-                    {{ member.externalSku || '—' }}
+                  <div class="xq-list-sku" :title="skuLabel(member)">
+                    {{ skuLabel(member) }}
+                  </div>
+                  <div
+                    v-if="!isFamilyMain(member, row) && variantCaption(member)"
+                    class="xq-list-variant"
+                    :title="variantCaption(member)"
+                  >
+                    {{ variantCaption(member) }}
                   </div>
                   <div class="xq-list-flags">
                     <Tag
@@ -1776,6 +2426,7 @@ watch(
                     >
                       主体
                     </Tag>
+                    <Tag v-else color="cyan" class="xq-mini-tag"> 变体 </Tag>
                     <Tag :color="statusColor(member)" class="xq-mini-tag">
                       {{ statusText(member) }}
                     </Tag>
@@ -1800,141 +2451,288 @@ watch(
 
           <!-- 右：编辑区 -->
           <section v-if="activeTask" class="xq-detail">
+            <Alert
+              v-if="isReviewPendingActive || route.query.review === '1'"
+              type="warning"
+              show-icon
+              class="xq-review-banner"
+              message="当前处于审核中：请核对成品图与文案，无误后点「确认图文无误」进入待上架；有问题可审图驳回。"
+            />
             <div class="xq-detail-head">
-              <div class="xq-head-imgs">
-                <div
-                  v-for="(slot, i) in headerImageSlots"
-                  :key="`head-img-${i}`"
-                  class="xq-wb-img"
-                >
-                  <div v-if="slot.url" class="xq-wb-img-fill">
-                    <Image
-                      :src="slot.url"
-                      :preview="true"
-                      :width="80"
-                      :height="80"
-                    />
-                    <button
-                      type="button"
-                      class="xq-wb-img-del"
-                      @click="clearAiImage(i)"
-                    >
-                      移除
-                    </button>
+              <div class="xq-head-imgs-bar">
+                <div class="xq-head-imgs-title">
+                  <div class="xq-head-imgs-title-left">
+                    <b>成品图</b>
+                    <span class="xq-head-imgs-count">
+                      {{ wbImageFilled }} / {{ headerImageSlots.length }}
+                    </span>
+                    <span class="xq-muted">悬停可移除 · ≤5MB · png/jpg</span>
                   </div>
-                  <Upload
-                    v-else
-                    accept="image/*"
-                    :show-upload-list="false"
-                    :disabled="imageUploading !== null"
-                    :before-upload="
-                      (file) => {
-                        onUploadAiImage(i, file as File);
-                        return false;
-                      }
-                    "
+                  <div class="xq-head-imgs-actions">
+                    <Button
+                      type="primary"
+                      ghost
+                      size="small"
+                      class="xq-review-entry"
+                      :disabled="wbImageFilled === 0"
+                      @click="openImageReview(0)"
+                    >
+                      <template #icon>
+                        <IconifyIcon icon="lucide:scan-search" />
+                      </template>
+                      审图对比
+                    </Button>
+                    <Button
+                      v-if="isReviewPendingActive"
+                      type="primary"
+                      size="small"
+                      @click="confirmReviewDone"
+                    >
+                      确认图文无误
+                    </Button>
+                  </div>
+                </div>
+                <div class="xq-head-imgs">
+                  <div
+                    v-for="(slot, i) in headerImageSlots"
+                    :key="`head-img-${i}`"
+                    class="xq-wb-img"
+                    :class="{
+                      'has-url': !!slot.url,
+                      'is-rejected': !!slot.rejectReason,
+                    }"
                   >
-                    <div class="xq-wb-img-upload">
-                      <span>{{ imageUploading === i ? '…' : '+' }}</span>
-                      <em>{{ slot.label }}</em>
+                    <div v-if="slot.url" class="xq-wb-img-fill">
+                      <Image
+                        :src="slot.url"
+                        :preview="true"
+                        :width="72"
+                        :height="72"
+                      />
+                      <button
+                        type="button"
+                        class="xq-wb-img-del"
+                        title="移除"
+                        @click.stop="clearAiImage(i)"
+                      >
+                        <IconifyIcon icon="lucide:x" />
+                      </button>
+                      <div
+                        v-if="slot.rejectReason"
+                        class="xq-wb-img-reject"
+                        :title="slot.rejectReason"
+                      >
+                        {{ slot.rejectReason }}
+                      </div>
                     </div>
-                  </Upload>
+                    <Upload
+                      v-else
+                      accept="image/*"
+                      :show-upload-list="false"
+                      :disabled="imageUploading !== null"
+                      :before-upload="
+                        (file) => {
+                          onUploadAiImage(i, file as File);
+                          return false;
+                        }
+                      "
+                    >
+                      <div class="xq-wb-img-upload">
+                        <span>{{ imageUploading === i ? '…' : '+' }}</span>
+                      </div>
+                    </Upload>
+                    <span class="xq-wb-img-label" :title="slot.label">{{
+                      slot.label
+                    }}</span>
+                  </div>
                 </div>
               </div>
-              <p class="xq-head-hint">图片 ≤ 5MB，支持 png / jpg / jpeg</p>
               <div class="xq-head-meta">
-                <div class="xq-head-fields">
-                  <div class="xq-listing-field">
-                    <span class="xq-listing-flag">平台</span>
-                    <b class="xq-plat-name">{{
-                      listingPlatformName || '当前平台'
-                    }}</b>
+                <div class="xq-head-row">
+                  <div class="xq-head-fields">
+                    <div class="xq-chip">
+                      <span class="xq-listing-flag">平台</span>
+                      <b class="xq-plat-name">{{
+                        listingPlatformName || '当前平台'
+                      }}</b>
+                    </div>
+                    <div class="xq-chip">
+                      <span class="xq-listing-flag">店铺</span>
+                      <Select
+                        :value="listingShopId"
+                        allow-clear
+                        show-search
+                        size="small"
+                        option-filter-prop="label"
+                        placeholder="选择店铺"
+                        class="xq-chip-ctl"
+                        :options="shopOptions"
+                        :disabled="!listingPlatformId"
+                        @change="(v: any) => onListingShopChange(v)"
+                      />
+                    </div>
+                    <div class="xq-chip">
+                      <span class="xq-listing-flag">分类</span>
+                      <TreeSelect
+                        :value="listingCategoryId"
+                        allow-clear
+                        show-search
+                        size="small"
+                        tree-default-expand-all
+                        tree-node-filter-prop="title"
+                        :tree-data="categoryTreeData"
+                        :disabled="!listingPlatformId"
+                        placeholder="选择分类"
+                        class="xq-chip-ctl xq-chip-ctl-wide"
+                        :dropdown-style="{
+                          maxHeight: '360px',
+                          overflow: 'auto',
+                        }"
+                        @change="(v: any) => onListingCategoryChange(v)"
+                      />
+                    </div>
+                    <div class="xq-chip">
+                      <span class="xq-listing-flag">国家</span>
+                      <Select
+                        :value="listingCountryCode"
+                        allow-clear
+                        show-search
+                        size="small"
+                        option-filter-prop="label"
+                        placeholder="国家"
+                        class="xq-chip-ctl xq-chip-ctl-sm"
+                        :options="countryOptions"
+                        @change="(v: any) => onListingCountryChange(v)"
+                      />
+                    </div>
+                    <div
+                      v-for="fact in headerFacts"
+                      :key="fact.key"
+                      class="xq-chip"
+                    >
+                      <span class="xq-listing-flag">{{ fact.label }}</span>
+                      <b>{{ fact.value || '—' }}</b>
+                    </div>
                   </div>
-                  <div class="xq-listing-field">
-                    <span class="xq-listing-flag">店铺</span>
-                    <Select
-                      :value="listingShopId"
-                      allow-clear
-                      show-search
-                      option-filter-prop="label"
-                      placeholder="选择店铺"
-                      style="min-width: 132px"
-                      :options="shopOptions"
-                      :disabled="!listingPlatformId"
-                      @change="(v: any) => onListingShopChange(v)"
-                    />
-                  </div>
-                  <div class="xq-listing-field">
-                    <span class="xq-listing-flag">分类</span>
-                    <TreeSelect
-                      :value="listingCategoryId"
-                      allow-clear
-                      show-search
-                      tree-default-expand-all
-                      tree-node-filter-prop="title"
-                      :tree-data="categoryTreeData"
-                      :disabled="!listingPlatformId"
-                      placeholder="选择分类"
-                      style="min-width: 160px"
-                      :dropdown-style="{ maxHeight: '360px', overflow: 'auto' }"
-                      @change="(v: any) => onListingCategoryChange(v)"
-                    />
-                  </div>
-                  <div class="xq-listing-field">
-                    <span class="xq-listing-flag">国家</span>
-                    <Select
-                      :value="listingCountryCode"
-                      allow-clear
-                      show-search
-                      option-filter-prop="label"
-                      placeholder="选择国家"
-                      style="min-width: 120px"
-                      :options="countryOptions"
-                      @change="(v: any) => onListingCountryChange(v)"
-                    />
-                  </div>
-                  <div
-                    v-for="fact in headerFacts"
-                    :key="fact.key"
-                    class="xq-listing-field xq-listing-fact"
-                  >
-                    <span class="xq-listing-flag">{{ fact.label }}</span>
-                    <b>{{ fact.value || '—' }}</b>
+                  <div class="xq-head-actions">
+                    <Button
+                      size="small"
+                      :type="sourcePanelOpen ? 'primary' : 'default'"
+                      :title="sourcePanelOpen ? '关闭原内容' : '打开原内容抽屉'"
+                      @click="toggleSourcePanel()"
+                    >
+                      {{ sourceSku }}
+                    </Button>
+                    <Button
+                      size="small"
+                      :type="activePromptCount ? 'primary' : 'default'"
+                      title="查看 / 编辑文案提示词"
+                      @click="openPromptModal"
+                    >
+                      提示词{{
+                        activePromptCount ? ` ${activePromptCount}` : ''
+                      }}
+                    </Button>
+                    <Tag
+                      v-if="activeTask?.imageUserId"
+                      color="purple"
+                      :title="`用户 #${activeTask.imageUserId}`"
+                    >
+                      {{ imageUserLabel(activeTask.imageUserId) }}
+                    </Tag>
+                    <Button
+                      size="small"
+                      :disabled="!canAssignCurrent()"
+                      @click="openAssignCurrent"
+                    >
+                      {{
+                        activeTask?.imageUserId && !isImageStarted(activeTask)
+                          ? '改派美工'
+                          : '分配美工'
+                      }}
+                    </Button>
+                    <Button
+                      size="small"
+                      type="primary"
+                      :loading="saving"
+                      @click="saveCurrent"
+                    >
+                      保存
+                    </Button>
                   </div>
                 </div>
-                <div class="xq-head-actions">
-                  <Tag
-                    v-if="activeTask?.imageUserId"
-                    color="purple"
-                    :title="`用户 #${activeTask.imageUserId}`"
-                  >
-                    {{ imageUserLabel(activeTask.imageUserId) }}
-                  </Tag>
-                  <Button
-                    :disabled="!canAssignCurrent()"
-                    @click="openAssignCurrent"
-                  >
-                    {{
-                      activeTask?.imageUserId && !isImageStarted(activeTask)
-                        ? '改派美工'
-                        : '分配美工'
-                    }}
-                  </Button>
-                  <Button type="primary" :loading="saving" @click="saveCurrent">
-                    保存
-                  </Button>
+                <div class="xq-head-row xq-head-rules">
+                  <div class="xq-rule-card">
+                    <span class="xq-listing-flag">SKU 规则</span>
+                    <Select
+                      v-model:value="selectedSkuRuleId"
+                      allow-clear
+                      show-search
+                      size="small"
+                      option-filter-prop="label"
+                      placeholder="选特殊配置规则"
+                      class="xq-rule-select"
+                      :options="skuRuleOptions"
+                      :disabled="!listingShopId || !skuRuleOptions.length"
+                    />
+                    <code
+                      class="xq-rule-preview"
+                      :title="previewSkuByRule(selectedSkuRule)"
+                      >{{ previewSkuByRule(selectedSkuRule) }}</code>
+                  </div>
+                  <div class="xq-rule-card">
+                    <span class="xq-listing-flag">价格规则</span>
+                    <Select
+                      v-model:value="selectedMarkupRuleId"
+                      allow-clear
+                      show-search
+                      size="small"
+                      option-filter-prop="label"
+                      placeholder="选特殊配置规则"
+                      class="xq-rule-select"
+                      :options="markupRuleOptions"
+                      :disabled="!listingShopId || !markupRuleOptions.length"
+                    />
+                    <span
+                      v-if="selectedMarkupRule"
+                      class="xq-rule-ratio"
+                      :title="
+                        selectedMarkupRule.summary ||
+                        markupRatioText(selectedMarkupRule)
+                      "
+                    >
+                      {{ markupRatioText(selectedMarkupRule) || '—' }}
+                    </span>
+                    <code
+                      v-if="calcSellByMarkupRule(selectedMarkupRule)"
+                      class="xq-rule-preview"
+                      :title="`货价 ${activeTask?.price} → 售价 ${calcSellByMarkupRule(selectedMarkupRule)}`"
+                    >
+                      ≈{{ calcSellByMarkupRule(selectedMarkupRule) }}
+                    </code>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div v-if="showCopyEditor" class="xq-copy-section">
-              <!-- <label class="xq-field-label">文案内容</label> -->
-
               <div class="xq-edit-block">
-                <!-- <label class="xq-field-label">类目模板</label> -->
                 <Spin :spinning="templateLoading">
                   <div v-if="!listingPlatformId" class="xq-tpl-empty">
                     请从平台工作台进入后再加载模板字段
+                  </div>
+                  <div v-else-if="!listingCategoryId" class="xq-tpl-empty">
+                    请先选择上方「分类」，将按该类目的表格/接口模板展示字段
+                  </div>
+                  <div
+                    v-else-if="
+                      templateLoaded &&
+                      !templateLoading &&
+                      editZones.length === 0
+                    "
+                    class="xq-tpl-empty"
+                  >
+                    当前分类暂无字段模板，请在类目字段配置里补齐后再编辑
                   </div>
                   <div v-else class="xq-zone-board">
                     <section
@@ -2046,11 +2844,7 @@ watch(
                             />
                           </div>
                         </div>
-                        <div
-                          v-if="zone.fields.length"
-                          class="xq-zone-list"
-                          :class="{ tall: zone.key === 'other' }"
-                        >
+                        <div v-if="zone.fields.length" class="xq-zone-list">
                           <EditFieldRow
                             v-for="f in zone.fields"
                             v-show="zoneFieldVisible(zone.key, f)"
@@ -2059,8 +2853,14 @@ watch(
                             :code="f.code"
                             :label="f.label || f.code"
                             :required="!!f.required"
+                            :fixed="!!f.fixed"
+                            :group-label="f.groupLabel || ''"
+                            :remark="f.remark || ''"
                             :show-zh="showZh"
                             :placeholder="f.defaultValue || f.code"
+                            :type="f.type"
+                            :values-list="f.valuesList"
+                            :options="f.options"
                           />
                         </div>
                         <div
@@ -2156,6 +2956,14 @@ watch(
           description="暂无数据：请先从选品库下发到工作台；若已下发请到「任务列表」确认"
         />
       </Spin>
+
+      <!-- 原内容：半屏详情抽屉（选品库同款布局） -->
+      <XqSourceProductDrawer
+        v-model:open="sourcePanelOpen"
+        :task="activeTask"
+        :family="sourceFamily"
+        @select-member="onSelectSourceMember"
+      />
     </div>
 
     <Modal
@@ -2194,6 +3002,79 @@ watch(
     </Modal>
 
     <Modal
+      v-model:open="promptOpen"
+      :title="`文案提示词 · ${sourceSku}`"
+      :width="720"
+      destroy-on-close
+      :confirm-loading="promptSaving"
+      ok-text="保存提示词"
+      cancel-text="关闭"
+      @ok="saveCopyPrompts"
+    >
+      <p class="xq-regen-tip">
+        导入或填写后，点「AI
+        改写」会自动带上对应项提示词；也可在此直接编辑后保存。
+      </p>
+      <label class="xq-regen-label">标题提示词</label>
+      <Input.TextArea
+        v-model:value="copyPrompts.title"
+        :rows="2"
+        allow-clear
+        placeholder="例如：更突出材质与场景，控制在 150 字符内"
+        class="xq-prompt-field"
+      />
+      <label class="xq-regen-label">卖点提示词</label>
+      <div class="xq-points-stack">
+        <Input
+          v-for="(_, idx) in copyPrompts.features"
+          :key="`cp-f-${idx}`"
+          v-model:value="copyPrompts.features[idx]"
+          :placeholder="`卖点 ${idx + 1} 提示词`"
+          allow-clear
+        />
+      </div>
+      <label class="xq-regen-label">长描述提示词</label>
+      <Input.TextArea
+        v-model:value="copyPrompts.description"
+        :rows="4"
+        allow-clear
+        placeholder="例如：补充尺寸与适用场景，语气更专业，保持英文完整句子"
+      />
+    </Modal>
+
+    <Modal
+      v-model:open="batchPromptOpen"
+      title="批量导入文案提示词"
+      :footer="null"
+      destroy-on-close
+      :width="560"
+    >
+      <p class="xq-regen-tip">
+        支持 Excel / JSON / txt。按 SKU
+        写入当前列表任务的标题、卖点、长描述提示词；导入后可在「提示词」弹窗查看。
+      </p>
+      <div class="xq-batch-prompt-actions">
+        <Button @click="exportCopyPromptTemplate(sourceSku)">
+          下载 Excel 模板
+        </Button>
+        <Upload
+          :show-upload-list="false"
+          accept=".xlsx,.xls,.json,.txt"
+          :disabled="batchPromptBusy"
+          :before-upload="(file) => onBatchCopyPromptFile(file as File)"
+        >
+          <Button type="primary" :loading="batchPromptBusy">
+            选择文件导入
+          </Button>
+        </Upload>
+      </div>
+      <pre class="xq-batch-prompt-sample">
+sku, title, feature1…feature5, description
+或 JSON：[{ "sku":"DYHY25318", "title":"…", "features":["…"], "description":"…" }]
+或文本：【SKU】xxx / 【标题提示词】 / 【卖点1提示词】 / 【长描述提示词】</pre>
+    </Modal>
+
+    <Modal
       v-model:open="regenerateOpen"
       :title="`AI 改写 · ${reviseTargetLabel}`"
       :confirm-loading="regenerating"
@@ -2219,6 +3100,115 @@ watch(
                 : '例如：标题更突出复古；卖点强调收纳；长描述补充场景'
         "
       />
+    </Modal>
+
+    <Modal
+      v-model:open="reviewOpen"
+      :title="`审图对比 · ${reviewSlot?.label || ''}`"
+      :width="960"
+      destroy-on-close
+      :footer="null"
+    >
+      <Alert
+        type="info"
+        show-icon
+        class="xq-review-tip"
+        message="对照 Giga 原图与当前这张成品图。驳回原因只绑在这一张上，该图会红框显示原因。"
+      />
+      <div class="xq-review-grid">
+        <div class="xq-review-col">
+          <div class="xq-review-cap">Giga 原图参考</div>
+          <div v-if="sourceImages.length" class="xq-review-thumbs">
+            <div
+              v-for="(url, si) in sourceImages"
+              :key="`rv-src-${si}`"
+              class="xq-review-thumb"
+            >
+              <Image :src="url" :preview="true" />
+            </div>
+          </div>
+          <Empty v-else description="暂无原图" :image-size="48" />
+        </div>
+        <div class="xq-review-col is-ai">
+          <div class="xq-review-cap">当前成品图</div>
+          <div
+            class="xq-review-main"
+            :class="{ 'is-rejected': !!reviewSlot?.rejectReason }"
+          >
+            <Image
+              v-if="reviewSlot?.url"
+              :src="reviewSlot.url"
+              :preview="true"
+            />
+            <span v-else>无图</span>
+          </div>
+          <p v-if="reviewSlot?.rejectReason" class="xq-review-reject-text">
+            已驳回：{{ reviewSlot.rejectReason }}
+          </p>
+          <div class="xq-review-slot-nav">
+            <Button
+              size="small"
+              :disabled="reviewIndex <= 0"
+              @click="reviewIndex -= 1"
+            >
+              上一张
+            </Button>
+            <span class="xq-muted">
+              {{ reviewIndex + 1 }} / {{ headerImageSlots.length }}
+            </span>
+            <Button
+              size="small"
+              :disabled="reviewIndex >= headerImageSlots.length - 1"
+              @click="reviewIndex += 1"
+            >
+              下一张
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div class="xq-review-reason">
+        <label>驳回原因 <span class="req">*</span></label>
+        <Textarea
+          v-model:value="reviewRejectReason"
+          :rows="4"
+          placeholder="例如：主图背景杂乱、产品比例失真、细节图未体现材质…"
+        />
+      </div>
+      <div class="xq-review-footer">
+        <Button @click="reviewOpen = false">关闭</Button>
+        <Button
+          type="primary"
+          danger
+          :loading="reviewBusy"
+          :disabled="!reviewSlot?.url"
+          @click="submitImageReject"
+        >
+          驳回图片
+        </Button>
+      </div>
+    </Modal>
+
+    <Modal
+      v-model:open="pullTestOpen"
+      title="rpa-copy-pull 探测"
+      :width="560"
+      destroy-on-close
+      :footer="null"
+    >
+      <p class="xq-pull-test-tip">
+        jobs 是可领取的 queued。deskSample 是你工作台上进行中任务的真实
+        rpaCopyStatus / assigneeUserId，用来核对列表「排队中」和库是否一致。
+      </p>
+      <div class="xq-pull-test-actions">
+        <Button
+          size="small"
+          :loading="pullTestBusy"
+          @click="testCopyPull(true)"
+        >
+          再探测
+        </Button>
+      </div>
+      <pre class="xq-pull-test-json">{{ pullTestJson }}</pre>
     </Modal>
   </Page>
 </template>
@@ -2298,6 +3288,31 @@ watch(
   color: #64748b;
 }
 
+.xq-pull-test-tip {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.xq-pull-test-actions {
+  margin-bottom: 8px;
+}
+
+.xq-pull-test-json {
+  max-height: 360px;
+  padding: 10px 12px;
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #0f172a;
+  word-break: break-all;
+  white-space: pre-wrap;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
 .xq-list-item {
   display: flex;
   flex-direction: row;
@@ -2318,8 +3333,24 @@ watch(
   background: #f8fafc;
 }
 
+.xq-list-item.variant {
+  margin-left: 12px;
+  background: #fff;
+  border-left: 2px solid #e2e8f0;
+}
+
 .xq-list-item:hover {
   background: #f3f4f6;
+}
+
+.xq-list-variant {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  line-height: 1.3;
+  color: #64748b;
+  white-space: nowrap;
 }
 
 .xq-list-item.active {
@@ -2570,22 +3601,53 @@ watch(
 
 .xq-regen-label {
   display: block;
-  margin-bottom: 6px;
+  margin: 12px 0 6px;
   font-size: 13px;
   font-weight: 600;
   color: #111827;
 }
 
+.xq-regen-label:first-of-type {
+  margin-top: 0;
+}
+
+.xq-prompt-field {
+  margin-bottom: 4px;
+}
+
+.xq-batch-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.xq-batch-prompt-sample {
+  padding: 10px 12px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #64748b;
+  word-break: break-all;
+  white-space: pre-wrap;
+  background: #f8fafc;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+}
+
 .xq-zone-list {
-  max-height: 360px;
-  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: visible;
   background: #fff;
   border: 1px solid #eef0f3;
   border-radius: 8px;
 }
 
-.xq-zone-list.tall {
-  max-height: 420px;
+@media (max-width: 960px) {
+  .xq-zone-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .xq-wb {
@@ -2763,8 +3825,8 @@ watch(
 .xq-wb-img {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: 80px;
+  gap: 5px;
+  width: 72px;
   font-size: 11px;
   color: #6b7280;
   text-align: center;
@@ -2772,56 +3834,288 @@ watch(
 
 .xq-wb-img-fill {
   position: relative;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.xq-wb-img.has-url:hover .xq-wb-img-fill {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgb(37 99 235 / 12%);
+}
+
+.xq-wb-img.is-rejected .xq-wb-img-fill {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px rgb(239 68 68 / 35%);
+}
+
+.xq-wb-img-reject {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  padding: 3px 4px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+  line-height: 1.25;
+  color: #fff;
+  white-space: nowrap;
+  background: linear-gradient(180deg, transparent, rgb(185 28 28 / 92%) 40%);
+}
+
+.xq-wb-img-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  line-height: 1.25;
+  color: #64748b;
+  white-space: nowrap;
 }
 
 .xq-wb-img-del {
   position: absolute;
+  top: 4px;
   right: 4px;
-  bottom: 4px;
-  z-index: 1;
-  padding: 0 4px;
-  font-size: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
   color: #fff;
   cursor: pointer;
-  background: rgb(0 0 0 / 55%);
+  background: rgb(15 23 42 / 55%);
   border: 0;
-  border-radius: 4px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.xq-wb-img-del :deep(svg) {
+  width: 12px;
+  height: 12px;
+}
+
+.xq-wb-img-fill:hover .xq-wb-img-del {
+  opacity: 1;
+}
+
+.xq-reject-alert {
+  margin-bottom: 4px;
+}
+
+.xq-head-imgs-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  border-radius: 12px;
+}
+
+.xq-head-imgs-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.xq-head-imgs-title-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.xq-head-imgs-title b {
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.xq-head-imgs-count {
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 650;
+  color: #1d4ed8;
+  background: #dbeafe;
+  border-radius: 999px;
+}
+
+.xq-review-banner {
+  margin: 0 0 10px;
+}
+
+.xq-head-imgs-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.xq-review-entry {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  font-weight: 600;
+}
+
+.xq-review-tip {
+  margin-bottom: 12px;
+}
+
+.xq-review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.xq-review-col {
+  min-width: 0;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.xq-review-col.is-ai {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.xq-review-cap {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #334155;
+}
+
+.xq-review-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.xq-review-thumb {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.xq-review-thumb :deep(.ant-image),
+.xq-review-thumb :deep(img),
+.xq-review-main :deep(.ant-image),
+.xq-review-main :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.xq-review-main {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #86efac;
+  border-radius: 10px;
+}
+
+.xq-review-main.is-rejected {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px rgb(239 68 68 / 25%);
+}
+
+.xq-review-reject-text {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #b91c1c;
+}
+
+.xq-review-main span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #94a3b8;
+}
+
+.xq-review-slot-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.xq-review-reason label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.xq-review-reason .req {
+  color: #ef4444;
+}
+
+.xq-review-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 14px;
 }
 
 .xq-wb-img-upload {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
-  color: #9ca3af;
+  width: 72px;
+  height: 72px;
+  color: #94a3b8;
   cursor: pointer;
-  background: #fafafa;
-  border: 1px dashed #d1d5db;
-  border-radius: 8px;
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.xq-wb-img-upload:hover {
+  color: #2563eb;
+  background: #eff6ff;
+  border-color: #93c5fd;
 }
 
 .xq-wb-img-upload span {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 1;
-  color: #9ca3af;
-}
-
-.xq-wb-img-upload em {
-  padding: 0 4px;
-  font-size: 10px;
-  font-style: normal;
-  line-height: 1.2;
+  color: inherit;
 }
 
 .xq-wb-img :deep(.ant-image),
 .xq-wb-img :deep(img) {
-  width: 80px;
-  height: 80px;
+  display: block;
+  width: 72px;
+  height: 72px;
   object-fit: cover;
-  border-radius: 8px;
 }
 
 @media (max-width: 1100px) {
@@ -2880,26 +4174,27 @@ watch(
 .xq-head-imgs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .xq-head-imgs .xq-wb-img-fill :deep(.ant-image),
 .xq-head-imgs .xq-wb-img-fill :deep(img) {
-  width: 80px !important;
-  height: 80px !important;
+  width: 72px !important;
+  height: 72px !important;
   object-fit: cover;
-}
-
-.xq-head-hint {
-  margin: 0;
-  font-size: 12px;
-  color: #94a3b8;
 }
 
 .xq-head-meta {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.xq-head-row {
+  display: flex;
   flex-wrap: wrap;
-  gap: 10px 12px;
+  gap: 8px 10px;
   align-items: center;
   justify-content: space-between;
 }
@@ -2908,7 +4203,7 @@ watch(
   display: flex;
   flex: 1;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 6px 8px;
   align-items: center;
   min-width: 0;
 }
@@ -2916,28 +4211,98 @@ watch(
 .xq-head-actions {
   display: flex;
   flex-shrink: 0;
-  gap: 8px;
-  align-items: center;
-  margin-left: auto;
-}
-
-.xq-head-meta .xq-listing-field {
-  display: flex;
   gap: 6px;
   align-items: center;
-  min-width: auto;
-  padding: 4px 8px;
+}
+
+.xq-chip {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  height: 30px;
+  padding: 0 8px;
   background: #f8fafc;
   border: 1px solid #eef2f7;
   border-radius: 8px;
 }
 
-.xq-listing-fact b {
-  max-width: 120px;
+.xq-chip b {
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
+}
+
+.xq-chip-ctl {
+  width: 120px;
+}
+
+.xq-chip-ctl-wide {
+  width: 148px;
+}
+
+.xq-chip-ctl-sm {
+  width: 96px;
+}
+
+.xq-chip :deep(.ant-select-selector),
+.xq-chip :deep(.ant-select-selection-item),
+.xq-chip :deep(.ant-select-selection-placeholder) {
+  font-size: 12px !important;
+}
+
+.xq-head-rules {
+  justify-content: flex-start;
+  padding-top: 2px;
+  border-top: 1px dashed #eef2f7;
+}
+
+.xq-rule-card {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+}
+
+.xq-rule-select {
+  width: 156px;
+}
+
+.xq-rule-select :deep(.ant-select-selector) {
+  font-size: 12px !important;
+}
+
+.xq-rule-ratio {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f766e;
+  white-space: nowrap;
+}
+
+.xq-rule-preview {
+  display: inline-block;
+  max-width: 100px;
+  padding: 1px 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 20px;
+  color: #334155;
+  white-space: nowrap;
+  background: #f1f5f9;
+  border-radius: 4px;
 }
 
 .xq-detail-cover {
@@ -3092,23 +4457,5 @@ watch(
 
 .xq-assign-user-row :deep(.ant-select) {
   flex: 1;
-}
-
-@media (max-width: 960px) {
-  .xq-split {
-    grid-template-columns: 1fr;
-  }
-
-  .xq-list {
-    max-height: 280px;
-  }
-
-  .xq-detail {
-    max-height: none;
-  }
-
-  .xq-detail-head {
-    grid-template-columns: 120px 1fr;
-  }
 }
 </style>

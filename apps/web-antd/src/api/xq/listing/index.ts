@@ -7,6 +7,11 @@ export namespace XqListingApi {
     name: string;
     sortOrder?: number;
     enabled?: boolean;
+    /** excel_template / mirakl_api / wayfair_api */
+    catalogSource?: string;
+    /** export | api */
+    listingMode?: 'api' | 'export';
+    sourcePlatformId?: string;
   }
 
   export interface Shop {
@@ -54,16 +59,24 @@ export namespace XqListingApi {
     remark?: string;
   }
 
+  export interface FieldEnumOption {
+    label: string;
+    value: string;
+  }
+
   export interface CategoryField {
     code: string;
     label: string;
     type?: string;
     requirementLevel?: string;
     required?: boolean;
+    fixed?: boolean;
+    remark?: string;
     source?: string;
     groupLabel?: string;
     bandLabel?: string;
     valuesList?: string;
+    options?: FieldEnumOption[];
     defaultValue?: string;
     valueSource?: string;
     zone?: string;
@@ -107,6 +120,9 @@ export namespace XqListingApi {
     valueSource?: string;
     zone?: string;
     required?: boolean;
+    fixed?: boolean;
+    remark?: string;
+    groupLabel?: string;
   }
 
   export interface CategoryFieldConfig {
@@ -265,6 +281,8 @@ export namespace XqSpecialConfigApi {
     segments?: SkuSegment[];
     enabled?: boolean;
     skipSku?: boolean;
+    /** 同店铺默认规则 */
+    isDefault?: boolean;
   }
 
   export interface MarkupRule {
@@ -281,6 +299,8 @@ export namespace XqSpecialConfigApi {
     freightRate?: number;
     applyTo?: string;
     enabled?: boolean;
+    /** 同店铺默认规则 */
+    isDefault?: boolean;
     summary?: string;
     samplePrice?: number;
   }

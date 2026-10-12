@@ -22,6 +22,8 @@ export namespace XqWorkOrderApi {
     copyUserId?: number;
     imageUserId?: number;
     imageStatus?: string;
+    /** 图片驳回原因 */
+    imageRejectReason?: string;
     /** export_pending_confirm=导表成功待确认 / listed */
     listingStatus?: string;
     listingValuesJson?: string;
@@ -44,6 +46,9 @@ export namespace XqWorkOrderApi {
     rpaCopyError?: string;
     /** 是否勾选独立跑文案 RPA */
     copyRpaSelected?: boolean;
+    rpaImageWorkUuid?: string;
+    rpaImageStatus?: string;
+    rpaImageError?: string;
     parentWorkOrderId?: number;
     parentSku?: string;
     variantLabel?: string;
@@ -127,6 +132,8 @@ export namespace XqWorkOrderApi {
     listingPlatformId?: string;
     listingShopId?: string;
     listingCategoryId?: string;
+    /** true=已选类目 / false=未选类目 */
+    listingCategorySelected?: boolean;
     mineUserId?: number;
     imageStatus?: string;
     listingReady?: boolean;
@@ -224,6 +231,27 @@ export function enqueueXqWorkOrderCopyRpa(data: {
   return requestClient.post<number>('/xq/work-order/enqueue-copy-rpa', data);
 }
 
+export interface XqRpaCopyPullResp {
+  count?: number;
+  jobs?: Array<Record<string, unknown>>;
+  loginUserId?: number;
+  tenantId?: number;
+  queuedForUser?: number;
+  queuedOnDesk?: number;
+  queuedAll?: number;
+}
+
+/** RPA 领取待跑文案；dryRun=true 只探测不改 queued */
+export function pullXqWorkOrderCopyRpa(data?: {
+  dryRun?: boolean;
+  limit?: number;
+}) {
+  return requestClient.post<XqRpaCopyPullResp>(
+    '/xq/work-order/rpa-copy-pull',
+    data || {},
+  );
+}
+
 export function batchGenerateXqWorkOrderCopy(ids: number[]) {
   return requestClient.post<XqWorkOrderApi.WorkOrder[]>(
     '/xq/work-order/batch-generate-copy',
@@ -253,6 +281,10 @@ export function updateXqWorkOrderImageStatus(data: {
     | 'revised'
     | 'running'
     | 'todo';
+  /** 槽位：rejected 写入驳回；revised 清除该槽驳回；不传则作用于全部已出图槽位 */
+  rejectIndex?: number;
+  /** 驳回时必填 */
+  rejectReason?: string;
 }) {
   return requestClient.post<boolean>('/xq/work-order/image-status', data);
 }
@@ -268,13 +300,85 @@ export function listXqWorkOrder(data: {
   return requestClient.post<number>('/xq/work-order/list', data);
 }
 
+/** 导表上架：下载 Excel，并置为导表待确认 */
+export async function exportXqWorkOrderListing(data: {
+  id: number;
+  productName?: string;
+  productSku?: string;
+  values: Record<string, string>;
+}) {
+  const blob = await requestClient.post<Blob>(
+    '/xq/work-order/listing-export',
+    { ...data, listingMode: 'export' },
+    {
+      responseType: 'blob',
+      timeout: 10 * 60 * 1000,
+    },
+  );
+  return blob;
+}
+
 export function confirmXqWorkOrderListing(id: number) {
   return requestClient.post<number>(`/xq/work-order/confirm-listing?id=${id}`);
 }
 
+/** 单条入队生图 RPA（美工本机机器人拉取执行） */
 export function generateXqWorkOrderImage(id: number) {
   return requestClient.post<XqWorkOrderApi.WorkOrder>(
     `/xq/work-order/generate-image?id=${id}`,
+  );
+}
+
+/** 批量入队生图 RPA */
+export function enqueueXqWorkOrderImageRpa(ids: number[]) {
+  return requestClient.post<number>('/xq/work-order/enqueue-image-rpa', {
+    ids,
+  });
+}
+
+export namespace XqWorkOrderReviseImageApi {
+  export interface RevisePreviewReq {
+    id: number;
+    promptIndex: number;
+    revisePrompt: string;
+    referenceUrls?: string[];
+    includeCurrentAi?: boolean;
+    lockProduct?: boolean;
+  }
+
+  export interface RevisePreviewResp {
+    previewUrl?: string;
+    currentAiUrl?: string;
+    usedReferenceUrls?: string[];
+    promptUsed?: string;
+    model?: string;
+    costMs?: number;
+  }
+
+  export interface ReviseTask {
+    taskId?: string;
+    status?: 'fail' | 'pending' | 'running' | 'success' | string;
+    message?: string;
+    workOrderId?: number;
+    promptIndex?: number;
+    result?: RevisePreviewResp;
+  }
+}
+
+/** 提交单图改图到后台（立即返回 taskId） */
+export function submitXqWorkOrderReviseImage(
+  data: XqWorkOrderReviseImageApi.RevisePreviewReq,
+) {
+  return requestClient.post<XqWorkOrderReviseImageApi.ReviseTask>(
+    '/xq/work-order/revise-image-preview/submit',
+    data,
+  );
+}
+
+export function getXqWorkOrderReviseImageTask(taskId: string) {
+  return requestClient.get<XqWorkOrderReviseImageApi.ReviseTask>(
+    '/xq/work-order/revise-image-preview/task',
+    { params: { taskId } },
   );
 }
 

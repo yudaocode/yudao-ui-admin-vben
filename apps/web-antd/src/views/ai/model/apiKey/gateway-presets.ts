@@ -83,8 +83,9 @@ export const GATEWAY_PRESETS: GatewayPreset[] = [
   {
     value: 'toapis',
     label: 'ToAPIs 中转',
-    hint: '国内/国际节点 URL 不同；生图可能走异步任务',
-    defaultUrl: 'https://api.toapis.cn/v1',
+    hint: '国内用 toapis.cn；参考图先 uploads 再 generations（异步轮询）',
+    // 文档：https://docs.toapis.com ；大陆节点 https://toapis.cn
+    defaultUrl: 'https://toapis.cn/v1',
     defaultImageBodyStyle: 'toapis',
     defaultPreferResponsesApi: 0,
     defaultSupportsAsync: 1,
