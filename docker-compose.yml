@@ -1,5 +1,5 @@
 # Star E-Commerce ERP 前端运行时编排
-# 镜像由 GitHub Actions 构建并推送 GHCR（见 .github/workflows/docker.yml），本文件只负责拉取运行
+# 镜像由 GitHub Actions 构建并推送 GHCR（见 .github/workflows/ci.yml 的 Docker Build job），本文件只负责拉取运行
 # 服务器更新流程：docker compose pull && docker compose up -d（pull_policy: always 会自动拉新版）
 # 镜像内已烘焙后端地址（VITE_BASE_URL），通过 CI 的 workflow_dispatch 输入或仓库变量配置
 # 如需本地从零构建，使用 docker-compose.build.yml
