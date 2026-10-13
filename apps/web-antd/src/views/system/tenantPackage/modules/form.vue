@@ -60,6 +60,13 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data =
       (await formApi.getValues()) as SystemTenantPackageApi.TenantPackage;
+    if (menuTree.value.length === 0) {
+      message.warning(
+        '菜单树为空，未保存。请切回系统租户后再给套餐勾选菜单，避免清空业务租户权限。',
+      );
+      modalApi.unlock();
+      return;
+    }
     data.menuIds = getTreeValuesWithAncestors(
       menuTree.value,
       data.menuIds ?? [],
@@ -111,7 +118,7 @@ const [Modal, modalApi] = useVbenModal({
 async function loadMenuTree() {
   menuLoading.value = true;
   try {
-    const data = await getSimpleMenusList();
+    const data = await getSimpleMenusList({ visitTenant: false });
     menuTree.value = handleTree(data) as SystemMenuApi.Menu[];
   } finally {
     menuLoading.value = false;

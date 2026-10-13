@@ -69,7 +69,7 @@ const [KnowledgeGroupFormModal, knowledgeGroupFormModalApi] = useVbenModal({
 });
 const [KnowledgeGroupManageDialogModal, knowledgeGroupManageDialogModalApi] =
   useVbenModal({
-  destroyOnClose: true,
+    destroyOnClose: true,
     connectedComponent: KnowledgeGroupManageDialog,
   });
 
@@ -148,8 +148,7 @@ async function handleExit(library: PmsKnowledgeLibraryApi.KnowledgeLibrary) {
     // 刷新分组和列表
     await getGroupList();
     handleRefresh();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 修改知识库关注状态 */
@@ -161,17 +160,12 @@ async function handleFavoriteStatusChange(
     const text = library.favoriteStatus ? '关注' : '取消关注';
     await confirm(`确认${text}知识库“${library.name}”吗？`);
     // 发起修改关注状态
-    if (library.favoriteStatus) {
-      await createKnowledgeFavorite({
-        type: PmsKnowledgeObjectType.LIBRARY,
-        entityId: library.id!,
-      });
-    } else {
-      await deleteKnowledgeFavorite(
-        PmsKnowledgeObjectType.LIBRARY,
-        library.id!,
-      );
-    }
+    await (library.favoriteStatus
+      ? createKnowledgeFavorite({
+          type: PmsKnowledgeObjectType.LIBRARY,
+          entityId: library.id!,
+        })
+      : deleteKnowledgeFavorite(PmsKnowledgeObjectType.LIBRARY, library.id!));
     // 刷新列表
     handleRefresh();
   } catch {

@@ -63,18 +63,16 @@ async function handleTabChange() {
 /** 打开内容详情 */
 function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
   if (item.documentId) {
-    router.push(
-      {
-        path: `/pms/kb/library/${item.libraryId}`,
-        query: { documentId: String(item.documentId) },
-      },
-    );
+    router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { documentId: String(item.documentId) },
+    });
     return;
   }
   router.push({
-      path: `/pms/kb/library/${item.libraryId}`,
-      query: { folderId: String(item.folderId) },
-    });
+    path: `/pms/kb/library/${item.libraryId}`,
+    query: { folderId: String(item.folderId) },
+  });
 }
 </script>
 

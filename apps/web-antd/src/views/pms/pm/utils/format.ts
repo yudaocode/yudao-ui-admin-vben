@@ -68,8 +68,8 @@ export function formatDateWithWeekday(date: string) {
 /** 移除 HTML 标签并合并空白字符 */
 export function stripHtmlTags(content: string) {
   return content
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replaceAll(/<[^>]+>/g, ' ')
+    .replaceAll(/\s+/g, ' ')
     .trim();
 }
 

@@ -200,7 +200,8 @@ const [Modal, modalApi] = useVbenModal({
         // 修改场景通过工作项详情确定项目和事项类型
         const workItem = await getWorkItem(data.id);
         projectId.value = workItem.projectId;
-        projectType.value = (await getProject(workItem.projectId)).type;
+        const project = await getProject(workItem.projectId);
+        projectType.value = project.type;
         type.value = workItem.type;
         formData.value = {
           ...workItem,
@@ -268,7 +269,9 @@ const [Modal, modalApi] = useVbenModal({
               ref="labelSelectRef"
               class="flex-1"
               :model-value="slotProps.componentField.modelValue"
-              @update:model-value="slotProps.componentField['onUpdate:modelValue']"
+              @update:model-value="
+                slotProps.componentField['onUpdate:modelValue']
+              "
             />
             <Button @click="labelManageModalApi.open()">标签管理</Button>
           </div>
@@ -284,9 +287,15 @@ const [Modal, modalApi] = useVbenModal({
                 :maxlength="100"
                 placeholder="请输入子工作项标题"
                 :value="slotProps.componentField.modelValue[index]"
-                @update:value="(v: string) => handleChildNameChange(slotProps, index, v)"
+                @update:value="
+                  (v: string) => handleChildNameChange(slotProps, index, v)
+                "
               />
-              <Button danger type="link" @click="handleChildNameRemove(slotProps, index)">
+              <Button
+                danger
+                type="link"
+                @click="handleChildNameRemove(slotProps, index)"
+              >
                 删除
               </Button>
             </div>

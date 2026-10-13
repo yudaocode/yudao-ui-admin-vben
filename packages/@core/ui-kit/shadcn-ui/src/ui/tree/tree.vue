@@ -70,13 +70,23 @@ const treeValue = ref();
 const valueMap = computed(() => {
   const map = new Map<number | string, Recordable<any>>();
   for (const item of flattenData.value) {
-    map.set(get(item.value, props.valueField) as number | string, item.value);
+    const id = get(item.value, props.valueField) as number | string;
+    map.set(id, item.value);
+    map.set(String(id), item.value);
+    const numericId = Number(id);
+    if (Number.isFinite(numericId)) {
+      map.set(numericId, item.value);
+    }
   }
   return map;
 });
 
 function getItemByValue(value: number | string) {
-  return valueMap.value.get(value);
+  return (
+    valueMap.value.get(value) ??
+    valueMap.value.get(String(value)) ??
+    valueMap.value.get(Number(value))
+  );
 }
 
 function updateTreeValue() {

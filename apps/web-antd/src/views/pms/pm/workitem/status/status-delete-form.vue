@@ -75,9 +75,11 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const status = await getWorkItemStatus(data.id);
-      statusList.value = (
-        await getWorkItemStatusList(status.projectId, status.workItemType)
-      ).filter((item) => item.id !== data.id);
+      const transferList = await getWorkItemStatusList(
+        status.projectId,
+        status.workItemType,
+      );
+      statusList.value = transferList.filter((item) => item.id !== data.id);
       statusName.value = status.name;
       // 默认选中第一个可迁移状态
       await formApi.setValues({ transferStatusId: statusList.value[0]?.id });

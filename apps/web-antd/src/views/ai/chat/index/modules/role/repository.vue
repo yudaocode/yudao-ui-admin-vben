@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, Layout, Tabs } from 'ant-design-vue';
+import { Button, Input, Tabs } from 'ant-design-vue';
 
 import { createChatConversationMy } from '#/api/ai/chat/conversation';
 import { deleteMy, getCategoryList, getMyPage } from '#/api/ai/model/chatRole';
@@ -22,7 +22,8 @@ const router = useRouter();
 const [Drawer] = useVbenDrawer({
   title: '角色管理',
   footer: false,
-  class: 'w-2/5',
+  class: 'w-[42%]',
+  contentClass: 'flex min-h-0 flex-1 flex-col overflow-hidden p-4',
 });
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -32,25 +33,23 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const loading = ref<boolean>(false); // 加载中
 const activeTab = ref<string>('my-role'); // 选中的角色 Tab
-const search = ref<string>(''); // 加载中
+const search = ref<string>(''); // 搜索关键词
 const myRoleParams = reactive({
   pageNo: 1,
   pageSize: 50,
 });
-const myRoleList = ref<AiModelChatRoleApi.ChatRole[]>([]); // my 分页大小
+const myRoleList = ref<AiModelChatRoleApi.ChatRole[]>([]); // my 角色列表
 const publicRoleParams = reactive({
   pageNo: 1,
   pageSize: 50,
 });
-const publicRoleList = ref<AiModelChatRoleApi.ChatRole[]>([]); // public 分页大小
+const publicRoleList = ref<AiModelChatRoleApi.ChatRole[]>([]); // public 角色列表
 const activeCategory = ref<string>('全部'); // 选择中的分类
 const categoryList = ref<string[]>([]); // 角色分类类别
 
-/** tabs 点击 */
-async function handleTabsClick(tab: any) {
-  // 设置切换状态
-  activeTab.value = tab;
-  // 切换的时候重新加载数据
+/** tabs 切换 */
+async function handleTabsChange(key: number | string) {
+  activeTab.value = String(key);
   await getActiveTabsRole();
 }
 
@@ -175,75 +174,90 @@ onMounted(async () => {
 
 <template>
   <Drawer>
-    <Layout
-      class="absolute inset-0 flex h-full w-full flex-col overflow-hidden bg-card"
-    >
+    <div class="flex h-full min-h-0 flex-col">
       <FormModal @success="handlerAddRoleSuccess" />
 
-      <Layout.Content class="relative m-0 flex-1 overflow-hidden p-0">
-        <div class="absolute right-0 top--1 z-100 mr-5 mt-5">
-          <!-- 搜索输入框 -->
-          <Input.Search
-            :loading="loading"
-            v-model:value="search"
-            class="w-60"
-            placeholder="请输入搜索的内容"
-            @search="getActiveTabsRole"
-          />
-          <Button
-            v-if="activeTab === 'my-role'"
-            type="primary"
-            @click="handlerAddRole"
-            class="ml-5"
-          >
-            <IconifyIcon icon="lucide:user" class="mr-1.5" />
-            添加角色
-          </Button>
-        </div>
-        <!-- 标签页内容 -->
-        <Tabs
-          v-model:value="activeTab"
-          class="relative h-full p-4"
-          @tab-click="handleTabsClick"
+      <div class="mb-3 flex shrink-0 items-center justify-end gap-3">
+        <Input.Search
+          v-model:value="search"
+          :loading="loading"
+          class="w-60"
+          placeholder="请输入搜索的内容"
+          @search="getActiveTabsRole"
+        />
+        <Button
+          v-if="activeTab === 'my-role'"
+          type="primary"
+          @click="handlerAddRole"
         >
-          <Tabs.TabPane
-            key="my-role"
-            class="flex h-full flex-col overflow-y-auto"
-            tab="我的角色"
-          >
-            <RoleList
-              :loading="loading"
-              :role-list="myRoleList"
-              :show-more="true"
-              @on-delete="handlerCardDelete"
-              @on-edit="handlerCardEdit"
-              @on-use="handlerCardUse"
-              @on-page="handlerCardPage('my')"
-            />
-          </Tabs.TabPane>
-          <Tabs.TabPane
-            key="public-role"
-            class="flex h-full flex-col overflow-y-auto"
-            tab="公共角色"
-          >
+          <IconifyIcon icon="lucide:user" class="mr-1.5" />
+          添加角色
+        </Button>
+      </div>
+
+      <Tabs
+        v-model:active-key="activeTab"
+        class="role-repository-tabs min-h-0 flex-1"
+        @change="handleTabsChange"
+      >
+        <Tabs.TabPane key="my-role" tab="我的角色">
+          <RoleList
+            :loading="loading"
+            :role-list="myRoleList"
+            :show-more="true"
+            @on-delete="handlerCardDelete"
+            @on-edit="handlerCardEdit"
+            @on-use="handlerCardUse"
+            @on-page="handlerCardPage('my')"
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane key="public-role" tab="公共角色">
+          <div class="flex h-full min-h-0 flex-col">
             <RoleCategoryList
+              class="mb-3 shrink-0"
               :category-list="categoryList"
               :active="activeCategory"
               @on-category-click="handlerCategoryClick"
-              class="mx-6"
             />
             <RoleList
+              class="min-h-0 flex-1"
+              :loading="loading"
               :role-list="publicRoleList"
               @on-delete="handlerCardDelete"
               @on-edit="handlerCardEdit"
               @on-use="handlerCardUse"
               @on-page="handlerCardPage('public')"
-              class="mt-5"
-              loading
             />
-          </Tabs.TabPane>
-        </Tabs>
-      </Layout.Content>
-    </Layout>
+          </div>
+        </Tabs.TabPane>
+      </Tabs>
+    </div>
   </Drawer>
 </template>
+
+<style scoped>
+.role-repository-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-repository-tabs :deep(.ant-tabs-nav) {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.role-repository-tabs :deep(.ant-tabs-content-holder) {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.role-repository-tabs :deep(.ant-tabs-content) {
+  height: 100%;
+}
+
+.role-repository-tabs :deep(.ant-tabs-tabpane) {
+  height: 100%;
+  overflow: hidden;
+}
+</style>

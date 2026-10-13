@@ -15,6 +15,7 @@ import {
 import { Button, InputNumber, Select, Space, Textarea } from 'ant-design-vue';
 
 import { drawImage } from '#/api/ai/image';
+import { ImageUpload } from '#/components/upload';
 
 const props = defineProps({
   models: {
@@ -28,6 +29,7 @@ const drawIn = ref<boolean>(false); // 生成中
 const selectHotWord = ref<string>(''); // 选中的热词
 
 const prompt = ref<string>(''); // 提示词
+const referImageUrl = ref<string>(''); // 参考图
 const width = ref<number>(512); // 图片宽度
 const height = ref<number>(512); // 图片高度
 const otherPlatform = ref<string>(AiPlatformEnum.OPENAI); // 平台（默认 OpenAI / GPT Image）
@@ -56,13 +58,18 @@ async function handleGenerateImage() {
     // 回调
     emits('onDrawStart', otherPlatform.value);
     // 发送请求
+    const options: Record<string, string> = {};
+    if (referImageUrl.value) {
+      options.referImageUrl = referImageUrl.value;
+    }
     const form = {
       platform: otherPlatform.value,
       modelId: modelId.value, // 模型
       prompt: prompt.value, // 提示词
       width: width.value, // 图片宽度
       height: height.value, // 图片高度
-      options: {},
+      referImageUrl: referImageUrl.value || undefined,
+      options,
     } as unknown as AiImageApi.ImageDrawReqVO;
     await drawImage(form);
   } finally {
@@ -78,6 +85,7 @@ async function settingValues(detail: AiImageApi.Image) {
   prompt.value = detail.prompt;
   width.value = detail.width;
   height.value = detail.height;
+  referImageUrl.value = detail.options?.referImageUrl || '';
 }
 
 /** 平台切换 */
@@ -200,6 +208,16 @@ defineExpose({ settingValues });
         addon-before="高"
         addon-after="px"
       />
+    </Space>
+  </div>
+
+  <div class="mt-8">
+    <div><b>参考图</b></div>
+    <p class="mt-1 text-xs text-gray-500">
+      可选。有参考图时 OpenAI/GPT Image 走改图（edits / reference_images）
+    </p>
+    <Space wrap class="mt-4">
+      <ImageUpload v-model:value="referImageUrl" :show-description="false" />
     </Space>
   </div>
 

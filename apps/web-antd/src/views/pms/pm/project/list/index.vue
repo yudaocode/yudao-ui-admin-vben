@@ -64,7 +64,10 @@ import { useGridColumns, useSearchFormSchema } from './data';
 defineOptions({ name: 'PmsProjectList' });
 
 // TODO @AI：antd/antdv-next 的 v-loading 是 EP 指令，改 Spin 或 lock。表格操作对齐 TableAction；connectedComponent 补 destroyOnClose；grid 补 toolbarConfig.refresh/search。
-const favoriteChartRenderers = new Map<number, (options: EChartsOption) => void>(); // 星标项目趋势图渲染器
+const favoriteChartRenderers = new Map<
+  number,
+  (options: EChartsOption) => void
+>(); // 星标项目趋势图渲染器
 
 /** 收集星标项目趋势图容器并创建渲染器 */
 function setFavoriteChartRef(id: number, el: any) {
@@ -176,15 +179,20 @@ async function getFavoriteList() {
   try {
     const projects = await getFavoriteProjectList();
     favoriteProjectList.value = await Promise.all(
-      projects.map(async (project) => ({
-        ...project,
-        completedTrends: (await getProjectOverview(project.id)).completedTrends,
-      })),
+      projects.map(async (project) => {
+        const overview = await getProjectOverview(project.id);
+        return {
+          ...project,
+          completedTrends: overview.completedTrends,
+        };
+      }),
     );
     // 图表容器随列表渲染完成后逐卡片渲染
     await nextTick();
     for (const project of favoriteProjectList.value) {
-      favoriteChartRenderers.get(project.id)?.(getFavoriteTrendChartOptions(project));
+      favoriteChartRenderers.get(project.id)?.(
+        getFavoriteTrendChartOptions(project),
+      );
     }
   } finally {
     favoriteLoading.value = false;
@@ -277,11 +285,9 @@ async function handleMoveGroup(projectId: number, groupId: number) {
 
 /** 星标或取消星标项目 */
 async function handleCollect(project: PmsProjectApi.Project) {
-  if (project.favoriteStatus) {
-    await deleteProjectFavorite(project.id);
-  } else {
-    await createProjectFavorite(project.id);
-  }
+  await (project.favoriteStatus
+    ? deleteProjectFavorite(project.id)
+    : createProjectFavorite(project.id));
   const favoriteStatus = !project.favoriteStatus;
   message.success(favoriteStatus ? '星标成功' : '已取消星标');
   await Promise.all([gridApi.query(), getFavoriteList()]);
@@ -298,8 +304,7 @@ async function handleExit(project: PmsProjectApi.Project) {
     await exitProject(project.id);
     message.success('已退出项目');
     await handleProjectChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 处理项目生命周期操作 */
@@ -316,10 +321,7 @@ async function handleProjectCommand(
     return;
   }
   if (command.startsWith('group:')) {
-    await handleMoveGroup(
-      project.id,
-      Number(command.substring('group:'.length)),
-    );
+    await handleMoveGroup(project.id, Number(command.slice('group:'.length)));
     return;
   }
   try {
@@ -334,8 +336,7 @@ async function handleProjectCommand(
       message.success('项目已移入回收站');
     }
     await handleProjectChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 项目发生变化后刷新列表与个人分组 */
@@ -559,7 +560,9 @@ watch(
             >
               {{ row.name }}
             </div>
-            <Tag>{{ getDictLabel(DICT_TYPE.PMS_PROJECT_TYPE, row.type) || '-' }}</Tag>
+            <Tag>
+              {{ getDictLabel(DICT_TYPE.PMS_PROJECT_TYPE, row.type) || '-' }}
+            </Tag>
           </div>
         </div>
       </template>

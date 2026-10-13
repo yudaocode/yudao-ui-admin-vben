@@ -15,8 +15,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { formatDateTime } from '@vben/utils';
-import { getAllPageItems } from '@vben/utils';
+import { formatDateTime, getAllPageItems } from '@vben/utils';
 
 import {
   Button,
@@ -54,9 +53,7 @@ import {
   PmsWorkItemStatusType,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
-import {
-  getIterationStatusTagType,
-} from '#/views/pms/pm/utils/format';
+import { getIterationStatusTagType } from '#/views/pms/pm/utils/format';
 import WorkItemAllList from '#/views/pms/pm/workitem/list/work-item-all-list.vue';
 import WorkItemList from '#/views/pms/pm/workitem/list/work-item-list.vue';
 
@@ -113,8 +110,10 @@ const typeDistribution = computed(() =>
 ); // 事项类型分布
 const distributionChartRef = ref<any>(); // 事项分布图
 const statusTrendChartRef = ref<any>(); // 事项状态趋势图
-const { renderEcharts: renderDistributionChart } = useEcharts(distributionChartRef);
-const { renderEcharts: renderStatusTrendChart } = useEcharts(statusTrendChartRef);
+const { renderEcharts: renderDistributionChart } =
+  useEcharts(distributionChartRef);
+const { renderEcharts: renderStatusTrendChart } =
+  useEcharts(statusTrendChartRef);
 
 const statusTrendChartOptions = computed<EChartsOption>(() =>
   getStatusTrendChartOptions(overview.value),
@@ -130,12 +129,12 @@ const statusDistribution = computed(() => {
   };
   return getDictOptions(DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE, 'number').map(
     (option) => ({
-    name: option.label,
-    count: statusCountMap[option.value] ?? 0,
-    progressStatus:
-      option.value === PmsWorkItemStatusType.COMPLETED
-        ? ('success' as const)
-        : undefined,
+      name: option.label,
+      count: statusCountMap[option.value] ?? 0,
+      progressStatus:
+        option.value === PmsWorkItemStatusType.COMPLETED
+          ? ('success' as const)
+          : undefined,
     }),
   );
 }); // 当前状态分布
@@ -145,7 +144,7 @@ const teamNames = computed(() => {
     if (item.assigneeUserName) names.add(item.assigneeUserName);
     item.memberUserNames?.forEach((name) => names.add(name));
   });
-  return Array.from(names);
+  return [...names];
 }); // 迭代参与成员
 
 type BurnDown = PmsIterationApi.IterationOverview['burnDowns'][number];
@@ -246,8 +245,7 @@ async function handleComplete() {
     await completeIteration(iteration.value.id!);
     message.success('迭代已完成');
     await handleIterationChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 删除迭代 */
@@ -260,8 +258,7 @@ async function handleDelete() {
     await deleteIteration(iteration.value.id!);
     message.success('删除成功');
     close();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 刷新迭代详情和概览 */
@@ -325,7 +322,12 @@ onMounted(async () => {
                 v-if="iteration"
                 :color="getIterationStatusTagType(iteration.status)"
               >
-                {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+                {{
+                  getDictLabel(
+                    DICT_TYPE.PMS_ITERATION_STATUS,
+                    iteration.status,
+                  ) || '-'
+                }}
               </Tag>
             </div>
             <div class="mt-1 text-[13px] text-muted-foreground">
@@ -413,7 +415,12 @@ onMounted(async () => {
                 <Card title="迭代信息">
                   <Descriptions :column="2" bordered size="small">
                     <Descriptions.Item label="状态">
-                      {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration?.status) || '-' }}
+                      {{
+                        getDictLabel(
+                          DICT_TYPE.PMS_ITERATION_STATUS,
+                          iteration?.status,
+                        ) || '-'
+                      }}
                     </Descriptions.Item>
                     <Descriptions.Item label="负责人">
                       {{ iteration?.ownerUserName || '未设置' }}

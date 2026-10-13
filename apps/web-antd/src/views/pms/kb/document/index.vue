@@ -100,7 +100,7 @@ const currentNodeKey = computed(() => {
   return undefined;
 }); // 当前目录节点标识
 const selectedDocumentLabels = computed(() => {
-  const labelIds = new Set(selectedDocument.value?.labelIds ?? []);
+  const labelIds = new Set(selectedDocument.value?.labelIds);
   return labelList.value.filter((label) => labelIds.has(label.id));
 }); // 当前文档标签
 const selectedFolderChildren = computed(() => {
@@ -295,8 +295,7 @@ async function deleteFolder(folder: PmsKnowledgeFolderApi.KnowledgeFolder) {
     await deleteKnowledgeFolder(folder.id);
     message.success('删除成功');
     await getTree();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 删除文档并刷新目录树 */
@@ -451,11 +450,9 @@ async function handleDocumentLike() {
   if (!selectedDocument.value) {
     return;
   }
-  if (selectedDocument.value.likeStatus) {
-    await deleteKnowledgeDocumentLike(selectedDocument.value.id);
-  } else {
-    await createKnowledgeDocumentLike(selectedDocument.value.id);
-  }
+  await (selectedDocument.value.likeStatus
+    ? deleteKnowledgeDocumentLike(selectedDocument.value.id)
+    : createKnowledgeDocumentLike(selectedDocument.value.id));
   selectedDocument.value = await getKnowledgeDocument(
     selectedDocument.value.id,
   );
@@ -472,8 +469,7 @@ async function handleExitLibrary() {
     await exitKnowledgeLibrary(libraryId.value);
     message.success('已退出知识库');
     await router.push('/pms/kb/library');
-  } catch {
-  }
+  } catch {}
 }
 
 /** 内容变化后刷新目录与选中内容 */

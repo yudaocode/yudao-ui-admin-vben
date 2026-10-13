@@ -36,6 +36,8 @@ export namespace AiImageApi {
     style: string; // 图像生成的风格
     width: number; // 图片宽度
     height: number; // 图片高度
+    /** 参考图 URL（可选，有则走图生图/改图） */
+    referImageUrl?: string;
     options: object; // 绘制参数，Map<String, String>
   }
 

@@ -41,9 +41,7 @@ import {
   PmsWorkItemLifecycleStatus,
   PmsWorkItemType,
 } from '#/views/pms/pm/utils/constants';
-import {
-  getWorkItemStatusTagType,
-} from '#/views/pms/pm/utils/format';
+import { getWorkItemStatusTagType } from '#/views/pms/pm/utils/format';
 
 import WorkItemForm from '../form/work-item-form.vue';
 import WorkItemStatusSelect from '../status/work-item-status-select.vue';
@@ -66,8 +64,10 @@ const workItem = ref<PmsWorkItemApi.WorkItem>(); // 工作项详情
 const activeTab = ref('comment'); // 当前协作信息页签
 const expandedPanels = ref(['basic']); // 展开的属性面板
 const workItemActivityRef = ref<InstanceType<typeof WorkItemActivity>>(); // 工作项动态 Ref
-const workItemTypeName = computed(() =>
-  getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, workItem.value?.type || 0) || '-',
+const workItemTypeName = computed(
+  () =>
+    getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, workItem.value?.type || 0) ||
+    '-',
 ); // 工作项类型名称
 const canUpdate = computed(
   () => editable.value && hasAccessByCodes(['pms:pm:work-item:update']),
@@ -221,8 +221,7 @@ async function handleRecycle() {
     message.success('已移入回收站');
     drawerApi.close();
     emit('success');
-  } catch {
-  }
+  } catch {}
 }
 
 const [Drawer, drawerApi] = useVbenDrawer({
@@ -475,13 +474,23 @@ const [Drawer, drawerApi] = useVbenDrawer({
                     type="link"
                     @click="startInlineEditing('priority')"
                   >
-                    {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, workItem?.priority) || '-' }}
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+                        workItem?.priority,
+                      ) || '-'
+                    }}
                   </Button>
                   <strong
                     v-else
                     class="min-w-0 truncate font-medium text-foreground"
                   >
-                    {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, workItem?.priority) || '-' }}
+                    {{
+                      getDictLabel(
+                        DICT_TYPE.PMS_WORK_ITEM_PRIORITY,
+                        workItem?.priority,
+                      ) || '-'
+                    }}
                   </strong>
                 </div>
                 <div

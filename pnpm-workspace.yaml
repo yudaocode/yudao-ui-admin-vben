@@ -155,6 +155,7 @@ catalog:
   lefthook: ^2.1.10
   livekit-client: ^2.22.1
   lodash.clonedeep: ^4.5.0
+  mammoth: ^1.13.0
   markdown-it: ^14.3.0
   markmap-common: ^0.18.9
   markmap-lib: ^0.18.12
@@ -226,6 +227,7 @@ catalog:
   vxe-pc-ui: ^4.16.19
   vxe-table: ^4.20.6
   watermark-js-plus: ^1.6.6
+  xlsx: ^0.18.5
   yaml-eslint-parser: ^2.1.0
   zod: ^4.4.3
   zod-defaults: ^0.2.3

@@ -100,8 +100,7 @@ async function handleDelete(iteration: PmsIterationApi.Iteration) {
     await deleteIteration(iteration.id!);
     message.success('删除成功');
     handleRefresh();
-  } catch {
-  }
+  } catch {}
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({

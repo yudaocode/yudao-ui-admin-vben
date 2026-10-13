@@ -81,8 +81,11 @@ function highlightSummary(summary: string) {
   if (!value) {
     return summary;
   }
-  const escapedKeyword = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return summary.replace(
+  const escapedKeyword = value.replaceAll(
+    /[.*+?^${}()|[\]\\]/g,
+    String.raw`\$&`,
+  );
+  return summary.replaceAll(
     new RegExp(`(${escapedKeyword})`, 'gi'),
     '<mark>$1</mark>',
   );

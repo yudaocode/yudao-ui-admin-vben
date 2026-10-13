@@ -200,7 +200,7 @@ function initStatusSortable() {
         const targetStatus = group.statuses[newIndex]!;
         const oldGlobalIndex = formData.value.statuses.indexOf(movedStatus);
         const targetGlobalIndex = formData.value.statuses.indexOf(targetStatus);
-        if (oldGlobalIndex < 0 || targetGlobalIndex < 0) {
+        if (oldGlobalIndex === -1 || targetGlobalIndex === -1) {
           return;
         }
         formData.value.statuses.splice(oldGlobalIndex, 1);
@@ -305,7 +305,7 @@ function removeStatusByItem(
   status: PmsProjectTemplateApi.ProjectTemplateStatus,
 ) {
   const index = formData.value.statuses.indexOf(status);
-  if (index >= 0) {
+  if (index !== -1) {
     removeStatus(index);
   }
 }
@@ -562,11 +562,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     try {
       await formRef.value.validate();
-    } catch (fields: any) {
-      activeTab.value = Object.prototype.hasOwnProperty.call(
-        fields,
-        'itemTypes',
-      )
+    } catch (error: any) {
+      activeTab.value = Object.prototype.hasOwnProperty.call(error, 'itemTypes')
         ? 'itemType'
         : 'basic';
       return;
@@ -630,298 +627,303 @@ onBeforeUnmount(destroySortables);
         :model="formData"
         :rules="formRules"
       >
-      <Tabs v-model:active-key="activeTab" @change="handleTabChange">
-        <!-- 模板基本信息 -->
-        <Tabs.TabPane key="basic" tab="基本信息">
-          <Row :gutter="20">
-            <Col :span="12">
-              <Form.Item label="模板名称" name="name">
-                <Input
-                  v-model:value="formData.name"
-                  :maxlength="100"
-                  placeholder="请输入模板名称"
-                  show-count
-                />
-              </Form.Item>
-            </Col>
-            <Col :span="12">
-              <Form.Item label="项目类型" name="projectType">
-                <Select
-                  class="w-full"
-                  v-model:value="formData.projectType"
-                  :options="[
-                    { label: '通用项目', value: PmsProjectType.GENERAL },
-                    { label: '敏捷开发项目', value: PmsProjectType.AGILE },
-                  ]"
-                  placeholder="请选择项目类型"
-                  @change="
-                    (value: any) => handleProjectTypeChange(Number(value))
-                  "
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row :gutter="20">
-            <Col :span="12">
-              <Form.Item label="模板状态" name="status">
-                <Radio.Group
-                  v-model:value="formData.status"
-                  :options="
-                    getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map(
-                      (item) => ({
-                        label: item.label,
-                        value: item.value,
-                      }),
-                    )
-                  "
-                />
-              </Form.Item>
-            </Col>
-            <Col :span="12">
-              <Form.Item label="显示顺序" name="sort">
-                <InputNumber
-                  v-model:value="formData.sort"
-                  class="!w-full"
-                  :min="0"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Form.Item label="模板描述" name="description">
-            <Textarea
-              v-model:value="formData.description"
-              :maxlength="500"
-              :rows="4"
-              placeholder="请输入模板适用场景"
-              show-count
-            />
-          </Form.Item>
-        </Tabs.TabPane>
-
-        <!-- 启用的事项类型 -->
-        <Tabs.TabPane
-          key="itemType"
-          :tab="`事项类型（${formData.itemTypes.length}）`"
-        >
-          <div class="mb-5">
-            <Alert
-              :closable="false"
-              description="项目创建时会根据这里的事项类型初始化可用能力；取消事项类型会同步移除其状态和看板"
-              message="事项类型是模板的全局关系；项目创建后不提供项目级维护"
-              type="info"
-            />
-          </div>
-          <Form.Item class="!mb-0" label="事项类型" name="itemTypes">
-            <Checkbox.Group
-              v-model:value="formData.itemTypes"
-              :options="
-                getDictOptions(DICT_TYPE.PMS_WORK_ITEM_TYPE, 'number').map(
-                  (item) => ({
-                  label: item.label,
-                  value: item.value,
-                  }),
-                )
-              "
-              @change="handleItemTypesChange"
-            />
-          </Form.Item>
-        </Tabs.TabPane>
-
-        <!-- 工作项状态 -->
-        <Tabs.TabPane key="status" :tab="`状态（${formData.statuses.length}）`">
-          <div class="mb-4 flex items-center gap-4">
-            <Alert
-              :closable="false"
-              class="flex-1"
-              message="拖拽调整状态顺序；每种事项类型必须且只能配置一个初始状态"
-              type="info"
-            />
-            <Button type="primary" @click="addStatus">
-              <IconifyIcon icon="lucide:plus" />新增状态
-            </Button>
-          </div>
-          <div class="space-y-4">
-            <div v-for="group in statusGroups" :key="group.value">
-              <div class="mb-2 flex items-center gap-2 text-sm font-medium">
-                <span>{{ group.label }}</span>
-                <span class="text-muted-foreground">（{{ group.statuses.length }}）</span>
-              </div>
-              <div
-                :ref="
-                  (el) => setStatusTableRef(group.value, el as Element | null)
-                "
-              >
-                <Table
-                  :columns="statusColumns"
-                  :data-source="group.statuses"
-                  :pagination="false"
-                  :scroll="{ y: 430 }"
-                  row-key="code"
-                  size="small"
-                >
-                  <template #bodyCell="{ column, record }">
-                    <template v-if="column.key === 'sort'">
-                      <Tooltip title="拖动排序" placement="top">
-                        <IconifyIcon
-                          class="status-drag-handle cursor-move text-muted-foreground"
-                          icon="lucide:grip-vertical"
-                        />
-                      </Tooltip>
-                    </template>
-                    <template v-else-if="column.key === 'code'">
-                      <Input
-                        v-model:value="record.code"
-                        placeholder="如 task_todo"
-                      />
-                    </template>
-                    <template v-else-if="column.key === 'name'">
-                      <Input
-                        v-model:value="record.name"
-                        placeholder="请输入状态名称"
-                      />
-                    </template>
-                    <template v-else-if="column.key === 'workItemType'">
-                      <Select
-                        class="w-full"
-                        v-model:value="record.workItemType"
-                        :options="
-                          enabledWorkItemTypeOptions.map((item) => ({
-                            label: item.label,
-                            value: item.value,
-                          }))
-                        "
-                        @change="handleStatusTypeChange"
-                      />
-                    </template>
-                    <template v-else-if="column.key === 'statusType'">
-                      <Select
-                        class="w-full"
-                        v-model:value="record.statusType"
-                        :options="
-                          getDictOptions(
-                            DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE,
-                            'number',
-                          ).map((item) => ({
-                            label: item.label,
-                            value: item.value,
-                          }))
-                        "
-                      />
-                    </template>
-                    <template v-else-if="column.key === 'defaultStatus'">
-                      <Radio
-                        :checked="record.defaultStatus"
-                        class="!mr-0"
-                        @change="
-                          handleDefaultStatusChange(
-                            record as PmsProjectTemplateApi.ProjectTemplateStatus,
-                          )
-                        "
-                      >
-                        初始
-                      </Radio>
-                    </template>
-                    <template v-else-if="column.key === 'action'">
-                      <Button
-                        danger
-                        type="link"
-                        @click="
-                          removeStatusByItem(
-                            record as PmsProjectTemplateApi.ProjectTemplateStatus,
-                          )
-                        "
-                      >
-                        删除
-                      </Button>
-                    </template>
-                  </template>
-                </Table>
-              </div>
-            </div>
-          </div>
-        </Tabs.TabPane>
-
-        <!-- 看板列 -->
-        <Tabs.TabPane key="board" :tab="`看板（${formData.boards.length}）`">
-          <div class="mb-4 flex items-center gap-4">
-            <Alert
-              :closable="false"
-              class="flex-1"
-              message="拖拽调整看板列顺序；同一状态只能归属一个看板列"
-              type="info"
-            />
-            <Button type="primary" @click="addBoard">
-              <IconifyIcon icon="lucide:plus" />新增看板列
-            </Button>
-          </div>
-          <div ref="boardTableRef">
-            <Table
-              :columns="boardColumns"
-              :data-source="formData.boards"
-              :pagination="false"
-              :scroll="{ y: 430 }"
-              row-key="code"
-              size="small"
-            >
-              <template #bodyCell="{ column, record, index }">
-                <template v-if="column.key === 'sort'">
-                  <Tooltip title="拖动排序" placement="top">
-                    <IconifyIcon
-                      class="board-drag-handle cursor-move text-muted-foreground"
-                      icon="lucide:grip-vertical"
-                    />
-                  </Tooltip>
-                </template>
-                <template v-else-if="column.key === 'code'">
-                  <Input v-model:value="record.code" placeholder="如 todo" />
-                </template>
-                <template v-else-if="column.key === 'name'">
+        <Tabs v-model:active-key="activeTab" @change="handleTabChange">
+          <!-- 模板基本信息 -->
+          <Tabs.TabPane key="basic" tab="基本信息">
+            <Row :gutter="20">
+              <Col :span="12">
+                <Form.Item label="模板名称" name="name">
                   <Input
-                    v-model:value="record.name"
-                    placeholder="请输入看板列名称"
+                    v-model:value="formData.name"
+                    :maxlength="100"
+                    placeholder="请输入模板名称"
+                    show-count
                   />
-                </template>
-                <template v-else-if="column.key === 'workItemType'">
+                </Form.Item>
+              </Col>
+              <Col :span="12">
+                <Form.Item label="项目类型" name="projectType">
                   <Select
                     class="w-full"
-                    v-model:value="record.workItemType"
-                    :options="
-                      enabledWorkItemTypeOptions.map((item) => ({
-                        label: item.label,
-                        value: item.value,
-                      }))
+                    v-model:value="formData.projectType"
+                    :options="[
+                      { label: '通用项目', value: PmsProjectType.GENERAL },
+                      { label: '敏捷开发项目', value: PmsProjectType.AGILE },
+                    ]"
+                    placeholder="请选择项目类型"
+                    @change="
+                      (value: any) => handleProjectTypeChange(Number(value))
                     "
-                    @change="record.statusCodes = []"
                   />
-                </template>
-                <template v-else-if="column.key === 'statusCodes'">
-                  <Select
-                    class="w-full"
-                    v-model:value="record.statusCodes"
-                    max-tag-count="responsive"
-                    mode="multiple"
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row :gutter="20">
+              <Col :span="12">
+                <Form.Item label="模板状态" name="status">
+                  <Radio.Group
+                    v-model:value="formData.status"
                     :options="
-                      getStatusOptions(record.workItemType, record.code).map(
-                        (status) => ({
-                          label: status.name || status.code,
-                          value: status.code,
+                      getDictOptions(DICT_TYPE.COMMON_STATUS, 'number').map(
+                        (item) => ({
+                          label: item.label,
+                          value: item.value,
                         }),
                       )
                     "
-                    placeholder="请选择关联状态"
                   />
+                </Form.Item>
+              </Col>
+              <Col :span="12">
+                <Form.Item label="显示顺序" name="sort">
+                  <InputNumber
+                    v-model:value="formData.sort"
+                    class="!w-full"
+                    :min="0"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item label="模板描述" name="description">
+              <Textarea
+                v-model:value="formData.description"
+                :maxlength="500"
+                :rows="4"
+                placeholder="请输入模板适用场景"
+                show-count
+              />
+            </Form.Item>
+          </Tabs.TabPane>
+
+          <!-- 启用的事项类型 -->
+          <Tabs.TabPane
+            key="itemType"
+            :tab="`事项类型（${formData.itemTypes.length}）`"
+          >
+            <div class="mb-5">
+              <Alert
+                :closable="false"
+                description="项目创建时会根据这里的事项类型初始化可用能力；取消事项类型会同步移除其状态和看板"
+                message="事项类型是模板的全局关系；项目创建后不提供项目级维护"
+                type="info"
+              />
+            </div>
+            <Form.Item class="!mb-0" label="事项类型" name="itemTypes">
+              <Checkbox.Group
+                v-model:value="formData.itemTypes"
+                :options="
+                  getDictOptions(DICT_TYPE.PMS_WORK_ITEM_TYPE, 'number').map(
+                    (item) => ({
+                      label: item.label,
+                      value: item.value,
+                    }),
+                  )
+                "
+                @change="handleItemTypesChange"
+              />
+            </Form.Item>
+          </Tabs.TabPane>
+
+          <!-- 工作项状态 -->
+          <Tabs.TabPane
+            key="status"
+            :tab="`状态（${formData.statuses.length}）`"
+          >
+            <div class="mb-4 flex items-center gap-4">
+              <Alert
+                :closable="false"
+                class="flex-1"
+                message="拖拽调整状态顺序；每种事项类型必须且只能配置一个初始状态"
+                type="info"
+              />
+              <Button type="primary" @click="addStatus">
+                <IconifyIcon icon="lucide:plus" />新增状态
+              </Button>
+            </div>
+            <div class="space-y-4">
+              <div v-for="group in statusGroups" :key="group.value">
+                <div class="mb-2 flex items-center gap-2 text-sm font-medium">
+                  <span>{{ group.label }}</span>
+                  <span class="text-muted-foreground"
+                    >（{{ group.statuses.length }}）</span
+                  >
+                </div>
+                <div
+                  :ref="
+                    (el) => setStatusTableRef(group.value, el as Element | null)
+                  "
+                >
+                  <Table
+                    :columns="statusColumns"
+                    :data-source="group.statuses"
+                    :pagination="false"
+                    :scroll="{ y: 430 }"
+                    row-key="code"
+                    size="small"
+                  >
+                    <template #bodyCell="{ column, record }">
+                      <template v-if="column.key === 'sort'">
+                        <Tooltip title="拖动排序" placement="top">
+                          <IconifyIcon
+                            class="status-drag-handle cursor-move text-muted-foreground"
+                            icon="lucide:grip-vertical"
+                          />
+                        </Tooltip>
+                      </template>
+                      <template v-else-if="column.key === 'code'">
+                        <Input
+                          v-model:value="record.code"
+                          placeholder="如 task_todo"
+                        />
+                      </template>
+                      <template v-else-if="column.key === 'name'">
+                        <Input
+                          v-model:value="record.name"
+                          placeholder="请输入状态名称"
+                        />
+                      </template>
+                      <template v-else-if="column.key === 'workItemType'">
+                        <Select
+                          class="w-full"
+                          v-model:value="record.workItemType"
+                          :options="
+                            enabledWorkItemTypeOptions.map((item) => ({
+                              label: item.label,
+                              value: item.value,
+                            }))
+                          "
+                          @change="handleStatusTypeChange"
+                        />
+                      </template>
+                      <template v-else-if="column.key === 'statusType'">
+                        <Select
+                          class="w-full"
+                          v-model:value="record.statusType"
+                          :options="
+                            getDictOptions(
+                              DICT_TYPE.PMS_WORK_ITEM_STATUS_TYPE,
+                              'number',
+                            ).map((item) => ({
+                              label: item.label,
+                              value: item.value,
+                            }))
+                          "
+                        />
+                      </template>
+                      <template v-else-if="column.key === 'defaultStatus'">
+                        <Radio
+                          :checked="record.defaultStatus"
+                          class="!mr-0"
+                          @change="
+                            handleDefaultStatusChange(
+                              record as PmsProjectTemplateApi.ProjectTemplateStatus,
+                            )
+                          "
+                        >
+                          初始
+                        </Radio>
+                      </template>
+                      <template v-else-if="column.key === 'action'">
+                        <Button
+                          danger
+                          type="link"
+                          @click="
+                            removeStatusByItem(
+                              record as PmsProjectTemplateApi.ProjectTemplateStatus,
+                            )
+                          "
+                        >
+                          删除
+                        </Button>
+                      </template>
+                    </template>
+                  </Table>
+                </div>
+              </div>
+            </div>
+          </Tabs.TabPane>
+
+          <!-- 看板列 -->
+          <Tabs.TabPane key="board" :tab="`看板（${formData.boards.length}）`">
+            <div class="mb-4 flex items-center gap-4">
+              <Alert
+                :closable="false"
+                class="flex-1"
+                message="拖拽调整看板列顺序；同一状态只能归属一个看板列"
+                type="info"
+              />
+              <Button type="primary" @click="addBoard">
+                <IconifyIcon icon="lucide:plus" />新增看板列
+              </Button>
+            </div>
+            <div ref="boardTableRef">
+              <Table
+                :columns="boardColumns"
+                :data-source="formData.boards"
+                :pagination="false"
+                :scroll="{ y: 430 }"
+                row-key="code"
+                size="small"
+              >
+                <template #bodyCell="{ column, record, index }">
+                  <template v-if="column.key === 'sort'">
+                    <Tooltip title="拖动排序" placement="top">
+                      <IconifyIcon
+                        class="board-drag-handle cursor-move text-muted-foreground"
+                        icon="lucide:grip-vertical"
+                      />
+                    </Tooltip>
+                  </template>
+                  <template v-else-if="column.key === 'code'">
+                    <Input v-model:value="record.code" placeholder="如 todo" />
+                  </template>
+                  <template v-else-if="column.key === 'name'">
+                    <Input
+                      v-model:value="record.name"
+                      placeholder="请输入看板列名称"
+                    />
+                  </template>
+                  <template v-else-if="column.key === 'workItemType'">
+                    <Select
+                      class="w-full"
+                      v-model:value="record.workItemType"
+                      :options="
+                        enabledWorkItemTypeOptions.map((item) => ({
+                          label: item.label,
+                          value: item.value,
+                        }))
+                      "
+                      @change="record.statusCodes = []"
+                    />
+                  </template>
+                  <template v-else-if="column.key === 'statusCodes'">
+                    <Select
+                      class="w-full"
+                      v-model:value="record.statusCodes"
+                      max-tag-count="responsive"
+                      mode="multiple"
+                      :options="
+                        getStatusOptions(record.workItemType, record.code).map(
+                          (status) => ({
+                            label: status.name || status.code,
+                            value: status.code,
+                          }),
+                        )
+                      "
+                      placeholder="请选择关联状态"
+                    />
+                  </template>
+                  <template v-else-if="column.key === 'action'">
+                    <Button danger type="link" @click="removeBoard(index)">
+                      删除
+                    </Button>
+                  </template>
                 </template>
-                <template v-else-if="column.key === 'action'">
-                  <Button danger type="link" @click="removeBoard(index)">
-                    删除
-                  </Button>
-                </template>
-              </template>
-            </Table>
-          </div>
-        </Tabs.TabPane>
-      </Tabs>
-    </Form>
+              </Table>
+            </div>
+          </Tabs.TabPane>
+        </Tabs>
+      </Form>
     </Spin>
   </Modal>
 </template>

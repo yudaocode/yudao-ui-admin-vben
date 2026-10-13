@@ -12,8 +12,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart } from '@vben/utils';
-import { getAllPageItems } from '@vben/utils';
+import { downloadFileFromBlobPart, getAllPageItems } from '@vben/utils';
 
 import {
   Avatar,
@@ -143,13 +142,13 @@ const isActiveLifecycle = computed(
 const hasBoardFilter = computed(() =>
   Boolean(
     normalizedSearchKeyword.value ||
-    queryParams.statuses.length ||
-    queryParams.priorities.length ||
+    queryParams.statuses.length > 0 ||
+    queryParams.priorities.length > 0 ||
     queryParams.iterationId ||
-    queryParams.iterationIds.length ||
-    queryParams.excludedIterationIds.length ||
-    queryParams.assigneeUserIds.length ||
-    queryParams.labelIds.length,
+    queryParams.iterationIds.length > 0 ||
+    queryParams.excludedIterationIds.length > 0 ||
+    queryParams.assigneeUserIds.length > 0 ||
+    queryParams.labelIds.length > 0,
   ),
 ); // 看板是否正在筛选，筛选结果不允许拖拽排序
 
@@ -367,8 +366,7 @@ async function handleArchive(workItem: PmsWorkItemApi.WorkItem) {
     await archiveWorkItem(workItem.id!);
     message.success('归档成功');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 将工作项移入回收站 */
@@ -382,8 +380,7 @@ async function handleRecycle(workItem: PmsWorkItemApi.WorkItem) {
     await recycleWorkItem(workItem.id!);
     message.success('已移入回收站');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 恢复工作项 */
@@ -395,8 +392,7 @@ async function handleRestore(workItem: PmsWorkItemApi.WorkItem) {
     await restoreWorkItem(workItem.id!);
     message.success('恢复成功');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 彻底删除回收站中的工作项 */
@@ -410,8 +406,7 @@ async function handleDelete(workItem: PmsWorkItemApi.WorkItem) {
     await deleteWorkItem(workItem.id!);
     message.success('删除成功');
     await handleDataChanged();
-  } catch {
-  }
+  } catch {}
 }
 
 /** 打开状态设置弹窗 */

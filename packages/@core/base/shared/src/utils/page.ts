@@ -8,10 +8,7 @@ const DEFAULT_PAGE_SIZE = 200;
 
 /** 自动翻页加载完整列表。 */
 export async function getAllPageItems<T>(
-  requestPage: (
-    pageNo: number,
-    pageSize: number,
-  ) => Promise<PageResultLike<T>>,
+  requestPage: (pageNo: number, pageSize: number) => Promise<PageResultLike<T>>,
   pageSize = DEFAULT_PAGE_SIZE,
 ): Promise<T[]> {
   const result: T[] = [];

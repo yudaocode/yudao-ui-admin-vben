@@ -58,8 +58,8 @@ export function useSearchFormSchema(
         allowClear: true,
         options: getDictOptions(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, 'number').map(
           (item) => ({
-          label: item.label,
-          value: item.value,
+            label: item.label,
+            value: item.value,
           }),
         ),
         placeholder: '全部优先级',

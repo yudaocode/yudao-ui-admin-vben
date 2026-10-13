@@ -249,6 +249,16 @@ export const StableDiffusionClipGuidancePresets: ImageModel[] = [
 /** OpenAI 绘图预设（含 GPT Image / DALL·E）；实际可选以后台配置的 IMAGE 模型为准 */
 export const Dall3Models: ImageModel[] = [
   {
+    key: 'gpt-image-2.5-flare',
+    name: 'GPT Image 2.5 Flare',
+    image: `/static/imgs/ai/dall2.jpg`,
+  },
+  {
+    key: 'openai/gpt-image-2.5-flare',
+    name: 'GPT Image 2.5 Flare (Hao)',
+    image: `/static/imgs/ai/dall2.jpg`,
+  },
+  {
     key: 'gpt-image-1',
     name: 'GPT Image 1',
     image: `/static/imgs/ai/dall2.jpg`,
@@ -277,7 +287,8 @@ export const Dall3Models: ImageModel[] = [
 
 /** 判断是否为 GPT Image 系列（含中转自定义标识如 gpt-image-2.5-flare） */
 export function isGptImageModel(model?: string) {
-  return !!model && model.toLowerCase().includes('gpt-image');
+  const bare = (model || '').toLowerCase().replace(/^openai\//, '');
+  return bare.includes('gpt-image');
 }
 
 export const Dall3StyleList: ImageModel[] = [

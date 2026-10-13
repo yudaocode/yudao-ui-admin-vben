@@ -1,0 +1,275 @@
+.xq-copy-pool {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 2px 16px;
+}
+
+.xq-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.xq-title-block {
+  margin-right: auto;
+}
+
+.xq-title-block h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.xq-title-block p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.xq-search {
+  width: 260px;
+}
+
+.xq-split {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) 1fr;
+  gap: 12px;
+  align-items: stretch;
+  min-height: 560px;
+}
+
+.xq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: calc(100vh - 220px);
+  padding: 8px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+
+.xq-list-item {
+  display: grid;
+  grid-template-columns: 28px 64px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  text-align: left;
+  cursor: pointer;
+  background: #fafafa;
+  border: 1px solid transparent;
+  border-radius: 10px;
+}
+
+.xq-list-item:hover {
+  background: #f3f4f6;
+}
+
+.xq-list-item.active {
+  background: #eef5ff;
+  border-color: #1677ff;
+}
+
+.xq-list-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.xq-list-item.nested {
+  margin-left: 18px;
+  background: #fff;
+  border: 1px dashed #e5e7eb;
+}
+
+.xq-list-children {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.xq-list-thumb {
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: 8px;
+}
+
+.xq-list-thumb .ant-image,
+.xq-list-thumb img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+.xq-list-body {
+  min-width: 0;
+}
+
+.xq-list-top {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.xq-list-sku {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.xq-list-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.xq-list-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.xq-list-pager {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.xq-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: calc(100vh - 220px);
+  padding: 16px 18px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+
+.xq-detail-head {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 16px;
+}
+
+.xq-detail-cover {
+  position: relative;
+  overflow: hidden;
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.xq-detail-cover .ant-image,
+.xq-detail-cover img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.xq-detail-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}
+
+.xq-info-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.xq-label {
+  flex: 0 0 72px;
+  color: #6b7280;
+}
+
+.xq-info-text {
+  color: #111827;
+}
+
+.xq-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.xq-edit-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.xq-field-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.xq-wb-imgs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.xq-wb-img {
+  overflow: hidden;
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+}
+
+.xq-wb-img-fill {
+  position: relative;
+  aspect-ratio: 1;
+}
+
+.xq-wb-img-fill .ant-image,
+.xq-wb-img-fill img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.xq-wb-img-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.xq-img-cap {
+  padding: 4px 8px 8px;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.xq-status-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 960px) {
+  .xq-split {
+    grid-template-columns: 1fr;
+  }
+
+  .xq-list,
+  .xq-detail {
+    max-height: none;
+  }
+}

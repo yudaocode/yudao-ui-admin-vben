@@ -1,6 +1,9 @@
 import { requestClient } from '#/api/request';
 
 export namespace XqRpaConfigApi {
+  /** commander=影刀控制中枢；script=自写脚本；exe=本地可执行文件 */
+  export type RunnerMode = 'commander' | 'exe' | 'script';
+
   export interface Config {
     globalConfigured?: boolean;
     globalBaseUrl?: string;
@@ -10,6 +13,10 @@ export namespace XqRpaConfigApi {
     erpSiteUrl?: string;
     account?: string;
     hasPassword?: boolean;
+    runnerMode?: RunnerMode;
+    runnerPath?: string;
+    runnerArgs?: string;
+    runnerWorkdir?: string;
   }
 
   export interface SaveReq {
@@ -18,6 +25,10 @@ export namespace XqRpaConfigApi {
     erpSiteUrl?: string;
     account?: string;
     password?: string;
+    runnerMode?: RunnerMode;
+    runnerPath?: string;
+    runnerArgs?: string;
+    runnerWorkdir?: string;
   }
 
   export interface TriggerReq {
@@ -29,6 +40,10 @@ export namespace XqRpaConfigApi {
     jobUuid?: string;
     workUuid?: string;
     inputParamSent?: boolean;
+    runnerMode?: RunnerMode | string;
+    runnerPath?: string;
+    runnerCommandPreview?: string;
+    message?: string;
   }
 }
 

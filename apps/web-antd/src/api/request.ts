@@ -75,8 +75,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
-      // 是否需要设置访问租户；该配置仅供前端请求拦截器使用，不作为请求头发送
-      const isVisitTenant = config.headers.get('isVisitTenant') !== false;
+      const visitHeader = config.headers?.get?.('isVisitTenant');
+      const isVisitTenant =
+        visitHeader !== false && visitHeader !== 'false' && visitHeader !== '0';
       config.headers.delete('isVisitTenant');
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
