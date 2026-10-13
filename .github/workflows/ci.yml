@@ -44,8 +44,18 @@ jobs:
       - name: Setup Node
         uses: ./.github/actions/setup-node
 
+      # eslint 缓存条目按内容哈希失效(vsh lint 用 --cache-strategy content),
+      # 跨 run 恢复后未变更文件直接跳过
+      - name: Restore eslint cache
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            eslint-${{ runner.os }}-
+
       - name: Lint
-        run: pnpm run lint
+        run: pnpm run lint --parallel
 
   test:
     name: Test
