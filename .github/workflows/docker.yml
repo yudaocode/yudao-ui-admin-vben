@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       vite_base_url:
-        description: Backend origin baked into the image (VITE_BASE_URL); falls back to repo variable
+        description: Backend origin baked into the image (VITE_BASE_URL); falls back to branch environment, then repo variable
         required: false
         default: ''
       vite_glob_api_url:
@@ -29,6 +29,8 @@ jobs:
   docker-build:
     name: Build and Push Web Image
     runs-on: ubuntu-latest
+    # ref_name 即 main/test/dev，使 vars.VITE_* 按环境解析，未命中回落仓库变量/默认值
+    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
