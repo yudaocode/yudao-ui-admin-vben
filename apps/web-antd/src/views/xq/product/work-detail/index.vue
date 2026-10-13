@@ -611,10 +611,12 @@ onMounted(() => {
                 <div class="xq-sku-meta">
                   <b>SKU_{{ idx + 1 }}</b>
                   <span>{{ sku.externalSku || sku.productSku || '—' }}</span>
-                  <span>颜色
+                  <span
+                    >颜色
                     {{
                       sku.mainColor || sku.variantLabel || form.color || '—'
-                    }}</span>
+                    }}</span
+                  >
                   <span>库存 {{ sku.qtyAvailable ?? form.qty ?? '—' }}</span>
                   <span>价格 {{ sku.price ?? form.price ?? '—' }}</span>
                 </div>

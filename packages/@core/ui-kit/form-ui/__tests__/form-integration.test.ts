@@ -101,7 +101,9 @@ describe('useVbenForm integration', () => {
     await flushPromises();
 
     expect(await formApi.getValues()).toEqual({ name: '' });
-    expect(validateValue).toHaveBeenCalledTimes(initialValidationCount + 1);
+    await vi.waitFor(() => {
+      expect(validateValue).toHaveBeenCalledTimes(initialValidationCount + 1);
+    });
   });
 
   it('keeps only the active model protocol in field slot componentProps', async () => {
@@ -429,7 +431,9 @@ describe('useVbenForm integration', () => {
     await inputs[0]?.setValue('Ada');
     await formApi.setFieldValue('alias', 'Countess', true);
     await flushPromises();
-    expect(wrapper.text()).not.toContain('Name is required');
+    await vi.waitFor(() => {
+      expect(wrapper.text()).not.toContain('Name is required');
+    });
 
     expect(await formApi.validateField('name')).toEqual({
       errors: {},
@@ -908,11 +912,15 @@ describe('useVbenForm integration', () => {
 
     await input.trigger('blur');
     await flushPromises();
-    expect(wrapper.text()).toContain('Name is required');
+    await vi.waitFor(() => {
+      expect(wrapper.text()).toContain('Name is required');
+    });
 
     await input.setValue('Ada');
     await flushPromises();
-    expect(wrapper.text()).not.toContain('Name is required');
+    await vi.waitFor(() => {
+      expect(wrapper.text()).not.toContain('Name is required');
+    });
 
     await input.trigger('blur');
     await flushPromises();
@@ -1015,8 +1023,12 @@ describe('useVbenForm integration', () => {
     await wrapper.get('form').trigger('submit');
     await flushPromises();
 
-    expect(onSubmit).toHaveBeenCalledOnce();
-    expect(onSubmit).toHaveBeenCalledWith(undefined);
+    // 原生 submit 走 TanStack 的异步校验链，CI 高负载下链路完成可能晚于
+    // flushPromises，轮询断言直到链路落定（曾在 dev push 上 flaky 0 次调用）
+    await vi.waitFor(() => {
+      expect(onSubmit).toHaveBeenCalledOnce();
+      expect(onSubmit).toHaveBeenCalledWith(undefined);
+    });
   });
 
   it('calls handleReset with formatted values on reset button click', async () => {

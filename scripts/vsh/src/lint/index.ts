@@ -10,6 +10,10 @@ interface LintCommandOptions {
    */
   format?: boolean;
   /**
+   * Force parallel execution regardless of CPU cores.
+   */
+  parallel?: boolean;
+  /**
    * Number of threads for oxfmt and oxlint (default: 2).
    */
   threads?: number;
@@ -104,7 +108,7 @@ async function runParallel(commands: Command[]) {
   }
 }
 
-async function runLint({ format, threads }: LintCommandOptions) {
+async function runLint({ format, parallel, threads }: LintCommandOptions) {
   // process.env.FORCE_COLOR = '3';
   const cpuCores = availableParallelism();
 
@@ -118,7 +122,8 @@ async function runLint({ format, threads }: LintCommandOptions) {
     await runSerial([
       ['oxlint', ['--fix', '--type-aware', threadsArg]],
       ['oxfmt', [threadsArg]],
-      ['eslint', ['.', '--cache', '--fix']],
+      // content 策略:缓存条目按文件内容哈希失效,跨 checkout 仍可命中
+      ['eslint', ['.', '--cache', '--cache-strategy', 'content', '--fix']],
       ['stylelint', ['**/*.{vue,css,less,scss}', '--cache', '--fix']],
     ]);
     return;
@@ -127,15 +132,15 @@ async function runLint({ format, threads }: LintCommandOptions) {
   const commands: Command[] = [
     ['oxlint', ['--type-aware', threadsArg]],
     ['oxfmt', ['--check', threadsArg]],
-    ['eslint', ['.', '--cache']],
+    ['eslint', ['.', '--cache', '--cache-strategy', 'content']],
     ['stylelint', ['**/*.{vue,css,less,scss}', '--cache']],
   ];
 
   // 低配机器（CPU 核心数较少）串行执行，避免多进程并发导致瞬时占用飙升；
-  // 高配机器并行执行以缩短整体耗时。
-  await (cpuCores <= CPU_CORE_THRESHOLD
-    ? runSerial(commands)
-    : runParallel(commands));
+  // 高配机器或显式传入 --parallel（如 CI runner 核心数恰在阈值内）时并行执行。
+  await (parallel || cpuCores > CPU_CORE_THRESHOLD
+    ? runParallel(commands)
+    : runSerial(commands));
 }
 
 function defineLintCommand(cac: CAC) {
@@ -143,6 +148,7 @@ function defineLintCommand(cac: CAC) {
     .command('lint')
     .usage('Batch execute project lint check.')
     .option('--format', 'Format lint problem.')
+    .option('--parallel', 'Force parallel execution regardless of CPU cores.')
     .option('--threads <count>', 'Number of threads for oxfmt and oxlint.')
     .action(runLint);
 }

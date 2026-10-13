@@ -577,7 +577,9 @@ onMounted(async () => {
       <Tabs v-model:active-key="activeTab" class="tabs">
         <TabPane key="sku" tab="SKU">
           <div class="toolbar">
-            <span class="hint">按店铺+运营拼装，空运营为店铺通用。已禁止原 SKU。</span>
+            <span class="hint"
+              >按店铺+运营拼装，空运营为店铺通用。已禁止原 SKU。</span
+            >
             <Select
               v-model:value="skuShopFilter"
               allow-clear
@@ -643,8 +645,10 @@ onMounted(async () => {
 
         <TabPane key="markup" tab="价格增幅">
           <div class="toolbar">
-            <span class="hint">售价 = 增幅后货价 ÷ 运费系数（默认
-              0.85）。例：100×175%÷0.85=205</span>
+            <span class="hint"
+              >售价 = 增幅后货价 ÷ 运费系数（默认
+              0.85）。例：100×175%÷0.85=205</span
+            >
             <Select
               v-model:value="markupShopFilter"
               allow-clear

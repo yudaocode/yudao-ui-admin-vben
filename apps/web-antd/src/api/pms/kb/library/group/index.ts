@@ -34,12 +34,16 @@ export function getKnowledgeGroup(id: number) {
 }
 
 /** 新增知识库分组 */
-export function createKnowledgeGroup(data: PmsKnowledgeGroupApi.KnowledgeGroup) {
+export function createKnowledgeGroup(
+  data: PmsKnowledgeGroupApi.KnowledgeGroup,
+) {
   return requestClient.post<number>('/pms/kb/group/create', data);
 }
 
 /** 修改知识库分组 */
-export function updateKnowledgeGroup(data: PmsKnowledgeGroupApi.KnowledgeGroup) {
+export function updateKnowledgeGroup(
+  data: PmsKnowledgeGroupApi.KnowledgeGroup,
+) {
   return requestClient.put<boolean>('/pms/kb/group/update', data);
 }
 
@@ -58,7 +62,10 @@ export function deleteKnowledgeGroup(id: number) {
 }
 
 /** 移动知识库到个人分组 */
-export function moveKnowledgeLibraryToGroup(libraryId: number, groupId?: number) {
+export function moveKnowledgeLibraryToGroup(
+  libraryId: number,
+  groupId?: number,
+) {
   return requestClient.put<boolean>('/pms/kb/group/move', {
     libraryId,
     groupId,

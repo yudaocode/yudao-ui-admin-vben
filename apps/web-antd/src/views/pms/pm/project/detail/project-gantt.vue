@@ -199,16 +199,16 @@ function buildRows() {
     const iterationEndTime = iteration.endTime
       ? Number(iteration.endTime)
       : Math.max(...iterationItems.map((item) => Number(item.endTime)));
-    result.push({
-      key: `iteration-${iteration.id}`,
-      name: iteration.name,
-      startTime: iterationStartTime,
-      endTime: iterationEndTime,
-      progress: 0,
-      depth: 0,
-      group: true,
-    });
     result.push(
+      {
+        key: `iteration-${iteration.id}`,
+        name: iteration.name,
+        startTime: iterationStartTime,
+        endTime: iterationEndTime,
+        progress: 0,
+        depth: 0,
+        group: true,
+      },
       ...buildItemRows(iterationItems, 1, `iteration-${iteration.id}`),
     );
   });
@@ -217,19 +217,23 @@ function buildRows() {
       !item.iterationId &&
       (!searchKeyword || item.name.includes(searchKeyword)),
   );
-  if (unplannedItems.length) {
-    result.push({
-      key: 'iteration-unplanned',
-      name: '未规划事项',
-      startTime: Math.min(
-        ...unplannedItems.map((item) => Number(item.startTime)),
-      ),
-      endTime: Math.max(...unplannedItems.map((item) => Number(item.endTime))),
-      progress: 0,
-      depth: 0,
-      group: true,
-    });
-    result.push(...buildItemRows(unplannedItems, 1, 'iteration-unplanned'));
+  if (unplannedItems.length > 0) {
+    result.push(
+      {
+        key: 'iteration-unplanned',
+        name: '未规划事项',
+        startTime: Math.min(
+          ...unplannedItems.map((item) => Number(item.startTime)),
+        ),
+        endTime: Math.max(
+          ...unplannedItems.map((item) => Number(item.endTime)),
+        ),
+        progress: 0,
+        depth: 0,
+        group: true,
+      },
+      ...buildItemRows(unplannedItems, 1, 'iteration-unplanned'),
+    );
   }
   return result;
 }

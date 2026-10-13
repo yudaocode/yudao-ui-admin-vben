@@ -20,8 +20,8 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       cellRender: {
         name: 'CellDict',
         props: {
-          type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE
-        }
+          type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE,
+        },
       },
     },
     {

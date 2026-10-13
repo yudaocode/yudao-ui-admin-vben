@@ -19,7 +19,10 @@ export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeInteractionApi
       title: '类型',
       width: 100,
       align: 'left',
-      cellRender: { name: 'CellDict', props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE } },
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.PMS_KNOWLEDGE_OBJECT_TYPE },
+      },
     },
     {
       field: 'libraryName',

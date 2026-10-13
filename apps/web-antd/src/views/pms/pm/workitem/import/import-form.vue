@@ -26,8 +26,8 @@ const formLoading = ref(false); // 导入中
 const file = ref<File>(); // 待导入的文件
 const projectId = ref(0); // 项目编号
 const workItemType = ref<number>(PmsWorkItemType.TASK); // 工作项类型
-const workItemTypeName = computed(() =>
-  getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, workItemType.value) || '-',
+const workItemTypeName = computed(
+  () => getDictLabel(DICT_TYPE.PMS_WORK_ITEM_TYPE, workItemType.value) || '-',
 ); // 工作项类型名称
 
 /** 上传前：拦截文件，等待手动提交导入 */
@@ -74,9 +74,9 @@ const [ModalComponent, modalApi] = useVbenModal({
         .join('；');
       Modal.info({
         title: '导入结果',
-        content:
-          `导入成功 ${result.successCount} 条，失败 ${failureEntries.length} 条` +
-          (failureText ? `；${failureText}` : ''),
+        content: `导入成功 ${result.successCount} 条，失败 ${failureEntries.length} 条${
+          failureText ? `；${failureText}` : ''
+        }`,
       });
       await modalApi.close();
       emit('success');

@@ -155,12 +155,12 @@ catalog:
   lefthook: ^2.1.10
   livekit-client: ^2.22.1
   lodash.clonedeep: ^4.5.0
+  mammoth: ^1.13.0
   markdown-it: ^14.3.0
   markmap-common: ^0.18.9
   markmap-lib: ^0.18.12
   markmap-toolbar: ^0.18.12
   markmap-view: ^0.18.12
-  mammoth: ^1.13.0
   nitropack: ^2.13.4
   nprogress: ^0.2.0
   ora: ^9.4.1

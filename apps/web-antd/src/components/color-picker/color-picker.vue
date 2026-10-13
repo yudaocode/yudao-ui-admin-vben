@@ -18,9 +18,7 @@ const emit = defineEmits<{
 
 /** input[type=color] 需要合法的六位 hex 值，空值时仅回退展示，不改动外部值。 */
 const colorValue = computed(() =>
-  /^#[0-9a-f]{6}$/i.test(props.modelValue)
-    ? props.modelValue
-    : '#000000',
+  /^#[0-9a-f]{6}$/i.test(props.modelValue) ? props.modelValue : '#000000',
 );
 
 function handleInput(event: Event) {

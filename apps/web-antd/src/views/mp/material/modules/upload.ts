@@ -8,7 +8,7 @@ import { UploadType, useBeforeUpload } from '#/views/mp/hooks/useUpload';
 
 const accessStore = useAccessStore();
 const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` }; // 请求头
-const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-permanent`; // 上传地址
+const UPLOAD_URL = `${import.meta.env.VITE_GLOB_API_URL}/mp/material/upload-permanent`; // 上传地址
 
 interface UploadData {
   introduction: string;

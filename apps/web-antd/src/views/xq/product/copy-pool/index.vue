@@ -2678,7 +2678,8 @@ watch(
                     <code
                       class="xq-rule-preview"
                       :title="previewSkuByRule(selectedSkuRule)"
-                      >{{ previewSkuByRule(selectedSkuRule) }}</code>
+                      >{{ previewSkuByRule(selectedSkuRule) }}</code
+                    >
                   </div>
                   <div class="xq-rule-card">
                     <span class="xq-listing-flag">价格规则</span>
@@ -2796,10 +2797,12 @@ watch(
                           <div class="xq-wb-copy wide">
                             <div class="xq-wb-copy-h">
                               <em>卖点</em>
-                              <span>{{
+                              <span
+                                >{{
                                   form.sellingPoints.filter((p) => p.trim())
                                     .length
-                                }}/{{ form.sellingPoints.length }}</span>
+                                }}/{{ form.sellingPoints.length }}</span
+                              >
                             </div>
                             <div class="xq-points-stack">
                               <div
@@ -2910,7 +2913,9 @@ watch(
               <div class="xq-edit-block">
                 <label class="xq-field-label">
                   突出风格
-                  <span class="xq-muted">（可选标签，勾选后给生图用，不要写成句子）</span>
+                  <span class="xq-muted"
+                    >（可选标签，勾选后给生图用，不要写成句子）</span
+                  >
                 </label>
                 <div class="xq-tag-row">
                   <Tag
@@ -3083,7 +3088,8 @@ sku, title, feature1…feature5, description
       @ok="confirmRegenerateCopy"
     >
       <p class="xq-regen-tip">
-        本次只改写<strong>{{ reviseTargetLabel }}</strong>，会参考该项现有内容与你的提示词做二次修改；其它字段保持不变。
+        本次只改写<strong>{{ reviseTargetLabel }}</strong
+        >，会参考该项现有内容与你的提示词做二次修改；其它字段保持不变。
       </p>
       <label class="xq-regen-label">修改提示词（可选）</label>
       <Input.TextArea

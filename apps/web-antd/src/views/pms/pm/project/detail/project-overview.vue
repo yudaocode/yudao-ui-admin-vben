@@ -249,7 +249,12 @@ onMounted(() => {
           <div class="flex items-center justify-between gap-2">
             <span class="truncate font-medium">{{ iteration.name }}</span>
             <Tag :color="getIterationStatusTagType(iteration.status)">
-              {{ getDictLabel(DICT_TYPE.PMS_ITERATION_STATUS, iteration.status) || '-' }}
+              {{
+                getDictLabel(
+                  DICT_TYPE.PMS_ITERATION_STATUS,
+                  iteration.status,
+                ) || '-'
+              }}
             </Tag>
           </div>
           <div
