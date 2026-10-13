@@ -306,3 +306,98 @@ jobs:
           done
           echo "::error::health check failed: http://${HOST}:${PORT}/ unreachable after 60s"
           exit 1
+
+  notify:
+    name: WeCom Notify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [ci-ok, push-image, deploy]
+    # PR 运行（止于 ci-ok）推 PR 群，push/手动触发推 Actions 群；
+    # 上游失败或被跳过仍要通知（否则 PR 运行永不发送）；整跑被并发取消时静默，由后继运行补发
+    if: ${{ !cancelled() }}
+    permissions:
+      actions: read
+      contents: read
+    env:
+      FAILURE: ${{ contains(join(needs.*.result, ','), 'failure') }}
+    steps:
+      - name: Send WeCom notification
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WECOM_PR_WEBHOOK: ${{ secrets.WECOM_PR_WEBHOOK }}
+          WECOM_CI_WEBHOOK: ${{ secrets.WECOM_CI_WEBHOOK }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+          HEAD_MSG: ${{ github.event.head_commit.message }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            WEBHOOK="$WECOM_PR_WEBHOOK"
+          else
+            WEBHOOK="$WECOM_CI_WEBHOOK"
+          fi
+          if [ -z "$WEBHOOK" ]; then
+            echo "::warning::WeCom webhook secret not configured, skip notification"
+            exit 0
+          fi
+
+          # 失败 job 名单与整跑耗时；notify 自身仍在运行、skipped job 无时间戳，均需过滤 null
+          JOBS=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" --jq '.jobs')
+          FAILED=$(jq -r '[.[] | select(.conclusion == "failure") | .name] | join("、")' <<<"$JOBS")
+          START=$(jq -r '[.[].started_at | select(. != null)] | min' <<<"$JOBS")
+          END=$(jq -r '[.[].completed_at | select(. != null)] | max' <<<"$JOBS")
+          SECS=$(( $(date -u -d "$END" +%s) - $(date -u -d "$START" +%s) ))
+          DUR="$(( SECS / 60 ))m$(( SECS % 60 ))s"
+
+          if [ "$FAILURE" = "true" ]; then
+            ICON="❌"; LABEL="失败"
+          else
+            ICON="✅"; LABEL="成功"
+          fi
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            HEADLINE="PR CI ${LABEL}"
+            TITLE="**[#${PR_NUMBER} ${PR_TITLE}](${PR_URL})**"
+            WHO="${PR_AUTHOR} · \`${PR_HEAD}\` → \`${PR_BASE}\`"
+          else
+            SUBJECT=$(printf '%s\n' "$HEAD_MSG" | head -1)
+            if [ -z "$SUBJECT" ]; then
+              SUBJECT=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}" --jq '.commit.message' | head -1)
+            fi
+            HEADLINE="CI ${LABEL}"
+            if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+              HEADLINE="手动触发 · CI ${LABEL}"
+            fi
+            TITLE="**${SUBJECT}**"
+            WHO="${ACTOR} · \`${REF_NAME}\` · ${SHA:0:8}"
+          fi
+
+          {
+            echo "## ${ICON} ${HEADLINE}"
+            echo "${TITLE}"
+            echo "👤 ${WHO}"
+            if [ -n "$FAILED" ]; then
+              echo "失败 job：${FAILED}"
+            fi
+            if [ "$FAILURE" = "false" ] && [ "$DEPLOY_RESULT" = "success" ]; then
+              echo "🚀 已部署 ${REF_NAME} 环境"
+            fi
+            echo "⏱ ${DUR} · [查看运行](${RUN_URL})"
+          } > /tmp/wecom-msg.md
+
+          PAYLOAD=$(jq -Rs '{msgtype: "markdown", markdown: {content: .}}' /tmp/wecom-msg.md)
+          RESP=$(curl -fsS -m 10 --retry 2 --retry-delay 2 -X POST \
+            -H 'Content-Type: application/json' -d "$PAYLOAD" "$WEBHOOK")
+          echo "$RESP" | jq -e '.errcode == 0' > /dev/null
+          echo "WeCom notified: ${RESP}"
