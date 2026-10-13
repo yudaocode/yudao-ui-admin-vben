@@ -212,3 +212,91 @@ jobs:
             VITE_BASE_URL=${{ steps.args.outputs.vite_base_url }}
             VITE_GLOB_API_URL=${{ steps.args.outputs.vite_glob_api_url }}
           tags: ${{ steps.meta.outputs.tags }}
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: push-image
+    # push 仅 main/test/dev 触发；dispatch 选到其他分支时跳过部署（PR 经 needs 自动跳过）
+    if: ${{ contains(fromJSON('["main", "test", "dev"]'), github.ref_name) }}
+    environment: ${{ github.ref_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Join tailnet
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Resolve deploy target
+        id: target
+        env:
+          HOST: ${{ vars.DEPLOY_HOST }}
+          SSH_USER: ${{ vars.DEPLOY_USER }}
+          BASE_PATH: ${{ vars.DEPLOY_PATH }}
+        run: |
+          # 缺配置直接报错中止，避免静默跳过部署
+          : "${HOST:?repository variable DEPLOY_HOST is required}"
+          : "${SSH_USER:?repository variable DEPLOY_USER is required}"
+          BASE_PATH="${BASE_PATH:-/opt/star-ecom-erp}"
+          case "${GITHUB_REF_NAME}" in
+            main) PORT=8010; NAME=star-ecom-erp-web ;;
+            test) PORT=8011; NAME=star-ecom-erp-web-test ;;
+            dev)  PORT=8012; NAME=star-ecom-erp-web-dev ;;
+          esac
+          {
+            echo "host=$HOST"
+            echo "user=$SSH_USER"
+            echo "dir=${BASE_PATH}/${GITHUB_REF_NAME}"
+            echo "port=$PORT"
+            echo "name=$NAME"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Configure SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          : "${SSH_KEY:?repository secret DEPLOY_SSH_KEY is required}"
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      # 服务器上的 compose 文件与 .env 以仓库为唯一事实源，每次部署覆盖同步
+      - name: Deploy over SSH
+        env:
+          HOST: ${{ steps.target.outputs.host }}
+          SSH_USER: ${{ steps.target.outputs.user }}
+          DIR: ${{ steps.target.outputs.dir }}
+          BRANCH: ${{ github.ref_name }}
+          HOST_PORT: ${{ steps.target.outputs.port }}
+          NAME: ${{ steps.target.outputs.name }}
+        run: |
+          printf 'COMPOSE_PROJECT_NAME=star-ecom-erp-%s\nIMAGE_TAG=%s\nHOST_PORT=%s\nCONTAINER_NAME=%s\n' \
+            "$BRANCH" "$BRANCH" "$HOST_PORT" "$NAME" > .env.deploy
+          # tailnet 内为 WireGuard 加密链路，主机指纹首次信任（TOFU）
+          SSH_OPTS="-i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10"
+          ssh $SSH_OPTS "${SSH_USER}@${HOST}" "mkdir -p '${DIR}'"
+          scp $SSH_OPTS docker-compose.yml "${SSH_USER}@${HOST}:${DIR}/docker-compose.yml"
+          scp $SSH_OPTS .env.deploy "${SSH_USER}@${HOST}:${DIR}/.env"
+          ssh $SSH_OPTS "${SSH_USER}@${HOST}" \
+            "cd '${DIR}' && docker compose pull && docker compose up -d && docker compose ps && docker image prune -f > /dev/null"
+
+      - name: Verify over tailnet
+        env:
+          HOST: ${{ steps.target.outputs.host }}
+          PORT: ${{ steps.target.outputs.port }}
+        run: |
+          for i in $(seq 1 12); do
+            if curl -fsS --max-time 5 "http://${HOST}:${PORT}/" > /dev/null; then
+              echo "OK: http://${HOST}:${PORT}/ is serving"
+              exit 0
+            fi
+            echo "attempt $i/12 not ready, retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::health check failed: http://${HOST}:${PORT}/ unreachable after 60s"
+          exit 1

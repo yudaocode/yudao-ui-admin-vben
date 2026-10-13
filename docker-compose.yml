@@ -1,13 +1,15 @@
 # Star E-Commerce ERP 前端运行时编排
-# 镜像由 GitHub Actions 构建并推送 GHCR（见 .github/workflows/ci.yml 的 Docker Build job），本文件只负责拉取运行
-# 服务器更新流程：docker compose pull && docker compose up -d（pull_policy: always 会自动拉新版）
-# 镜像内已烘焙后端地址（VITE_BASE_URL），通过 CI 的 workflow_dispatch 输入或仓库变量配置
+# 镜像由 GitHub Actions 构建并推送 GHCR；部署由 ci.yml 的 deploy job 自动完成：
+# push main/test/dev → CI 全绿 → push-image → 经 tailscale SSH 到服务器执行本文件
+# 服务器侧目录：/home/edward/star-ecom-erp/<分支>，本文件与 .env 由 CI 每次部署同步覆盖，勿手改
+# 可覆盖变量（CI 写入 .env）：IMAGE_TAG / HOST_PORT / CONTAINER_NAME
+# 手动更新（默认值即 main 环境）：docker compose pull && docker compose up -d
 # 如需本地从零构建，使用 docker-compose.build.yml
 services:
   web:
-    image: ghcr.io/ellean/star-ecom-erp-web:latest
-    container_name: star-ecom-erp-web
+    image: ghcr.io/ellean/star-ecom-erp-web:${IMAGE_TAG:-latest}
+    container_name: ${CONTAINER_NAME:-star-ecom-erp-web}
     ports:
-      - '8010:8080'
+      - '${HOST_PORT:-8010}:8080'
     restart: unless-stopped
     pull_policy: always
