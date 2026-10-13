@@ -48,11 +48,13 @@ const title = computed(() =>
     : props.element.label,
 );
 
+/** 副标题始终带编码，避免多个「Color」看不清是哪个字段 */
 const desc = computed(() => {
+  const code = props.element.code || '';
   if (props.showZh && title.value !== props.element.label) {
-    return props.element.label;
+    return `${props.element.label} · ${code}`;
   }
-  return props.element.code;
+  return code;
 });
 
 const fillMode = computed<FieldFillMode>(() => {

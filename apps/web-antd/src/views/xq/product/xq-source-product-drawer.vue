@@ -2,7 +2,9 @@
 import type { XqProductApi } from '#/api/xq/product';
 import type { XqWorkOrderApi } from '#/api/xq/work-order';
 
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
+
+import { IconifyIcon } from '@vben/icons';
 
 import { Alert, Drawer, Empty, Image, Spin, Tag } from 'ant-design-vue';
 
@@ -24,6 +26,7 @@ const emit = defineEmits<{
 const loading = ref(false);
 const product = ref<null | XqProductApi.Product>(null);
 const galleryIndex = ref(0);
+const galleryStripRef = ref<HTMLElement | null>(null);
 const sourceHtmlOpen = ref(false);
 
 const titleSku = computed(
@@ -70,6 +73,34 @@ const gallery = computed(() => {
 const mainImage = computed(
   () => gallery.value[galleryIndex.value] || gallery.value[0] || '',
 );
+
+function selectGallery(idx: number) {
+  const total = gallery.value.length;
+  if (total <= 0) return;
+  galleryIndex.value = ((idx % total) + total) % total;
+}
+
+function shiftGallery(delta: number) {
+  selectGallery(galleryIndex.value + delta);
+}
+
+async function scrollGalleryThumbIntoView() {
+  await nextTick();
+  const strip = galleryStripRef.value;
+  if (!strip) return;
+  const active = strip.querySelector(
+    '.xq-shop-thumb.active',
+  ) as HTMLElement | null;
+  active?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'center',
+  });
+}
+
+watch(galleryIndex, () => {
+  void scrollGalleryThumbIntoView();
+});
 
 const displayTitle = computed(
   () =>
@@ -369,21 +400,58 @@ function selectMember(row: XqWorkOrderApi.WorkOrder) {
     <Spin :spinning="loading">
       <div v-if="task" class="xq-shop">
         <div class="xq-shop-media">
-          <div v-if="gallery.length" class="xq-shop-thumbs">
+          <div class="xq-shop-stage">
             <button
-              v-for="(url, idx) in gallery.slice(0, 16)"
+              v-if="gallery.length > 1"
+              type="button"
+              class="xq-shop-nav prev"
+              aria-label="上一张"
+              @click="shiftGallery(-1)"
+            >
+              <IconifyIcon icon="lucide:chevron-left" />
+            </button>
+            <div class="xq-shop-main">
+              <Image v-if="mainImage" :src="mainImage" :preview="true" />
+              <Empty v-else description="暂无原图" :image-size="48" />
+            </div>
+            <button
+              v-if="gallery.length > 1"
+              type="button"
+              class="xq-shop-nav next"
+              aria-label="下一张"
+              @click="shiftGallery(1)"
+            >
+              <IconifyIcon icon="lucide:chevron-right" />
+            </button>
+            <div v-if="gallery.length > 1" class="xq-shop-dots">
+              <button
+                v-for="(_, idx) in gallery"
+                :key="`dot-${idx}`"
+                type="button"
+                class="xq-shop-dot"
+                :class="{ active: galleryIndex === idx }"
+                @click="selectGallery(idx)"
+              ></button>
+            </div>
+            <div v-if="gallery.length > 1" class="xq-shop-counter">
+              {{ galleryIndex + 1 }} / {{ gallery.length }}
+            </div>
+          </div>
+          <div
+            v-if="gallery.length"
+            ref="galleryStripRef"
+            class="xq-shop-strip"
+          >
+            <button
+              v-for="(url, idx) in gallery"
               :key="`g-${idx}`"
               type="button"
               class="xq-shop-thumb"
               :class="{ active: galleryIndex === idx }"
-              @click="galleryIndex = idx"
+              @click="selectGallery(idx)"
             >
               <img :src="url" alt="" />
             </button>
-          </div>
-          <div class="xq-shop-main">
-            <Image v-if="mainImage" :src="mainImage" :preview="true" />
-            <Empty v-else description="暂无原图" :image-size="48" />
           </div>
         </div>
 
@@ -489,28 +557,101 @@ function selectMember(row: XqWorkOrderApi.WorkOrder) {
 }
 
 .xq-shop-media {
-  display: grid;
-  grid-template-columns: 56px 1fr;
-  gap: 8px;
-  align-items: start;
-}
-
-.xq-shop-thumbs {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 360px;
-  overflow: auto;
+  gap: 10px;
+  min-width: 0;
+}
+
+.xq-shop-stage {
+  position: relative;
+}
+
+.xq-shop-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: #111;
+  cursor: pointer;
+  background: rgb(255 255 255 / 92%);
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.xq-shop-nav.prev {
+  left: 8px;
+}
+
+.xq-shop-nav.next {
+  right: 8px;
+}
+
+.xq-shop-dots {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  padding: 0 40px;
+  pointer-events: none;
+}
+
+.xq-shop-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  background: rgb(255 255 255 / 75%);
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 999px;
+}
+
+.xq-shop-dot.active {
+  background: #ff6a00;
+  border-color: #ff6a00;
+}
+
+.xq-shop-counter {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  padding: 2px 7px;
+  font-size: 12px;
+  color: #fff;
+  background: rgb(0 0 0 / 45%);
+  border-radius: 999px;
+}
+
+.xq-shop-strip {
+  display: flex;
+  gap: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .xq-shop-thumb {
+  flex: 0 0 56px;
   width: 56px;
   height: 56px;
   padding: 0;
   overflow: hidden;
   cursor: pointer;
   background: #fff;
-  border: 1px solid #eee;
+  border: 2px solid #eee;
   border-radius: 4px;
 }
 
@@ -734,14 +875,8 @@ function selectMember(row: XqWorkOrderApi.WorkOrder) {
 }
 
 @media (max-width: 900px) {
-  .xq-shop,
-  .xq-shop-media {
+  .xq-shop {
     grid-template-columns: 1fr;
-  }
-
-  .xq-shop-thumbs {
-    flex-direction: row;
-    max-height: none;
   }
 }
 </style>

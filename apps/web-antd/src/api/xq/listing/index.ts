@@ -236,6 +236,18 @@ export function getXqFieldPool(params: {
   });
 }
 
+/** 按平台重建字段池（运维/导入补偿；includeTemplates 扫类目模板会较慢） */
+export function rebuildXqFieldPool(params: {
+  includeTemplates?: boolean;
+  platformId: string;
+}) {
+  return requestClient.post<Record<string, unknown>>(
+    '/xq/listing/field-pool/rebuild',
+    null,
+    { params },
+  );
+}
+
 export function saveXqShopFieldConfig(data: {
   country: string;
   fields: XqListingApi.CategoryFieldConfigItem[];

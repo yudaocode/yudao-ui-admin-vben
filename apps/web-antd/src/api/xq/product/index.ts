@@ -22,11 +22,9 @@ export namespace XqProductApi {
     price?: number;
     exclusivePrice?: number;
     discountedPrice?: number;
-    /** 自提价 */
-    pickupPrice?: number;
-    /** 一件代发价（含运费合计优先） */
-    dropshipPrice?: number;
-    /** 一件代发运费 */
+    /** 自提运费 */
+    pickupShippingFee?: number;
+    /** 代发运费 */
     dropshipShippingFee?: number;
     currency?: string;
     status: number;
@@ -74,8 +72,7 @@ export namespace XqProductApi {
     qtyAvailable?: number;
     price?: number;
     discountedPrice?: number;
-    pickupPrice?: number;
-    dropshipPrice?: number;
+    pickupShippingFee?: number;
     dropshipShippingFee?: number;
   }
 
@@ -111,6 +108,14 @@ export function getXqProductPage(
 
 export function getXqProduct(id: string) {
   return requestClient.get<XqProductApi.Product>(`/xq/product/get?id=${id}`);
+}
+
+/** 详情缺失时：用全部大健云仓凭证拉详情并补自提/代发价 */
+export function ensureXqProductDetail(id: string) {
+  return requestClient.post<XqProductApi.Product>(
+    `/xq/product/ensure-detail?id=${encodeURIComponent(id)}`,
+    {},
+  );
 }
 
 export function createXqProduct(data: XqProductApi.Product) {

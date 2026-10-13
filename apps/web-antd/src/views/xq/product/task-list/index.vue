@@ -673,14 +673,6 @@ onMounted(async () => {
   <Page auto-content-height>
     <div class="xq-list-page">
       <div class="xq-list-bar">
-        <Input.Search
-          v-model:value="keyword"
-          allow-clear
-          class="xq-list-search"
-          placeholder="搜索任务号 / SKU / 标题"
-          enter-button="搜索"
-          @search="handleSearch"
-        />
         <TreeSelect
           v-model:value="filterListingCategoryId"
           allow-clear
@@ -722,6 +714,15 @@ onMounted(async () => {
 
       <div class="xq-batch-bar">
         <span class="xq-batch-count">已选 {{ selectedCount }}</span>
+        <Input.Search
+          v-model:value="keyword"
+          allow-clear
+          size="small"
+          class="xq-batch-search"
+          placeholder="任务号 / SKU / 标题"
+          enter-button="搜索"
+          @search="handleSearch"
+        />
         <Button
           type="primary"
           :loading="batchExecuting"
@@ -934,17 +935,17 @@ onMounted(async () => {
   margin-bottom: 10px;
 }
 
-.xq-list-search {
-  flex: 1;
-  max-width: 420px;
-}
-
 .xq-list-cat {
   width: 240px;
 }
 
 .xq-list-cat-selected {
   width: 140px;
+}
+
+.xq-batch-search {
+  width: 220px;
+  max-width: min(220px, 42vw);
 }
 
 .xq-status-tabs {

@@ -124,6 +124,7 @@ export namespace XqWorkOrderApi {
     externalSku?: string;
     keyword?: string;
     status?: number;
+    /** 大健云仓类目（含子树） */
     gigaCategoryId?: number;
     copyUserId?: number;
     imageUserId?: number;
@@ -139,6 +140,19 @@ export namespace XqWorkOrderApi {
     listingReady?: boolean;
     mineImageUserId?: number;
     flowStatus?: string;
+    /** 已选产品池：有图文但未选平台/分类 */
+    selectedPool?: boolean;
+  }
+
+  export interface BindListingReq {
+    expandFamily?: boolean;
+    ids: number[];
+    listingCategoryId: string;
+    listingCategoryName?: string;
+    listingPlatformId: string;
+    listingPlatformName?: string;
+    listingShopId?: string;
+    listingShopName?: string;
   }
 
   export interface AssignImageReq {
@@ -199,6 +213,11 @@ export function updateXqWorkOrder(
   },
 ) {
   return requestClient.put('/xq/work-order/update', data);
+}
+
+/** 已选产品池：补绑平台 + 分类 */
+export function bindXqWorkOrderListing(data: XqWorkOrderApi.BindListingReq) {
+  return requestClient.post<number>('/xq/work-order/bind-listing', data);
 }
 
 export function generateXqWorkOrderCopy(id: number) {

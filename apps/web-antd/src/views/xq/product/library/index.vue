@@ -3,7 +3,7 @@ import type { XqListingApi, XqWorkbenchPlatform } from '#/api/xq/listing';
 import type { XqProductApi } from '#/api/xq/product';
 import type { XqWorkOrderApi } from '#/api/xq/work-order';
 
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -26,6 +26,7 @@ import {
 
 import { getXqListingCategories, getXqWorkbenchScope } from '#/api/xq/listing';
 import {
+  ensureXqProductDetail,
   getXqCategoryTree,
   getXqProduct,
   getXqProductPage,
@@ -62,6 +63,7 @@ const detailLoading = ref(false);
 const detail = ref<null | XqProductApi.Product>(null);
 const selectedVariantSku = ref('');
 const galleryIndex = ref(0);
+const galleryStripRef = ref<HTMLElement | null>(null);
 /** 勾选待下发：key = sku/itemCode */
 const selectedMap = ref<Record<string, XqProductApi.Product>>({});
 const dispatching = ref(false);
@@ -691,8 +693,48 @@ async function openDetail(item: XqProductApi.Product) {
   }
 }
 
+/** 本地无详情或缺自提/代发运费时，触发大健云仓补齐 */
+function needsGigaEnsure(p?: null | XqProductApi.Product) {
+  if (!p) return true;
+  const thinDetail =
+    !(p.imageCount && p.imageCount > 1) &&
+    !(p.imageUrls && p.imageUrls.length > 1) &&
+    !String(p.upc || '').trim() &&
+    !String(p.attributesJson || '').trim() &&
+    !String(p.characteristics || '').trim() &&
+    !String(p.mainMaterial || '').trim();
+  const missingPrices =
+    p.pickupShippingFee === undefined ||
+    p.pickupShippingFee === null ||
+    p.dropshipShippingFee === undefined ||
+    p.dropshipShippingFee === null;
+  return thinDetail || missingPrices;
+}
+
 async function loadDetailSku(id: string, fallback?: XqProductApi.Product) {
-  const loaded = await getXqProduct(id);
+  let loaded: null | XqProductApi.Product = null;
+  try {
+    loaded = await getXqProduct(id);
+  } catch {
+    loaded = null;
+  }
+  if (needsGigaEnsure(loaded)) {
+    const hideLoading = message.loading({
+      content: '正在从大健云仓拉取详情与价格…',
+      duration: 0,
+    });
+    try {
+      loaded = await ensureXqProductDetail(id);
+    } catch (error: any) {
+      message.error(error?.message || '大健云仓拉取详情失败');
+      if (!loaded && fallback) {
+        loaded = fallback;
+      }
+    } finally {
+      hideLoading();
+    }
+  }
+  if (!loaded) return;
   const prev = fallback?.variants || detail.value?.variants || [];
   if ((!loaded.variants || loaded.variants.length === 0) && prev.length > 0) {
     loaded.variants = prev.filter((v) => isCollectedVariant(v, loaded.sku));
@@ -787,6 +829,44 @@ const displayImage = computed(
   () => displayGallery.value[galleryIndex.value] || displayGallery.value[0],
 );
 
+const detailPrice = computed(() => {
+  const v = selectedVariant.value;
+  const d = detail.value;
+  return priceParts({
+    price: v?.price ?? d?.price,
+    pickupShippingFee: v?.pickupShippingFee ?? d?.pickupShippingFee,
+    dropshipShippingFee: v?.dropshipShippingFee ?? d?.dropshipShippingFee,
+  });
+});
+
+function selectGallery(idx: number) {
+  const total = displayGallery.value.length;
+  if (total <= 0) return;
+  galleryIndex.value = ((idx % total) + total) % total;
+}
+
+function shiftGallery(delta: number) {
+  selectGallery(galleryIndex.value + delta);
+}
+
+async function scrollGalleryThumbIntoView() {
+  await nextTick();
+  const strip = galleryStripRef.value;
+  if (!strip) return;
+  const active = strip.querySelector(
+    '.xq-shop-thumb.active',
+  ) as HTMLElement | null;
+  active?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'center',
+  });
+}
+
+watch(galleryIndex, () => {
+  void scrollGalleryThumbIntoView();
+});
+
 const detailSpecRows = computed(() => {
   const d = detail.value;
   if (!d) return [] as { label: string; value: string }[];
@@ -858,9 +938,41 @@ function formatMoney(value?: null | number) {
     return null;
   }
   const n = Number(value);
-  // 业务上 0 视为无价
-  if (n <= 0) return null;
+  if (!Number.isFinite(n) || n < 0) return null;
   return n.toFixed(2);
+}
+
+/** 货价：0 视为无价 */
+function asPositivePrice(value?: null | number) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return null;
+  }
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/** 运费：null/缺省不展示；0 是合法运费（包邮） */
+function asShippingFee(value?: null | number) {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return null;
+  }
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
+/** 原价 + 自提运费 + 代发运费 */
+function priceParts(
+  item?: null | {
+    dropshipShippingFee?: number;
+    pickupShippingFee?: number;
+    price?: number;
+  },
+) {
+  return {
+    original: asPositivePrice(item?.price),
+    pickup: asShippingFee(item?.pickupShippingFee),
+    dropship: asShippingFee(item?.dropshipShippingFee),
+  };
 }
 
 function formatSpecValue(value?: null | number | string) {
@@ -1072,7 +1184,8 @@ onMounted(async () => {
                 <span
                   class="name"
                   :class="{ bold: browseL2?.id === item.id }"
-                  >{{ item.name }}</span>
+                  >{{ item.name }}</span
+                >
                 <span v-if="item.children?.length" class="arrow">›</span>
               </div>
               <Empty
@@ -1169,28 +1282,32 @@ onMounted(async () => {
               </div>
               <div class="xq-price-block">
                 <div class="xq-price-line">
-                  <span class="xq-price-label">自提</span>
+                  <span class="xq-price-label">原价</span>
                   <span
-                    v-if="formatMoney(item.pickupPrice ?? item.price)"
+                    v-if="formatMoney(priceParts(item).original)"
                     class="xq-price-main"
                   >
-                    ${{ formatMoney(item.pickupPrice ?? item.price) }}
+                    ${{ formatMoney(priceParts(item).original) }}
                   </span>
                   <span v-else class="xq-price-muted">—</span>
                 </div>
                 <div class="xq-price-line">
-                  <span class="xq-price-label">代发</span>
+                  <span class="xq-price-label">自提运费</span>
                   <span
-                    v-if="formatMoney(item.dropshipPrice)"
-                    class="xq-price-sale"
+                    v-if="formatMoney(priceParts(item).pickup) != null"
+                    class="xq-price-fee"
                   >
-                    ${{ formatMoney(item.dropshipPrice) }}
+                    ${{ formatMoney(priceParts(item).pickup) }}
                   </span>
+                  <span v-else class="xq-price-muted">—</span>
+                </div>
+                <div class="xq-price-line">
+                  <span class="xq-price-label">代发运费</span>
                   <span
-                    v-else-if="formatMoney(item.discountedPrice ?? item.price)"
-                    class="xq-price-sale"
+                    v-if="formatMoney(priceParts(item).dropship) != null"
+                    class="xq-price-fee"
                   >
-                    ${{ formatMoney(item.discountedPrice ?? item.price) }}
+                    ${{ formatMoney(priceParts(item).dropship) }}
                   </span>
                   <span v-else class="xq-price-muted">—</span>
                 </div>
@@ -1271,24 +1388,65 @@ onMounted(async () => {
         </div>
         <div v-if="detail" class="xq-shop">
           <div class="xq-shop-media">
-            <div v-if="displayGallery.length" class="xq-shop-thumbs">
+            <div class="xq-shop-stage">
               <button
-                v-for="(url, idx) in displayGallery.slice(0, 12)"
+                v-if="displayGallery.length > 1"
+                type="button"
+                class="xq-shop-nav prev"
+                aria-label="上一张"
+                @click="shiftGallery(-1)"
+              >
+                <IconifyIcon icon="lucide:chevron-left" />
+              </button>
+              <div class="xq-shop-main">
+                <Image
+                  :src="displayImage || detail.imageUrl || undefined"
+                  :preview="true"
+                  fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3C/svg%3E"
+                />
+              </div>
+              <button
+                v-if="displayGallery.length > 1"
+                type="button"
+                class="xq-shop-nav next"
+                aria-label="下一张"
+                @click="shiftGallery(1)"
+              >
+                <IconifyIcon icon="lucide:chevron-right" />
+              </button>
+              <div
+                v-if="displayGallery.length > 1"
+                class="xq-shop-dots"
+                aria-hidden="true"
+              >
+                <button
+                  v-for="(_, idx) in displayGallery"
+                  :key="`dot-${idx}`"
+                  type="button"
+                  class="xq-shop-dot"
+                  :class="{ active: galleryIndex === idx }"
+                  @click="selectGallery(idx)"
+                ></button>
+              </div>
+              <div v-if="displayGallery.length > 1" class="xq-shop-counter">
+                {{ galleryIndex + 1 }} / {{ displayGallery.length }}
+              </div>
+            </div>
+            <div
+              v-if="displayGallery.length"
+              ref="galleryStripRef"
+              class="xq-shop-strip"
+            >
+              <button
+                v-for="(url, idx) in displayGallery"
                 :key="`g-${idx}`"
                 type="button"
                 class="xq-shop-thumb"
                 :class="{ active: galleryIndex === idx }"
-                @click="galleryIndex = idx"
+                @click="selectGallery(idx)"
               >
                 <img :src="url" alt="" />
               </button>
-            </div>
-            <div class="xq-shop-main">
-              <Image
-                :src="displayImage || detail.imageUrl || undefined"
-                :preview="true"
-                fallback="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect fill='%23f3f4f6' width='400' height='400'/%3E%3C/svg%3E"
-              />
             </div>
           </div>
 
@@ -1297,83 +1455,33 @@ onMounted(async () => {
             <div class="xq-shop-price">
               <div class="xq-shop-price-roles">
                 <div class="xq-shop-price-role">
-                  <span class="xq-shop-price-role-label">自提</span>
-                  <strong
-                    v-if="
-                      formatMoney(
-                        selectedVariant?.pickupPrice ||
-                          detail.pickupPrice ||
-                          selectedVariant?.price ||
-                          detail.price,
-                      )
-                    "
-                  >
-                    ${{
-                      formatMoney(
-                        selectedVariant?.pickupPrice ||
-                          detail.pickupPrice ||
-                          selectedVariant?.price ||
-                          detail.price,
-                      )
-                    }}
+                  <span class="xq-shop-price-role-label">原价</span>
+                  <strong v-if="formatMoney(detailPrice.original)">
+                    ${{ formatMoney(detailPrice.original) }}
                   </strong>
                   <strong v-else>—</strong>
                 </div>
                 <div class="xq-shop-price-role">
-                  <span class="xq-shop-price-role-label">一件代发</span>
+                  <span class="xq-shop-price-role-label">自提运费</span>
                   <strong
-                    v-if="
-                      formatMoney(
-                        selectedVariant?.dropshipPrice || detail.dropshipPrice,
-                      )
-                    "
-                    class="xq-price-sale"
+                    v-if="formatMoney(detailPrice.pickup) != null"
+                    class="xq-price-fee"
                   >
-                    ${{
-                      formatMoney(
-                        selectedVariant?.dropshipPrice || detail.dropshipPrice,
-                      )
-                    }}
+                    ${{ formatMoney(detailPrice.pickup) }}
                   </strong>
+                  <strong v-else>—</strong>
+                </div>
+                <div class="xq-shop-price-role">
+                  <span class="xq-shop-price-role-label">代发运费</span>
                   <strong
-                    v-else-if="
-                      formatMoney(
-                        selectedVariant?.discountedPrice ||
-                          detail.discountedPrice ||
-                          selectedVariant?.price ||
-                          detail.price,
-                      )
-                    "
-                    class="xq-price-sale"
+                    v-if="formatMoney(detailPrice.dropship) != null"
+                    class="xq-price-fee"
                   >
-                    ${{
-                      formatMoney(
-                        selectedVariant?.discountedPrice ||
-                          detail.discountedPrice ||
-                          selectedVariant?.price ||
-                          detail.price,
-                      )
-                    }}
+                    ${{ formatMoney(detailPrice.dropship) }}
                   </strong>
                   <strong v-else>—</strong>
                 </div>
               </div>
-              <span
-                v-if="
-                  formatMoney(
-                    selectedVariant?.dropshipShippingFee ||
-                      detail.dropshipShippingFee,
-                  )
-                "
-                class="xq-exclusive"
-              >
-                代发运费 ${{
-                  formatMoney(
-                    selectedVariant?.dropshipShippingFee ||
-                      detail.dropshipShippingFee,
-                  )
-                }}
-              </span>
               <span
                 v-if="formatMoney(detail.exclusivePrice)"
                 class="xq-exclusive"
@@ -1382,14 +1490,18 @@ onMounted(async () => {
               </span>
             </div>
             <div class="xq-shop-meta">
-              <span>Item Code
+              <span
+                >Item Code
                 {{
                   selectedVariant?.itemCode || detail.itemCode || detail.sku
-                }}</span>
-              <span>库存
+                }}</span
+              >
+              <span
+                >库存
                 {{
                   selectedVariant?.qtyAvailable ?? detail.qtyAvailable ?? '—'
-                }}</span>
+                }}</span
+              >
             </div>
             <div
               v-if="detail.pickedPlatforms?.length"
@@ -2299,26 +2411,31 @@ onMounted(async () => {
 
 .xq-price-line {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: baseline;
   font-size: 13px;
 }
 
 .xq-price-label {
   flex-shrink: 0;
-  width: 36px;
+  min-width: 56px;
   font-size: 12px;
   color: #9ca3af;
 }
 
 .xq-price-main {
   font-weight: 600;
-  color: #111;
+  color: #ff5000;
 }
 
 .xq-price-sale {
   font-weight: 700;
   color: #dc2626;
+}
+
+.xq-price-fee {
+  font-weight: 600;
+  color: #ff5000;
 }
 
 .xq-price-muted {
@@ -2385,28 +2502,108 @@ onMounted(async () => {
 }
 
 .xq-shop-media {
-  display: grid;
-  grid-template-columns: 64px 1fr;
-  gap: 8px;
-  align-items: start;
-}
-
-.xq-shop-thumbs {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.xq-shop-stage {
+  position: relative;
+}
+
+.xq-shop-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: #111;
+  cursor: pointer;
+  background: rgb(255 255 255 / 92%);
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  transform: translateY(-50%);
+}
+
+.xq-shop-nav:hover {
+  color: #ff6a00;
+  border-color: #ffb380;
+}
+
+.xq-shop-nav.prev {
+  left: 10px;
+}
+
+.xq-shop-nav.next {
+  right: 10px;
+}
+
+.xq-shop-dots {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  max-height: 420px;
-  overflow: auto;
+  justify-content: center;
+  padding: 0 48px;
+  pointer-events: none;
+}
+
+.xq-shop-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  background: rgb(255 255 255 / 75%);
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 999px;
+}
+
+.xq-shop-dot.active {
+  background: #ff6a00;
+  border-color: #ff6a00;
+}
+
+.xq-shop-counter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #fff;
+  background: rgb(0 0 0 / 45%);
+  border-radius: 999px;
+}
+
+.xq-shop-strip {
+  display: flex;
+  gap: 8px;
+  max-width: 100%;
+  padding: 2px;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .xq-shop-thumb {
+  flex: 0 0 64px;
   width: 64px;
   height: 64px;
   padding: 0;
   overflow: hidden;
   cursor: pointer;
   background: #fff;
-  border: 1px solid #eee;
+  border: 2px solid #eee;
   border-radius: 4px;
 }
 
@@ -2458,7 +2655,7 @@ onMounted(async () => {
 .xq-shop-price-roles {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px 24px;
+  gap: 10px 24px;
   align-items: baseline;
 }
 
@@ -2469,18 +2666,25 @@ onMounted(async () => {
 }
 
 .xq-shop-price-role-label {
+  flex-shrink: 0;
+  min-width: 32px;
   font-size: 13px;
   color: #6b7280;
 }
 
 .xq-shop-price strong {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #ff5000;
 }
 
 .xq-shop-price strong.xq-price-sale {
   color: #dc2626;
+}
+
+.xq-shop-price strong.xq-price-fee {
+  font-size: 18px;
+  color: #ff5000;
 }
 
 .xq-shop-price s {
@@ -2651,14 +2855,14 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .xq-shop,
-  .xq-shop-media {
+  .xq-shop {
     grid-template-columns: 1fr;
   }
 
-  .xq-shop-thumbs {
-    flex-direction: row;
-    max-height: none;
+  .xq-shop-thumb {
+    flex-basis: 56px;
+    width: 56px;
+    height: 56px;
   }
 }
 </style>

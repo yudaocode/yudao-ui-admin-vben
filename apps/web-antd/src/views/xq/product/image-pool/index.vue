@@ -146,6 +146,16 @@ const reviseUsedRefs = ref<string[]>([]);
 
 /** 平台工作台 = 只筛本平台类目；美工编辑页 = 自选平台 + 平台类目 */
 const isPlatformDesk = computed(() => Boolean(lockedPlatformId.value));
+const pageHintShort = computed(() =>
+  lockedPlatformId.value
+    ? '待执行看提示词，出图后原图对照'
+    : '待执行看出图，跑完可对照与完结',
+);
+const pageHintText = computed(() =>
+  lockedPlatformId.value
+    ? '本平台图片任务：待执行看提示词，出图后原图对照。'
+    : '已分配给你的图片任务：待执行看提示词并出图，跑完可对照与完结。',
+);
 const effectivePlatformId = computed(
   () => lockedPlatformId.value || filterPlatformId.value || undefined,
 );
@@ -308,6 +318,10 @@ const comparePairs = computed(() => {
   const row = activeTask.value;
   const src = sourceImages.value;
   const prompts = shapePromptsToSlots(parsePrompts(row), imageSlots.value, src);
+  const skuTail = String(row?.externalSku || row?.id || '')
+    .replaceAll(/\W/g, '')
+    .slice(-4)
+    .toLowerCase();
   return prompts.map((p, i) => {
     const binds = (p.bindIndexes || []).filter(
       (n) => Number.isFinite(n) && n >= 0 && n < src.length,
@@ -316,8 +330,11 @@ const comparePairs = computed(() => {
       binds.length > 0
         ? binds.map((n) => src[n]!).filter(Boolean)
         : [src[i] || src[0] || ''].filter(Boolean);
+    const slotCode = `p${String(i + 1).padStart(2, '0')}${skuTail ? `_${skuTail}` : ''}`;
     return {
       index: i,
+      slotCode,
+      bindIndexes: binds,
       original: originals[0] || '',
       originals,
       ai: aiUrlOf(p) || (i === 0 ? row?.generatedImageUrl || '' : ''),
@@ -327,6 +344,90 @@ const comparePairs = computed(() => {
     };
   });
 });
+
+/** 原图 ↔ AI 对比弹窗 */
+const compareModalOpen = ref(false);
+const compareModalPairIndex = ref(0);
+const compareModalSrcIndex = ref(0);
+
+const compareModalPair = computed(
+  () => comparePairs.value[compareModalPairIndex.value],
+);
+const compareModalSrcUrl = computed(
+  () => sourceImages.value[compareModalSrcIndex.value] || '',
+);
+const compareModalSrcBound = computed(() => {
+  const binds = compareModalPair.value?.bindIndexes || [];
+  if (binds.length === 0) {
+    const first = compareModalPair.value?.original;
+    return Boolean(first && first === compareModalSrcUrl.value);
+  }
+  return binds.includes(compareModalSrcIndex.value);
+});
+const compareModalMeta = computed(() => {
+  const pair = compareModalPair.value;
+  const totalSrc = sourceImages.value.length;
+  const boundCount = pair?.bindIndexes?.length || (pair?.original ? 1 : 0);
+  return {
+    title: `原图与 AI 对比 · ${pair?.slotCode || ''}`,
+    sub: pair
+      ? `${pair.slotCode} · 本组绑定 ${boundCount} 张 · 共 ${totalSrc} 张原图可切换`
+      : '',
+    srcPos: totalSrc
+      ? `${compareModalSrcIndex.value + 1} / ${totalSrc}`
+      : '0 / 0',
+    pairPos:
+      comparePairs.value.length > 0
+        ? `${compareModalPairIndex.value + 1} / ${comparePairs.value.length}`
+        : '0 / 0',
+  };
+});
+
+function openCompareModal(pairIndex: number) {
+  const pairs = comparePairs.value;
+  if (pairs.length === 0) return;
+  const idx = Math.min(Math.max(0, pairIndex), pairs.length - 1);
+  compareModalPairIndex.value = idx;
+  const pair = pairs[idx];
+  const binds = pair?.bindIndexes || [];
+  const orig = pair?.original;
+  compareModalSrcIndex.value =
+    binds[0] ?? Math.max(0, orig ? sourceImages.value.indexOf(orig) : -1);
+  if (compareModalSrcIndex.value < 0) compareModalSrcIndex.value = 0;
+  compareModalOpen.value = true;
+}
+
+function shiftCompareModalSrc(delta: number) {
+  const n = sourceImages.value.length;
+  if (n <= 0) return;
+  compareModalSrcIndex.value = (compareModalSrcIndex.value + delta + n) % n;
+}
+
+function shiftCompareModalPair(delta: number) {
+  const n = comparePairs.value.length;
+  if (n <= 0) return;
+  const next = (compareModalPairIndex.value + delta + n) % n;
+  openCompareModal(next);
+}
+
+async function replaceAiWithModalSrc() {
+  const pair = compareModalPair.value;
+  const url = compareModalSrcUrl.value;
+  if (!pair || !url) {
+    message.warning('当前没有可替换的原图');
+    return;
+  }
+  Modal.confirm({
+    title: '确认原图替换',
+    content: '将用左侧当前原图覆盖当前 AI 生成结果，是否继续？',
+    okText: '确认替换',
+    cancelText: '取消',
+    async onOk() {
+      await patchPromptAi(pair.index, url);
+      message.success('已用原图替换 AI 图');
+    },
+  });
+}
 
 function imageTypeLabel(type?: string, _i = 0) {
   return imageSlotTypeLabel(type);
@@ -392,9 +493,13 @@ function findTask(id?: number): null | XqWorkOrderApi.WorkOrder {
   return tasks.value.find((t) => t.id === id) || null;
 }
 
+/** 左侧列表缩略图：优先 Giga 原图，避免 AI 场景图串品/难辨认 */
 function coverOf(row: XqWorkOrderApi.WorkOrder) {
+  const src = sourceImagesOf(row);
+  if (src[0]) return src[0];
+  if (row.coverUrl) return row.coverUrl;
   const p = parsePrompts(row).find((x) => aiUrlOf(x));
-  return aiUrlOf(p || {}) || row.generatedImageUrl || row.coverUrl || undefined;
+  return aiUrlOf(p || {}) || row.generatedImageUrl || undefined;
 }
 
 function cleanText(v?: null | number | string) {
@@ -1932,64 +2037,6 @@ watch(lockedPlatformId, async () => {
 <template>
   <Page auto-content-height>
     <div class="xq-copy-pool xq-image-pool">
-      <div class="xq-toolbar xq-image-toolbar">
-        <div class="xq-title-block">
-          <h2>{{ lockedPlatformId ? '图片' : '编辑图片' }}</h2>
-          <p>
-            {{
-              lockedPlatformId
-                ? '本平台图片任务：待执行看提示词，出图后原图对照。'
-                : '已分配给你的图片任务：待执行看提示词并出图，跑完可对照与完结。'
-            }}
-          </p>
-        </div>
-        <div class="xq-toolbar-filters">
-          <Input.Search
-            v-model:value="keyword"
-            allow-clear
-            class="xq-search"
-            placeholder="搜索任务号 / Item Code / 标题"
-            enter-button="搜索"
-            @search="handleSearch"
-          />
-          <Select
-            v-model:value="filterImageUserId"
-            allow-clear
-            show-search
-            option-filter-prop="label"
-            placeholder="美工"
-            class="xq-filter-artist"
-            :options="userOptions"
-            @change="handleSearch"
-          />
-          <!-- 美工「编辑图片」：可选平台 -->
-          <Select
-            v-if="!isPlatformDesk"
-            v-model:value="filterPlatformId"
-            allow-clear
-            show-search
-            option-filter-prop="label"
-            placeholder="平台"
-            class="xq-filter-platform"
-            :options="platformOptions"
-            @change="(v: any) => onFilterPlatformChange(v || undefined)"
-          />
-          <!-- 平台工作台只展示平台类目；美工页选平台后也可筛类目 -->
-          <TreeSelect
-            v-model:value="filterListingCategoryId"
-            allow-clear
-            show-search
-            tree-node-filter-prop="title"
-            class="xq-filter-plat-cat"
-            placeholder="平台类目"
-            :disabled="!effectivePlatformId"
-            :tree-data="listingCategoryTreeData"
-            :dropdown-style="{ maxHeight: '360px', overflow: 'auto' }"
-            @change="handleSearch"
-          />
-        </div>
-      </div>
-
       <div class="xq-status-tabs">
         <button
           v-for="tab in statusTabs"
@@ -2004,6 +2051,11 @@ watch(lockedPlatformId, async () => {
       </div>
 
       <div class="xq-batch-bar">
+        <span class="xq-batch-hint" :title="pageHintText">
+          <b>{{ lockedPlatformId ? '图片' : '编辑图片' }}</b>
+          {{ pageHintShort }}
+        </span>
+        <span class="xq-batch-sep" aria-hidden="true"></span>
         <Checkbox
           :checked="pageAllSelected"
           :indeterminate="selectedCount > 0 && !pageAllSelected"
@@ -2052,6 +2104,53 @@ watch(lockedPlatformId, async () => {
         >
           清空勾选
         </Button>
+        <div class="xq-batch-filters">
+          <Input.Search
+            v-model:value="keyword"
+            allow-clear
+            size="small"
+            class="xq-search"
+            placeholder="搜索任务号 / Item Code / 标题"
+            enter-button="搜索"
+            @search="handleSearch"
+          />
+          <Select
+            v-model:value="filterImageUserId"
+            allow-clear
+            show-search
+            size="small"
+            option-filter-prop="label"
+            placeholder="美工"
+            class="xq-filter-artist"
+            :options="userOptions"
+            @change="handleSearch"
+          />
+          <Select
+            v-if="!isPlatformDesk"
+            v-model:value="filterPlatformId"
+            allow-clear
+            show-search
+            size="small"
+            option-filter-prop="label"
+            placeholder="平台"
+            class="xq-filter-platform"
+            :options="platformOptions"
+            @change="(v: any) => onFilterPlatformChange(v || undefined)"
+          />
+          <TreeSelect
+            v-model:value="filterListingCategoryId"
+            allow-clear
+            show-search
+            size="small"
+            tree-node-filter-prop="title"
+            class="xq-filter-plat-cat"
+            placeholder="平台类目"
+            :disabled="!effectivePlatformId"
+            :tree-data="listingCategoryTreeData"
+            :dropdown-style="{ maxHeight: '360px', overflow: 'auto' }"
+            @change="handleSearch"
+          />
+        </div>
       </div>
 
       <Spin :spinning="loading || batchRunning">
@@ -2105,124 +2204,134 @@ watch(lockedPlatformId, async () => {
 
           <section v-if="activeTask" class="xq-detail">
             <div class="xq-detail-bar">
-              <div class="xq-detail-bar-meta">
-                <b>{{ skuLabel(activeTask) }}</b>
-                <Tag :color="statusMeta(activeTask).color">
-                  {{ statusMeta(activeTask).label }}
-                </Tag>
-                <span class="xq-muted">{{ artistName(activeTask) }}</span>
+              <div class="xq-detail-bar-top">
+                <div class="xq-detail-bar-meta">
+                  <b>{{ skuLabel(activeTask) }}</b>
+                  <Tag :color="statusMeta(activeTask).color">
+                    {{ statusMeta(activeTask).label }}
+                  </Tag>
+                  <span class="xq-muted">{{ artistName(activeTask) }}</span>
+                </div>
+                <div class="xq-detail-actions">
+                  <Button
+                    :type="sourcePanelOpen ? 'primary' : 'default'"
+                    size="small"
+                    :title="
+                      sourcePanelOpen
+                        ? `关闭原内容（${sourceSku}）`
+                        : `打开原内容（${sourceSku}）`
+                    "
+                    @click="toggleSourcePanel()"
+                  >
+                    原内容
+                  </Button>
+                  <Button
+                    v-if="canEdit && showPrompts"
+                    type="primary"
+                    size="small"
+                    :loading="running"
+                    @click="runGenerate"
+                  >
+                    执行生图
+                  </Button>
+                  <Button
+                    v-if="canEdit && showPrompts"
+                    size="small"
+                    :loading="saving"
+                    @click="savePrompts"
+                  >
+                    保存提示词
+                  </Button>
+                  <Button
+                    v-if="canEdit && canResetToPending"
+                    size="small"
+                    danger
+                    ghost
+                    :loading="saving"
+                    @click="resetToPending"
+                  >
+                    消除执行状态
+                  </Button>
+                  <Button
+                    v-if="isAssigner && showCompare"
+                    size="small"
+                    danger
+                    :loading="saving"
+                    @click="openRejectDialog()"
+                  >
+                    驳回
+                  </Button>
+                  <Button
+                    v-if="canEdit && currentStatus === 'rejected'"
+                    size="small"
+                    :loading="saving"
+                    @click="setStatus('revised')"
+                  >
+                    已修改
+                  </Button>
+                  <Button
+                    v-if="
+                      (isAssigner || canEdit) &&
+                      showCompare &&
+                      (currentStatus === 'generated' ||
+                        currentStatus === 'revised')
+                    "
+                    size="small"
+                    type="primary"
+                    :loading="saving"
+                    @click="confirmReviewDone"
+                  >
+                    确认图文无误
+                  </Button>
+                </div>
               </div>
-              <div class="xq-detail-actions">
-                <Button
-                  :type="sourcePanelOpen ? 'primary' : 'default'"
-                  size="small"
-                  :title="sourcePanelOpen ? '关闭原内容' : '打开原内容抽屉'"
-                  @click="toggleSourcePanel()"
-                >
-                  {{ sourceSku }}
-                </Button>
-                <Button
-                  v-if="canEdit && showPrompts"
-                  type="primary"
-                  size="small"
-                  :loading="running"
-                  @click="runGenerate"
-                >
-                  执行生图
-                </Button>
-                <Button
-                  v-if="canEdit && showPrompts"
-                  size="small"
-                  :loading="saving"
-                  @click="savePrompts"
-                >
-                  保存提示词
-                </Button>
-                <Button
-                  v-if="canEdit && canResetToPending"
-                  size="small"
-                  danger
-                  ghost
-                  :loading="saving"
-                  @click="resetToPending"
-                >
-                  消除执行状态
-                </Button>
-                <Button
-                  v-if="isAssigner && showCompare"
-                  size="small"
-                  danger
-                  :loading="saving"
-                  @click="openRejectDialog()"
-                >
-                  驳回
-                </Button>
-                <Button
-                  v-if="canEdit && currentStatus === 'rejected'"
-                  size="small"
-                  :loading="saving"
-                  @click="setStatus('revised')"
-                >
-                  已修改
-                </Button>
-                <Button
-                  v-if="
-                    (isAssigner || canEdit) &&
-                    showCompare &&
-                    (currentStatus === 'generated' ||
-                      currentStatus === 'revised')
-                  "
-                  size="small"
-                  type="primary"
-                  :loading="saving"
-                  @click="confirmReviewDone"
-                >
-                  确认图文无误
-                </Button>
-              </div>
-            </div>
-
-            <div class="xq-edit-block xq-highlight-block">
-              <label class="xq-field-label">
-                突出风格
-                <span class="xq-muted">（可选标签，勾选后给生图用，不要写成句子）</span>
-              </label>
-              <div class="xq-tag-row">
-                <Tag
-                  v-for="tag in highlightTags"
-                  :key="tag"
-                  class="xq-style-tag"
-                  :color="selectedHighlight.includes(tag) ? 'blue' : 'default'"
-                  closable
-                  @close="removeHighlightTag(tag)"
-                  @click="
-                    toggleHighlight(tag, !selectedHighlight.includes(tag))
-                  "
-                >
-                  {{ tag }}
-                </Tag>
-                <span v-if="!highlightTags.length" class="xq-muted">
-                  暂无标签，可手加或到文案池重新生成
-                </span>
-              </div>
-              <div class="xq-tag-add">
-                <Input
-                  v-model:value="tagDraft"
-                  placeholder="添加风格标签，如 釉面陶瓷"
-                  allow-clear
-                  class="xq-tag-input"
-                  @press-enter="addHighlightTag"
-                />
-                <Button @click="addHighlightTag">添加</Button>
-                <Button
-                  v-if="canEdit"
-                  type="primary"
-                  ghost
-                  :loading="saving"
-                  @click="saveHighlight"
-                >
-                  保存风格
-                </Button>
+              <div class="xq-detail-bar-style" title="可选标签，勾选后给生图用">
+                <div class="xq-style-head">
+                  <span class="xq-style-label">突出风格</span>
+                  <span class="xq-muted">勾选后给生图用</span>
+                </div>
+                <div class="xq-style-body">
+                  <div class="xq-tag-row xq-tag-row-inline">
+                    <Tag
+                      v-for="tag in highlightTags"
+                      :key="tag"
+                      class="xq-style-tag"
+                      :color="
+                        selectedHighlight.includes(tag) ? 'blue' : 'default'
+                      "
+                      closable
+                      @close="removeHighlightTag(tag)"
+                      @click="
+                        toggleHighlight(tag, !selectedHighlight.includes(tag))
+                      "
+                    >
+                      {{ tag }}
+                    </Tag>
+                    <span v-if="!highlightTags.length" class="xq-muted">
+                      暂无标签，可手加或到文案池重新生成
+                    </span>
+                  </div>
+                  <div class="xq-tag-add xq-tag-add-inline">
+                    <Input
+                      v-model:value="tagDraft"
+                      size="small"
+                      placeholder="添加标签，如 釉面陶瓷"
+                      allow-clear
+                      class="xq-tag-input"
+                      @press-enter="addHighlightTag"
+                    />
+                    <Button size="small" @click="addHighlightTag">添加</Button>
+                    <Button
+                      v-if="canEdit"
+                      size="small"
+                      type="primary"
+                      :loading="saving"
+                      @click="saveHighlight"
+                    >
+                      保存风格
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -2373,7 +2482,9 @@ watch(lockedPlatformId, async () => {
                                 '主图'
                               }}
                             </Tag>
-                            <span class="xq-muted">绑定 {{ boundLabel(p) }}</span>
+                            <span class="xq-muted"
+                              >绑定 {{ boundLabel(p) }}</span
+                            >
                           </span>
                           <div class="xq-prompt-item-actions" @click.stop>
                             <span class="xq-prompt-bind-label">绑定原图</span>
@@ -2428,20 +2539,30 @@ watch(lockedPlatformId, async () => {
                 <div class="xq-compare-head">
                   <div class="xq-compare-head-left">
                     <span class="xq-compare-type">{{ pair.label }}</span>
-                    <span class="xq-compare-slot">p{{ String(pair.index + 1).padStart(2, '0') }}</span>
+                    <span class="xq-compare-slot">{{ pair.slotCode }}</span>
                   </div>
-                  <span
-                    class="xq-compare-state"
-                    :class="pair.ai ? 'is-ready' : 'is-wait'"
-                  >
-                    {{ pair.ai ? '已出图' : '待出图' }}
-                  </span>
+                  <div class="xq-compare-head-right">
+                    <button
+                      type="button"
+                      class="xq-compare-open"
+                      title="打开原图与 AI 对比"
+                      @click="openCompareModal(pair.index)"
+                    >
+                      对比
+                    </button>
+                    <span
+                      class="xq-compare-state"
+                      :class="pair.ai ? 'is-ready' : 'is-wait'"
+                    >
+                      {{ pair.ai ? '已出图' : '待出图' }}
+                    </span>
+                  </div>
                 </div>
                 <div class="xq-compare-pair">
                   <div class="xq-compare-col">
                     <div class="xq-compare-cap">
                       <span class="xq-compare-pill">原图</span>
-                      <span class="xq-compare-cap-text">Giga · 本地同步</span>
+                      <span class="xq-compare-cap-text">Giga</span>
                     </div>
                     <div
                       v-if="pair.originals?.length"
@@ -2449,13 +2570,16 @@ watch(lockedPlatformId, async () => {
                       :class="{
                         'is-multi': (pair.originals?.length || 0) > 1,
                       }"
+                      role="button"
+                      tabindex="0"
+                      @click="openCompareModal(pair.index)"
                     >
                       <div
                         v-for="(url, oi) in pair.originals"
                         :key="`co-${pair.index}-${oi}`"
                         class="xq-compare-img"
                       >
-                        <Image :src="url" :preview="true" />
+                        <Image :src="url" :preview="false" />
                       </div>
                     </div>
                     <div v-else class="xq-compare-img is-empty">
@@ -2468,7 +2592,7 @@ watch(lockedPlatformId, async () => {
                   <div class="xq-compare-col ai">
                     <div class="xq-compare-cap ai-cap">
                       <span class="xq-compare-pill ai">AI</span>
-                      <span class="xq-compare-cap-text">生成结果</span>
+                      <span class="xq-compare-cap-text">结果</span>
                     </div>
                     <div
                       class="xq-compare-img ai-result"
@@ -2476,8 +2600,11 @@ watch(lockedPlatformId, async () => {
                         'is-empty': !pair.ai,
                         'is-rejected': !!pair.rejectReason,
                       }"
+                      role="button"
+                      tabindex="0"
+                      @click="openCompareModal(pair.index)"
                     >
-                      <Image v-if="pair.ai" :src="pair.ai" :preview="true" />
+                      <Image v-if="pair.ai" :src="pair.ai" :preview="false" />
                       <span v-else>待出图</span>
                       <div
                         v-if="pair.rejectReason"
@@ -2492,7 +2619,7 @@ watch(lockedPlatformId, async () => {
                         type="button"
                         class="xq-act-cta"
                         :disabled="!canEdit || !pair.ai"
-                        @click="openReviseDialog(pair.index)"
+                        @click.stop="openReviseDialog(pair.index)"
                       >
                         <IconifyIcon
                           icon="lucide:sparkles"
@@ -2506,7 +2633,7 @@ watch(lockedPlatformId, async () => {
                           class="xq-act-tool"
                           :disabled="!canEdit || !pair.original"
                           title="用左侧原图覆盖当前 AI 图"
-                          @click="confirmReplaceWithOriginal(pair.index)"
+                          @click.stop="confirmReplaceWithOriginal(pair.index)"
                         >
                           <IconifyIcon
                             icon="lucide:replace"
@@ -2544,7 +2671,9 @@ watch(lockedPlatformId, async () => {
                           type="button"
                           class="xq-act-tool is-ok"
                           title="确认本张已按驳回改好，清除驳回标记"
-                          @click="confirmSlotRevised(pair.index, pair.label)"
+                          @click.stop="
+                            confirmSlotRevised(pair.index, pair.label)
+                          "
                         >
                           <IconifyIcon
                             icon="lucide:circle-check"
@@ -2557,7 +2686,7 @@ watch(lockedPlatformId, async () => {
                           type="button"
                           class="xq-act-tool is-danger"
                           title="标记本张不合格"
-                          @click="openRejectDialog(pair.index, pair.label)"
+                          @click.stop="openRejectDialog(pair.index, pair.label)"
                         >
                           <IconifyIcon
                             icon="lucide:circle-x"
@@ -2588,6 +2717,116 @@ watch(lockedPlatformId, async () => {
         :family="sourceFamily"
         @select-member="onSelectSourceMember"
       />
+
+      <Modal
+        v-model:open="compareModalOpen"
+        :title="compareModalMeta.title"
+        :width="1080"
+        destroy-on-close
+        :footer="null"
+        wrap-class-name="xq-pair-modal"
+        :styles="{ body: { padding: '8px 16px 14px' } }"
+      >
+        <p class="xq-pair-sub">{{ compareModalMeta.sub }}</p>
+        <div v-if="compareModalPair" class="xq-pair-body">
+          <div class="xq-pair-pane">
+            <div class="xq-pair-pane-head">Giga 主图</div>
+            <div class="xq-pair-frame">
+              <Image
+                v-if="compareModalSrcUrl"
+                :src="compareModalSrcUrl"
+                :preview="true"
+              />
+              <span v-else class="xq-pair-empty">无原图</span>
+            </div>
+            <div class="xq-pair-nav">
+              <Button
+                size="small"
+                :disabled="sourceImages.length <= 1"
+                @click="shiftCompareModalSrc(-1)"
+              >
+                上一个
+              </Button>
+              <span class="xq-pair-nav-meta">
+                原图 {{ compareModalMeta.srcPos }}
+                <template v-if="compareModalSrcBound">（绑定）</template>
+              </span>
+              <Button
+                size="small"
+                type="primary"
+                ghost
+                :disabled="sourceImages.length <= 1"
+                @click="shiftCompareModalSrc(1)"
+              >
+                下一个
+              </Button>
+            </div>
+          </div>
+          <div class="xq-pair-pane is-ai">
+            <div class="xq-pair-pane-head">
+              <span>AI 生成</span>
+              <div class="xq-pair-pane-acts">
+                <Button
+                  size="small"
+                  class="xq-pair-btn-revise"
+                  :disabled="!canEdit || !compareModalPair.ai"
+                  @click="
+                    compareModalOpen = false;
+                    openReviseDialog(compareModalPair.index);
+                  "
+                >
+                  单图修改
+                </Button>
+                <Button
+                  size="small"
+                  class="xq-pair-btn-replace"
+                  :disabled="!canEdit || !compareModalSrcUrl"
+                  @click="replaceAiWithModalSrc"
+                >
+                  原图替换
+                </Button>
+              </div>
+            </div>
+            <div
+              class="xq-pair-frame is-ai"
+              :class="{ 'is-rejected': !!compareModalPair.rejectReason }"
+            >
+              <Image
+                v-if="compareModalPair.ai"
+                :src="compareModalPair.ai"
+                :preview="true"
+              />
+              <span v-else class="xq-pair-empty">待出图</span>
+              <div
+                v-if="compareModalPair.rejectReason"
+                class="xq-pair-reject"
+                :title="compareModalPair.rejectReason"
+              >
+                驳回：{{ compareModalPair.rejectReason }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="xq-pair-footer">
+          <Button
+            :disabled="comparePairs.length <= 1"
+            @click="shiftCompareModalPair(-1)"
+          >
+            上一组
+          </Button>
+          <div class="xq-pair-footer-meta">
+            <div>AI 图 {{ compareModalMeta.pairPos }}</div>
+            <div class="xq-muted">下一组 = 切换整组对比</div>
+          </div>
+          <Button
+            type="primary"
+            :disabled="comparePairs.length <= 1"
+            @click="shiftCompareModalPair(1)"
+          >
+            下一组
+          </Button>
+        </div>
+      </Modal>
 
       <Modal
         v-model:open="reviseOpen"
@@ -3031,8 +3270,10 @@ watch(lockedPlatformId, async () => {
             <b>方式三：上传 JSON</b>
             <p class="xq-muted">
               格式示例：
-              <code>[{ "sku": "DCW25003", "prompts": [{ "imageType": "main",
-                "promptText": "..." }] }]</code>
+              <code
+                >[{ "sku": "DCW25003", "prompts": [{ "imageType": "main",
+                "promptText": "..." }] }]</code
+              >
             </p>
             <Upload
               :show-upload-list="false"
@@ -3138,33 +3379,29 @@ watch(lockedPlatformId, async () => {
   justify-content: center;
 }
 
-.xq-image-toolbar {
-  align-items: flex-end;
-}
-
-.xq-toolbar-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
 .xq-image-pool .xq-search,
 .xq-copy-pool .xq-search {
-  width: min(240px, 100%);
+  width: min(220px, 100%);
 }
 
 .xq-filter-artist {
-  width: 150px;
+  width: 120px;
 }
 
 .xq-filter-platform {
-  width: 150px;
+  width: 120px;
 }
 
 .xq-filter-plat-cat {
-  width: 180px;
+  width: 150px;
+}
+
+.xq-batch-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
 }
 
 .xq-status-tabs {
@@ -3209,10 +3446,32 @@ watch(lockedPlatformId, async () => {
   flex-wrap: wrap;
   gap: 8px 10px;
   align-items: center;
-  padding: 10px 12px;
+  padding: 8px 12px;
   background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
   border: 1px solid #e2e8f0;
   border-radius: 12px;
+}
+
+.xq-batch-hint {
+  max-width: min(360px, 42vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.xq-batch-hint b {
+  margin-right: 4px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.xq-batch-sep {
+  width: 1px;
+  height: 16px;
+  background: #e2e8f0;
 }
 
 .xq-batch-count {
@@ -3271,12 +3530,18 @@ watch(lockedPlatformId, async () => {
 
 .xq-detail-bar {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.xq-detail-bar-top {
+  display: flex;
   flex-wrap: wrap;
-  gap: 10px 12px;
+  gap: 8px 12px;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 0 12px;
-  border-bottom: 1px solid #eef2f7;
 }
 
 .xq-detail-bar-meta {
@@ -3299,10 +3564,38 @@ watch(lockedPlatformId, async () => {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  justify-content: flex-end;
 }
 
-.xq-highlight-block {
-  margin: 12px 0 16px;
+.xq-detail-bar-style {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border: 1px solid #e8edf3;
+  border-radius: 10px;
+}
+
+.xq-style-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.xq-style-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.xq-style-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
 }
 
 .xq-tag-row {
@@ -3313,8 +3606,16 @@ watch(lockedPlatformId, async () => {
   min-height: 32px;
 }
 
+.xq-tag-row-inline {
+  flex: 1 1 240px;
+  gap: 6px;
+  min-width: 0;
+  min-height: 28px;
+}
+
 .xq-style-tag {
   cursor: pointer;
+  user-select: none;
 }
 
 .xq-tag-add {
@@ -3324,17 +3625,20 @@ watch(lockedPlatformId, async () => {
   max-width: 480px;
 }
 
+.xq-tag-add-inline {
+  flex: 0 0 auto;
+  gap: 6px;
+  max-width: none;
+  margin-left: auto;
+}
+
 .xq-tag-input {
   flex: 1;
 }
 
-.xq-image-pool .xq-highlight-block {
-  gap: 6px;
-  padding-bottom: 4px;
-}
-
-.xq-image-pool .xq-highlight-block .xq-tag-add {
-  max-width: 420px;
+.xq-tag-add-inline .xq-tag-input {
+  flex: 0 0 168px;
+  width: 168px;
 }
 
 .xq-prompt-work {
@@ -3598,61 +3902,85 @@ watch(lockedPlatformId, async () => {
 
 .xq-compare-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 14px;
 }
 
 .xq-compare-card {
-  padding: 14px 14px 16px;
-  background: linear-gradient(180deg, #fff 0%, #fafbfc 100%);
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e8edf3;
+  border-radius: 14px;
   box-shadow: 0 1px 2px rgb(15 23 42 / 3%);
   transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .xq-compare-card:hover {
   border-color: #cbd5e1;
-  box-shadow: 0 6px 18px rgb(15 23 42 / 7%);
+  box-shadow: 0 4px 14px rgb(15 23 42 / 6%);
 }
 
 .xq-compare-head {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .xq-compare-head-left {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   min-width: 0;
 }
 
+.xq-compare-head-right {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.xq-compare-open {
+  height: 22px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+}
+
+.xq-compare-open:hover {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
 .xq-compare-type {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 650;
   color: #0f172a;
 }
 
 .xq-compare-slot {
-  padding: 1px 7px;
+  padding: 0 6px;
   font-size: 11px;
   font-weight: 600;
+  line-height: 18px;
   color: #64748b;
-  letter-spacing: 0.02em;
   background: #f1f5f9;
   border-radius: 999px;
 }
 
 .xq-compare-state {
-  padding: 3px 10px;
+  padding: 1px 8px;
   font-size: 11px;
-  font-weight: 650;
+  font-weight: 600;
+  line-height: 18px;
   border-radius: 999px;
 }
 
@@ -3668,24 +3996,22 @@ watch(lockedPlatformId, async () => {
 
 .xq-compare-pair {
   display: grid;
-  grid-template-columns: 1fr 28px 1fr;
-  gap: 10px;
-  align-items: stretch;
+  grid-template-columns: 1fr 22px 1fr;
+  gap: 6px;
+  align-items: start;
 }
 
 .xq-compare-divider {
   display: flex;
   align-items: center;
-  align-self: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin-top: 36px;
-  font-size: 12px;
+  width: 22px;
+  height: 22px;
+  margin-top: 28px;
+  font-size: 11px;
   font-weight: 700;
-  color: #64748b;
+  color: #94a3b8;
   background: #f1f5f9;
-  border: 1px solid #e2e8f0;
   border-radius: 999px;
 }
 
@@ -3693,24 +4019,23 @@ watch(lockedPlatformId, async () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 10px;
+  padding: 6px;
   background: #f8fafc;
-  border: 1px solid #e8eef5;
-  border-radius: 14px;
+  border: 1px solid #eef2f7;
+  border-radius: 10px;
 }
 
 .xq-compare-col.ai {
-  background: linear-gradient(180deg, #f3fdf6 0%, #ecfdf3 100%);
-  border-color: #a7f3d0;
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 70%);
+  background: #f6fdf8;
+  border-color: #d1fae5;
 }
 
 .xq-compare-cap {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   align-items: center;
-  margin-bottom: 8px;
-  font-size: 12px;
+  margin-bottom: 6px;
+  font-size: 11px;
   color: #64748b;
 }
 
@@ -3721,9 +4046,9 @@ watch(lockedPlatformId, async () => {
 .xq-compare-pill {
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  padding: 0 7px;
-  font-size: 11px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 10px;
   font-weight: 700;
   color: #475569;
   background: #e2e8f0;
@@ -3732,8 +4057,7 @@ watch(lockedPlatformId, async () => {
 
 .xq-compare-pill.ai {
   color: #fff;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-  box-shadow: 0 1px 2px rgb(22 163 74 / 25%);
+  background: #16a34a;
 }
 
 .xq-compare-cap-text {
@@ -3746,7 +4070,8 @@ watch(lockedPlatformId, async () => {
 .xq-compare-thumbs {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 6px;
+  gap: 4px;
+  cursor: pointer;
 }
 
 .xq-compare-thumbs.is-multi {
@@ -3759,7 +4084,7 @@ watch(lockedPlatformId, async () => {
   overflow: hidden;
   background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .xq-compare-img.is-empty {
@@ -3768,15 +4093,13 @@ watch(lockedPlatformId, async () => {
 }
 
 .xq-compare-img.ai-result {
-  border-color: #86efac;
-  box-shadow:
-    0 0 0 1px rgb(34 197 94 / 10%),
-    0 4px 12px rgb(22 163 74 / 8%);
+  cursor: pointer;
+  border-color: #bbf7d0;
 }
 
 .xq-compare-img.ai-result.is-rejected {
   border-color: #ef4444;
-  box-shadow: 0 0 0 1px rgb(239 68 68 / 28%);
+  box-shadow: 0 0 0 1px rgb(239 68 68 / 22%);
 }
 
 .xq-compare-reject {
@@ -3785,12 +4108,12 @@ watch(lockedPlatformId, async () => {
   bottom: 0;
   left: 0;
   z-index: 2;
-  padding: 18px 8px 8px;
+  padding: 14px 6px 6px;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 650;
-  line-height: 1.35;
+  line-height: 1.3;
   color: #fff;
   white-space: nowrap;
   background: linear-gradient(180deg, transparent, rgb(185 28 28 / 94%) 36%);
@@ -3814,73 +4137,67 @@ watch(lockedPlatformId, async () => {
 
 .xq-compare-acts {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 6px;
 }
 
 .xq-act-cta {
   display: inline-flex;
-  gap: 6px;
+  flex: 1 1 100%;
+  gap: 4px;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 34px;
-  padding: 0 12px;
-  font-size: 13px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
   font-weight: 650;
   color: #fff;
   cursor: pointer;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: #16a34a;
   border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgb(22 163 74 / 28%);
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    filter 0.12s ease;
+  border-radius: 7px;
+  transition: background-color 0.12s ease;
 }
 
 .xq-act-cta:hover:not(:disabled) {
-  box-shadow: 0 4px 12px rgb(22 163 74 / 36%);
-  filter: brightness(1.04);
-  transform: translateY(-1px);
-}
-
-.xq-act-cta:active:not(:disabled) {
-  transform: translateY(0);
+  background: #15803d;
 }
 
 .xq-act-cta:disabled {
   cursor: not-allowed;
-  box-shadow: none;
-  opacity: 0.45;
+  opacity: 0.4;
 }
 
 .xq-act-tools {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
-  gap: 4px;
-  padding: 3px;
-  background: rgb(255 255 255 / 72%);
-  border: 1px solid #d1fae5;
-  border-radius: 10px;
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-width: 0;
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
 }
 
 .xq-act-tool {
   display: inline-flex;
-  gap: 4px;
+  flex: 1 1 auto;
+  gap: 3px;
   align-items: center;
   justify-content: center;
-  height: 30px;
-  padding: 0 6px;
-  font-size: 12px;
+  min-width: 0;
+  height: 26px;
+  padding: 0 4px;
+  font-size: 11px;
   font-weight: 600;
-  color: #334155;
+  color: #475569;
   cursor: pointer;
   background: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   transition:
     background-color 0.12s ease,
     color 0.12s ease;
@@ -3888,7 +4205,7 @@ watch(lockedPlatformId, async () => {
 
 .xq-act-tool:hover:not(:disabled) {
   color: #0f172a;
-  background: #ecfdf5;
+  background: #f1f5f9;
 }
 
 .xq-act-tool:disabled {
@@ -3916,13 +4233,165 @@ watch(lockedPlatformId, async () => {
 
 .xq-act-ico {
   flex-shrink: 0;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .xq-act-upload {
   display: block;
+  flex: 1 1 auto;
   min-width: 0;
+}
+
+.xq-pair-sub {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #64748b;
+  text-align: center;
+}
+
+.xq-pair-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  min-height: 420px;
+}
+
+.xq-pair-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.xq-pair-pane-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  font-size: 13px;
+  font-weight: 650;
+  color: #0f172a;
+}
+
+.xq-pair-pane-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.xq-pair-btn-revise {
+  color: #c2410c !important;
+  border-color: #fdba74 !important;
+}
+
+.xq-pair-btn-revise:hover:not(:disabled) {
+  color: #9a3412 !important;
+  background: #fff7ed !important;
+  border-color: #fb923c !important;
+}
+
+.xq-pair-btn-replace {
+  color: #15803d !important;
+  border-color: #86efac !important;
+}
+
+.xq-pair-btn-replace:hover:not(:disabled) {
+  color: #166534 !important;
+  background: #f0fdf4 !important;
+  border-color: #4ade80 !important;
+}
+
+.xq-pair-frame {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+  overflow: hidden;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.xq-pair-frame.is-ai {
+  background: #f6fdf8;
+  border-color: #86efac;
+}
+
+.xq-pair-frame.is-rejected {
+  border-color: #ef4444;
+}
+
+.xq-pair-frame :deep(.ant-image),
+.xq-pair-frame :deep(img) {
+  max-width: 100%;
+  max-height: 460px;
+  object-fit: contain;
+}
+
+.xq-pair-empty {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.xq-pair-reject {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 16px 10px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  font-weight: 650;
+  color: #fff;
+  white-space: nowrap;
+  background: linear-gradient(180deg, transparent, rgb(185 28 28 / 94%) 36%);
+}
+
+.xq-pair-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.xq-pair-nav-meta {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.xq-pair-footer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  margin-top: 14px;
+  border-top: 1px solid #eef2f7;
+}
+
+.xq-pair-footer-meta {
+  font-size: 13px;
+  font-weight: 650;
+  color: #0f172a;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .xq-pair-body {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .xq-pair-frame {
+    min-height: 260px;
+  }
 }
 
 .xq-act-upload :deep(.ant-upload) {
