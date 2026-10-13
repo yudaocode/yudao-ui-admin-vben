@@ -562,7 +562,8 @@ onUnmounted(() => {
                 <span
                   class="name"
                   :class="{ bold: browseL2?.id === item.id }"
-                  >{{ item.name }}</span>
+                  >{{ item.name }}</span
+                >
                 <span v-if="item.children?.length" class="arrow">›</span>
               </div>
               <Empty
@@ -609,7 +610,9 @@ onUnmounted(() => {
 
       <div class="xq-section-title">
         工作台
-        <span class="xq-path">· 勾选任务后「批量生成文案」，再到「我的文案」分配美工</span>
+        <span class="xq-path"
+          >· 勾选任务后「批量生成文案」，再到「我的文案」分配美工</span
+        >
       </div>
 
       <div class="xq-queue">

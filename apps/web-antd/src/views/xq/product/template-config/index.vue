@@ -706,7 +706,9 @@ watch(activeCountry, async () => {
               <Button size="small" @click="openCreatePartition">
                 新建分区
               </Button>
-              <span class="toolbar-hint">左侧：系统区+自建分组；右侧：未分组（始终在尾）</span>
+              <span class="toolbar-hint"
+                >左侧：系统区+自建分组；右侧：未分组（始终在尾）</span
+              >
             </div>
             <div v-if="activeShopId" class="zone-board">
               <div class="zone-main">

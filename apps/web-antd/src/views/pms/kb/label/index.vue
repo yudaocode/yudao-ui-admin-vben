@@ -41,10 +41,11 @@ const selectedLabel = computed(() =>
   labelList.value.find((label) => label.id === selectedLabelId.value),
 ); // 当前选中的标签
 
-const [KnowledgeLabelManageDialogModal, knowledgeLabelManageDialogModalApi] = useVbenModal({
-  destroyOnClose: true,
-  connectedComponent: KnowledgeLabelManageDialog,
-});
+const [KnowledgeLabelManageDialogModal, knowledgeLabelManageDialogModalApi] =
+  useVbenModal({
+    destroyOnClose: true,
+    connectedComponent: KnowledgeLabelManageDialog,
+  });
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -132,7 +133,10 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="【PMS】文档与协作" url="https://doc.iocoder.cn/pms/kb/document/" />
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
     </template>
     <Row :gutter="20" class="h-full">
       <!-- 左侧标签列表 -->

@@ -15,9 +15,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { PmsKnowledgeObjectType } from '#/views/pms/kb/utils/constants';
 
 import { useLibraryHomeGridColumns } from './data';
-import {
-  getKnowledgeTreeNodeIcon,
-} from './types';
+import { getKnowledgeTreeNodeIcon } from './types';
 
 defineOptions({ name: 'PmsKnowledgeLibraryHome' });
 
@@ -32,11 +30,8 @@ const props = defineProps<{
 }>(); // 组件参数
 
 const emit = defineEmits<{
-  (event: 'collect'): void;
-  (event: 'exit'): void;
-  (event: 'member'): void;
+  (event: 'collect' | 'exit' | 'member' | 'search'): void;
   (event: 'nodeClick', node: KnowledgeTreeNode): void;
-  (event: 'search'): void;
   (event: 'tabChange', tab: 'all' | 'favorite'): void;
 }>(); // 组件事件
 

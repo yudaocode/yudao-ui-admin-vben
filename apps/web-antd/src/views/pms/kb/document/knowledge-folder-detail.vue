@@ -21,9 +21,7 @@ import {
 } from '#/views/pms/kb/utils/permission';
 
 import { useFolderContentGridColumns } from './data';
-import {
-  getKnowledgeTreeNodeIcon,
-} from './types';
+import { getKnowledgeTreeNodeIcon } from './types';
 
 defineOptions({ name: 'PmsKnowledgeFolderDetail' });
 

@@ -2185,7 +2185,9 @@ watch(lockedPlatformId, async () => {
             <div class="xq-edit-block xq-highlight-block">
               <label class="xq-field-label">
                 突出风格
-                <span class="xq-muted">（可选标签，勾选后给生图用，不要写成句子）</span>
+                <span class="xq-muted"
+                  >（可选标签，勾选后给生图用，不要写成句子）</span
+                >
               </label>
               <div class="xq-tag-row">
                 <Tag
@@ -2373,7 +2375,9 @@ watch(lockedPlatformId, async () => {
                                 '主图'
                               }}
                             </Tag>
-                            <span class="xq-muted">绑定 {{ boundLabel(p) }}</span>
+                            <span class="xq-muted"
+                              >绑定 {{ boundLabel(p) }}</span
+                            >
                           </span>
                           <div class="xq-prompt-item-actions" @click.stop>
                             <span class="xq-prompt-bind-label">绑定原图</span>
@@ -2428,7 +2432,9 @@ watch(lockedPlatformId, async () => {
                 <div class="xq-compare-head">
                   <div class="xq-compare-head-left">
                     <span class="xq-compare-type">{{ pair.label }}</span>
-                    <span class="xq-compare-slot">p{{ String(pair.index + 1).padStart(2, '0') }}</span>
+                    <span class="xq-compare-slot"
+                      >p{{ String(pair.index + 1).padStart(2, '0') }}</span
+                    >
                   </div>
                   <span
                     class="xq-compare-state"
@@ -3031,8 +3037,10 @@ watch(lockedPlatformId, async () => {
             <b>方式三：上传 JSON</b>
             <p class="xq-muted">
               格式示例：
-              <code>[{ "sku": "DCW25003", "prompts": [{ "imageType": "main",
-                "promptText": "..." }] }]</code>
+              <code
+                >[{ "sku": "DCW25003", "prompts": [{ "imageType": "main",
+                "promptText": "..." }] }]</code
+              >
             </p>
             <Upload
               :show-upload-list="false"

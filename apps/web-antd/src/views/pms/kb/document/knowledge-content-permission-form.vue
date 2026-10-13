@@ -3,6 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { PmsKnowledgeContentPermissionApi } from '#/api/pms/kb/content/permission';
 import type { PmsKnowledgeLibraryMemberApi } from '#/api/pms/kb/library/member';
 import type { SystemDeptApi } from '#/api/system/dept';
+import type { PmsKnowledgeContentIdentity } from '#/views/pms/kb/utils/constants';
 
 import { computed, nextTick, onMounted, reactive, ref } from 'vue';
 
@@ -44,7 +45,7 @@ const emit = defineEmits(['success']);
 
 interface EditableMember
   extends PmsKnowledgeContentPermissionApi.KnowledgeContentPermissionMember {
-  identityType: PmsKnowledgeContentIdentityType;
+  identityType: PmsKnowledgeContentIdentity;
   ownerStatus?: boolean;
 }
 

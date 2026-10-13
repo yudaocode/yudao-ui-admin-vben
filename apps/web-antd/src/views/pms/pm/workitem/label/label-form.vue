@@ -78,9 +78,8 @@ const [Modal, modalApi] = useVbenModal({
       return;
     }
     // 标签没有独立的详情接口，通过列表反查标签详情
-    const label = (await getWorkItemLabelList()).find(
-      (item) => item.id === data.id,
-    );
+    const labels = await getWorkItemLabelList();
+    const label = labels.find((item) => item.id === data.id);
     formData.value = label;
     await formApi.setValues(label ?? { name: '', color: '#409EFF' });
   },

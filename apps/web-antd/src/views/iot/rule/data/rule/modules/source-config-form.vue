@@ -238,12 +238,10 @@ defineExpose({ validate, getData, setData });
           "
           :options="[
             { label: '全部设备', value: 0 },
-            ...getFilteredDevices(row.productId).map(
-              (d: any) => ({
-                label: d.deviceName,
-                value: d.id,
-              }),
-            ),
+            ...getFilteredDevices(row.productId).map((d: any) => ({
+              label: d.deviceName,
+              value: d.id,
+            })),
           ]"
           class="w-full"
         />

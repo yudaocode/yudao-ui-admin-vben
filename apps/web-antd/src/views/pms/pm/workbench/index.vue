@@ -399,10 +399,14 @@ onBeforeUnmount(() => {
           type="link"
           @click="startQuickEdit(row, 'priority')"
         >
-          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+          {{
+            getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-'
+          }}
         </Button>
         <span v-else>
-          {{ getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-' }}
+          {{
+            getDictLabel(DICT_TYPE.PMS_WORK_ITEM_PRIORITY, row.priority) || '-'
+          }}
         </span>
       </template>
       <template #statusId="{ row }">

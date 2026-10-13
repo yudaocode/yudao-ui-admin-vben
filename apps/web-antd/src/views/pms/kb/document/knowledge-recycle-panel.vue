@@ -96,8 +96,7 @@ async function handleRestore(record: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
 async function handleDetail(record: PmsKnowledgeRecycleApi.KnowledgeRecycle) {
   try {
     detail.value = await getKnowledgeContentRecycleDetail(record.id);
-  } catch {
-  }
+  } catch {}
 }
 
 /** 彻底删除回收站记录 */
@@ -114,8 +113,7 @@ async function handlePermanentDelete(
     detail.value = undefined;
     handleRefresh();
     emit('success');
-  } catch {
-  }
+  } catch {}
 }
 
 function countByType(type: number) {

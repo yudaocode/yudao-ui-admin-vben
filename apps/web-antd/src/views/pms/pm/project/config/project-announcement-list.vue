@@ -23,10 +23,11 @@ const props = defineProps<{ editable: boolean; projectId: number }>();
 
 const total = ref(0); // 公告总数
 
-const [ProjectAnnouncementFormModal, projectAnnouncementFormModalApi] = useVbenModal({
-  destroyOnClose: true,
-  connectedComponent: ProjectAnnouncementForm,
-});
+const [ProjectAnnouncementFormModal, projectAnnouncementFormModalApi] =
+  useVbenModal({
+    destroyOnClose: true,
+    connectedComponent: ProjectAnnouncementForm,
+  });
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {

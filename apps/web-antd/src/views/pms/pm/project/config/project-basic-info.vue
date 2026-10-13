@@ -54,8 +54,7 @@ async function handleRecycle() {
     // 提示结果并进入项目回收站
     message.success('项目已移入回收站');
     await push({ name: 'PmsProjectRecycle' });
-  } catch {
-  }
+  } catch {}
 }
 </script>
 

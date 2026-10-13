@@ -85,7 +85,8 @@ export async function vue(): Promise<Linter.Config[]> {
         'vue/dot-location': ['error', 'property'],
         'vue/dot-notation': ['error', { allowKeywords: true }],
         'vue/eqeqeq': ['error', 'smart'],
-        'vue/html-closing-bracket-newline': 'error',
+        // oxfmt 已格式化 Vue template（bracketSameLine: false），与该规则冲突
+        'vue/html-closing-bracket-newline': 'off',
         'vue/html-indent': 'off',
         // 'vue/html-indent': ['error', 2],
         'vue/html-quotes': ['error', 'double'],

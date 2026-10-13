@@ -34,14 +34,20 @@ export function getProjectAnnouncement(id: number) {
 export function createProjectAnnouncement(
   data: PmsProjectAnnouncementApi.ProjectAnnouncement,
 ) {
-  return requestClient.post<number>('/pms/pm/project-announcement/create', data);
+  return requestClient.post<number>(
+    '/pms/pm/project-announcement/create',
+    data,
+  );
 }
 
 /** 修改项目公告 */
 export function updateProjectAnnouncement(
   data: PmsProjectAnnouncementApi.ProjectAnnouncement,
 ) {
-  return requestClient.put<boolean>('/pms/pm/project-announcement/update', data);
+  return requestClient.put<boolean>(
+    '/pms/pm/project-announcement/update',
+    data,
+  );
 }
 
 /** 删除项目公告 */

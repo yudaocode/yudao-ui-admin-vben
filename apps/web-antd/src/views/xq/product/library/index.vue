@@ -1072,7 +1072,8 @@ onMounted(async () => {
                 <span
                   class="name"
                   :class="{ bold: browseL2?.id === item.id }"
-                  >{{ item.name }}</span>
+                  >{{ item.name }}</span
+                >
                 <span v-if="item.children?.length" class="arrow">›</span>
               </div>
               <Empty
@@ -1382,14 +1383,18 @@ onMounted(async () => {
               </span>
             </div>
             <div class="xq-shop-meta">
-              <span>Item Code
+              <span
+                >Item Code
                 {{
                   selectedVariant?.itemCode || detail.itemCode || detail.sku
-                }}</span>
-              <span>库存
+                }}</span
+              >
+              <span
+                >库存
                 {{
                   selectedVariant?.qtyAvailable ?? detail.qtyAvailable ?? '—'
-                }}</span>
+                }}</span
+              >
             </div>
             <div
               v-if="detail.pickedPlatforms?.length"

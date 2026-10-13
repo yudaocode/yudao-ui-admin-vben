@@ -448,7 +448,8 @@ onMounted(async () => {
             >
               <div class="store-text">
                 <div>
-                  <span class="label">平台：</span>{{ store.platformName || store.platformCode || '-' }}
+                  <span class="label">平台：</span
+                  >{{ store.platformName || store.platformCode || '-' }}
                 </div>
                 <div><span class="label">店铺：</span>{{ store.name }}</div>
                 <div><span class="label">国家/地区：</span>美国</div>
@@ -494,10 +495,12 @@ onMounted(async () => {
                 <div class="h-wh">
                   <div class="cell-body">
                     <div>
-                      <span class="label">国家/地区：</span>{{ countryLabel(record.countryCode) }}
+                      <span class="label">国家/地区：</span
+                      >{{ countryLabel(record.countryCode) }}
                     </div>
                     <div>
-                      <span class="label">仓库名称：</span>{{ warehouseDisplayName(record) }}
+                      <span class="label">仓库名称：</span
+                      >{{ warehouseDisplayName(record) }}
                     </div>
                     <div class="code-line">
                       <span class="label">店铺仓编码：</span>
