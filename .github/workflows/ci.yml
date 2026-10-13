@@ -31,22 +31,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
+  checks:
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
+    # fail-fast:任一并行任务失败立即取消其余任务，直接进入 ci-ok 判定
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - name: Lint
+          - name: Test
+          - name: Docker Build
+    # 仅 Docker Build 需要 environment（按分支解析 vars.VITE_*；PR 的 ref 形如
+    # 8/merge 非法，落 'pr' 空环境）。Lint/Test 必须留在环境外：PR 运行执行 PR 代码，
+    # 进入 main/test/dev 环境会暴露 DEPLOY_SSH_KEY/TS_AUTHKEY 等分支 secrets
+    environment: ${{ matrix.name == 'Docker Build' && (github.event_name == 'pull_request' && 'pr' || github.ref_name) || '' }}
+    # Docker Build 写 GHCR buildcache 需要 packages:write；Lint/Test 不使用该权限
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0
+          fetch-depth: ${{ matrix.name == 'Docker Build' && 1 || 0 }}
 
       - name: Setup Node
+        if: ${{ matrix.name != 'Docker Build' }}
         uses: ./.github/actions/setup-node
 
       # eslint 缓存条目按内容哈希失效(vsh lint 用 --cache-strategy content),
       # 跨 run 恢复后未变更文件直接跳过
       - name: Restore eslint cache
+        if: ${{ matrix.name == 'Lint' }}
         uses: actions/cache@v4
         with:
           path: .eslintcache
@@ -55,35 +73,15 @@ jobs:
             eslint-${{ runner.os }}-
 
       - name: Lint
+        if: ${{ matrix.name == 'Lint' }}
         run: pnpm run lint --parallel
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
-
       - name: Vitest tests
+        if: ${{ matrix.name == 'Test' }}
         run: pnpm run test:unit
 
-  docker-build:
-    name: Docker Build
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    # push/dispatch 按分支解析 vars.VITE_*；PR 的 ref 形如 8/merge 非法，落 'pr' 空环境
-    environment: ${{ github.event_name == 'pull_request' && 'pr' || github.ref_name }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-
       - name: Resolve backend URL build args
+        if: ${{ matrix.name == 'Docker Build' }}
         id: args
         env:
           BASE_INPUT: ${{ inputs.vite_base_url }}
@@ -97,6 +95,7 @@ jobs:
           echo "vite_glob_api_url=$API" >> "$GITHUB_OUTPUT"
 
       - name: Compose image tags
+        if: ${{ matrix.name == 'Docker Build' }}
         id: meta
         env:
           REF: ${{ github.ref_name }}
@@ -117,17 +116,29 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
+        if: ${{ matrix.name == 'Docker Build' }}
         uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        if: ${{ matrix.name == 'Docker Build' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       # RUN 步骤非零退出即构建失败，build:antd 报错会原样阻断镜像打包
       - name: Build image
+        if: ${{ matrix.name == 'Docker Build' }}
         uses: docker/build-push-action@v6
         with:
           context: .
           file: scripts/deploy/Dockerfile
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: |
+            type=registry,ref=${{ env.IMAGE }}:buildcache
+            type=gha
+          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
           build-args: |
             VITE_BASE_URL=${{ steps.args.outputs.vite_base_url }}
             VITE_GLOB_API_URL=${{ steps.args.outputs.vite_glob_api_url }}
@@ -136,7 +147,7 @@ jobs:
   ci-ok:
     name: CI OK
     runs-on: ubuntu-latest
-    needs: [lint, test, docker-build]
+    needs: [checks]
     # 上游失败仍执行判定，输出显式红叉；整跑被取消时跳过，防止取消态被判为通过
     if: ${{ !cancelled() }}
     env:
@@ -210,14 +221,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 缓存已由同 run 的 docker-build 写入（mode=max），此处只读不写，仅组装+推送
+      # 缓存由同 run 的 docker-build 写入 GHCR buildcache 镜像（mode=max），此处只读不写，仅组装+推送
       - name: Push image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: scripts/deploy/Dockerfile
           push: true
-          cache-from: type=gha
+          cache-from: |
+            type=registry,ref=${{ env.IMAGE }}:buildcache
+            type=gha
           build-args: |
             VITE_BASE_URL=${{ steps.args.outputs.vite_base_url }}
             VITE_GLOB_API_URL=${{ steps.args.outputs.vite_glob_api_url }}
