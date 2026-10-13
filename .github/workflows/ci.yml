@@ -244,9 +244,9 @@ jobs:
           : "${SSH_USER:?repository variable DEPLOY_USER is required}"
           BASE_PATH="${BASE_PATH:-/opt/star-ecom-erp}"
           case "${GITHUB_REF_NAME}" in
-            main) PORT=8010; NAME=star-ecom-erp-web ;;
-            test) PORT=8011; NAME=star-ecom-erp-web-test ;;
-            dev)  PORT=8012; NAME=star-ecom-erp-web-dev ;;
+            main) PORT=8010; NAME=star-ecom-erp-web; TS_HOSTNAME=star-ecom-erp-main ;;
+            test) PORT=8011; NAME=star-ecom-erp-web-test; TS_HOSTNAME=star-ecom-erp-test ;;
+            dev)  PORT=8012; NAME=star-ecom-erp-web-dev; TS_HOSTNAME=star-ecom-erp-dev ;;
           esac
           {
             echo "host=$HOST"
@@ -254,6 +254,7 @@ jobs:
             echo "dir=${BASE_PATH}/${GITHUB_REF_NAME}"
             echo "port=$PORT"
             echo "name=$NAME"
+            echo "tshostname=$TS_HOSTNAME"
           } >> "$GITHUB_OUTPUT"
 
       - name: Configure SSH
@@ -266,6 +267,7 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
 
       # 服务器上的 compose 文件与 .env 以仓库为唯一事实源，每次部署覆盖同步
+      # TS_AUTHKEY 按 environment（main/test/dev）各自配置的同名 secret 解析
       - name: Deploy over SSH
         env:
           HOST: ${{ steps.target.outputs.host }}
@@ -274,14 +276,18 @@ jobs:
           BRANCH: ${{ github.ref_name }}
           HOST_PORT: ${{ steps.target.outputs.port }}
           NAME: ${{ steps.target.outputs.name }}
+          TS_HOSTNAME: ${{ steps.target.outputs.tshostname }}
+          TS_AUTHKEY: ${{ secrets.TS_AUTHKEY }}
         run: |
-          printf 'COMPOSE_PROJECT_NAME=star-ecom-erp-%s\nIMAGE_TAG=%s\nHOST_PORT=%s\nCONTAINER_NAME=%s\n' \
-            "$BRANCH" "$BRANCH" "$HOST_PORT" "$NAME" > .env.deploy
+          : "${TS_AUTHKEY:?environment secret TS_AUTHKEY is required (main/test/dev 各自配置，见 docs/deploy.md)}"
+          printf 'COMPOSE_PROJECT_NAME=star-ecom-erp-%s\nIMAGE_TAG=%s\nHOST_PORT=%s\nCONTAINER_NAME=%s\nTS_HOSTNAME=%s\nTS_AUTHKEY=%s\n' \
+            "$BRANCH" "$BRANCH" "$HOST_PORT" "$NAME" "$TS_HOSTNAME" "$TS_AUTHKEY" > .env.deploy
           # tailnet 内为 WireGuard 加密链路，主机指纹首次信任（TOFU）
           SSH_OPTS="-i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10"
           ssh $SSH_OPTS "${SSH_USER}@${HOST}" "mkdir -p '${DIR}'"
           scp $SSH_OPTS docker-compose.yml "${SSH_USER}@${HOST}:${DIR}/docker-compose.yml"
           scp $SSH_OPTS .env.deploy "${SSH_USER}@${HOST}:${DIR}/.env"
+          rm -f .env.deploy
           ssh $SSH_OPTS "${SSH_USER}@${HOST}" \
             "cd '${DIR}' && docker compose pull && docker compose up -d && docker compose ps && docker image prune -f > /dev/null"
 

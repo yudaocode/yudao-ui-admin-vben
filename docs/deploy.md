@@ -2,6 +2,8 @@
 
 push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后（`deploy` job， `needs: push-image`），经 Tailscale 加入 tailnet，SSH 到服务器执行 `docker compose pull && docker compose up -d`，最后经 tailnet `curl` 宿主机端口做健康检查。
 
+每个环境的 compose project 内含一个 Tailscale sidecar 容器（与 web 共享网络命名空间）并开启 Funnel：三个环境各一个独立节点，公网 443 由 tailscale 终结 TLS 后代理到容器内 nginx。Funnel 生效即公网可直接访问，宿主机 8010-8012 端口与 CI 健康检查不受影响。
+
 - 镜像：`ghcr.io/ellean/star-ecom-erp-web`（公开包，服务器拉取无需登录）
 - CI 节点：tailscale/github-action@v4，OAuth client 签发，ephemeral + `tag:github-actions-xq`，每次跑完自动离网
 - 服务器上的 `docker-compose.yml` 与 `.env` 由 CI 每次部署覆盖同步，仓库是唯一事实源，勿手改
@@ -16,21 +18,50 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 
 部署记录在 GitHub 仓库的 Environments（main/test/dev）中可查。
 
+## Funnel 公网入口（每环境一个节点）
+
+| 分支 | Funnel 入口                                 |
+| ---- | ------------------------------------------- |
+| main | https://star-ecom-erp-main.tail08f53.ts.net |
+| test | https://star-ecom-erp-test.tail08f53.ts.net |
+| dev  | https://star-ecom-erp-dev.tail08f53.ts.net  |
+
+- sidecar 镜像 `tailscale/tailscale:stable`，`network_mode: 'service:web'` 共享 web 命名空间，serve 配置内联在 compose 文件（`configs.content`，`AllowFunnel: true`）
+- 节点状态存于各 project 独立具名卷 `star-ecom-erp-<env>_tailscale-state`，重启不重新认证
+- 三个节点在管理台 Machines 中以 `star-ecom-erp-main/test/dev` 出现，tag 为 `tag:erp-funnel-xq`
+
 ## 一次性配置
 
 ### 1. Tailscale 后台（tail08f53.ts.net）
 
-1. Access controls 的 `tagOwners` 中定义 CI 标签：
+1. Access controls：
 
    ```json
    "tagOwners": {
-     "tag:github-actions-xq": ["autogroup:admin"]
-   }
+     "tag:github-actions-xq": ["autogroup:admin"],
+     "tag:erp-funnel-xq": ["autogroup:admin"]
+   },
+   "nodeAttrs": [
+     {
+       "target": ["tag:erp-funnel-xq"],
+       "attr": ["funnel"]
+     }
+   ]
    ```
 
-   若使用自定义 ACL（非默认全通），还需放行 `tag:github-actions-xq` → 服务器 `22, 8010-8012` 端口。
+   - `tag:github-actions-xq`：CI 临时节点（已有）
+   - `tag:erp-funnel-xq`：三个环境的 Funnel 常驻节点
+   - `nodeAttrs` 的 `funnel` attr 是 Funnel 总开关，即使默认全通 ACL 也必须加，否则 Funnel 一律拒绝
 
-2. Settings → OAuth clients → 新建：scopes 勾选 `auth_keys`（write），tags 选 `tag:github-actions-xq`。记录生成的 client ID 与 secret。注意管理台存在 OAuth client Tags 被静默丢弃的 bug（tailscale#19945），保存后务必回看确认。
+2. 确认 MagicDNS 与 HTTPS 证书已启用（Machines 页面；CI 已在用 MagicDNS 域名，通常已开）。
+
+3. Settings → OAuth clients → 新建：scopes 勾选 `auth_keys`（write），tags 选 `tag:github-actions-xq`。记录生成的 client ID 与 secret。注意管理台存在 OAuth client Tags 被静默丢弃的 bug（tailscale#19945），保存后务必回看确认。
+
+4. Settings → Keys → Generate auth key，**生成 3 个**（main / test / dev 各一个）：
+
+   - Reusable（状态卷丢失后可重新入网）
+   - Tags：`tag:erp-funnel-xq`（tag 随 key 下发，节点无需 advertise）
+   - 三个 key 分别填入 GitHub 对应 Environment 的 secret（见下节）
 
 ### 2. GitHub 仓库配置（Settings → Secrets and variables → Actions）
 
@@ -45,9 +76,20 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 
 `DEPLOY_HOST` / `DEPLOY_USER` 未配置时 deploy job 会直接失败并给出提示。
 
+除上表外，还需配置 **Environment secret**（不是 repo secret）：Settings → Environments → 分别进入 main / test / dev → Add secret：
+
+| Environment | Secret 名称  | 值                             |
+| ----------- | ------------ | ------------------------------ |
+| main        | `TS_AUTHKEY` | main 环境的 Tailscale auth key |
+| test        | `TS_AUTHKEY` | test 环境的 Tailscale auth key |
+| dev         | `TS_AUTHKEY` | dev 环境的 Tailscale auth key  |
+
+deploy job 带 `environment: ${{ github.ref_name }}`，运行时自动解析到对应环境的值；未配置时部署直接报错中止（`environment secret TS_AUTHKEY is required`）。
+
 ### 3. 服务器一次性准备
 
-- Docker + compose plugin 可用（`docker compose version`）；CPU 架构需为 x86_64（镜像按 amd64 构建）；部署用户在 `docker` 组（无需 sudo 执行 docker）。
+- Docker + compose plugin 可用（`docker compose version`）；**compose 插件需 ≥ v2.23.1**（compose 文件使用 `configs.content` 内联 serve 配置）；CPU 架构需为 x86_64（镜像按 amd64 构建）；部署用户在 `docker` 组（无需 sudo 执行 docker）。
+- Funnel sidecar 镜像来自 docker.io（`tailscale/tailscale:stable`），确认服务器可访问 docker.io（此前仅拉取过 GHCR）；不通则配置 registry mirror 或预先拉取导入。
 - 部署公钥追加到 authorized_keys（在能登录服务器的机器上执行，用户为 `edward`）：
 
   ```bash
@@ -64,7 +106,11 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 - **自动部署**：push（或合并 PR）到 main / test / dev 即自动部署对应环境；PR 事件不部署，`workflow_dispatch` 选到其他分支时跳过部署。
 - **手动部署**：Actions → CI → Run workflow → 选分支（仅 main/test/dev 触发部署）；inputs 可覆盖镜像内烘焙的后端地址，谨慎使用（会同步部署到对应环境）。
 - **回滚**：SSH 到服务器，将 `<目录>/.env` 的 `IMAGE_TAG` 改为旧构建的 sha tag，然后 `docker compose up -d`。注意 CI 下次部署会覆盖回分支 tag。
-- **查看日志**：`docker compose -f /home/edward/star-ecom-erp/<分支>/docker-compose.yml logs -f web`
+- **验证 Funnel**：`curl -I https://star-ecom-erp-<env>.tail08f53.ts.net/`（公网可达，无需在 tailnet 内）；节点首次入网后证书签发可能有几十秒到几分钟延迟。
+- **关闭节点 key 过期**：三个节点首次入网后，在管理台 Machines 中对 `star-ecom-erp-main/test/dev` 关闭 Key expiry，避免约 180 天后节点 key 到期要求重新认证。
+- **更换 auth key**：正常情况无需更换（持久状态不会重复认证）。仅当某环境状态卷丢失需重新入网时：更新对应 Environment 的 `TS_AUTHKEY` → SSH 到服务器执行 `docker compose -f <目录>/docker-compose.yml down && docker volume rm star-ecom-erp-<env>_tailscale-state` → 重新部署。
+- **关闭某环境 Funnel**：ACL 中删除 `nodeAttrs` 对 `tag:erp-funnel-xq` 的 `funnel` attr（全量关闭），或单环境：SSH 到服务器后 `docker compose -f <目录>/docker-compose.yml stop tailscale`。
+- **查看日志**：`docker compose -f /home/edward/star-ecom-erp/<分支>/docker-compose.yml logs -f web`；sidecar 日志把 `web` 换成 `tailscale`。
 
 ## 故障排查
 
@@ -75,3 +121,9 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 | SSH 连接超时/拒绝 | 服务器是否在线；OAuth client 标签是否在 ACL 中有权访问 22 端口 |
 | 健康检查 60s 超时但容器正常 | 服务器防火墙是否放行 tailscale 接口访问 8010-8012 |
 | pull 失败 | GHCR 包可见性是否仍为 public；tag 是否已由 push-image 推送 |
+| 部署报 `environment secret TS_AUTHKEY is required` | 对应 Environment（main/test/dev）未配置 `TS_AUTHKEY` secret |
+| tailscale 容器重启循环，日志报认证失败 | key 失效或生成时选了一次性；换成 Reusable key 并更新对应 Environment secret |
+| Funnel 域名连接被拒/超时，tailnet 内直连正常 | ACL 缺 `nodeAttrs` 的 `funnel` attr，或节点 tag 不是 `tag:erp-funnel-xq` |
+| Funnel 返回证书错误 | 等待 Let's Encrypt 签发完成（首次可达数分钟）；确认 tailnet HTTPS 证书已启用 |
+| `docker compose up` 报 `content` 相关配置错误 | 服务器 compose 插件 < v2.23.1，升级 docker-compose-plugin |
+| 仅 `tailscale/tailscale` 镜像拉取失败 | 服务器到 docker.io 的网络问题，配 registry mirror 或预拉取 |
