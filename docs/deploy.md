@@ -3,7 +3,7 @@
 push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后（`deploy` job， `needs: push-image`），经 Tailscale 加入 tailnet，SSH 到服务器执行 `docker compose pull && docker compose up -d`，最后经 tailnet `curl` 宿主机端口做健康检查。
 
 - 镜像：`ghcr.io/ellean/star-ecom-erp-web`（公开包，服务器拉取无需登录）
-- CI 节点：tailscale/github-action@v4，OAuth client 签发，ephemeral + `tag:ci`，每次跑完自动离网
+- CI 节点：tailscale/github-action@v4，OAuth client 签发，ephemeral + `tag:github-actions-xq`，每次跑完自动离网
 - 服务器上的 `docker-compose.yml` 与 `.env` 由 CI 每次部署覆盖同步，仓库是唯一事实源，勿手改
 
 ## 拓扑（main / test / dev 同服务器，独立 compose project）
@@ -24,13 +24,13 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 
    ```json
    "tagOwners": {
-     "tag:ci": ["autogroup:admin"]
+     "tag:github-actions-xq": ["autogroup:admin"]
    }
    ```
 
-   若使用自定义 ACL（非默认全通），还需放行 `tag:ci` → 服务器 `22, 8010-8012` 端口。
+   若使用自定义 ACL（非默认全通），还需放行 `tag:github-actions-xq` → 服务器 `22, 8010-8012` 端口。
 
-2. Settings → OAuth clients → 新建：scopes 勾选 `auth_keys`（write），tags 选 `tag:ci`。记录生成的 client ID 与 secret。
+2. Settings → OAuth clients → 新建：scopes 勾选 `auth_keys`（write），tags 选 `tag:github-actions-xq`。记录生成的 client ID 与 secret。注意管理台存在 OAuth client Tags 被静默丢弃的 bug（tailscale#19945），保存后务必回看确认。
 
 ### 2. GitHub 仓库配置（Settings → Secrets and variables → Actions）
 
@@ -71,6 +71,7 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 | 症状 | 排查 |
 | --- | --- |
 | `DEPLOY_HOST is required` | 仓库 variable 未配置 |
+| Join tailnet 报 `requested tags [...] are invalid or not permitted` | `.github/workflows/ci.yml` 的 `tags:` 与 OAuth client 实际 tag 不一致；以 OAuth client 的 Tags 为准同步 workflow |
 | SSH 连接超时/拒绝 | 服务器是否在线；OAuth client 标签是否在 ACL 中有权访问 22 端口 |
 | 健康检查 60s 超时但容器正常 | 服务器防火墙是否放行 tailscale 接口访问 8010-8012 |
 | pull 失败 | GHCR 包可见性是否仍为 public；tag 是否已由 push-image 推送 |
