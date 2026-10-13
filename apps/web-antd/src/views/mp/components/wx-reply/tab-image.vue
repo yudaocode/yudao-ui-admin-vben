@@ -24,7 +24,7 @@ const emit = defineEmits<{
 }>();
 
 const accessStore = useAccessStore();
-const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
+const UPLOAD_URL = `${import.meta.env.VITE_GLOB_API_URL}/mp/material/upload-temporary`;
 const HEADERS = { Authorization: `Bearer ${accessStore.accessToken}` };
 const reply = computed<Reply>({
   get: () => props.modelValue,

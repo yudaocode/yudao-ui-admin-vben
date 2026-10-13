@@ -25,7 +25,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', v: MpDraftApi.NewsItem): void;
 }>();
 
-const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-permanent`; // 上传永久素材的地址
+const UPLOAD_URL = `${import.meta.env.VITE_GLOB_API_URL}/mp/material/upload-permanent`; // 上传永久素材的地址
 const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
 const newsItem = computed<MpDraftApi.NewsItem>({
   get() {
