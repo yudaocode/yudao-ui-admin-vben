@@ -24,24 +24,18 @@ COPY . /app
 # 安装依赖（pnpm@11.16.0 由 package.json 的 packageManager 字段解析;包已由 fetch 层就位）
 RUN pnpm install --frozen-lockfile --offline
 
-# 后端地址在构建期注入 .env.production（与 deploy.yml 的 sed 模式一致）；
-# VITE_GLOB_API_URL 未显式指定时跟随 VITE_BASE_URL
-# ARG 须在 install 之后声明：ARG 值参与其后 RUN 层缓存键，提前声明换地址即失效
-ARG VITE_BASE_URL=http://127.0.0.1:48080
-ARG VITE_GLOB_API_URL=${VITE_BASE_URL}/admin-api
-
-# 注入后端地址后构建
-RUN sed -i "s#VITE_BASE_URL\s*=.*#VITE_BASE_URL=${VITE_BASE_URL}#g" ./apps/web-antd/.env.production \
-    && sed -i "s#VITE_GLOB_API_URL\s*=.*#VITE_GLOB_API_URL=${VITE_GLOB_API_URL}#g" ./apps/web-antd/.env.production \
-    && pnpm run build --filter=@vben/web-antd
+# 同源化：后端地址不再构建期注入，前端全部走相对路径，
+# 由 nginx 运行时经 BACKEND_UPSTREAM 反代（见 scripts/deploy/default.conf.template）
+RUN pnpm run build --filter=@vben/web-antd
 
 RUN echo "Builder Success 🎉"
 
 FROM nginx:stable-alpine AS production
 
-# 配置 nginx
-RUN echo "types { application/javascript js mjs; }" > /etc/nginx/conf.d/mjs.conf \
-    && rm -rf /etc/nginx/conf.d/default.conf
+# 主配置 + 反代模板：entrypoint 的 envsubst 渲染模板到 conf.d/default.conf，
+# BACKEND_UPSTREAM 由 compose 注入（stock default.conf 被同名渲染产物覆盖，无需删除）
+COPY --from=builder /app/scripts/deploy/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/scripts/deploy/default.conf.template /etc/nginx/templates/default.conf.template
 
 # 复制构建产物
 COPY --from=builder /app/apps/web-antd/dist /usr/share/nginx/html

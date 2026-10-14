@@ -27,11 +27,18 @@ import { getSimpleUserList } from '#/api/system/user';
 const accessStore = useAccessStore();
 const refreshToken = accessStore.refreshToken as string;
 
+/** VITE_BASE_URL 为空（同源反代）时回退到当前页面协议 + host，与 websocketStore.buildWsUrl 一致 */
+function buildWsUrl(): string {
+  const baseUrl = import.meta.env.VITE_BASE_URL as string | undefined;
+  if (baseUrl && baseUrl.length > 0) {
+    return baseUrl.replace(/^http/, 'ws');
+  }
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${protocol}//${window.location.host}`;
+}
+
 const server = ref(
-  `${`${import.meta.env.VITE_BASE_URL}/infra/ws`.replace(
-    'http',
-    'ws',
-  )}?token=${refreshToken}`, // 使用 refreshToken，而不使用 accessToken 方法的原因：WebSocket 无法方便的刷新访问令牌
+  `${buildWsUrl()}/infra/ws?token=${refreshToken}`, // 使用 refreshToken，而不使用 accessToken 方法的原因：WebSocket 无法方便的刷新访问令牌
 ); // WebSocket 服务地址
 const getIsOpen = computed(() => status.value === 'OPEN'); // WebSocket 连接是否打开
 const getTagColor = computed(() => (getIsOpen.value ? 'success' : 'red')); // WebSocket 连接的展示颜色

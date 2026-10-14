@@ -4,6 +4,8 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 
 每个环境的 compose project 内含一个 Tailscale sidecar 容器（与 web 共享网络命名空间）并开启 Funnel：三个环境各一个独立节点，公网 443 由 tailscale 终结 TLS 后代理到容器内 nginx。Funnel 生效即公网可直接访问，宿主机 8010-8012 端口与 CI 健康检查不受影响。
 
+web 容器内 nginx 同时承担前端静态托管与**后端同源反代**：`scripts/deploy/default.conf.template`（容器启动时 envsubst 渲染）将 `/admin-api`、`/infra/ws`（WebSocket）、`/actuator/health` 及 Druid / Knife4j / 积木报表 / SBA 等路径代理到 `BACKEND_UPSTREAM`。前端镜像不烘焙任何后端地址；后端位置由 CI 写入服务器 `.env` 的 `BACKEND_UPSTREAM` 决定，当前指向宿主机 `host.docker.internal:48080`（后端新栈上线后切 `host.docker.internal:802x`，仅需改 ci.yml 一行）。
+
 - 镜像：`ghcr.io/ellean/star-ecom-erp-web`（公开包，服务器拉取无需登录）
 - CI 节点：tailscale/github-action@v4，OAuth client 签发，ephemeral + `tag:github-actions-xq`，每次跑完自动离网
 - 服务器上的 `docker-compose.yml` 与 `.env` 由 CI 每次部署覆盖同步，仓库是唯一事实源，勿手改
@@ -18,6 +20,8 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 
 部署记录在 GitHub 仓库的 Environments（main/test/dev）中可查。
 
+`.env` 键（CI 写入）：`COMPOSE_PROJECT_NAME` / `IMAGE_TAG` / `HOST_PORT` / `CONTAINER_NAME` / `TS_HOSTNAME` / `TS_AUTHKEY` / `BACKEND_UPSTREAM`。
+
 ## Funnel 公网入口（每环境一个节点）
 
 | 分支 | Funnel 入口                                 |
@@ -27,6 +31,7 @@ push 到 `main` / `test` / `dev` 后，`ci.yml` 在镜像推送 GHCR 成功后�
 | dev  | https://star-ecom-erp-dev.tail08f53.ts.net  |
 
 - sidecar 镜像 `tailscale/tailscale:stable`，`network_mode: 'service:web'` 共享 web 命名空间，serve 配置内联在 compose 文件（`configs.content`，`AllowFunnel: true`）
+- Funnel 入口同源覆盖前端静态与后端 API/WS（后者经 nginx 反代到 `BACKEND_UPSTREAM`）
 - 节点状态存于各 project 独立具名卷 `star-ecom-erp-<env>_tailscale-state`，重启不重新认证
 - 三个节点在管理台 Machines 中以 `star-ecom-erp-main/test/dev` 出现，tag 为 `tag:erp-funnel-xq`
 
@@ -104,7 +109,8 @@ deploy job 带 `environment: ${{ github.ref_name }}`，运行时自动解析到�
 ## 日常操作
 
 - **自动部署**：push（或合并 PR）到 main / test / dev 即自动部署对应环境；PR 事件不部署，`workflow_dispatch` 选到其他分支时跳过部署。
-- **手动部署**：Actions → CI → Run workflow → 选分支（仅 main/test/dev 触发部署）；inputs 可覆盖镜像内烘焙的后端地址，谨慎使用（会同步部署到对应环境）。
+- **手动部署**：Actions → CI → Run workflow → 选分支（仅 main/test/dev 触发部署）。
+- **切换后端 upstream**：编辑 `.github/workflows/ci.yml` deploy job 中对应分支的 `BACKEND_UPSTREAM`（如切 `host.docker.internal:8022`），合并后下次部署生效；该值只影响运行时反代，无需重建镜像。
 - **回滚**：SSH 到服务器，将 `<目录>/.env` 的 `IMAGE_TAG` 改为旧构建的 sha tag，然后 `docker compose up -d`。注意 CI 下次部署会覆盖回分支 tag。
 - **验证 Funnel**：`curl -I https://star-ecom-erp-<env>.tail08f53.ts.net/`（公网可达，无需在 tailnet 内）；节点首次入网后证书签发可能有几十秒到几分钟延迟。
 - **关闭节点 key 过期**：三个节点首次入网后，在管理台 Machines 中对 `star-ecom-erp-main/test/dev` 关闭 Key expiry，避免约 180 天后节点 key 到期要求重新认证。
@@ -127,3 +133,5 @@ deploy job 带 `environment: ${{ github.ref_name }}`，运行时自动解析到�
 | Funnel 返回证书错误 | 等待 Let's Encrypt 签发完成（首次可达数分钟）；确认 tailnet HTTPS 证书已启用 |
 | `docker compose up` 报 `content` 相关配置错误 | 服务器 compose 插件 < v2.23.1，升级 docker-compose-plugin |
 | 仅 `tailscale/tailscale` 镜像拉取失败 | 服务器到 docker.io 的网络问题，配 registry mirror 或预拉取 |
+| 页面可开但 API 全部 502 | `BACKEND_UPSTREAM` 指向的后端不可达：后端进程/端口、宿主机防火墙，或 web 服务缺 `host.docker.internal:host-gateway` |
+| 页面可开但 WebSocket 连不上 | nginx `/infra/ws` 的 Upgrade/Connection 头缺失；检查 default.conf.template 渲染产物（`docker compose exec web cat /etc/nginx/conf.d/default.conf`） |

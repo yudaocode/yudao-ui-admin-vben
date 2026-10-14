@@ -25,10 +25,17 @@ const memberInfoRef = ref<InstanceType<typeof MemberInfo>>();
 const conversationListRef = ref<InstanceType<typeof ConversationList>>();
 
 // ======================= WebSocket start =======================
-const url = `${`${import.meta.env.VITE_BASE_URL}/infra/ws`.replace(
-  'http',
-  'ws',
-)}?token=${accessStore.refreshToken}`; // 使用 refreshToken() :WebSocket 无法方便的刷新访问令牌
+/** VITE_BASE_URL 为空（同源反代）时回退到当前页面协议 + host，与 websocketStore.buildWsUrl 一致 */
+function buildWsUrl(): string {
+  const baseUrl = import.meta.env.VITE_BASE_URL as string | undefined;
+  if (baseUrl && baseUrl.length > 0) {
+    return baseUrl.replace(/^http/, 'ws');
+  }
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${protocol}//${window.location.host}`;
+}
+
+const url = `${buildWsUrl()}/infra/ws?token=${accessStore.refreshToken}`; // 使用 refreshToken() :WebSocket 无法方便的刷新访问令牌
 const server = ref(url); // WebSocket 服务地址
 
 /** 发起 WebSocket 连接 */

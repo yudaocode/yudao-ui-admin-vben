@@ -2,7 +2,7 @@
 # 镜像由 GitHub Actions 构建并推送 GHCR；部署由 ci.yml 的 deploy job 自动完成：
 # push main/test/dev → CI 全绿 → push-image → 经 tailscale SSH 到服务器执行本文件
 # 服务器侧目录：/home/edward/star-ecom-erp/<分支>，本文件与 .env 由 CI 每次部署同步覆盖，勿手改
-# 可覆盖变量（CI 写入 .env）：IMAGE_TAG / HOST_PORT / CONTAINER_NAME / TS_AUTHKEY / TS_HOSTNAME
+# 可覆盖变量（CI 写入 .env）：IMAGE_TAG / HOST_PORT / CONTAINER_NAME / TS_AUTHKEY / TS_HOSTNAME / BACKEND_UPSTREAM
 # 手动更新（默认值即 main 环境）：docker compose pull && docker compose up -d
 # 如需本地从零构建，使用 docker-compose.build.yml（本地缺 TS_AUTHKEY 时仅 tailscale 服务无法认证，不影响 web）
 services:
@@ -13,6 +13,11 @@ services:
       - '${HOST_PORT:-8010}:8080'
     restart: unless-stopped
     pull_policy: always
+    # 后端同源反代 upstream（envsubst 渲染进 nginx 配置）；默认指向宿主机 co-located 后端
+    environment:
+      - BACKEND_UPSTREAM=${BACKEND_UPSTREAM:-host.docker.internal:48080}
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
   # tailscale sidecar：与 web 共享网络命名空间，同一模板随 main/test/dev 三个 project
   # 各部署一份，即得到 3 个独立节点；每个节点开启 Funnel，公网入口为

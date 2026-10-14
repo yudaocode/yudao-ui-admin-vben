@@ -8,15 +8,6 @@ on:
       - test
       - dev
   workflow_dispatch:
-    inputs:
-      vite_base_url:
-        description: Backend origin baked into the image (VITE_BASE_URL); falls back to branch environment, then repo variable
-        required: false
-        default: ''
-      vite_glob_api_url:
-        description: API prefix (VITE_GLOB_API_URL); defaults to <base>/admin-api
-        required: false
-        default: ''
 
 permissions:
   contents: read
@@ -43,10 +34,7 @@ jobs:
           - name: Lint
           - name: Test
           - name: Docker Build
-    # 仅 Docker Build 需要 environment（按分支解析 vars.VITE_*；PR 的 ref 形如
-    # 8/merge 非法，落 'pr' 空环境）。Lint/Test 必须留在环境外：PR 运行执行 PR 代码，
-    # 进入 main/test/dev 环境会暴露 DEPLOY_SSH_KEY/TS_AUTHKEY 等分支 secrets
-    environment: ${{ matrix.name == 'Docker Build' && (github.event_name == 'pull_request' && 'pr' || github.ref_name) || '' }}
+    # 本 job 不进入任何 environment：镜像已无 build args，分支 secrets（部署链路）仅 deploy 挂环境使用
     # Docker Build 写 GHCR buildcache 需要 packages:write；Lint/Test 不使用该权限
     permissions:
       contents: read
@@ -79,20 +67,6 @@ jobs:
       - name: Vitest tests
         if: ${{ matrix.name == 'Test' }}
         run: pnpm run test:unit
-
-      - name: Resolve backend URL build args
-        if: ${{ matrix.name == 'Docker Build' }}
-        id: args
-        env:
-          BASE_INPUT: ${{ inputs.vite_base_url }}
-          BASE_VAR: ${{ vars.VITE_BASE_URL }}
-          API_INPUT: ${{ inputs.vite_glob_api_url }}
-          API_VAR: ${{ vars.VITE_GLOB_API_URL }}
-        run: |
-          BASE="${BASE_INPUT:-${BASE_VAR:-http://127.0.0.1:48080}}"
-          API="${API_INPUT:-${API_VAR:-${BASE}/admin-api}}"
-          echo "vite_base_url=$BASE" >> "$GITHUB_OUTPUT"
-          echo "vite_glob_api_url=$API" >> "$GITHUB_OUTPUT"
 
       - name: Compose image tags
         if: ${{ matrix.name == 'Docker Build' }}
@@ -139,9 +113,6 @@ jobs:
             type=registry,ref=${{ env.IMAGE }}:buildcache
             type=gha
           cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max
-          build-args: |
-            VITE_BASE_URL=${{ steps.args.outputs.vite_base_url }}
-            VITE_GLOB_API_URL=${{ steps.args.outputs.vite_glob_api_url }}
           tags: ${{ steps.meta.outputs.tags }}
 
   ci-ok:
@@ -169,27 +140,12 @@ jobs:
     needs: ci-ok
     # CI 全绿才推送；PR 事件产物不进 registry
     if: ${{ github.event_name != 'pull_request' }}
-    # 与 docker-build 同源解析分支 vars：同 SHA/环境/build args → 全层命中其写入的 gha 缓存
-    environment: ${{ github.ref_name }}
     permissions:
       contents: read
       packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-
-      - name: Resolve backend URL build args
-        id: args
-        env:
-          BASE_INPUT: ${{ inputs.vite_base_url }}
-          BASE_VAR: ${{ vars.VITE_BASE_URL }}
-          API_INPUT: ${{ inputs.vite_glob_api_url }}
-          API_VAR: ${{ vars.VITE_GLOB_API_URL }}
-        run: |
-          BASE="${BASE_INPUT:-${BASE_VAR:-http://127.0.0.1:48080}}"
-          API="${API_INPUT:-${API_VAR:-${BASE}/admin-api}}"
-          echo "vite_base_url=$BASE" >> "$GITHUB_OUTPUT"
-          echo "vite_glob_api_url=$API" >> "$GITHUB_OUTPUT"
 
       - name: Compose image tags
         id: meta
@@ -231,9 +187,6 @@ jobs:
           cache-from: |
             type=registry,ref=${{ env.IMAGE }}:buildcache
             type=gha
-          build-args: |
-            VITE_BASE_URL=${{ steps.args.outputs.vite_base_url }}
-            VITE_GLOB_API_URL=${{ steps.args.outputs.vite_glob_api_url }}
           tags: ${{ steps.meta.outputs.tags }}
 
   deploy:
@@ -267,9 +220,12 @@ jobs:
           : "${SSH_USER:?repository variable DEPLOY_USER is required}"
           BASE_PATH="${BASE_PATH:-/opt/star-ecom-erp}"
           case "${GITHUB_REF_NAME}" in
-            main) PORT=8010; NAME=star-ecom-erp-web; TS_HOSTNAME=star-ecom-erp-main ;;
-            test) PORT=8011; NAME=star-ecom-erp-web-test; TS_HOSTNAME=star-ecom-erp-test ;;
-            dev)  PORT=8012; NAME=star-ecom-erp-web-dev; TS_HOSTNAME=star-ecom-erp-dev ;;
+            # BACKEND_UPSTREAM：nginx 同源反代的 upstream（host 网关 + 后端端口）。
+            # 现阶段三环境均指向 co-located 旧后端（48080）；后端新栈（Spring Boot，8020-8022）
+            # 上线后，将对应分支的值切换为 host.docker.internal:802x，仅影响下次部署，无需重建镜像
+            main) PORT=8010; NAME=star-ecom-erp-web;     TS_HOSTNAME=star-ecom-erp-main; BACKEND_UPSTREAM=host.docker.internal:48080 ;;
+            test) PORT=8011; NAME=star-ecom-erp-web-test; TS_HOSTNAME=star-ecom-erp-test;  BACKEND_UPSTREAM=host.docker.internal:48080 ;;
+            dev)  PORT=8012; NAME=star-ecom-erp-web-dev;  TS_HOSTNAME=star-ecom-erp-dev;   BACKEND_UPSTREAM=host.docker.internal:48080 ;;
           esac
           {
             echo "host=$HOST"
@@ -278,6 +234,7 @@ jobs:
             echo "port=$PORT"
             echo "name=$NAME"
             echo "tshostname=$TS_HOSTNAME"
+            echo "backend_upstream=$BACKEND_UPSTREAM"
           } >> "$GITHUB_OUTPUT"
 
       - name: Configure SSH
@@ -301,10 +258,11 @@ jobs:
           NAME: ${{ steps.target.outputs.name }}
           TS_HOSTNAME: ${{ steps.target.outputs.tshostname }}
           TS_AUTHKEY: ${{ secrets.TS_AUTHKEY }}
+          BACKEND_UPSTREAM: ${{ steps.target.outputs.backend_upstream }}
         run: |
           : "${TS_AUTHKEY:?environment secret TS_AUTHKEY is required (main/test/dev 各自配置，见 docs/deploy.md)}"
-          printf 'COMPOSE_PROJECT_NAME=star-ecom-erp-%s\nIMAGE_TAG=%s\nHOST_PORT=%s\nCONTAINER_NAME=%s\nTS_HOSTNAME=%s\nTS_AUTHKEY=%s\n' \
-            "$BRANCH" "$BRANCH" "$HOST_PORT" "$NAME" "$TS_HOSTNAME" "$TS_AUTHKEY" > .env.deploy
+          printf 'COMPOSE_PROJECT_NAME=star-ecom-erp-%s\nIMAGE_TAG=%s\nHOST_PORT=%s\nCONTAINER_NAME=%s\nTS_HOSTNAME=%s\nTS_AUTHKEY=%s\nBACKEND_UPSTREAM=%s\n' \
+            "$BRANCH" "$BRANCH" "$HOST_PORT" "$NAME" "$TS_HOSTNAME" "$TS_AUTHKEY" "$BACKEND_UPSTREAM" > .env.deploy
           # tailnet 内为 WireGuard 加密链路，主机指纹首次信任（TOFU）
           SSH_OPTS="-i $HOME/.ssh/deploy_key -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10"
           ssh $SSH_OPTS "${SSH_USER}@${HOST}" "mkdir -p '${DIR}'"

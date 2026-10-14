@@ -1,7 +1,7 @@
 # 本地构建路径：不使用 GHCR 预构建镜像，镜像名为 star-com-erp-web:local
 #   docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
-# 指向其他后端：VITE_BASE_URL=http://<host>:48080 docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
-# 注意：VITE_* 为构建期烘焙值，修改环境变量后需 --build 重建
+# 后端反代地址由 docker-compose.yml 的 BACKEND_UPSTREAM 控制（默认 host.docker.internal:48080），
+# 运行时注入，无需构建参数
 services:
   web:
     image: star-com-erp-web:local
@@ -9,6 +9,3 @@ services:
     build:
       context: .
       dockerfile: scripts/deploy/Dockerfile
-      args:
-        VITE_BASE_URL: ${VITE_BASE_URL:-http://127.0.0.1:48080}
-        VITE_GLOB_API_URL: ${VITE_GLOB_API_URL:-http://127.0.0.1:48080/admin-api}
