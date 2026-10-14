@@ -2,7 +2,7 @@
 
 参照物：本仓库（Star E-Commerce ERP `web-antd`）2026-10 成型的 CI/CD 与部署体系。目标：把同一套结构复刻到一个 Spring Boot 项目——后端**独立部署**（自持 CI/CD、compose、端口、Funnel、secrets），前端仓库仅通过 nginx 同源反代接入。
 
-- 第一部分：现有架构总结（as-built，流水线骨架的蓝本；构建期烘焙 URL 已在本仓库 `refactor/same-origin-proxy` 分支移除）
+- 第一部分：现有架构总结（as-built，流水线骨架的蓝本；构建期烘焙 URL 已随同源反代改造移除，PR #20 已合并进 dev）
 - 第二部分：Spring Boot 复刻指南（独立拓扑 + 前端反代对接 + 可直接落地的模板 + 一次性配置清单）
 
 > 2026-10-14 决策：前后端完全解耦——前端做同源反向代理（upstream 经 `BACKEND_UPSTREAM` 注入），后端走自己的 CI/CD；单栈一体方案因"后端配置出现在前端仓库，耦合过高"被否。
@@ -50,7 +50,7 @@ PR 生命周期事件 → wecom-pr.yml（独立 workflow，推送 PR 群）
 2. **ci-ok** 带 `if: !cancelled()`：上游失败仍执行判定、输出显式红叉；整跑被并发取消时跳过（防止「取消态」被判为通过而放行 push-image）。
 3. **push-image**（`needs: ci-ok`，仅非 PR 事件）：`push: true`，**只读不写缓存**，从 registry buildcache 组装层后推送 GHCR。镜像只有在 CI 全绿后才进 registry。
 4. **deploy**（`needs: push-image`，仅 main/test/dev）：见 §1.6。
-5. **notify**（`if: !cancelled()`）：内联在 ci.yml 而非独立 `workflow_run` workflow——`workflow_run` 只从默认分支触发，PR 合并进 dev 时会永久休眠；内联则 PR 分支立即生效。按事件类型分流两个 webhook（PR 群 / Actions 群），并附失败 job 名单与整跑耗时。
+5. **notify**（`if: !cancelled()`）：内联在 ci.yml 而非独立 `workflow_run` workflow——`workflow_run` 只从默认分支触发，PR 合并进 dev 时会永久休眠；内联则 PR 分支立即生效。按事件类型分流两个 webhook（PR 群 / Actions 群），并附失败 job 名单与整跑耗时；消息标题自报「前端」端别（与后端仓库的「后端」通知区分），部署成功时附 Funnel 访问链接（deploy job 的 `funnel_url` 输出）。
 6. **concurrency** 按 ref 分组 + `cancel-in-progress: true`：同一分支连续 push 只跑最新一次，且因为流水线会发布镜像，必须防并发写 tag 竞争。
 
 ### 1.4 镜像构建与缓存（Dockerfile + registry buildcache）
@@ -111,8 +111,8 @@ RUN pnpm install --frozen-lockfile --offline
 
 ### 1.8 通知（WeCom）
 
-- `wecom-pr.yml`：PR 生命周期（opened / reopened / ready_for_review / closed）推 PR 群。
-- ci.yml 内联 `notify` job：CI 结果（含部署结果、失败 job、耗时）按事件分流 PR 群 / Actions 群。
+- `wecom-pr.yml`：PR 生命周期（opened / reopened / ready_for_review / closed）推 PR 群，标题同样自报「前端」端别。
+- ci.yml 内联 `notify` job：CI 结果（含部署结果、失败 job、耗时）按事件分流 PR 群 / Actions 群；标题自报「前端」端别，部署成功时附 Funnel 访问链接（`https://<TS_HOSTNAME>.tail08f53.ts.net`，取自 deploy job 的 `funnel_url` 输出）。版式分块：标题 / 关联对象 / 元信息（灰字引用块）/ 结果行（失败 job 橙字、部署成功绿字）/ 耗时与运行入口，仅用企微 markdown 官方支持的语法。
 - webhook 存为 repo secret；未配置时告警跳过而非失败。
 
 ### 1.9 配置清单
@@ -181,9 +181,9 @@ RUN pnpm install --frozen-lockfile --offline
 | 健康检查路径 | `/`（前端 CI） | `/actuator/health`（后端 CI，直连自己端口） |
 | Funnel | 必须（前端唯一公网入口） | 可选（前端反代已覆盖 API；Funnel 仅在需要公网直达后端时开启） |
 
-### 2.2 前端仓库前置改造（`refactor/same-origin-proxy` 分支，后端上线前需已合并）
+### 2.2 前端仓库前置改造（已完成，PR #20 已合并进 dev）
 
-前端侧已完成/需完成的动作（详见本仓库 docs/deploy.md 与该分支提交）：
+前端侧已完成以下动作（详见本仓库 docs/deploy.md 与 PR #20 提交）：
 
 1. `.env.production` 同源化：`VITE_BASE_URL=`（空）、`VITE_GLOB_API_URL=/admin-api`。
 2. nginx server 块拆为 `scripts/deploy/default.conf.template`，唯一变量 `${BACKEND_UPSTREAM}`，代理 `/admin-api`、`/infra/ws`（WS upgrade）、`= /actuator/health`、`/druid/`、`/doc.html`、`/webjars/`、`/v3/api-docs`、`/swagger-resources`、`/jmreport/`、`/drag/`、`/admin/`；CORS 头删除。
@@ -301,7 +301,7 @@ volumes:
 
 ### 2.5 后端 ci.yml 完整模板
 
-与前端版骨架对称：checks（Lint/Test/Docker Build）→ ci-ok → push-image → deploy（部署自己的 project）。无 build args，docker-build 不需要 environment；deploy 挂 environment 解析 per-env `TS_AUTHKEY`。
+与前端版骨架对称：checks（Lint/Test/Docker Build）→ ci-ok → push-image → deploy（部署自己的 project）。无 build args，docker-build 不需要 environment；deploy 挂 environment 解析 per-env `TS_AUTHKEY`。notify 与前端版唯一差异是 `APP_SIDE` 标签为「后端」；deploy 额外输出 `funnel_url`（未开启后端 Funnel 时删除对应行，notify 自动退化为只报部署结果）。
 
 ```yaml
 name: CI
@@ -483,6 +483,9 @@ jobs:
     needs: push-image
     if: ${{ contains(fromJSON('["main", "test", "dev"]'), github.ref_name) }}
     environment: ${{ github.ref_name }}
+    # funnel_url 供 notify 在部署成功时展示环境访问链接（deploy 被跳过时为空）
+    outputs:
+      funnel_url: ${{ steps.target.outputs.funnel_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -517,6 +520,8 @@ jobs:
             echo "port=$PORT"
             echo "name=$NAME"
             echo "tshostname=$TS_HOSTNAME"
+            # Funnel 公网入口；§2.4 决定不开后端 Funnel 时删除本行，notify 将不展示访问链接
+            echo "funnel_url=https://${TS_HOSTNAME}.tail08f53.ts.net"
           } >> "$GITHUB_OUTPUT"
 
       - name: Configure SSH
@@ -568,12 +573,113 @@ jobs:
           exit 1
 
   notify:
-    # 与前端仓库 ci.yml 的 notify job 完全一致，直接照搬（secrets 同名）：
-    # WECOM_PR_WEBHOOK / WECOM_CI_WEBHOOK；需要 permissions: actions: read
-    ...略...
+    name: WeCom Notify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [ci-ok, push-image, deploy]
+    # PR 运行（止于 ci-ok）推 PR 群，push/手动触发推 Actions 群；
+    # 上游失败或被跳过仍要通知（否则 PR 运行永不发送）；整跑被并发取消时静默，由后继运行补发
+    if: ${{ !cancelled() }}
+    permissions:
+      actions: read
+      contents: read
+    env:
+      FAILURE: ${{ contains(join(needs.*.result, ','), 'failure') }}
+      # 与前端仓库 notify 的唯一差异：消息标题自报「后端」，同一企微群即可区分来源
+      APP_SIDE: 后端
+    steps:
+      - name: Send WeCom notification
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WECOM_PR_WEBHOOK: ${{ secrets.WECOM_PR_WEBHOOK }}
+          WECOM_CI_WEBHOOK: ${{ secrets.WECOM_CI_WEBHOOK }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+          HEAD_MSG: ${{ github.event.head_commit.message }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          FUNNEL_URL: ${{ needs.deploy.outputs.funnel_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_HEAD: ${{ github.event.pull_request.head.ref }}
+          PR_BASE: ${{ github.event.pull_request.base.ref }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            WEBHOOK="$WECOM_PR_WEBHOOK"
+          else
+            WEBHOOK="$WECOM_CI_WEBHOOK"
+          fi
+          if [ -z "$WEBHOOK" ]; then
+            echo "::warning::WeCom webhook secret not configured, skip notification"
+            exit 0
+          fi
+
+          # 失败 job 名单与整跑耗时；notify 自身仍在运行、skipped job 无时间戳，均需过滤 null
+          JOBS=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs?per_page=100" --jq '.jobs')
+          FAILED=$(jq -r '[.[] | select(.conclusion == "failure") | .name] | join("、")' <<<"$JOBS")
+          START=$(jq -r '[.[].started_at | select(. != null)] | min' <<<"$JOBS")
+          END=$(jq -r '[.[].completed_at | select(. != null)] | max' <<<"$JOBS")
+          SECS=$(( $(date -u -d "$END" +%s) - $(date -u -d "$START" +%s) ))
+          DUR="$(( SECS / 60 ))m$(( SECS % 60 ))s"
+
+          if [ "$FAILURE" = "true" ]; then
+            ICON="❌"; LABEL="失败"
+          else
+            ICON="✅"; LABEL="成功"
+          fi
+
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            HEADLINE="${APP_SIDE} PR CI ${LABEL}"
+            TITLE="**[#${PR_NUMBER} ${PR_TITLE}](${PR_URL})**"
+            WHO="${PR_AUTHOR} · ${PR_HEAD} → ${PR_BASE}"
+          else
+            SUBJECT=$(printf '%s\n' "$HEAD_MSG" | head -1)
+            if [ -z "$SUBJECT" ]; then
+              SUBJECT=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}" --jq '.commit.message' | head -1)
+            fi
+            HEADLINE="${APP_SIDE} CI ${LABEL}"
+            if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+              HEADLINE="${APP_SIDE} · 手动触发 CI ${LABEL}"
+            fi
+            TITLE="**${SUBJECT}**"
+            WHO="${ACTOR} · ${REF_NAME} · ${SHA:0:8}"
+          fi
+
+          # 版式（仅用企微 markdown 支持的语法）：标题 / 关联对象 / 元信息（灰字引用块）/
+          # 结果行（失败 job 橙字、部署成功绿字）/ 耗时与运行入口
+          {
+            echo "## ${ICON} ${HEADLINE}"
+            echo ""
+            echo "${TITLE}"
+            echo ""
+            echo "> <font color=\"comment\">👤 ${WHO}</font>"
+            if [ -n "$FAILED" ]; then
+              echo ""
+              echo "⚠️ <font color=\"warning\">失败 job：${FAILED}</font>"
+            fi
+            # 后端 Funnel 为可选（§2.4），未开启时 funnel_url 输出已删，此处自动不展示链接
+            if [ "$FAILURE" = "false" ] && [ "$DEPLOY_RESULT" = "success" ] && [ -n "$FUNNEL_URL" ]; then
+              echo ""
+              echo "🚀 <font color=\"info\">已部署 ${REF_NAME} 环境</font>　[${FUNNEL_URL}](${FUNNEL_URL})"
+            fi
+            echo ""
+            echo "⏱ 耗时 ${DUR} · [查看运行](${RUN_URL})"
+          } > /tmp/wecom-msg.md
+
+          PAYLOAD=$(jq -Rs '{msgtype: "markdown", markdown: {content: .}}' /tmp/wecom-msg.md)
+          RESP=$(curl -fsS -m 10 --retry 2 --retry-delay 2 -X POST \
+            -H 'Content-Type: application/json' -d "$PAYLOAD" "$WEBHOOK")
+          echo "$RESP" | jq -e '.errcode == 0' > /dev/null
+          echo "WeCom notified: ${RESP}"
 ```
 
-`wecom-pr.yml` 原样复制，无需修改。
+`wecom-pr.yml` 同样复制，把 `APP_SIDE` 改为「后端」。
 
 ### 2.6 一次性配置
 
@@ -591,7 +697,7 @@ jobs:
 | --- | --- | --- |
 | Secret | `TS_OAUTH_CLIENT_ID` / `TS_OAUTH_SECRET` | 同前端（或新建 client） |
 | Secret | `DEPLOY_SSH_KEY` | 部署私钥全文（同一台服务器可直接复用前端的 keypair） |
-| Secret | `WECOM_PR_WEBHOOK` / `WECOM_CI_WEBHOOK` | 企微群机器人 webhook（可复用或新建群） |
+| Secret | `WECOM_PR_WEBHOOK` / `WECOM_CI_WEBHOOK` | 企微群机器人 webhook（可复用前端的群：notify 标题自报「后端」，与前端消息可区分；也可新建群） |
 | Variable | `DEPLOY_HOST` | `xq-local.tail08f53.ts.net` |
 | Variable | `DEPLOY_USER` | `edward`（在 docker 组） |
 | Variable | `DEPLOY_PATH` | 例 `/home/edward/myapp` |
@@ -638,4 +744,4 @@ jobs:
 | Gradle 项目 | 依赖层换 `COPY build.gradle settings.gradle gradle* ./` + `gradle dependencies`，产物路径换 `build/libs/*.jar`，其余不变 |
 | GHCR 镜像名 | 必须全小写，与仓库名/owner 大小写无关 |
 | buildcache 存储占用 | `mode=max` 的 buildcache 镜像体积可达 GB 级，计入 GHCR 私有包 500MB 免费额度；包设 public 后存储免费，定期清理历史版本 |
-| 前端踩过的坑对本项目的映射 | 「gha cache 分支隔离」→ 仍用 registry buildcache；「docker-build/push-image 缓存契约」→ 无 build args 后自动满足；「ARG 后置」→ 无对应物，天然消失；「notify 内联 / TOFU / concurrency」→ 原样保留 |
+| 前端踩过的坑对本项目的映射 | 「gha cache 分支隔离」→ 仍用 registry buildcache；「docker-build/push-image 缓存契约」→ 无 build args 后自动满足；「ARG 后置」→ 无对应物，天然消失；「notify 内联 / TOFU / concurrency」→ 原样保留（notify 仅 `APP_SIDE` 标签不同） |

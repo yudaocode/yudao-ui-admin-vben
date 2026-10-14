@@ -17,6 +17,8 @@ jobs:
       - name: Send WeCom notification
         env:
           WEBHOOK: ${{ secrets.WECOM_PR_WEBHOOK }}
+          # 消息标题自报端别：本仓库为前端，后端仓库模板为「后端」，同一企微群可区分来源
+          APP_SIDE: 前端
           ACTION: ${{ github.event.action }}
           NUMBER: ${{ github.event.pull_request.number }}
           TITLE: ${{ github.event.pull_request.title }}
@@ -37,30 +39,33 @@ jobs:
           case "$ACTION" in
             opened)
               if [ "$DRAFT" = "true" ]; then
-                HEADLINE="📬 新 PR #${NUMBER}（草稿）"
+                HEADLINE="📬 ${APP_SIDE} · 新 PR #${NUMBER}（草稿）"
               else
-                HEADLINE="📬 新 PR #${NUMBER}"
+                HEADLINE="📬 ${APP_SIDE} · 新 PR #${NUMBER}"
               fi
               ;;
             reopened)
-              HEADLINE="🔄 PR #${NUMBER} 重新打开"
+              HEADLINE="🔄 ${APP_SIDE} · PR #${NUMBER} 重新打开"
               ;;
             ready_for_review)
-              HEADLINE="📌 PR #${NUMBER} 转为待评审"
+              HEADLINE="📌 ${APP_SIDE} · PR #${NUMBER} 转为待评审"
               ;;
             closed)
               if [ "$MERGED" = "true" ]; then
-                HEADLINE="✅ PR #${NUMBER} 已合并"
+                HEADLINE="✅ ${APP_SIDE} · PR #${NUMBER} 已合并"
               else
-                HEADLINE="❌ PR #${NUMBER} 已关闭"
+                HEADLINE="❌ ${APP_SIDE} · PR #${NUMBER} 已关闭"
               fi
               ;;
           esac
 
+          # 版式与 ci.yml notify 一致：标题 / 关联对象 / 元信息（灰字引用块）
           {
             echo "## ${HEADLINE}"
+            echo ""
             echo "**[${TITLE}](${URL})**"
-            echo "👤 ${AUTHOR} · \`${HEAD}\` → \`${BASE}\`"
+            echo ""
+            echo "> <font color=\"comment\">👤 ${AUTHOR} · ${HEAD} → ${BASE}</font>"
           } > /tmp/wecom-msg.md
 
           PAYLOAD=$(jq -Rs '{msgtype: "markdown", markdown: {content: .}}' /tmp/wecom-msg.md)

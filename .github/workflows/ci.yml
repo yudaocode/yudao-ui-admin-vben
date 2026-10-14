@@ -197,6 +197,9 @@ jobs:
     # push 仅 main/test/dev 触发；dispatch 选到其他分支时跳过部署（PR 经 needs 自动跳过）
     if: ${{ contains(fromJSON('["main", "test", "dev"]'), github.ref_name) }}
     environment: ${{ github.ref_name }}
+    # funnel_url 供 notify 在部署成功时展示环境访问链接（deploy 被跳过时为空）
+    outputs:
+      funnel_url: ${{ steps.target.outputs.funnel_url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -235,6 +238,8 @@ jobs:
             echo "name=$NAME"
             echo "tshostname=$TS_HOSTNAME"
             echo "backend_upstream=$BACKEND_UPSTREAM"
+            # tailnet 域名固定（见 docs/deploy.md）；换 tailnet 时同步修改此行
+            echo "funnel_url=https://${TS_HOSTNAME}.tail08f53.ts.net"
           } >> "$GITHUB_OUTPUT"
 
       - name: Configure SSH
@@ -301,6 +306,8 @@ jobs:
       contents: read
     env:
       FAILURE: ${{ contains(join(needs.*.result, ','), 'failure') }}
+      # 消息标题自报端别：本仓库为前端，后端仓库模板为「后端」，同一企微群可区分来源
+      APP_SIDE: 前端
     steps:
       - name: Send WeCom notification
         env:
@@ -313,6 +320,7 @@ jobs:
           ACTOR: ${{ github.actor }}
           HEAD_MSG: ${{ github.event.head_commit.message }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
+          FUNNEL_URL: ${{ needs.deploy.outputs.funnel_url }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_URL: ${{ github.event.pull_request.html_url }}
@@ -348,33 +356,41 @@ jobs:
           fi
 
           if [ "$EVENT_NAME" = "pull_request" ]; then
-            HEADLINE="PR CI ${LABEL}"
+            HEADLINE="${APP_SIDE} PR CI ${LABEL}"
             TITLE="**[#${PR_NUMBER} ${PR_TITLE}](${PR_URL})**"
-            WHO="${PR_AUTHOR} · \`${PR_HEAD}\` → \`${PR_BASE}\`"
+            WHO="${PR_AUTHOR} · ${PR_HEAD} → ${PR_BASE}"
           else
             SUBJECT=$(printf '%s\n' "$HEAD_MSG" | head -1)
             if [ -z "$SUBJECT" ]; then
               SUBJECT=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${SHA}" --jq '.commit.message' | head -1)
             fi
-            HEADLINE="CI ${LABEL}"
+            HEADLINE="${APP_SIDE} CI ${LABEL}"
             if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-              HEADLINE="手动触发 · CI ${LABEL}"
+              HEADLINE="${APP_SIDE} · 手动触发 CI ${LABEL}"
             fi
             TITLE="**${SUBJECT}**"
-            WHO="${ACTOR} · \`${REF_NAME}\` · ${SHA:0:8}"
+            WHO="${ACTOR} · ${REF_NAME} · ${SHA:0:8}"
           fi
 
+          # 版式（仅用企微 markdown 支持的语法）：标题 / 关联对象 / 元信息（灰字引用块）/
+          # 结果行（失败 job 橙字、部署成功绿字）/ 耗时与运行入口
           {
             echo "## ${ICON} ${HEADLINE}"
+            echo ""
             echo "${TITLE}"
-            echo "👤 ${WHO}"
+            echo ""
+            echo "> <font color=\"comment\">👤 ${WHO}</font>"
             if [ -n "$FAILED" ]; then
-              echo "失败 job：${FAILED}"
+              echo ""
+              echo "⚠️ <font color=\"warning\">失败 job：${FAILED}</font>"
             fi
             if [ "$FAILURE" = "false" ] && [ "$DEPLOY_RESULT" = "success" ]; then
-              echo "🚀 已部署 ${REF_NAME} 环境"
+              # 部署成功即 target 步骤已执行，funnel_url 必非空
+              echo ""
+              echo "🚀 <font color=\"info\">已部署 ${REF_NAME} 环境</font>　[${FUNNEL_URL}](${FUNNEL_URL})"
             fi
-            echo "⏱ ${DUR} · [查看运行](${RUN_URL})"
+            echo ""
+            echo "⏱ 耗时 ${DUR} · [查看运行](${RUN_URL})"
           } > /tmp/wecom-msg.md
 
           PAYLOAD=$(jq -Rs '{msgtype: "markdown", markdown: {content: .}}' /tmp/wecom-msg.md)
