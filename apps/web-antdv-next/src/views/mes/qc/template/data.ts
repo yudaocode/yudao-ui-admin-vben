@@ -36,6 +36,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '方案编号',
       component: 'Input',

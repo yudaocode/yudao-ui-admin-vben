@@ -48,7 +48,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          if (formValues.dataSourceConfigId === undefined) {
+          if (
+            formValues.dataSourceConfigId === undefined ||
+            formValues.dataSourceConfigId === null
+          ) {
             return [];
           }
           formData.dataSourceConfigId = formValues.dataSourceConfigId;
@@ -95,7 +98,7 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { dataSourceConfigId } = await gridApi.formApi.getValues();
     // 1.1 获取表单值
-    if (!dataSourceConfigId) {
+    if (dataSourceConfigId === undefined || dataSourceConfigId === null) {
       message.error('请选择数据源');
       return;
     }

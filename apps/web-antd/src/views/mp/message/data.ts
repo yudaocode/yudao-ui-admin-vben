@@ -77,6 +77,7 @@ export function useGridColumns(): VxeTableGridOptions<MpMessageApi.Message>['col
       align: 'center',
     },
     {
+      showOverflow: false,
       field: 'content',
       title: '内容',
       align: 'left',

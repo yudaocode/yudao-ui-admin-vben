@@ -39,6 +39,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '仓库编码',
       component: 'Input',

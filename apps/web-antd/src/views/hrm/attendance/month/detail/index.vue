@@ -64,7 +64,6 @@ const [LeaveGrid, leaveGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useLeaveGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },

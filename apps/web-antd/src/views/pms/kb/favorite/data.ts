@@ -12,6 +12,7 @@ export function useGridColumns(
 ): VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>['columns'] {
   return [
     {
+      showOverflow: false,
       field: 'name',
       title: '名称',
       minWidth: 260,

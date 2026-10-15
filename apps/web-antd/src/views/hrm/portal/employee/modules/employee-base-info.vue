@@ -69,7 +69,6 @@ function createGridOptions(columns: any) {
   return {
     border: true,
     columns,
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },

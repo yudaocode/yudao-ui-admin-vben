@@ -17,7 +17,7 @@ const emit = defineEmits<{
 const editIndex = ref<number>();
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 104 },
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 'auto' },
   layout: 'horizontal',
   schema: useSpecialDateFormSchema(),
   showDefaultActions: false,

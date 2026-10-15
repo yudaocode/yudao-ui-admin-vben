@@ -27,6 +27,7 @@ export function useQcIndicatorResultFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '样品编号',
       component: 'Input',

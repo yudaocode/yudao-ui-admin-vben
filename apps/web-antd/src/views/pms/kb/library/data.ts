@@ -99,6 +99,7 @@ export function useMemberGridColumns(): VxeTableGridOptions<PmsKnowledgeLibraryM
       slots: { default: 'identityType' },
     },
     {
+      showOverflow: false,
       title: '成员',
       minWidth: 260,
       slots: { default: 'member' },

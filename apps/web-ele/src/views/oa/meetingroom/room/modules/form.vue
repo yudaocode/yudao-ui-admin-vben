@@ -41,7 +41,7 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    labelWidth: 110,
+    labelWidth: 'auto',
   },
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',

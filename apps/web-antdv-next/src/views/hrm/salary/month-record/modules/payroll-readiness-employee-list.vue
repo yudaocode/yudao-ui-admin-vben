@@ -20,7 +20,6 @@ const props = defineProps<{
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: usePayrollReadinessEmployeeGridColumns(),
-    data: [],
     maxHeight: 480,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'employeeId', isHover: true },

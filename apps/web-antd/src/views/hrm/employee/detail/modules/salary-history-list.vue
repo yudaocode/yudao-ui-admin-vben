@@ -24,7 +24,6 @@ const detail = ref<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>();
 const [OptionGrid, optionGridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useSalaryOptionValueGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'code', isHover: true },

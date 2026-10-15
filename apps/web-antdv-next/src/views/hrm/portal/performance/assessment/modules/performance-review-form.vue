@@ -92,7 +92,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useReviewEditGridColumns(),
-    data: [],
     minHeight: 240,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },

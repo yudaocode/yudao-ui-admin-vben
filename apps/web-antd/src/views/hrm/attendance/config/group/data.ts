@@ -277,6 +277,7 @@ export function useGridColumns(): VxeGridProps['columns'] {
       formatter: () => '早晚打卡',
     },
     {
+      showOverflow: false,
       field: 'scope',
       title: '适用范围',
       minWidth: 220,

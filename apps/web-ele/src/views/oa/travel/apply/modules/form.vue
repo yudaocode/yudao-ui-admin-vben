@@ -72,7 +72,6 @@ const [ItemGrid, itemGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useItemGridColumns(),
-    data: [],
     maxHeight: 360,
     minHeight: 180,
     pagerConfig: { enabled: false },

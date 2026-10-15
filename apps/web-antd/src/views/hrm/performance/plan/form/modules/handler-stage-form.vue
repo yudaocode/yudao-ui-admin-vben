@@ -30,7 +30,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useHandlerStageGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { isHover: true },

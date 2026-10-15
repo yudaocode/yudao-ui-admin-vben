@@ -35,7 +35,6 @@ const [ProjectGrid, projectGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useProjectGridColumns(false),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     showFooter: true,

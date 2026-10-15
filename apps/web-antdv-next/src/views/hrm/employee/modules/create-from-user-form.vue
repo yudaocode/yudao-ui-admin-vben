@@ -47,7 +47,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useCreateFromUserGridColumns(),
-    data: [],
     height: 460,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'userId', isHover: true },

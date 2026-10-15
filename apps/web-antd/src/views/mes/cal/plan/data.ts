@@ -45,6 +45,7 @@ export function useFormSchema(
       defaultValue: MesCalPlanStatusEnum.PREPARE,
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '计划编码',
       component: 'Input',

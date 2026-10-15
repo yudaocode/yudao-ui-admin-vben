@@ -52,6 +52,7 @@ export function useGridColumns(): VxeTableGridOptions<HrmPortalInsuranceRecordAp
         `${row.year}-${String(row.month).padStart(2, '0')}`,
     },
     {
+      showOverflow: false,
       field: 'schemeName',
       title: '参保方案',
       minWidth: 210,

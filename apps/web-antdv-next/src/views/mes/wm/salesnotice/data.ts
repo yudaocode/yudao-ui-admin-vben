@@ -45,6 +45,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '通知单编号',
       component: 'Input',

@@ -109,7 +109,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '授权范围',
       component: 'InputTag',
       componentProps: {
-        placeholder: '请输入授权范围',
+        placeholder: '输入授权范围后按回车确认',
       },
     },
     {
@@ -138,7 +138,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '可重定向的 URI 地址',
       component: 'InputTag',
       componentProps: {
-        placeholder: '请输入可重定向的 URI 地址',
+        placeholder: '输入可重定向的 URI 地址后按回车确认',
       },
       rules: 'required',
     },
@@ -147,7 +147,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '权限',
       component: 'InputTag',
       componentProps: {
-        placeholder: '请输入权限',
+        placeholder: '输入权限后按回车确认',
       },
     },
     {
@@ -155,7 +155,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '资源',
       component: 'InputTag',
       componentProps: {
-        placeholder: '请输入资源',
+        placeholder: '输入资源后按回车确认',
       },
     },
     {

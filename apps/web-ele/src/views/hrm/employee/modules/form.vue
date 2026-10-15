@@ -72,7 +72,7 @@ const entrySchema = computed(() =>
 );
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: [],
   showDefaultActions: false,
@@ -80,7 +80,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [EntryForm, entryFormApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   async handleValuesChange(values, fieldsChanged) {
     if (fieldsChanged.includes('type') && formType.value !== 'update') {

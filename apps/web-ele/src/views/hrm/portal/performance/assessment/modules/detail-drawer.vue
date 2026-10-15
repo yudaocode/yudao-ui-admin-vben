@@ -51,7 +51,6 @@ const [QuotaGrid, quotaGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useQuotaGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },
@@ -63,7 +62,6 @@ const [ReviewGrid, reviewGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useReviewGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },

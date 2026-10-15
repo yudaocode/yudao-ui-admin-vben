@@ -115,6 +115,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(),
+    showOverflow: false,
     height: 'auto',
     keepSource: true,
     proxyConfig: {

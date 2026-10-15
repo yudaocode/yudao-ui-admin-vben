@@ -37,7 +37,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useSlipOptionGridColumns(),
-    data: [],
     minHeight: 260,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'key', isHover: true },

@@ -79,6 +79,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '检验单编号',
       component: 'Input',

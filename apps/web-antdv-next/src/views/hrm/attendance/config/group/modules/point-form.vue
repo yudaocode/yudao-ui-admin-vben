@@ -22,7 +22,7 @@ const editIndex = ref<number>();
 const mapDialogRef = ref<InstanceType<typeof MapDialog>>();
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 88 },
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 'auto' },
   layout: 'horizontal',
   schema: usePointFormSchema(),
   showDefaultActions: false,

@@ -89,7 +89,6 @@ const [ScoreGrid, scoreGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useScoreGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'key', isHover: true },

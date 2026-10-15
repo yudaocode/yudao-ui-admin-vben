@@ -44,7 +44,7 @@ const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
     formItemClass: 'col-span-1',
-    labelWidth: 110,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useRouteProductBomFormSchema(() => productId.value, handleBomChange),

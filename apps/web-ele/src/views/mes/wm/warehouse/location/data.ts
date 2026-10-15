@@ -30,6 +30,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '库区编码',
       component: 'Input',

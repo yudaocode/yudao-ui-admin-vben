@@ -52,6 +52,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '流转卡编码',
       component: 'Input',

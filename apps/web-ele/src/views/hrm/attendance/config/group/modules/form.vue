@@ -64,7 +64,7 @@ const formData = ref<HrmAttendanceGroupApi.AttendanceGroup>(createDefault());
 const [BaseForm, baseFormApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
-    labelWidth: 120,
+    labelWidth: 'auto',
   },
   handleValuesChange(values, changedFields) {
     if (changedFields.includes('name')) formData.value.name = values.name;

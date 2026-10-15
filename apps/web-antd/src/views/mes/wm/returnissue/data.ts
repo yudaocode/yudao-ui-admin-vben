@@ -59,6 +59,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '退料单编号',
       component: 'Input',

@@ -57,6 +57,7 @@ export function useFormSchema(
       rules: 'selectRequired',
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '类型编码',
       component: 'Input',

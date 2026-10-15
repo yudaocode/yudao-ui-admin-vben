@@ -27,6 +27,7 @@ export function useFormSchema(
       dependencies: { triggerFields: [''], show: () => false },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '库区编码',
       component: 'Input',

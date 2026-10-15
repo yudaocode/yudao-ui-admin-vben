@@ -21,7 +21,7 @@ const editIndex = ref<number>();
 const currentValues = ref<any>({});
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 120 },
+  commonConfig: { componentProps: { class: 'w-full' }, labelWidth: 'auto' },
   handleValuesChange(values) {
     currentValues.value = values;
   },

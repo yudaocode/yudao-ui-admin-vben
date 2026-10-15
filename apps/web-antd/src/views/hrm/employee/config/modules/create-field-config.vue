@@ -22,7 +22,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useCreateFieldGridColumns(),
-    data: [],
     minHeight: 240,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'name', isHover: true },

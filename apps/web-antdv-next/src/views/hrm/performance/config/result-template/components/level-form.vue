@@ -29,7 +29,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useLevelGridColumns(),
-    data: [],
     minHeight: 220,
     pagerConfig: { enabled: false },
     rowConfig: { isHover: true },

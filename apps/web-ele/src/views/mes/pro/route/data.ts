@@ -40,6 +40,7 @@ export function useFormSchema(
       dependencies: { triggerFields: [''], show: () => false },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '路线编码',
       component: 'Input',

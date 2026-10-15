@@ -181,6 +181,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useGridColumns(),
+    showOverflow: false,
     expandConfig: {
       padding: true,
     },
@@ -237,7 +238,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <VxeTable
           :data="getExpandedDetails(row)"
           border
-          :show-overflow="true"
+          :show-overflow="false"
           size="small"
         >
           <VxeColumn title="商品信息" min-width="220">

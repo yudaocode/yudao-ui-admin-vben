@@ -83,6 +83,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '出库单编号',
       component: 'Input',

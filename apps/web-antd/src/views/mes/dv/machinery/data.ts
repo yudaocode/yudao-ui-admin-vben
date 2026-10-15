@@ -37,6 +37,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '设备编码',
       component: 'Input',

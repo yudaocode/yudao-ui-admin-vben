@@ -22,7 +22,7 @@ defineOptions({ name: 'HrmEmployeeQuitForm' });
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: useQuitFormSchema(),
   showDefaultActions: false,

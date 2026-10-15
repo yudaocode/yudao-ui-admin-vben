@@ -16,7 +16,7 @@ const emit = defineEmits(['success']);
 const employeeIds = ref<number[]>([]);
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 92, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: useInsuranceSchemeFormSchema(),
   showDefaultActions: false,

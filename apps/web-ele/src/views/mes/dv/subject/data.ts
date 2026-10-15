@@ -35,6 +35,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '项目编码',
       component: 'Input',

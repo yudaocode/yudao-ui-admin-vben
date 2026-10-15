@@ -50,6 +50,7 @@ export function useFormSchema(
       defaultValue: MesDvRepairStatusEnum.PREPARE,
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '维修单编码',
       component: 'Input',

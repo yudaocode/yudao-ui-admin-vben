@@ -79,6 +79,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       fixed: 'left',
     },
     {
+      showOverflow: false,
       field: 'summary',
       title: '摘要',
       minWidth: 200,

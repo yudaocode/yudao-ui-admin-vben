@@ -62,6 +62,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '任务编码',
       component: 'Input',

@@ -45,7 +45,7 @@ const [AddForm, addFormApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    labelWidth: 88,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useAddMemberFormSchema(),

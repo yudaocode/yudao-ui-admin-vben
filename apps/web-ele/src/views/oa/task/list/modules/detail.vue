@@ -45,7 +45,6 @@ const [ReceiverGrid, receiverGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useReceiverGridColumns(),
-    data: [],
     minHeight: 120,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },
@@ -57,7 +56,6 @@ const [LogGrid, logGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useLogGridColumns(),
-    data: [],
     minHeight: 120,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },

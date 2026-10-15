@@ -23,7 +23,6 @@ const props = defineProps<{
 const gridOptions = {
   border: true,
   columns: useSalaryOptionGridColumns(),
-  data: [],
   minHeight: 180,
   pagerConfig: { enabled: false },
   rowConfig: { keyField: 'code', isHover: true },

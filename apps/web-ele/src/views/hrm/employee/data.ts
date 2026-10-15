@@ -42,6 +42,7 @@ import {
 export function useCreateFromUserGridColumns(): VxeTableGridOptions<any>['columns'] {
   return [
     {
+      showOverflow: false,
       field: 'nickname',
       title: '后台用户',
       minWidth: 170,

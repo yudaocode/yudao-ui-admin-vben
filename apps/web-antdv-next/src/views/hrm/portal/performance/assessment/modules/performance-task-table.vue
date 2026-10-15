@@ -51,7 +51,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useTaskGridColumns(selfTask.value),
-    data: [],
     minHeight: 280,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'id', isHover: true },

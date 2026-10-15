@@ -21,7 +21,7 @@ const disabledLeaderIds = ref<number[]>([]);
 const leaderEmployeeId = ref<number>();
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: useRegularFormSchema(),
   showDefaultActions: false,

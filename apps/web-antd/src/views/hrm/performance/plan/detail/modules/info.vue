@@ -31,7 +31,6 @@ const [ReviewGrid, reviewGridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useReviewStageGridColumns(),
-    data: [],
     minHeight: 180,
     pagerConfig: { enabled: false },
     rowConfig: { keyField: 'name', isHover: true },

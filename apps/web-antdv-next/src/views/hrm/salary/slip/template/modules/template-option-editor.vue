@@ -68,7 +68,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     border: true,
     columns: useTemplateOptionGridColumns(),
-    data: [],
     maxHeight: props.maxHeight,
     minHeight: 180,
     pagerConfig: { enabled: false },
