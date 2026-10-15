@@ -51,7 +51,11 @@ export interface ApiComponentProps {
   loadingSlot?: string;
   /** 触发api请求的事件名 */
   visibleEvent?: string;
-  /** 组件的v-model属性名，默认为modelValue。部分组件可能为value */
+  /**
+   * 组件的v-model属性名，默认为modelValue。部分组件可能为value
+   * - 父级显式传入同名属性（如 v-model:value）时，以该属性及其 update 事件双向绑定，优先于 modelValue
+   * - 未传入同名属性时，仍使用 modelValue（v-model）双向绑定
+   */
   modelPropName?: string;
   /**
    * 自动选择

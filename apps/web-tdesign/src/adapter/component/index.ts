@@ -210,7 +210,7 @@ async function initComponentAdapter() {
         fieldNames: { label: 'label', value: 'value', children: 'children' },
         loadingSlot: 'suffixIcon',
         modelPropName: 'value',
-        optionsPropName: 'treeData',
+        optionsPropName: 'data',
         visibleEvent: 'onVisibleChange',
       },
     ),

@@ -44,6 +44,24 @@ const emit = defineEmits<{
 const modelValue = defineModel<any>({ default: undefined });
 
 const attrs = useAttrs();
+/**
+ * 是否以自定义 model 属性（如 value）作为当前模型：
+ * modelPropName 不是 modelValue，且父级显式传入了该属性（值为 undefined 也算传入）。
+ * 否则沿用 modelValue（如表单适配层映射为 modelValue、内层使用 value 的场景）。
+ */
+const usesCustomModel = computed(() => {
+  const { modelPropName } = props;
+  if (['model-value', 'modelValue'].includes(modelPropName)) {
+    return false;
+  }
+  // useAttrs 只在读取属性时收集依赖，先读取再判断是否传入
+  return (
+    attrs[modelPropName] !== undefined || Reflect.has(attrs, modelPropName)
+  );
+});
+const currentModelValue = computed(() => {
+  return usesCustomModel.value ? attrs[props.modelPropName] : modelValue.value;
+});
 const innerParams = ref({});
 const refOptions = ref<OptionsItem[]>([]);
 const loading = ref(false);
@@ -89,13 +107,14 @@ const getOptions = computed(() => {
 });
 
 const bindProps = computed(() => {
+  const updateEvent = `onUpdate:${props.modelPropName}`;
   return {
-    [props.modelPropName]: unref(modelValue),
+    [props.modelPropName]: unref(currentModelValue),
     [props.optionsPropName]: unref(getOptions),
-    [`onUpdate:${props.modelPropName}`]: (val: string) => {
-      modelValue.value = val;
+    [updateEvent]: (val: any) => {
+      updateModelValue(val);
     },
-    ...objectOmit(attrs, [`onUpdate:${props.modelPropName}`]),
+    ...objectOmit(attrs, [props.modelPropName, updateEvent]),
     ...(props.visibleEvent
       ? {
           [props.visibleEvent]: handleFetchForVisible,
@@ -103,6 +122,20 @@ const bindProps = computed(() => {
       : {}),
   };
 });
+
+/** 只回写当前模型对应的事件，避免同时传入 value 与 modelValue 时重复回写 */
+function updateModelValue(value: any) {
+  if (!usesCustomModel.value) {
+    modelValue.value = value;
+    return;
+  }
+  const handlers = attrs[`onUpdate:${props.modelPropName}`];
+  for (const handler of [handlers].flat()) {
+    if (isFunction(handler)) {
+      handler(value);
+    }
+  }
+}
 
 async function fetchApi() {
   const { api, beforeFetch, shouldFetch, afterFetch, resultField } = props;
@@ -191,11 +224,11 @@ watch(
 );
 
 function emitChange() {
-  if (
-    modelValue.value === undefined &&
-    props.autoSelect &&
-    unref(getOptions).length > 0
-  ) {
+  const value = unref(currentModelValue);
+  // 自定义 model 属性可能由表单以 emptyStateValue（如 Naive 的 null）表示空值
+  const isEmptyValue =
+    value === undefined || (usesCustomModel.value && value === null);
+  if (isEmptyValue && props.autoSelect && unref(getOptions).length > 0) {
     let firstOption;
     if (isFunction(props.autoSelect)) {
       firstOption = props.autoSelect(unref(getOptions));
@@ -218,7 +251,7 @@ function emitChange() {
       }
     }
 
-    if (firstOption) modelValue.value = firstOption.value;
+    if (firstOption) updateModelValue(firstOption.value);
   }
   emit('optionsChange', unref(getOptions));
 }
@@ -227,7 +260,7 @@ defineExpose({
   /** 获取options数据 */
   getOptions: () => unref(getOptions),
   /** 获取当前值 */
-  getValue: () => unref(modelValue),
+  getValue: () => unref(currentModelValue),
   /** 获取被包装的组件实例 */
   getComponentRef: <T = any>() => componentRef.value as T,
   /** 更新Api参数 */
