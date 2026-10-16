@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 import { ElButton } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCustomerPage } from '#/api/crm/customer';
+import { getPutPoolRemindCustomerPage } from '#/api/crm/customer';
 import { useGridColumns } from '#/views/crm/customer/data';
 
 import { SCENE_TYPES } from '../data';
@@ -28,7 +28,7 @@ const [Grid] = useVbenVxeGrid({
         label: '归属',
         component: 'Select',
         componentProps: {
-          allowClear: true,
+          clearable: true,
           options: SCENE_TYPES,
         },
         defaultValue: SCENE_TYPES[0]!.value,
@@ -42,10 +42,9 @@ const [Grid] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getCustomerPage({
+          return await getPutPoolRemindCustomerPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            pool: true, // 固定 公海参数为 true
             ...formValues,
           });
         },

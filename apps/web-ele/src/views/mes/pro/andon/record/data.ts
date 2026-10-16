@@ -308,7 +308,7 @@ export function useFormSchema(
       componentProps: {
         autosize: { maxRows: 3, minRows: 2 },
         disabled: formType === 'detail',
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
       },
     },

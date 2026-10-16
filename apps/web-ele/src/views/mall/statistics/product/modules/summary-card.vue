@@ -127,6 +127,7 @@ async function handleExport() {
         <div class="flex items-center gap-2">
           <ShortcutDateRangePicker @change="handleDateRangeChange">
             <ElButton
+              v-access:code="['statistics:product:export']"
               class="ml-4"
               @click="handleExport"
               :loading="exportLoading"

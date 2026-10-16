@@ -98,7 +98,9 @@ const [Modal, modalApi] = useVbenModal({
         item.valueType === MesQcResultValueType.INTEGER
       ) {
         submit.value =
-          item.valueNumber === null ? undefined : String(item.valueNumber);
+          item.valueNumber === undefined || item.valueNumber === null
+            ? undefined
+            : String(item.valueNumber);
       } else {
         submit.value = item.value;
       }
@@ -113,10 +115,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'update') {
         await updateIndicatorResult(payload);
-        ElMessage.success($t('common.updateSuccess'));
+        ElMessage.success($t('ui.actionMessage.operationSuccess'));
       } else {
         await createIndicatorResult(payload);
-        ElMessage.success($t('common.createSuccess'));
+        ElMessage.success($t('ui.actionMessage.operationSuccess'));
       }
       // 关闭并提示
       await modalApi.close();
@@ -149,6 +151,7 @@ const [Modal, modalApi] = useVbenModal({
         valueNumber:
           (item.valueType === MesQcResultValueType.FLOAT ||
             item.valueType === MesQcResultValueType.INTEGER) &&
+          item.value !== undefined &&
           item.value !== null
             ? Number(item.value)
             : undefined,

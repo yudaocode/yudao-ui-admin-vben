@@ -95,6 +95,11 @@ export async function logoutApi(accessToken: string) {
 export async function getAuthPermissionInfoApi() {
   return requestClient.get<AuthPermissionInfo>(
     '/system/auth/get-permission-info',
+    {
+      headers: {
+        isVisitTenant: false,
+      },
+    },
   );
 }
 

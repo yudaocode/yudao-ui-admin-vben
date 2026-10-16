@@ -33,7 +33,7 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    labelWidth: 100,
+    labelWidth: 'auto',
   },
   wrapperClass: 'grid-cols-2',
   layout: 'horizontal',
@@ -52,6 +52,7 @@ const [Modal, modalApi] = useVbenModal({
     const values = await formApi.getValues();
     const payload: HrmRecruitInterviewApi.RecruitInterview = {
       id: interviewId.value,
+      candidateId: candidateIds.value[0],
       type: values.type,
       interviewTime: values.interviewTime
         ? Number(values.interviewTime)

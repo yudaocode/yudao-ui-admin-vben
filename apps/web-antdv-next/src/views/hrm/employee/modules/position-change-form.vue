@@ -59,7 +59,7 @@ const leaderEmployeeId = ref<number>();
 const currentMode = ref<PositionChangeMode>('transfer');
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   // 默认用调岗 schema；实际打开时按 mode 动态替换
   schema: usePositionChangeFormSchema('transfer'),

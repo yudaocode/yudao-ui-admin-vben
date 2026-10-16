@@ -83,6 +83,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '出库单编号',
       component: 'Input',
@@ -125,12 +126,15 @@ export function useFormSchema(
         disabled: isHeaderReadonly(formType),
         // 选择发货通知单后，自动回填销售订单号、客户、收货人信息
         onChange: async (notice?: MesWmSalesNoticeApi.SalesNotice) => {
+          if (!notice) {
+            return;
+          }
           await formApi?.setValues({
-            clientId: notice?.clientId,
-            contactAddress: notice?.recipientAddress,
-            contactName: notice?.recipientName,
-            contactTelephone: notice?.recipientTelephone,
-            salesOrderCode: notice?.salesOrderCode,
+            clientId: notice.clientId,
+            contactAddress: notice.recipientAddress,
+            contactName: notice.recipientName,
+            contactTelephone: notice.recipientTelephone,
+            salesOrderCode: notice.salesOrderCode,
           });
         },
         status: MesWmSalesNoticeStatusEnum.APPROVED,
@@ -275,7 +279,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'salesDate',
+      fieldName: 'shipmentDate',
       label: '出库日期',
       component: 'RangePicker',
       componentProps: {
@@ -337,6 +341,16 @@ export function useGridColumns(): VxeTableGridOptions<MesWmProductSalesApi.Produ
       field: 'contactName',
       title: '收货人',
       minWidth: 100,
+    },
+    {
+      field: 'contactTelephone',
+      title: '联系方式',
+      minWidth: 120,
+    },
+    {
+      field: 'contactAddress',
+      title: '收货地址',
+      minWidth: 180,
     },
     {
       field: 'carrier',

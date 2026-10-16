@@ -55,7 +55,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入工具名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -63,7 +63,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '状态',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
       },
@@ -74,7 +74,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

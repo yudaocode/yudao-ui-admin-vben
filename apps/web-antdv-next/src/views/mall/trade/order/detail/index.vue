@@ -45,6 +45,14 @@ import {
 
 defineOptions({ name: 'TradeOrderDetail' });
 
+const props = withDefaults(
+  defineProps<{ id?: number; showPickUp?: boolean }>(),
+  {
+    id: 0,
+    showPickUp: true,
+  },
+);
+
 const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
@@ -89,7 +97,11 @@ const [DeliveryInfoDescriptions] = useDescription({
   bordered: false,
   column: 3,
   classes: { root: 'mx-4' },
-  schema: useDeliveryInfoSchema(),
+  schema: useDeliveryInfoSchema(
+    (id) =>
+      deliveryExpressList.value.find((item) => item.id === id)?.name ?? '-',
+    () => pickUpStore.value?.name ?? '-',
+  ),
 });
 
 const [ProductGrid, productGridApi] = useVbenVxeGrid({
@@ -236,7 +248,7 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
-  orderId.value = Number(route.params.id);
+  orderId.value = props.id || Number(route.params.id);
   await getDetail();
 });
 </script>
@@ -248,23 +260,27 @@ onMounted(async () => {
         :actions="[
           {
             label: '返回',
+            ifShow: !props.id,
             type: 'default',
             icon: 'lucide:arrow-left',
             onClick: handleBack,
           },
           {
             label: '调整价格',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleUpdatePrice,
             ifShow: order.status === TradeOrderStatusEnum.UNPAID.status,
           },
           {
             label: '备注',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleRemark,
           },
           {
             label: '发货',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleDelivery,
             ifShow:
@@ -273,6 +289,7 @@ onMounted(async () => {
           },
           {
             label: '修改地址',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleUpdateAddress,
             ifShow:
@@ -281,9 +298,11 @@ onMounted(async () => {
           },
           {
             label: '核销',
+            auth: ['trade:order:pick-up'],
             type: 'primary',
             onClick: handlePickUp,
             ifShow:
+              props.showPickUp &&
               order.status === TradeOrderStatusEnum.UNDELIVERED.status &&
               order.deliveryType === DeliveryTypeEnum.PICK_UP.type,
           },

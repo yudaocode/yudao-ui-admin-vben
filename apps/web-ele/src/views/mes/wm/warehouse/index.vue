@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmWarehouseApi } from '#/api/mes/wm/warehouse';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -15,7 +15,11 @@ import { deleteWarehouse, getWarehousePage } from '#/api/mes/wm/warehouse';
 import { $t } from '#/locales';
 
 import { BarcodeDetail } from '../barcode/components';
-import { useGridColumns, useGridFormSchema } from './data';
+import {
+  refreshGridRelatedData,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import Form from './modules/form.vue';
 
 const router = useRouter();
@@ -88,6 +92,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getWarehousePage({
@@ -107,6 +112,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MesWmWarehouseApi.Warehouse>,
+});
+
+/** 初始化列表关联数据 */
+onMounted(async () => {
+  await refreshGridRelatedData();
+  gridApi.query();
 });
 </script>
 

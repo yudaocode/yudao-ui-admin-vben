@@ -298,7 +298,7 @@ function menuToBackend(menu: any) {
     </template>
 
     <!-- 搜索工作栏 -->
-    <AccountForm class="-mb-15px w-240px" @values-change="onAccountChanged" />
+    <AccountForm class="-mb-15px w-240px" />
 
     <ContentWrap>
       <div
@@ -358,6 +358,7 @@ function menuToBackend(menu: any) {
           v-if="showRightPanel"
         >
           <Editor
+            :key="activeIndex"
             :account-id="accountId"
             :is-parent="isParent"
             v-model="activeMenu"

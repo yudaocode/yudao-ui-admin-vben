@@ -17,6 +17,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'type',
+      defaultValue: 'text',
       label: '消息类型',
       component: 'Select',
       componentProps: {
@@ -76,6 +77,7 @@ export function useGridColumns(): VxeTableGridOptions<MpMessageApi.Message>['col
       align: 'center',
     },
     {
+      showOverflow: false,
       field: 'content',
       title: '内容',
       align: 'left',

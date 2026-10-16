@@ -18,7 +18,11 @@ import {
 } from '#/api/system/tenant';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import {
+  loadTenantPackageList,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -99,6 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          await loadTenantPackageList();
           return await getTenantPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

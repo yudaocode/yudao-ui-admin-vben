@@ -73,9 +73,15 @@ function handleUpdateBalance(row: MemberUserApi.User) {
 
 /** 发送优惠券 */
 async function handleSendCoupon() {
+  const userIds = (gridApi.grid?.getCheckboxRecords() ?? []).map(
+    (row: MemberUserApi.User) => row.id!,
+  );
+  if (userIds.length === 0) {
+    return;
+  }
   couponSendFormModalApi
     .setData({
-      userIds: checkedIds.value,
+      userIds,
     })
     .open();
 }
@@ -110,6 +116,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          checkedIds.value = [];
           return await getUserPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

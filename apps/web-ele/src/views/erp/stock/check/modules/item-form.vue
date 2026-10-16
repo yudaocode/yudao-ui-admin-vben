@@ -88,7 +88,7 @@ watch(
 function handleAdd() {
   const newRow = {
     id: undefined,
-    warehouseId: undefined,
+    warehouseId: warehouseOptions.value.find((item) => item.defaultStatus)?.id,
     productId: undefined,
     productUnitName: undefined, // 产品单位
     productBarCode: undefined, // 产品条码
@@ -126,6 +126,7 @@ async function handleWarehouseChange(warehouseId: any, row: any) {
   // 如果已选择产品，重新获取库存
   if (row.productId) {
     row.stockCount = (await getStockCount(row.productId, warehouseId)) || 0;
+    row.actualCount = row.stockCount;
   }
 
   handleRowChange(row);
@@ -146,7 +147,7 @@ async function handleProductChange(productId: any, row: any) {
     ? (await getStockCount(productId, row.warehouseId)) || 0
     : (await getStockCount(productId)) || 0;
   row.actualCount = row.stockCount || 0;
-  row.productPrice = product.purchasePrice || 0;
+  row.productPrice = product.minPrice ?? 0;
   row.count = row.actualCount - row.stockCount || 0;
   handleRowChange(row);
 }
@@ -154,17 +155,19 @@ async function handleProductChange(productId: any, row: any) {
 /** 处理实际库存变更 */
 function handleActualCountChange(actualCount: any, row: any) {
   row.actualCount = actualCount;
-  if (row.stockCount !== undefined && row.actualCount !== undefined) {
-    row.count = row.actualCount - row.stockCount;
-    if (row.productPrice && row.count) {
-      row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-    }
-  }
   handleRowChange(row);
 }
 
 /** 处理行数据变更 */
 function handleRowChange(row: any) {
+  row.count =
+    row.stockCount !== undefined &&
+    row.stockCount !== null &&
+    row.actualCount !== undefined &&
+    row.actualCount !== null
+      ? row.actualCount - row.stockCount
+      : undefined;
+  row.totalPrice = erpPriceMultiply(row.productPrice, row.count);
   const index = tableData.value.findIndex((item) => item.seq === row.seq);
   if (index === -1) {
     tableData.value.push(row);
@@ -176,9 +179,13 @@ function handleRowChange(row: any) {
 
 /** 初始化行数据 */
 function initRow(row: ErpStockCheckApi.StockCheckItem) {
-  if (row.productPrice && row.count) {
-    row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-  }
+  row.totalPrice =
+    row.productPrice !== null &&
+    row.productPrice !== undefined &&
+    row.count !== null &&
+    row.count !== undefined
+      ? (erpPriceMultiply(row.productPrice, row.count) ?? 0)
+      : undefined;
 }
 
 /** 表单校验 */
@@ -192,7 +199,7 @@ function validate() {
       if (!item.productId) {
         throw new Error(`第 ${i + 1} 行：产品不能为空`);
       }
-      if (!item.actualCount || item.actualCount <= 0) {
+      if (item.actualCount === null || item.actualCount === undefined) {
         throw new Error(`第 ${i + 1} 行：实际库存不能为空`);
       }
     }

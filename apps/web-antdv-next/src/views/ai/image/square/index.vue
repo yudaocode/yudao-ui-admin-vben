@@ -49,7 +49,7 @@ onMounted(async () => {
   <Page auto-content-height>
     <div class="bg-card p-5">
       <Input.Search
-        v-model="queryParams.prompt"
+        v-model:value="queryParams.prompt"
         class="mb-5 w-full"
         size="large"
         placeholder="请输入要搜索的内容"

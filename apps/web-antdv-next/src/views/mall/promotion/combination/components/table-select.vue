@@ -67,7 +67,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Input',
     componentProps: {
       placeholder: '请输入活动名称',
-      clearable: true,
+      allowClear: true,
     },
   },
   {
@@ -76,7 +76,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Select',
     componentProps: {
       placeholder: '请选择活动状态',
-      clearable: true,
+      allowClear: true,
       options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
     },
   },
@@ -193,6 +193,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         async query({ page }: any, formValues: any) {
           return await getCombinationActivityPage({
@@ -213,18 +214,21 @@ const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   showConfirmButton: props.multiple, // 特殊：radio 单选情况下，走 handleRadioChange 处理。
   onConfirm: () => {
-    const selectedRows =
-      gridApi.grid.getCheckboxRecords() as MallCombinationActivityApi.CombinationActivity[];
+    const selectedRows = [
+      ...gridApi.grid.getCheckboxReserveRecords(),
+      ...gridApi.grid.getCheckboxRecords(),
+    ] as MallCombinationActivityApi.CombinationActivity[];
     emit('change', selectedRows);
     modalApi.close();
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       gridApi.grid.clearCheckboxRow();
+      gridApi.grid.clearCheckboxReserve();
       gridApi.grid.clearRadioRow();
-      return;
     }
-
+  },
+  async onOpened() {
     // 1. 先查询数据
     await gridApi.query();
     // 2. 设置已选中行

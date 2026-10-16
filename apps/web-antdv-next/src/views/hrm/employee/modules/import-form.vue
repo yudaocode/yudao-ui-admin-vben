@@ -18,7 +18,7 @@ const emit = defineEmits(['success']);
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     formItemClass: 'col-span-2',
-    labelWidth: 100,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useImportFormSchema(),
@@ -45,6 +45,11 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
+/** 删除已选文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
 function beforeUpload(file: UploadFile) {
   formApi.setFieldValue('file', file);
   return false;
@@ -64,6 +69,7 @@ async function handleDownload() {
     <Form class="mx-4">
       <template #file>
         <Upload
+          :on-remove="handleRemove"
           :before-upload="beforeUpload"
           :max-count="1"
           accept=".xls,.xlsx"

@@ -144,15 +144,17 @@ export function formatHrmDays(value?: null | number): string {
 }
 
 /** 格式化 HRM 日期时间 */
-export function formatHrmDateTime(value?: null | number): string {
-  if (value === undefined || value === null) {
+export function formatHrmDateTime(
+  value?: Date | null | number | string,
+): string {
+  if (value === undefined || value === null || value === '') {
     return '-';
   }
   return String(formatDateTime(value));
 }
 
 /** 格式化 HRM 日期 */
-export function formatHrmDate(value?: null | number): string {
+export function formatHrmDate(value?: Date | null | number | string): string {
   return formatHrmDateTime(value);
 }
 
@@ -268,17 +270,21 @@ export function formatHrmMoneyWithThousands(value?: null | number): string {
 /** 格式化 HRM 分析项的字典分类 */
 export function formatHrmAnalysisDictType(
   dictType: string,
-  type: null | number,
+  type: null | number | undefined,
 ): string {
-  return type === null ? '未填写' : getDictLabel(dictType, type) || '未知';
+  return type === null || type === undefined
+    ? '未填写'
+    : getDictLabel(dictType, type) || '未知';
 }
 
 /** 格式化 HRM 分析项的区间分类 */
 export function formatHrmAnalysisRangeType(
   rangeNames: Record<number, string>,
-  type: null | number,
+  type: null | number | undefined,
 ): string {
-  return type === null ? '未填写' : rangeNames[type] || '未知';
+  return type === null || type === undefined
+    ? '未填写'
+    : rangeNames[type] || '未知';
 }
 
 export interface HrmLunarDateInfo {

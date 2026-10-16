@@ -52,7 +52,7 @@ const [Modal, modalApi] = useVbenModal({
     const valueValid =
       values.type === MesWmStockTakingParamTypeEnum.QUALITY_STATUS
         ? !!values.valueCode
-        : values.valueId !== null;
+        : values.valueId !== null && values.valueId !== undefined;
     if (!valueValid) {
       ElMessage.warning('请选择条件值');
       return;

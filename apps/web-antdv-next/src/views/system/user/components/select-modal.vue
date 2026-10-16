@@ -21,7 +21,7 @@ import {
 } from 'antdv-next';
 
 import { getSimpleDeptList } from '#/api/system/dept';
-import { getUserPage } from '#/api/system/user';
+import { getUserList, getUserPage } from '#/api/system/user';
 
 type Key = number | string;
 
@@ -69,7 +69,7 @@ const deptSearchKeys = ref('');
 const userList = ref<SystemUserApi.User[]>([]); // 存储所有已知用户
 const selectedUserIds = ref<string[]>([]);
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal<{ userIds?: number[] }>({
   onCancel: handleCancel,
   onClosed: handleClosed,
   async onOpenChange(isOpen: boolean) {
@@ -97,12 +97,8 @@ const [Modal, modalApi] = useVbenModal({
       // 设置已选用户
       if (data.userIds?.length) {
         selectedUserIds.value = data.userIds.map(String);
-        // 加载已选用户的完整信息  TODO   目前接口暂不支持 多个用户ID 查询， 需要后端支持
-        const { list } = await getUserPage({
-          pageNo: 1,
-          pageSize: 100, // 临时使用固定值确保能加载所有已选用户
-          userIds: data.userIds,
-        });
+        // 加载已选用户的完整信息
+        const list = await getUserList(data.userIds);
         // 使用 Map 来去重，以用户 ID 为 key
         const userMap = new Map(userList.value.map((user) => [user.id, user]));
         list.forEach((user) => {

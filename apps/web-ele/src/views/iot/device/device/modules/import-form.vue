@@ -1,10 +1,18 @@
 <script lang="ts" setup>
+import type {
+  UploadInstance,
+  UploadRawFile,
+  UploadUserFile,
+} from 'element-plus';
+
 import type { IotDeviceApi } from '#/api/iot/device/device';
+
+import { ref } from 'vue';
 
 import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { ElButton, ElMessage, ElUpload } from 'element-plus';
+import { ElButton, ElMessage, ElUpload, genFileId } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { importDevice, importDeviceTemplate } from '#/api/iot/device/device';
@@ -71,8 +79,22 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
+const uploadRef = ref<UploadInstance>();
+
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
+function handleExceed(files: File[]) {
+  const file = files[0] as undefined | UploadRawFile;
+  if (!file) return;
+  uploadRef.value?.clearFiles();
+  file.uid = genFileId();
+  uploadRef.value?.handleStart(file);
+}
+
 /** 文件改变时 */
-function handleChange(file: any) {
+function handleChange(file: UploadUserFile) {
   if (file.raw) {
     formApi.setFieldValue('file', file.raw);
   }
@@ -91,6 +113,9 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <ElUpload
+            ref="uploadRef"
+            :on-remove="handleRemove"
+            :on-exceed="handleExceed"
             :limit="1"
             accept=".xls,.xlsx"
             :on-change="handleChange"

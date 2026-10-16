@@ -58,6 +58,7 @@ defineExpose({
 
 /** 初始化 */
 const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型选项
+
 onMounted(async () => {
   dictTypeOptions.value = await getSimpleDictTypeList();
 });

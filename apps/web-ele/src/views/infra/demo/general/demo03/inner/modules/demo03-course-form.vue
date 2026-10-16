@@ -6,7 +6,7 @@ import { h, ref, watch } from 'vue';
 
 import { Plus } from '@vben/icons';
 
-import { ElButton, ElInput } from 'element-plus';
+import { ElButton, ElInput, ElMessage } from 'element-plus';
 
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
 import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/inner';
@@ -28,27 +28,42 @@ const onDelete = async (row: Demo03StudentApi.Demo03Course) => {
   await tableRef.value?.remove(row);
 };
 
-/** 提供获取表格数据的方法供父组件调用 */
-defineExpose({
-  getData: (): Demo03StudentApi.Demo03Course[] => {
-    const data = list.value as Demo03StudentApi.Demo03Course[];
-    const removeRecords =
-      tableRef.value?.getRemoveRecords() as Demo03StudentApi.Demo03Course[];
-    const insertRecords =
-      tableRef.value?.getInsertRecords() as Demo03StudentApi.Demo03Course[];
-    return [
-      ...data.filter(
-        (row) => !removeRecords.some((removed) => removed.id === row.id),
-      ),
-      ...insertRecords.map((row: any) => ({ ...row, id: undefined })),
-    ];
-  },
-});
+/** 获取当前课程，新增课程不提交表格生成的临时编号 */
+function getData(): Demo03StudentApi.Demo03Course[] {
+  const table = tableRef.value;
+  if (!table) {
+    return [];
+  }
+  const { fullData } = table.getTableData();
+  const inserted = new Set(table.getInsertRecords());
+  return fullData.map((row) =>
+    inserted.has(row) ? { ...row, id: undefined } : { ...row },
+  );
+}
+
+/** 校验课程子表 */
+function validate(): boolean {
+  for (const [index, row] of getData().entries()) {
+    if (
+      !row.name?.trim() ||
+      row.score === null ||
+      row.score === undefined ||
+      String(row.score).trim() === ''
+    ) {
+      ElMessage.error(`第 ${index + 1} 行：课程名称和分数不能为空`);
+      return false;
+    }
+  }
+  return true;
+}
+
+defineExpose({ getData, validate });
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
   () => props.studentId,
   async (val) => {
+    list.value = [];
     if (!val) {
       return;
     }

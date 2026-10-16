@@ -30,13 +30,13 @@ const commentLoading = ref(false); // 评论列表的加载中
 const comments = ref<BpmCommentApi.Comment[]>([]); // 评论列表
 
 const commentColorMap: Record<string, string> = {
-  danger: '#ff4d4f',
-  default: '#909399',
-  error: '#ff4d4f',
-  info: '#909399',
-  primary: '#1677ff',
-  success: '#52c41a',
-  warning: '#faad14',
+  danger: 'hsl(var(--destructive))',
+  default: 'hsl(var(--muted-foreground))',
+  error: 'hsl(var(--destructive))',
+  info: 'hsl(var(--muted-foreground))',
+  primary: 'hsl(var(--primary))',
+  success: 'hsl(var(--success))',
+  warning: 'hsl(var(--warning))',
 }; // 评论类型颜色映射
 
 /** 获得评论类型简称 */

@@ -25,14 +25,24 @@ export function getStockPage(params: PageParam) {
   });
 }
 
+/** 按产品 + 仓库获得产品库存 */
+export function getStockByProductAndWarehouse(
+  productId: number,
+  warehouseId: number,
+) {
+  return requestClient.get<ErpStockApi.Stock | null>('/erp/stock/get', {
+    params: { productId, warehouseId },
+  });
+}
+
 /** 获得产品库存数量 */
-export function getStockCount(productId: number, warehouseId?: number) {
-  const params: any = { productId };
-  if (warehouseId !== undefined) {
-    params.warehouseId = warehouseId;
+export async function getStockCount(productId: number, warehouseId?: number) {
+  if (warehouseId !== undefined && warehouseId !== null) {
+    const stock = await getStockByProductAndWarehouse(productId, warehouseId);
+    return stock?.count ?? 0;
   }
   return requestClient.get<number>('/erp/stock/get-count', {
-    params,
+    params: { productId },
   });
 }
 
@@ -43,9 +53,7 @@ export function exportStock(params: any) {
   });
 }
 
-/** 获取库存数量 */
+/** 获取指定仓库的库存数量 */
 export function getWarehouseStockCount(params: ErpStockApi.StockQueryReqVO) {
-  return requestClient.get<number>('/erp/stock/get-count', {
-    params,
-  });
+  return getStockCount(params.productId, params.warehouseId);
 }

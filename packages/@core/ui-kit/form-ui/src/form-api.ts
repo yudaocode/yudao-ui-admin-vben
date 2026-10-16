@@ -490,6 +490,9 @@ export class FormApi<
     filterFields: boolean = true,
     shouldValidate: boolean = false,
   ) {
+    if (fields === null || fields === undefined) {
+      return;
+    }
     const form = await this.getForm();
     if (!filterFields) {
       form.setValues(fields, shouldValidate);

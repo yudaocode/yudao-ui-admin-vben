@@ -115,9 +115,15 @@ defineExpose({ open });
           <DictTag :type="DICT_TYPE.IM_GROUP_MEMBER_ROLE" :value="row.role" />
         </template>
       </ElTableColumn>
-      <ElTableColumn label="昵称" prop="nickname" />
-      <ElTableColumn label="组内显示名" prop="displayUserName" />
-      <ElTableColumn label="群备注" prop="groupRemark" />
+      <ElTableColumn label="昵称" prop="nickname">
+        <template #default="{ row }">{{ row.nickname || '-' }}</template>
+      </ElTableColumn>
+      <ElTableColumn label="组内显示名" prop="displayUserName">
+        <template #default="{ row }">{{ row.displayUserName || '-' }}</template>
+      </ElTableColumn>
+      <ElTableColumn label="群备注" prop="groupRemark">
+        <template #default="{ row }">{{ row.groupRemark || '-' }}</template>
+      </ElTableColumn>
       <ElTableColumn label="免打扰" width="90">
         <template #default="{ row }">
           <DictTag :type="DICT_TYPE.INFRA_BOOLEAN_STRING" :value="row.silent" />

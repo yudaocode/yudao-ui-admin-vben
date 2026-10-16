@@ -76,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '补齐字符',
       component: 'Input',
       componentProps: {
-        maxLength: 1,
+        maxlength: 1,
         placeholder: '请输入补齐字符',
       },
       dependencies: {

@@ -13,8 +13,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择产品',
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -26,8 +26,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择仓库',
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getWarehouseSimpleList,
         labelField: 'name',
         valueField: 'id',

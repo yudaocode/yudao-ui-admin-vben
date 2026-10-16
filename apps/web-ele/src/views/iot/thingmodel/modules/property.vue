@@ -151,7 +151,7 @@ if (!props.isStructDataSpecs && !props.isParams) {
           :prop="`property.dataSpecsList.${index}.name`"
           :rules="[
             { required: true, message: '布尔描述不能为空', trigger: 'blur' },
-            { validator: validateBoolName, trigger: 'blur' },
+            { asyncValidator: validateBoolName, trigger: 'blur' },
           ]"
           class="mb-0 flex-1"
         >

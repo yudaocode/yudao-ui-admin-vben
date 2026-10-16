@@ -61,7 +61,7 @@ function filterMethod(query: string) {
 watch(
   () => props.modelValue,
   (val) => {
-    if (val === null) {
+    if (val === null || val === undefined) {
       selectedItem.value = undefined;
       return;
     }
@@ -74,7 +74,7 @@ watch(
 onMounted(async () => {
   allList.value = await getWarehouseSimpleList();
   filteredList.value = allList.value;
-  if (props.modelValue !== null) {
+  if (props.modelValue !== null && props.modelValue !== undefined) {
     selectedItem.value = allList.value.find((o) => o.id === props.modelValue);
   }
 });

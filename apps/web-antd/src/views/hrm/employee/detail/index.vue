@@ -6,20 +6,24 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, prompt, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
 import {
   Button,
   Card,
   Dropdown,
+  Input,
   Menu,
   message,
-  Modal,
   Tabs,
 } from 'ant-design-vue';
 
-import { cancelEmployeeQuit, getEmployee } from '#/api/hrm/employee';
+import {
+  cancelEmployeeQuit,
+  deleteEmployee,
+  getEmployee,
+} from '#/api/hrm/employee';
 import { getOperateLogPage } from '#/api/hrm/operate-log';
 import { OperateLog } from '#/components/operate-log';
 import { ACTION_ICON, TableAction } from '#/components/table-action';
@@ -52,9 +56,9 @@ const { hasAccessByCodes } = useAccess();
 const employeeId = Number(route.params.id);
 const loading = ref(true);
 const activeTab = ref('post');
+const postInfoRef = ref<InstanceType<typeof PostInfo>>();
 const employee = ref<HrmEmployeeApi.Employee>({} as HrmEmployeeApi.Employee);
 const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
-const cancelQuitReason = ref('');
 
 const changeableEntryStatuses = [
   HrmEmployeeEntryStatus.ACTIVE,
@@ -198,22 +202,50 @@ function openQuit() {
   quitModalApi.setData(employee.value).open();
 }
 
+async function handleEmployeeChangeSuccess() {
+  await Promise.all([
+    getEmployeeData(),
+    postInfoRef.value?.refreshChangeRecordList(),
+  ]);
+}
+
+async function handleEmployeeQuitSuccess() {
+  await Promise.all([getEmployeeData(), postInfoRef.value?.refreshQuitInfo()]);
+}
+
 async function handleCancelQuit() {
-  cancelQuitReason.value = '';
-  Modal.confirm({
-    title: '取消离职',
-    content: '请输入取消离职原因',
-    onOk: async () => {
-      const reason = cancelQuitReason.value.trim();
-      if (!reason) {
-        message.warning('取消原因不能为空');
-        throw new Error('empty');
-      }
-      await cancelEmployeeQuit({ employeeId, reason });
-      message.success('已取消离职');
-      await getEmployeeData();
-    },
-  });
+  let reason: string | undefined;
+  try {
+    reason = await prompt<string>({
+      title: '取消离职',
+      content: '请输入取消离职原因',
+      component: Input.TextArea,
+      componentProps: {
+        placeholder: '请输入取消原因',
+        rows: 3,
+        maxlength: 500,
+      },
+      modelPropName: 'value',
+      defaultValue: '',
+      beforeClose: ({ isConfirm, value }) => {
+        if (!isConfirm) return true;
+        const reason = value?.trim();
+        if (!reason || reason.length > 500) {
+          message.warning(
+            reason ? '取消原因不能超过 500 字' : '取消原因不能为空',
+          );
+          return false;
+        }
+        return true;
+      },
+    });
+  } catch {
+    return;
+  }
+  if (!reason?.trim()) return;
+  await cancelEmployeeQuit({ employeeId, reason: reason.trim() });
+  message.success('已取消离职');
+  await handleEmployeeQuitSuccess();
 }
 
 function getMoreActions() {
@@ -238,12 +270,42 @@ function getMoreActions() {
       icon: ACTION_ICON.EDIT,
     });
   }
+  if (
+    employee.value.entryStatus === HrmEmployeeEntryStatus.LEFT &&
+    hasAccessByCodes(['hrm:employee:update'])
+  ) {
+    actions.push({
+      command: 'quit',
+      label: '修改离职信息',
+      icon: ACTION_ICON.EDIT,
+    });
+  }
+  if (hasAccessByCodes(['hrm:employee:delete'])) {
+    actions.push({
+      command: 'delete',
+      label: '删除',
+      icon: ACTION_ICON.DELETE,
+    });
+  }
   return actions;
 }
 
 function handleMoreCommand(command: string) {
   if (command === 'quit') openQuit();
   if (command === 'cancel-quit') handleCancelQuit();
+  if (command === 'delete') handleDelete();
+}
+
+/** 删除员工档案后返回列表 */
+async function handleDelete() {
+  try {
+    await confirm(`确认删除员工“${employee.value.name}”的档案吗？`);
+  } catch {
+    return;
+  }
+  await deleteEmployee(employeeId);
+  message.success('删除成功');
+  close();
 }
 
 onMounted(() => {
@@ -259,10 +321,10 @@ onMounted(() => {
 <template>
   <Page auto-content-height :loading="loading">
     <FormModal @success="getEmployeeData" />
-    <RegularModal @success="getEmployeeData" />
-    <PositionChangeModal @success="getEmployeeData" />
-    <FullTimeModal @success="getEmployeeData" />
-    <QuitModal @success="getEmployeeData" />
+    <RegularModal @success="handleEmployeeChangeSuccess" />
+    <PositionChangeModal @success="handleEmployeeChangeSuccess" />
+    <FullTimeModal @success="handleEmployeeChangeSuccess" />
+    <QuitModal @success="handleEmployeeQuitSuccess" />
 
     <Header :employee="employee" :loading="loading">
       <div class="flex flex-wrap gap-2">
@@ -337,6 +399,7 @@ onMounted(() => {
     <Tabs v-model:active-key="activeTab">
       <Tabs.TabPane key="post" tab="岗位信息">
         <PostInfo
+          ref="postInfoRef"
           :employee="employee"
           :employee-id="employeeId"
           @edit-quit="openQuit"

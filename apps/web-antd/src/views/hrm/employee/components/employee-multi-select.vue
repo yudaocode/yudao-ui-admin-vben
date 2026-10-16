@@ -66,7 +66,10 @@ async function resolveItems(ids: number[]) {
     const itemMap = new Map(items.map((item) => [item.id, item]));
     selectedItems.value = ids
       .map((id) => itemMap.get(id))
-      .filter((item): item is HrmEmployeeApi.Employee => item?.id !== null);
+      .filter(
+        (item): item is HrmEmployeeApi.Employee =>
+          item?.id !== null && item?.id !== undefined,
+      );
   } catch {
     selectedItems.value = [];
   }

@@ -75,10 +75,10 @@ const [Modal, modalApi] = useVbenModal({
     try {
       if (formType.value === 'update') {
         await updateDefectRecord({ ...payload, id: formData.value.id });
-        message.success($t('common.updateSuccess'));
+        message.success($t('ui.actionMessage.operationSuccess'));
       } else {
         await createDefectRecord(payload);
-        message.success($t('common.createSuccess'));
+        message.success($t('ui.actionMessage.operationSuccess'));
       }
       // 关闭并提示
       await modalApi.close();

@@ -57,6 +57,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '检验单编号',
       component: 'Input',
@@ -125,9 +126,9 @@ export function useFormSchema(
       },
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           placeholder: '请选择产品物料',
         }),
       },
@@ -141,9 +142,9 @@ export function useFormSchema(
       },
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           placeholder: '请选择客户',
         }),
       },
@@ -167,26 +168,34 @@ export function useFormSchema(
         precision: 2,
         // 新建态下，发货数量变化时把 checkQuantity 也填上同值
         onChange: async (value: null | number | undefined) => {
-          if (value === null || !formApi) return;
+          if (value === null || value === undefined || !formApi) return;
           const values = await formApi.getValues();
-          if (!values.id && values.checkQuantity === null) {
+          if (
+            !values.id &&
+            (values.checkQuantity === null ||
+              values.checkQuantity === undefined)
+          ) {
             await formApi.setFieldValue('checkQuantity', value);
           }
         },
       },
       rules: 'required',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
           class: '!w-full',
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           min: 0,
           placeholder: '请输入发货数量',
           precision: 2,
           onChange: async (value: null | number | undefined) => {
-            if (value === null || !formApi) return;
+            if (value === null || value === undefined || !formApi) return;
             const current = await formApi.getValues();
-            if (!current.id && current.checkQuantity === null) {
+            if (
+              !current.id &&
+              (current.checkQuantity === null ||
+                current.checkQuantity === undefined)
+            ) {
               await formApi.setFieldValue('checkQuantity', value);
             }
           },
@@ -203,9 +212,12 @@ export function useFormSchema(
         placeholder: '请输入检测数量',
         // 新建态下，检测数量变化时把 outQuantity 也填上同值
         onChange: async (value: null | number | undefined) => {
-          if (value === null || !formApi) return;
+          if (value === null || value === undefined || !formApi) return;
           const values = await formApi.getValues();
-          if (!values.id && values.outQuantity === null) {
+          if (
+            !values.id &&
+            (values.outQuantity === null || values.outQuantity === undefined)
+          ) {
             await formApi.setFieldValue('outQuantity', value);
           }
         },

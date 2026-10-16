@@ -174,7 +174,12 @@ async function handleCategorySortSubmit() {
               @keyup.enter="getList"
               class="!w-60"
             />
-            <ElButton class="ml-2" type="primary" @click="createModel">
+            <ElButton
+              v-if="hasAccessByCodes(['bpm:model:create'])"
+              class="ml-2"
+              type="primary"
+              @click="createModel"
+            >
               <IconifyIcon icon="lucide:plus" /> 新建模型
             </ElButton>
             <ElButton

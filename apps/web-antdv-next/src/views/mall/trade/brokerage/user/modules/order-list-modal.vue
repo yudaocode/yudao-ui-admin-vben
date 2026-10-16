@@ -13,7 +13,7 @@ import { useOrderListColumns, useOrderListFormSchema } from '../data';
 /** 推广订单列表 */
 defineOptions({ name: 'BrokerageOrderListModal' });
 
-const [Modal, modalApi] = useVbenModal({});
+const [Modal, modalApi] = useVbenModal<{ id: number }>({});
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
@@ -29,7 +29,7 @@ const [Grid] = useVbenVxeGrid({
           const params = {
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            userId: modalApi.getData()?.id,
+            userId: modalApi.getData()!.id,
             bizType: BrokerageRecordBizTypeEnum.ORDER.type,
             sourceUserLevel:
               formValues.sourceUserLevel === 0

@@ -137,7 +137,6 @@ export function useSourceConfigColumns(): VxeTableGridOptions['columns'] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<DataRuleApi.DataRule>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '规则编号',

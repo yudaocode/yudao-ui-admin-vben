@@ -103,7 +103,7 @@ export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择匹配类型',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(
           DICT_TYPE.MP_AUTO_REPLY_REQUEST_MATCH,
           'number',
@@ -120,7 +120,7 @@ export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入内容',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     });

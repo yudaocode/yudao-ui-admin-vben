@@ -131,7 +131,7 @@ function deleteParamItem(index: number) {
     <span>参数名称：{{ item.name }}</span>
     <div>
       <Button type="link" @click="openParamForm(item)">编辑</Button>
-      <Divider type="vertical" />
+      <Divider orientation="vertical" />
       <Button danger type="link" @click="deleteParamItem(index)">删除</Button>
     </div>
   </div>

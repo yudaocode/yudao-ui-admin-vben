@@ -45,6 +45,8 @@ function isManualClock(row: HrmAttendanceClockApi.AttendanceClock) {
 
 function handleRefresh() {
   checkedIds.value = [];
+  gridApi.grid.clearCheckboxRow();
+  gridApi.grid.clearCheckboxReserve();
   gridApi.query();
 }
 
@@ -60,28 +62,20 @@ async function handleDelete(id?: number) {
   if (!id) {
     return;
   }
-  try {
-    await confirm($t('ui.actionMessage.deleteConfirm'));
-    await deleteAttendanceClock(id);
-    ElMessage.success($t('ui.actionMessage.deleteSuccess'));
-    handleRefresh();
-  } catch {}
+  await deleteAttendanceClock(id);
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
+  handleRefresh();
 }
 
 async function handleBatchDelete() {
   if (checkedIds.value.length === 0) {
     return;
   }
+  batchDeleteLoading.value = true;
   try {
-    await confirm(
-      `确定删除选中的 ${checkedIds.value.length} 条打卡记录吗？删除后会立即影响日/月考勤统计。`,
-    );
-    batchDeleteLoading.value = true;
     await deleteAttendanceClockList(checkedIds.value);
     ElMessage.success($t('ui.actionMessage.deleteSuccess'));
     handleRefresh();
-  } catch {
-    //
   } finally {
     batchDeleteLoading.value = false;
   }
@@ -118,7 +112,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     }: {
       records: HrmAttendanceClockApi.AttendanceClock[];
     }) => {
-      checkedIds.value = records
+      checkedIds.value = [
+        ...gridApi.grid.getCheckboxReserveRecords(),
+        ...records,
+      ]
         .filter((row: HrmAttendanceClockApi.AttendanceClock) =>
           isManualClock(row),
         )
@@ -130,7 +127,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     }: {
       records: HrmAttendanceClockApi.AttendanceClock[];
     }) => {
-      checkedIds.value = records
+      checkedIds.value = [
+        ...gridApi.grid.getCheckboxReserveRecords(),
+        ...records,
+      ]
         .filter((row: HrmAttendanceClockApi.AttendanceClock) =>
           isManualClock(row),
         )
@@ -192,7 +192,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               auth: ['hrm:attendance:clock:delete'],
               disabled: checkedIds.length === 0,
               loading: batchDeleteLoading,
-              onClick: handleBatchDelete,
+              popConfirm: {
+                title: `确定删除选中的 ${checkedIds.length} 条打卡记录吗？删除后会立即影响日/月考勤统计。`,
+                confirm: handleBatchDelete,
+              },
             },
             {
               label: '导出',
@@ -224,7 +227,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
               icon: ACTION_ICON.DELETE,
               auth: ['hrm:attendance:clock:delete'],
               disabled: !isManualClock(row),
-              onClick: handleDelete.bind(null, row.id),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm'),
+                confirm: () => handleDelete(row.id),
+              },
             },
           ]"
         />

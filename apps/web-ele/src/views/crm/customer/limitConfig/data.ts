@@ -37,8 +37,8 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
-        mode: 'multiple',
-        allowClear: true,
+        multiple: true,
+        clearable: true,
         placeholder: '请选择规则适用人群',
       },
     },
@@ -47,6 +47,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
       label: '规则适用部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => {
           const data = await getSimpleDeptList();
           return handleTree(data);
@@ -82,6 +83,7 @@ export function useFormSchema(confType: LimitConfType): VbenFormSchema[] {
       label: '成交客户是否占用拥有客户数',
       component: 'RadioGroup',
       componentProps: {
+        isButton: true,
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
       dependencies: {

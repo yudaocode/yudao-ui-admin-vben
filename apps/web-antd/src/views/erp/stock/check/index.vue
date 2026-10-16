@@ -71,7 +71,7 @@ async function handleUpdateStatus(
   status: number,
 ) {
   const hideLoading = message.loading({
-    content: `确定${status === 20 ? '审批' : '反审批'}该盘点单吗？`,
+    content: `${status === 20 ? '审批' : '反审批'}中...`,
     duration: 0,
   });
   try {

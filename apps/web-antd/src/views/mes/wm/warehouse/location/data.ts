@@ -1,6 +1,5 @@
 import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { MesWmWarehouseApi } from '#/api/mes/wm/warehouse';
 import type { MesWmWarehouseLocationApi } from '#/api/mes/wm/warehouse/location';
 
 import { h } from 'vue';
@@ -16,10 +15,6 @@ import { getWarehouseSimpleList } from '#/api/mes/wm/warehouse';
 /** 表单类型 */
 export type FormType = 'create' | 'detail' | 'update';
 
-/** 关联数据 */
-let warehouseList: MesWmWarehouseApi.Warehouse[] = [];
-getWarehouseSimpleList().then((data) => (warehouseList = data));
-
 /** 新增/修改的表单 */
 export function useFormSchema(
   formType: FormType,
@@ -32,6 +27,7 @@ export function useFormSchema(
       dependencies: { triggerFields: [''], show: () => false },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '库区编码',
       component: 'Input',
@@ -152,11 +148,9 @@ export function useGridColumns(): VxeTableGridOptions<MesWmWarehouseLocationApi.
       minWidth: 160,
     },
     {
-      field: 'warehouseId',
+      field: 'warehouseName',
       title: '所属仓库',
       minWidth: 140,
-      formatter: ({ cellValue }) =>
-        warehouseList.find((w) => w.id === cellValue)?.name ?? '',
     },
     {
       field: 'area',

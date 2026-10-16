@@ -1,12 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
 import { handleTree } from '@vben/utils';
 
-import { z } from '#/adapter/form';
 import { getProductCategoryList } from '#/api/crm/product/category';
 import { getSimpleUserList } from '#/api/system/user';
 
@@ -84,7 +83,6 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择产品单位',
         allowClear: true,
       },
-      rules: 'required',
     },
     {
       component: 'InputNumber',
@@ -117,7 +115,7 @@ export function useFormSchema(): VbenFormSchema[] {
         buttonStyle: 'solid',
         optionType: 'button',
       },
-      rules: z.number().default(CommonStatusEnum.ENABLE),
+      rules: 'required',
     },
   ];
 }

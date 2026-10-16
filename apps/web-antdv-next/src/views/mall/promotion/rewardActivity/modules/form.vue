@@ -56,6 +56,11 @@ const [Form, formApi] = useVbenForm({
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
+  handleValuesChange(values, fieldsChanged) {
+    if (fieldsChanged.includes('conditionType')) {
+      formData.value.conditionType = values.conditionType;
+    }
+  },
 });
 
 const [Modal, modalApi] = useVbenModal({
@@ -83,8 +88,23 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     try {
       const values = await formApi.getValues();
-      // 使用 formData.value 作为基础，确保 rules 来自 formData
-      const data = { ...values, ...formData.value };
+      const data: Record<string, any> = {
+        ...values,
+        rules: formData.value.rules,
+      };
+      switch (data.productScope) {
+        case PromotionProductScopeEnum.CATEGORY.scope: {
+          data.productScopeValues = values.productCategoryIds;
+          break;
+        }
+        case PromotionProductScopeEnum.SPU.scope: {
+          data.productScopeValues = values.productSpuIds;
+          break;
+        }
+        default: {
+          data.productScopeValues = [];
+        }
+      }
       if (data.startAndEndTime && Array.isArray(data.startAndEndTime)) {
         data.startTime = data.startAndEndTime[0];
         data.endTime = data.startAndEndTime[1];
@@ -130,6 +150,16 @@ const [Modal, modalApi] = useVbenModal({
         ...createDefaultFormData(),
         ...(await getReward(data.id)),
       };
+      switch (result.productScope) {
+        case PromotionProductScopeEnum.CATEGORY.scope: {
+          result.productCategoryIds = result.productScopeValues;
+          break;
+        }
+        case PromotionProductScopeEnum.SPU.scope: {
+          result.productSpuIds = result.productScopeValues;
+          break;
+        }
+      }
       result.startAndEndTime = [
         result.startTime ? String(result.startTime) : undefined,
         result.endTime ? String(result.endTime) : undefined,

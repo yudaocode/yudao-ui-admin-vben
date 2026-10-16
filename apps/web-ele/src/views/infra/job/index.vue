@@ -94,6 +94,7 @@ async function handleTrigger(row: InfraJobApi.Job) {
   });
   try {
     await runJob(row.id!);
+    handleRefresh();
     ElMessage.success($t('ui.actionMessage.operationSuccess'));
   } finally {
     loadingInstance.close();

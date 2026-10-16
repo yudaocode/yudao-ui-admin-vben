@@ -150,7 +150,7 @@ export function parseTextSegments(
   // 「@张三丰」不能被「@张三」截胡，候选按 name 长度倒序
   const sortedMentions =
     mentions.length > 1
-      ? [...mentions].toSort((a, b) => b.name.length - a.name.length)
+      ? [...mentions].toSorted((a, b) => b.name.length - a.name.length)
       : mentions;
   const out: TipSegment[] = [];
   let buffer = '';
@@ -633,7 +633,9 @@ export const getQuoteFromMessage = (content: string): null | QuoteMessage => {
 export const parseRecallMessageId = (content: string): number => {
   try {
     const parsed = JSON.parse(content);
-    return parsed?.messageId === null ? 0 : Number(parsed.messageId);
+    return parsed?.messageId === null || parsed?.messageId === undefined
+      ? 0
+      : Number(parsed.messageId);
   } catch {
     return 0;
   }

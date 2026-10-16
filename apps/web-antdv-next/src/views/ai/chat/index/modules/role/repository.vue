@@ -8,7 +8,14 @@ import { useRouter } from 'vue-router';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, Layout, TabPane, Tabs } from 'antdv-next';
+import {
+  Button,
+  Input,
+  Layout,
+  LayoutContent,
+  TabPane,
+  Tabs,
+} from 'antdv-next';
 
 import { createChatConversationMy } from '#/api/ai/chat/conversation';
 import { deleteMy, getCategoryList, getMyPage } from '#/api/ai/model/chatRole';
@@ -202,7 +209,7 @@ onMounted(async () => {
         </div>
         <!-- 标签页内容 -->
         <Tabs
-          v-model:value="activeTab"
+          v-model:active-key="activeTab"
           class="relative h-full p-4"
           @tab-click="handleTabsClick"
         >

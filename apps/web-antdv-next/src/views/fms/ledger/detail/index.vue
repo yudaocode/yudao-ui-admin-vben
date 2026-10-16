@@ -10,6 +10,7 @@ import { DocAlert, Page } from '@vben/common-ui';
 import {
   downloadFileFromBlobPart,
   formatDate,
+  getTreeValuesWithAncestors,
   handleTree,
   traverseTreeValues,
 } from '@vben/utils';
@@ -78,11 +79,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 watch(accountSetId, () => init());
-watch(subjectKeyword, (value) => {
-  expandedSubjectKeys.value = value
-    ? traverseTreeValues(displaySubjectTree.value, (node) => node.id!)
-    : [];
-});
+
+watch(
+  [subjectKeyword, selectedSubjectKeys],
+  ([keyword, selectedKeys], [previousKeyword]) => {
+    const ancestorKeys = getTreeValuesWithAncestors(
+      subjects.value,
+      selectedKeys,
+      (node) => node.id!,
+    ).filter((key) => !selectedKeys.includes(key));
+    expandedSubjectKeys.value = keyword
+      ? traverseTreeValues(displaySubjectTree.value, (node) => node.id!)
+      : [
+          ...new Set([
+            ...(previousKeyword ? [] : expandedSubjectKeys.value),
+            ...ancestorKeys,
+          ]),
+        ];
+  },
+);
 
 /** 初始化明细账页面 */
 async function init() {
@@ -165,7 +180,7 @@ function buildSubjectTreeNodes(
   }));
 }
 
-/** 按编码或名称过滤科目，命中节点保留全部下级 */
+/** 按编码或名称过滤科目，保留命中节点及其祖先 */
 function filterSubjectTree(
   nodes: SubjectTreeNode[],
   keyword: string,
@@ -174,9 +189,11 @@ function filterSubjectTree(
   const lowerKeyword = keyword.toLowerCase();
   const walk = (items: SubjectTreeNode[]): SubjectTreeNode[] =>
     items.flatMap((item) => {
-      if (item.label.toLowerCase().includes(lowerKeyword)) return [item];
       const children = item.children ? walk(item.children) : [];
-      return children.length > 0 ? [{ ...item, children }] : [];
+      return item.label.toLowerCase().includes(lowerKeyword) ||
+        children.length > 0
+        ? [{ ...item, children }]
+        : [];
     });
   return walk(nodes);
 }
@@ -241,7 +258,7 @@ onMounted(() => {
       <div class="flex min-h-0 flex-1 gap-4">
         <Card
           class="h-full w-64 shrink-0"
-          :body-style="{ height: '100%', overflow: 'auto' }"
+          :styles="{ body: { height: '100%', overflow: 'auto' } }"
         >
           <Input
             v-model:value="subjectKeyword"

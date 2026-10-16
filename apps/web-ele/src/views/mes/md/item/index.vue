@@ -27,6 +27,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
+const itemTypeTreeRef = ref<InstanceType<typeof MdItemTypeTree>>();
 const selectedItemTypeId = ref<number>(); // 当前选中的物料分类编号
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -75,7 +76,10 @@ async function handleDelete(row: MesMdItemApi.Item) {
 
 /** 导出物料 */
 async function handleExport() {
-  const data = await exportItem(await gridApi.formApi.getValues());
+  const data = await exportItem({
+    ...(await gridApi.formApi.getValues()),
+    itemTypeId: selectedItemTypeId.value,
+  });
   downloadFileFromBlobPart({ fileName: '物料产品.xls', source: data });
 }
 
@@ -109,6 +113,12 @@ async function handleStatusChange(
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      selectedItemTypeId.value = undefined;
+      itemTypeTreeRef.value?.reset();
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -153,7 +163,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <div class="flex h-full w-full">
       <ElCard class="mr-4 h-full w-1/6">
-        <MdItemTypeTree @node-click="handleTypeNodeClick" />
+        <MdItemTypeTree
+          ref="itemTypeTreeRef"
+          @node-click="handleTypeNodeClick"
+        />
       </ElCard>
       <div class="w-5/6">
         <Grid table-title="物料产品列表">

@@ -2,17 +2,15 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AlertRecordApi } from '#/api/iot/alert/record';
 
-import { h, ref } from 'vue';
-
-import { Page } from '@vben/common-ui';
+import { Page, prompt } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input, message, Modal, Popover } from 'ant-design-vue';
+import { Button, Input, message, Popover } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAlertRecordPage, processAlertRecord } from '#/api/iot/alert/record';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { loadReferenceList, useGridColumns, useGridFormSchema } from './data';
 
 /** 把设备消息序列化成可读字符串 */
 function stringifyDeviceMessage(deviceMessage: any) {
@@ -30,34 +28,28 @@ function handleRefresh() {
 }
 
 /** 处理告警记录 */
-function handleProcess(row: AlertRecordApi.AlertRecord) {
-  const processRemark = ref('');
-  Modal.confirm({
-    title: '处理告警记录',
-    content: () =>
-      h('div', { class: 'space-y-2' }, [
-        h('p', '请输入处理原因：'),
-        h(Input.TextArea, {
-          value: processRemark.value,
-          'onUpdate:value': (val: string) => (processRemark.value = val),
-          rows: 3,
-          placeholder: '请输入处理原因',
-        }),
-      ]),
-    async onOk() {
-      const hideLoading = message.loading({
-        content: '正在处理...',
-        duration: 0,
-      });
-      try {
-        await processAlertRecord(row.id!, processRemark.value);
-        message.success('处理成功');
-        handleRefresh();
-      } finally {
-        hideLoading();
-      }
-    },
-  });
+async function handleProcess(row: AlertRecordApi.AlertRecord) {
+  let processRemark: string | undefined;
+  try {
+    processRemark = await prompt<string>({
+      title: '处理告警记录',
+      content: '请输入处理原因：',
+      component: Input.TextArea,
+      componentProps: { placeholder: '请输入处理原因', rows: 3 },
+      modelPropName: 'value',
+      defaultValue: '',
+    });
+  } catch {
+    return;
+  }
+  const hideLoading = message.loading({ content: '正在处理...', duration: 0 });
+  try {
+    await processAlertRecord(row.id!, processRemark ?? '');
+    message.success('处理成功');
+    handleRefresh();
+  } finally {
+    hideLoading();
+  }
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -71,6 +63,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          await loadReferenceList();
           return await getAlertRecordPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,

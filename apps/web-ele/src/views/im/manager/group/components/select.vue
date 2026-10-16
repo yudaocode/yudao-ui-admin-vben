@@ -48,7 +48,8 @@ const showClear = computed(() => {
     props.clearable &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue !== null
+    props.modelValue !== null &&
+    props.modelValue !== undefined
   );
 });
 

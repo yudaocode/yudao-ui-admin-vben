@@ -27,27 +27,24 @@ defineOptions({ name: 'MpAutoReply' });
 
 const msgType = ref<string>(String(AutoReplyMsgType.Keyword)); // 消息类型
 
-const showCreateButton = computed(() => {
-  if (Number(msgType.value) !== AutoReplyMsgType.Follow) {
-    return true;
-  }
-  try {
-    const tableData = gridApi.grid?.getTableData();
-    return (tableData?.tableData?.length || 0) <= 0;
-  } catch {
-    return true;
-  }
-}); // 计算是否显示新增按钮：关注时回复类型只有在没有数据时才显示
+const replyCount = ref(0);
+const showCreateButton = computed(
+  () =>
+    Number(msgType.value) !== AutoReplyMsgType.Follow || replyCount.value === 0,
+); // 关注时回复只能创建一条
 
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
 }
 
+const selectedAccountId = ref<number>();
+
 /** 公众号变化时查询数据 */
-function handleAccountChange(accountId: number) {
-  gridApi.formApi.setValues({ accountId });
-  gridApi.formApi.submitForm();
+async function handleAccountChange(accountId: number) {
+  selectedAccountId.value = accountId;
+  await gridApi.formApi.setValues({ accountId });
+  await gridApi.formApi.submitForm();
 }
 
 /** 切换回复类型 */
@@ -63,7 +60,7 @@ async function onTabChange(tabName: string) {
     await nextTick();
   }
   // 查询数据
-  await gridApi.query();
+  await gridApi.reload();
 }
 
 /** 新增自动回复 */
@@ -111,6 +108,11 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      await gridApi.formApi.setFieldValue('accountId', selectedAccountId.value);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -120,12 +122,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getAutoReplyPage({
+          const data = await getAutoReplyPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             type: Number(msgType.value) as AutoReplyMsgType,
             ...formValues,
           });
+          replyCount.value = data.list.length;
+          return data;
         },
       },
       autoLoad: false,

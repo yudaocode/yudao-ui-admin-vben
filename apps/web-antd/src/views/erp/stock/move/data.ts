@@ -211,19 +211,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         valueField: 'id',
       },
     },
-    {
-      fieldName: 'toWarehouseId',
-      label: '调入仓库',
-      component: 'ApiSelect',
-      componentProps: {
-        placeholder: '请选择调入仓库',
-        allowClear: true,
-        showSearch: true,
-        api: getWarehouseSimpleList,
-        labelField: 'name',
-        valueField: 'id',
-      },
-    },
+
     {
       fieldName: 'creator',
       label: '创建人',

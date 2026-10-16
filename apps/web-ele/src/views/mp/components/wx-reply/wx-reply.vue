@@ -20,7 +20,7 @@ import { createEmptyReply } from './types';
 defineOptions({ name: 'WxReplySelect' });
 
 const props = withDefaults(defineProps<Props>(), {
-  newsType: undefined,
+  newsType: NewsType.Published,
 });
 const emit = defineEmits<{
   (e: 'update:modelValue', v: Reply): void;

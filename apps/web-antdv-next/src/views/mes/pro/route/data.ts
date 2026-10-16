@@ -29,7 +29,10 @@ import { RouteColorPicker } from './components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 工艺路线表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -37,35 +40,39 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       dependencies: { triggerFields: [''], show: () => false },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '路线编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入工艺路线编码',
       },
       rules: z.string().min(1, '路线编码不能为空').max(64),
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.PRO_ROUTE_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.PRO_ROUTE_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
       label: '路线名称',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入工艺路线名称',
       },
       rules: z.string().min(1, '路线名称不能为空').max(100),
@@ -76,7 +83,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 500,
+        maxlength: 500,
         placeholder: '请输入工艺路线说明',
         rows: 3,
       },
@@ -87,7 +94,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },
@@ -279,7 +286,7 @@ export function useRouteProcessFormSchema(
       component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },
@@ -416,7 +423,7 @@ export function useRouteProductFormSchema(
         min: 1,
         precision: 0,
       },
-      rules: z.number().default(1),
+      defaultValue: 1,
     },
     {
       fieldName: 'productionTime',
@@ -427,7 +434,7 @@ export function useRouteProductFormSchema(
         min: 0,
         precision: 2,
       },
-      rules: z.number().default(1),
+      defaultValue: 1,
     },
     {
       fieldName: 'timeUnitType',
@@ -438,7 +445,7 @@ export function useRouteProductFormSchema(
         options: getDictOptions(DICT_TYPE.MES_TIME_UNIT_TYPE),
         placeholder: '请选择',
       },
-      rules: z.string().default('MINUTE'),
+      defaultValue: 'MINUTE',
     },
     {
       fieldName: 'remark',
@@ -446,7 +453,7 @@ export function useRouteProductFormSchema(
       component: 'TextArea',
       formItemClass: 'col-span-2',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },
@@ -508,7 +515,7 @@ export function useRouteProductBomFormSchema(
       label: '备注',
       component: 'TextArea',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },

@@ -145,7 +145,7 @@ export async function createProcessInstance(data: any) {
 
 /** 申请人主动取消流程实例 */
 export async function cancelProcessInstanceByStartUser(
-  id: number,
+  id: number | string,
   reason: string,
 ) {
   return requestClient.delete<boolean>(
@@ -178,16 +178,6 @@ export async function getProcessInstanceCopyPage(params: PageParam) {
   return requestClient.get<PageResult<BpmProcessInstanceApi.ProcessInstance>>(
     '/bpm/process-instance/copy/page',
     { params },
-  );
-}
-
-/** 更新流程实例 */
-export async function updateProcessInstance(
-  data: BpmProcessInstanceApi.ProcessInstance,
-) {
-  return requestClient.put<BpmProcessInstanceApi.ProcessInstance>(
-    '/bpm/process-instance/update',
-    data,
   );
 }
 

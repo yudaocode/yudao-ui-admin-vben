@@ -23,7 +23,7 @@ import { HrmSalaryMonthStatus } from '#/views/hrm/utils/constants';
 import {
   buildDetailGridColumns,
   buildFooterMethod,
-  useSearchFormSchema,
+  useGridFormSchema,
 } from './data';
 import RecordDetailsInfo from './modules/record-details-info.vue';
 
@@ -86,7 +86,7 @@ async function getSummary(formValues?: Record<string, unknown>) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(),
+    schema: useGridFormSchema(),
     submitOnEnter: true,
   },
   gridOptions: {

@@ -18,6 +18,7 @@ import {
 } from 'antdv-next';
 
 import { createEmptyNewsItem } from '#/api/mp/draft';
+import { uploadNewsImage } from '#/api/mp/material';
 import { Tinymce as RichTextArea } from '#/components/tinymce';
 
 import CoverSelect from './cover-select.vue';
@@ -25,6 +26,7 @@ import CoverSelect from './cover-select.vue';
 defineOptions({ name: 'NewsForm' });
 
 const props = defineProps<{
+  accountId: number;
   isCreating: boolean;
   modelValue: MpDraftApi.NewsItem[] | null;
 }>();
@@ -52,6 +54,11 @@ const activeNewsItem = computed(() => {
   }
   return item;
 });
+
+/** 上传当前公众号的正文图片 */
+function uploadContentImage(file: File) {
+  return uploadNewsImage(file, props.accountId);
+}
 
 /** 将图文向下移动 */
 function moveDownNews(index: number) {
@@ -239,6 +246,7 @@ function plusNews() {
           <Col :span="12">
             <CoverSelect
               v-model="activeNewsItem"
+              :account-id="accountId"
               :is-first="activeNewsIndex === 0"
             />
           </Col>
@@ -257,7 +265,10 @@ function plusNews() {
         <!--富文本编辑器组件-->
         <Row>
           <Col :span="24">
-            <RichTextArea v-model="activeNewsItem.content" />
+            <RichTextArea
+              v-model="activeNewsItem.content"
+              :upload-image="uploadContentImage"
+            />
           </Col>
         </Row>
       </div>

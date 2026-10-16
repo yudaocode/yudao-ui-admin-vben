@@ -62,7 +62,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -80,6 +80,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'previewPicUrls',
       title: '预览图',
       minWidth: 120,
+      showOverflow: false,
       cellRender: {
         name: 'CellImages',
       },

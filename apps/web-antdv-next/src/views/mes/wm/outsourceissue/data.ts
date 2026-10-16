@@ -60,6 +60,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '发料单编号',
       component: 'Input',

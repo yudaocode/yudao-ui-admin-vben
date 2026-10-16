@@ -100,15 +100,12 @@ watch(
 watch(
   () => [tableData.value, props.discountPercent],
   () => {
-    if (!tableData.value || tableData.value.length === 0) {
-      return;
-    }
     const totalPrice = tableData.value.reduce(
       (prev, curr) => prev + (curr.totalPrice || 0),
       0,
     );
     const discountPrice =
-      props.discountPercent === null
+      props.discountPercent === null || props.discountPercent === undefined
         ? 0
         : erpPriceMultiply(totalPrice, props.discountPercent / 100);
     const finalTotalPrice = totalPrice - discountPrice!;
@@ -182,11 +179,20 @@ function handleRowChange(row: any) {
 
 /** 初始化行数据 */
 function initRow(row: ErpPurchaseOrderApi.PurchaseOrderItem) {
-  if (row.productPrice && row.count) {
+  if (
+    row.productPrice !== null &&
+    row.productPrice !== undefined &&
+    row.count !== null &&
+    row.count !== undefined
+  ) {
     row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
     row.taxPrice =
       erpPriceMultiply(row.totalProductPrice, (row.taxPercent || 0) / 100) ?? 0;
     row.totalPrice = row.totalProductPrice + row.taxPrice;
+  } else {
+    row.totalProductPrice = undefined;
+    row.taxPrice = undefined;
+    row.totalPrice = undefined;
   }
 }
 

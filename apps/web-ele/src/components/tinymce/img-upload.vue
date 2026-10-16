@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { UploadRequestOptions } from 'element-plus';
 
+import type { PropType } from 'vue';
+
 import { computed, ref } from 'vue';
 
 import { $t } from '@vben/locales';
@@ -12,6 +14,10 @@ import { useUpload } from '#/components/upload/use-upload';
 defineOptions({ name: 'TinymceImageUpload' });
 
 const props = defineProps({
+  uploadImage: {
+    type: Function as PropType<(file: File) => Promise<string>>,
+    default: undefined,
+  },
   disabled: {
     default: false,
     type: Boolean,
@@ -45,7 +51,13 @@ async function customRequest(options: UploadRequestOptions) {
   // 2. 执行上传
   const { httpRequest } = useUpload();
   try {
-    const url = await httpRequest(file);
+    let url: string;
+    if (props.uploadImage) {
+      url = await props.uploadImage(file);
+    } else {
+      const result = await httpRequest(file);
+      url = typeof result === 'string' ? result : result.url;
+    }
     emit('done', name, url);
     // 调用上传成功回调
     options?.onSuccess(url);

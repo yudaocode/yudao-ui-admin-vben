@@ -51,7 +51,7 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        autoSize: { minRows: 1, maxRows: 1 },
+        autosize: { minRows: 1, maxRows: 1 },
         disabled: formType === 'detail',
       },
       formItemClass: 'col-span-2',
@@ -174,7 +174,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入调度单号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -183,8 +183,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择产品',
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getProductSimpleList,
         labelField: 'name',
         valueField: 'id',
@@ -196,7 +196,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -205,34 +205,22 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择调出仓库',
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getWarehouseSimpleList,
         labelField: 'name',
         valueField: 'id',
       },
     },
-    {
-      fieldName: 'toWarehouseId',
-      label: '调入仓库',
-      component: 'ApiSelect',
-      componentProps: {
-        placeholder: '请选择调入仓库',
-        allowClear: true,
-        showSearch: true,
-        api: getWarehouseSimpleList,
-        labelField: 'name',
-        valueField: 'id',
-      },
-    },
+
     {
       fieldName: 'creator',
       label: '创建人',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择创建人',
-        allowClear: true,
-        showSearch: true,
+        clearable: true,
+        filterable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -245,7 +233,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.ERP_AUDIT_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -254,7 +242,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入备注',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

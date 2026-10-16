@@ -1,4 +1,4 @@
-import type { VbenFormSchema } from '#/adapter/form';
+import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { DICT_TYPE } from '@vben/constants';
@@ -11,9 +11,17 @@ import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 
 /** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
+    {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: {
+        triggerFields: [''],
+        show: () => false,
+      },
+    },
     {
       fieldName: 'period',
       label: '期数',
@@ -48,8 +56,13 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
+        onChange: () => formApi?.setFieldValue('contractId', undefined),
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
       },
     },
     {
@@ -60,11 +73,11 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: [],
         placeholder: '请选择合同',
-        allowClear: true,
+        clearable: true,
       },
       dependencies: {
-        triggerFields: ['customerId'],
-        disabled: (values) => !values.customerId,
+        triggerFields: ['customerId', 'id'],
+        disabled: (values) => !!values.id || !values.customerId,
         async componentProps(values) {
           if (!values.customerId) {
             return {
@@ -82,8 +95,10 @@ export function useFormSchema(): VbenFormSchema[] {
             onChange: (value: number) => {
               const contract = res.find((item) => item.id === value);
               if (contract) {
-                values.price =
-                  contract.totalPrice - contract.totalReceivablePrice;
+                formApi?.setFieldValue(
+                  'price',
+                  contract.totalPrice - contract.totalReceivablePrice,
+                );
               }
             },
           };
@@ -97,7 +112,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入计划回款金额',
-        min: 0,
+        min: 0.01,
         precision: 2,
         controlsPosition: 'right',
         class: '!w-full',
@@ -114,7 +129,6 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD',
         class: '!w-full',
       },
-      defaultValue: new Date(),
     },
     {
       fieldName: 'remindDays',
@@ -161,7 +175,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -170,7 +184,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入合同编号',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

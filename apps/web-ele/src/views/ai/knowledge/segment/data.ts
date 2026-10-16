@@ -2,6 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiKnowledgeSegmentApi } from '#/api/ai/knowledge/segment';
 
+import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -46,7 +47,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入文档编号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -55,7 +56,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择是否启用',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -69,6 +70,7 @@ export function useGridColumns(
     row: AiKnowledgeSegmentApi.KnowledgeSegment,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'id',
@@ -109,6 +111,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['ai:knowledge:update']),
           activeValue: CommonStatusEnum.ENABLE,
           inactiveValue: CommonStatusEnum.DISABLE,
         },

@@ -221,6 +221,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getSalesNoticePage({
@@ -271,15 +272,20 @@ async function openModal(
   fixedStatus.value = options?.status;
   preSelectedIds.value = selectedIds || [];
   // 固定状态时隐藏状态搜索项，未固定时展示
-  gridApi.formApi.setState({
-    schema: useSearchSchema(fixedStatus.value !== undefined),
+  gridApi.setState({
+    formOptions: {
+      schema: useSearchSchema(fixedStatus.value !== undefined),
+    },
   });
   await nextTick();
   gridApi.setGridOptions({
     columns: useGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }

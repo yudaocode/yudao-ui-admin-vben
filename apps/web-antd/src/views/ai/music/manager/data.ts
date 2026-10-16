@@ -1,8 +1,9 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { AiMusicApi } from '#/api/ai/music';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { DICT_TYPE } from '@vben/constants';
+import { AiMusicStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { getSimpleUserList } from '#/api/system/user';
@@ -10,7 +11,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  userList = await getSimpleUserList();
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -171,6 +176,8 @@ export function useGridColumns(
         attrs: { beforeChange: onPublicStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: (row: AiMusicApi.Music) =>
+            row.status !== AiMusicStatusEnum.SUCCESS,
           checkedValue: true,
           unCheckedValue: false,
         },

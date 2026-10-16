@@ -16,6 +16,10 @@ defineProps<{
     <div v-else-if="item.event === 'unsubscribe'">
       <Tag color="error">取消关注</Tag>
     </div>
+    <div v-else-if="item.event === 'SCAN'">
+      <Tag>扫码</Tag>
+      【{{ item.eventKey }}】
+    </div>
     <div v-else-if="item.event === 'CLICK'">
       <Tag>点击菜单</Tag>
       【{{ item.eventKey }}】

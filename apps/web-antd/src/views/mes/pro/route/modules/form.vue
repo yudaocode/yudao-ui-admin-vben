@@ -36,7 +36,7 @@ const [Form, formApi] = useVbenForm({
   commonConfig: {
     componentProps: { class: 'w-full' },
     formItemClass: 'col-span-1',
-    labelWidth: 100,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: [],
@@ -79,11 +79,11 @@ const [Modal, modalApi] = useVbenModal({
       formData.value = undefined;
       return;
     }
-    formApi.setState({ schema: useFormSchema(formApi) });
     subTab.value = 'process';
     // 加载数据
     const data = modalApi.getData() as { formType: FormType; id?: number };
     formType.value = data.formType;
+    formApi.setState({ schema: useFormSchema(data.formType, formApi) });
     formApi.setDisabled(formType.value === 'detail');
     modalApi.setState({ showConfirmButton: formType.value !== 'detail' });
     if (!data?.id) {

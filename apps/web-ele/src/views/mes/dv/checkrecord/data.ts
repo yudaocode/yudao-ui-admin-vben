@@ -101,12 +101,27 @@ export function useFormSchema(): VbenFormSchema[] {
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'machineryName',
-      label: '设备名称',
-      component: 'Input',
+      fieldName: 'planId',
+      label: '点检计划',
+      component: markRaw(DvCheckPlanSelect),
+      componentProps: { placeholder: '请选择点检计划' },
+    },
+    {
+      fieldName: 'machineryId',
+      label: '设备',
+      component: markRaw(DvMachinerySelect),
+      componentProps: { placeholder: '请选择设备' },
+    },
+    {
+      fieldName: 'userId',
+      label: '点检人',
+      component: 'ApiSelect',
       componentProps: {
         clearable: true,
-        placeholder: '请输入设备名称',
+        api: getSimpleUserList,
+        labelField: 'nickname',
+        valueField: 'id',
+        placeholder: '请选择点检人',
       },
     },
     {
@@ -142,6 +157,9 @@ export function useGridColumns(): VxeTableGridOptions<MesDvCheckRecordApi.CheckR
         default: 'machineryName',
       },
     },
+    { field: 'machineryBrand', title: '品牌', minWidth: 120 },
+    { field: 'machinerySpecification', title: '规格型号', minWidth: 150 },
+    { field: 'planCode', title: '计划编码', minWidth: 140 },
     { field: 'planName', title: '计划名称', minWidth: 150 },
     {
       field: 'checkTime',

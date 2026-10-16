@@ -83,6 +83,27 @@ const [Grid, gridApi] = useVbenVxeGrid({
   },
 });
 
+/** 为未选择仓库的明细回填默认仓库 */
+async function applyDefaultWarehouse(items: ErpPurchaseInApi.PurchaseInItem[]) {
+  if (props.disabled) return false;
+  const warehouse = warehouseOptions.value.find((item) => item.defaultStatus);
+  if (!warehouse) return false;
+  let changed = false;
+  for (const item of items) {
+    if (item.warehouseId !== null && item.warehouseId !== undefined) continue;
+    item.warehouseId = warehouse.id;
+    if (item.productId) {
+      item.stockCount =
+        (await getWarehouseStockCount({
+          productId: item.productId,
+          warehouseId: warehouse.id,
+        })) || 0;
+    }
+    changed = true;
+  }
+  return changed;
+}
+
 /** 监听外部传入的列数据 */
 watch(
   () => props.items,
@@ -90,6 +111,7 @@ watch(
     if (!items) {
       return;
     }
+    const changed = await applyDefaultWarehouse(items);
     items.forEach((item) => initRow(item));
     tableData.value = [...items];
     await nextTick(); // 特殊：保证 gridApi 已经初始化
@@ -97,6 +119,7 @@ watch(
     // 更新表格列配置（目的：原数量、已入库动态列）
     const columns = useFormItemColumns(tableData.value, props.disabled);
     await gridApi.grid.reloadColumn(columns || []);
+    if (changed) emit('update:items', [...tableData.value]);
   },
   {
     immediate: true,
@@ -107,15 +130,12 @@ watch(
 watch(
   () => [tableData.value, props.discountPercent, props.otherPrice],
   () => {
-    if (!tableData.value || tableData.value.length === 0) {
-      return;
-    }
     const totalPrice = tableData.value.reduce(
       (prev, curr) => prev + (curr.totalPrice || 0),
       0,
     );
     const discountPrice =
-      props.discountPercent === null
+      props.discountPercent === null || props.discountPercent === undefined
         ? 0
         : erpPriceMultiply(totalPrice, props.discountPercent / 100);
     const discountedPrice = totalPrice - discountPrice!;
@@ -163,11 +183,20 @@ function handleRowChange(row: any) {
 
 /** 初始化行数据 */
 function initRow(row: ErpPurchaseInApi.PurchaseInItem) {
-  if (row.productPrice && row.count) {
+  if (
+    row.productPrice !== null &&
+    row.productPrice !== undefined &&
+    row.count !== null &&
+    row.count !== undefined
+  ) {
     row.totalProductPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
     row.taxPrice =
       erpPriceMultiply(row.totalProductPrice, (row.taxPercent || 0) / 100) ?? 0;
     row.totalPrice = row.totalProductPrice + row.taxPrice;
+  } else {
+    row.totalProductPrice = undefined;
+    row.taxPrice = undefined;
+    row.totalPrice = undefined;
   }
 }
 
@@ -176,6 +205,9 @@ function validate() {
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
     if (item) {
+      if (!item.productId) {
+        throw new Error(`第 ${i + 1} 行：产品不能为空`);
+      }
       if (!item.warehouseId) {
         throw new Error(`第 ${i + 1} 行：仓库不能为空`);
       }
@@ -194,6 +226,9 @@ defineExpose({
 onMounted(async () => {
   productOptions.value = await getProductSimpleList();
   warehouseOptions.value = await getWarehouseSimpleList();
+  if (await applyDefaultWarehouse(tableData.value)) {
+    emit('update:items', [...tableData.value]);
+  }
 });
 </script>
 
@@ -227,7 +262,7 @@ onMounted(async () => {
         v-if="!disabled"
         v-model:value="row.count"
         :min="0"
-        :precision="2"
+        :precision="3"
         @change="handleRowChange(row)"
       />
       <span v-else>{{ erpCountInputFormatter(row.count) || '-' }}</span>

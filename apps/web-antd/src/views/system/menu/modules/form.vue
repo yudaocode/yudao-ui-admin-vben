@@ -62,7 +62,7 @@ const [Modal, modalApi] = useVbenModal({
     const data = modalApi.getData() as SystemMenuApi.Menu;
     if (!data || !data.id) {
       // 设置上级
-      await formApi.setValues(data);
+      await formApi.setValues(data ?? {});
       return;
     }
     modalApi.lock();

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
+import { Button } from 'antdv-next';
+
 /** 甘特图颜色选择器（antdv-next 4.x 暂未提供 ColorPicker，封装原生 input[type=color]） */
 defineOptions({ name: 'RouteColorPicker' });
 
@@ -33,6 +35,11 @@ function handleColorChange(event: Event) {
   emit('update:modelValue', value);
   emit('change', value);
 }
+
+function handleClear() {
+  emit('update:modelValue', '');
+  emit('change', '');
+}
 </script>
 
 <template>
@@ -46,6 +53,14 @@ function handleColorChange(event: Event) {
       @input="handleColorChange"
     />
     <span v-if="modelValue">{{ modelValue }}</span>
+    <Button
+      v-if="modelValue"
+      :disabled="disabled"
+      type="link"
+      @click="handleClear"
+    >
+      清空
+    </Button>
   </div>
 </template>
 

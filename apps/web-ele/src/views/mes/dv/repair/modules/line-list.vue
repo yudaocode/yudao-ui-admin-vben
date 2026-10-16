@@ -32,7 +32,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 90,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: [
@@ -59,7 +59,6 @@ const [Form, formApi] = useVbenForm({
       componentProps: {
         placeholder: '请选择项目',
       },
-      rules: 'selectRequired',
     },
     {
       fieldName: 'malfunction',
@@ -187,6 +186,7 @@ async function handleDelete(id: number) {
   ElMessage.success($t('ui.actionMessage.deleteSuccess', ['维修项目']));
   await gridApi.query();
 }
+
 watch(
   () => props.repairId,
   (value) => {
@@ -232,7 +232,12 @@ watch(
         />
       </template>
     </Grid>
-    <ElDialog v-model="formOpen" :title="formTitle" width="620px">
+    <ElDialog
+      v-model="formOpen"
+      :title="formTitle"
+      width="620px"
+      :append-to-body="true"
+    >
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>

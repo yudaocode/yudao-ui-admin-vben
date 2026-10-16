@@ -53,6 +53,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '退货单编号',
       component: 'Input',

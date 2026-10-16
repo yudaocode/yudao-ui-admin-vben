@@ -43,6 +43,9 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     // 提交表单
     const data = (await formApi.getValues()) as SystemUserApi.User;
+    if (data.mobile === '') {
+      data.mobile = undefined;
+    }
     try {
       await (formData.value?.id ? updateUser(data) : createUser(data));
       // 关闭并提示

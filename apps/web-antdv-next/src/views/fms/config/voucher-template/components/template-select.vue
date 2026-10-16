@@ -107,7 +107,7 @@ defineExpose({ open });
     :footer="null"
     title="凭证模板库"
     width="680px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <div class="mb-3 flex items-center gap-2">
       <span class="shrink-0">模板分类</span>

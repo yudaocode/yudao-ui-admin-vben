@@ -67,6 +67,7 @@ export function useFormSchema(
       rules: 'required',
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '库位编码',
       component: 'Input',

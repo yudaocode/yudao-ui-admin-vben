@@ -6,6 +6,8 @@ export namespace PayRefundApi {
   /** 退款订单信息 */
   export interface Refund {
     id: number;
+    no: string; // 支付退款单号
+    appName?: string; // 支付应用
     merchantId: number;
     appId: number;
     channelId: number;

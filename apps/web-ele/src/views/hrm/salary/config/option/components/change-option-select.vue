@@ -79,6 +79,6 @@ defineExpose({ init });
     "
     :placeholder="placeholder"
     class="w-full"
-    mode="multiple"
+    multiple
   />
 </template>

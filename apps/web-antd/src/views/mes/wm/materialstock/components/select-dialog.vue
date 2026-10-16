@@ -43,18 +43,18 @@ const searchItemTypeId = ref<number>();
 /** 当前 props 是否带预过滤 */
 const showAlert = computed(
   () =>
-    props.batchId !== null ||
-    props.warehouseId !== null ||
+    (props.batchId !== null && props.batchId !== undefined) ||
+    (props.warehouseId !== null && props.warehouseId !== undefined) ||
     props.virtualFilter === 'only',
 );
 
 /** 预过滤提示文字 */
 const alertTitle = computed(() => {
   const parts: string[] = [];
-  if (props.batchId !== null) {
+  if (props.batchId !== null && props.batchId !== undefined) {
     parts.push('批次');
   }
-  if (props.warehouseId !== null) {
+  if (props.warehouseId !== null && props.warehouseId !== undefined) {
     parts.push('仓库');
   }
   if (props.virtualFilter === 'only') {
@@ -149,6 +149,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     checkboxConfig: { highlight: true, range: true, reserve: true },
     radioConfig: { highlight: true, trigger: 'row' },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getMaterialStockPage({
@@ -215,7 +216,10 @@ async function openModal(
     columns: useSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }

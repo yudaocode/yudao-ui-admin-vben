@@ -26,16 +26,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      fieldName: 'status',
-      label: '活动状态',
-      component: 'Select',
-      componentProps: {
-        placeholder: '请选择活动状态',
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-      },
-      rules: 'required',
-    },
-    {
       fieldName: 'startTime',
       label: '开始时间',
       component: 'DatePicker',
@@ -103,8 +93,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'activeTime',
-      label: '活动时间',
+      fieldName: 'createTime',
+      label: '创建时间',
       component: 'RangePicker',
       componentProps: {
         placeholder: ['开始时间', '结束时间'],

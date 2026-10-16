@@ -18,7 +18,7 @@ const monthRecordId = ref<number>();
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
-    labelWidth: 76,
+    labelWidth: 'auto',
     componentProps: { class: 'w-full' },
   },
   layout: 'horizontal',

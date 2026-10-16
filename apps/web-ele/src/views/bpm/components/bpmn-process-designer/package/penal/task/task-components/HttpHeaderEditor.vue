@@ -68,13 +68,13 @@ const handleSave = () => {
   modalApi.close();
 };
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal<{ headers: string }>({
   destroyOnClose: true,
   onOpenChange(isOpen) {
     if (!isOpen) {
       return;
     }
-    const { headers } = modalApi.getData();
+    const headers = modalApi.getData()?.headers ?? '';
     headerList.value = parseHeaders(headers);
   },
   onConfirm: handleSave,

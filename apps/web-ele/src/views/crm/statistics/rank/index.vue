@@ -13,7 +13,7 @@ import { ElTabPane, ElTabs } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getDatas } from '#/api/crm/statistics/customer';
+import { getDatas } from '#/api/crm/statistics/rank';
 import { $t } from '#/locales';
 
 import { getChartOptions } from './chartOptions';

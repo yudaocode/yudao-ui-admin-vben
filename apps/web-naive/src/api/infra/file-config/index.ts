@@ -15,7 +15,7 @@ export namespace InfraFileConfigApi {
     bucket?: string;
     accessKey?: string;
     accessSecret?: string;
-    pathStyle?: boolean;
+    enablePathStyleAccess?: boolean;
     enablePublicAccess?: boolean;
     region?: string;
     domain: string;

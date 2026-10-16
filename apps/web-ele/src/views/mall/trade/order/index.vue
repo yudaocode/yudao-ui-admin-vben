@@ -2,6 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -19,7 +20,11 @@ import { getOrderPage } from '#/api/mall/trade/order';
 import { DictTag } from '#/components/dict-tag';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import {
+  refreshGridRelatedData,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import DeliveryForm from './modules/delivery-form.vue';
 import RemarkForm from './modules/remark-form.vue';
 
@@ -69,12 +74,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
+          const { pickUpStoreId, ...params } = formValues;
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            ...formValues,
+            ...params,
+            pickUpStoreIds:
+              pickUpStoreId === undefined || pickUpStoreId === null
+                ? undefined
+                : [pickUpStoreId],
           });
         },
       },
@@ -88,6 +99,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<MallOrderApi.Order>,
+});
+
+/** 初始化列表关联数据 */
+onMounted(async () => {
+  await refreshGridRelatedData();
+  gridApi.query();
 });
 </script>
 
@@ -161,16 +178,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
           :drop-down-actions="[
             {
               label: '发货',
+              auth: ['trade:order:update'],
               type: 'primary',
               link: true,
               ifShow: () =>
                 row.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
-                (row.status === TradeOrderStatusEnum.UNDELIVERED.status ||
-                  row.status === TradeOrderStatusEnum.DELIVERED.status),
+                row.status === TradeOrderStatusEnum.UNDELIVERED.status,
               onClick: handleDelivery.bind(null, row),
             },
             {
               label: '备注',
+              auth: ['trade:order:update'],
               type: 'primary',
               link: true,
               onClick: handleRemark.bind(null, row),

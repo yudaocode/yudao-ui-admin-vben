@@ -129,7 +129,7 @@ const handleUpdateOrder = (order: ErpPurchaseOrderApi.PurchaseOrder) => {
   // 将订单项设置到入库单项
   order.items!.forEach((item: any) => {
     item.totalCount = item.count;
-    item.count = item.totalCount - item.inCount;
+    item.count = (item.totalCount ?? 0) - (item.inCount ?? 0);
     item.orderItemId = item.id;
     item.id = undefined;
   });
@@ -213,7 +213,7 @@ const [Modal, modalApi] = useVbenModal({
       <template #items>
         <ItemForm
           ref="itemFormRef"
-          :items="formData?.items ?? []"
+          :items="formData?.items"
           :disabled="formType === 'detail'"
           :discount-percent="formData?.discountPercent ?? 0"
           :other-price="formData?.otherPrice ?? 0"

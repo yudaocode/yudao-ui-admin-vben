@@ -24,18 +24,21 @@ const props = withDefaults(
 const approveTasks = ref<any[]>(props.tasks);
 const currentProcessInstance = ref(props.processInstance);
 const simpleModel = useWatchNode(props);
+
 watch(
   () => props.tasks,
   (newValue) => {
     approveTasks.value = newValue;
   },
 );
+
 watch(
   () => props.processInstance,
   (newValue) => {
     currentProcessInstance.value = newValue;
   },
 );
+
 // 提供给后代组件使用
 provide('tasks', approveTasks);
 provide('processInstance', currentProcessInstance);

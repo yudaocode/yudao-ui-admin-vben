@@ -1,6 +1,8 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeGridPropTypes } from '#/adapter/vxe-table';
 
+import { ref } from 'vue';
+
 import { getUserPage } from '#/api/mp/user';
 
 /** 列表的搜索表单 */
@@ -16,6 +18,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 /** 发送消息模板表单 */
 export function useSendFormSchema(accountId?: number): VbenFormSchema[] {
+  const userKeyword = ref('');
   return [
     {
       fieldName: 'id',
@@ -37,24 +40,28 @@ export function useSendFormSchema(accountId?: number): VbenFormSchema[] {
       fieldName: 'userId',
       label: '用户',
       component: 'ApiSelect',
-      componentProps: {
-        api: async () => {
-          if (!accountId) {
-            return [];
-          }
+      componentProps: () => ({
+        api: async (params: { nickname?: string }) => {
+          if (!accountId) return [];
           const data = await getUserPage({
             pageNo: 1,
-            pageSize: 100,
+            pageSize: 20,
             accountId,
+            nickname: params.nickname || undefined,
           });
           return (data.list || []).map((user) => ({
             label: user.nickname || user.openid,
             value: user.id,
           }));
         },
+        params: { nickname: userKeyword.value },
         filterable: true,
-        placeholder: '请选择用户',
-      },
+        remote: true,
+        remoteMethod: (value: string) => {
+          userKeyword.value = value;
+        },
+        placeholder: '请输入昵称搜索用户',
+      }),
       rules: 'required',
     },
     {

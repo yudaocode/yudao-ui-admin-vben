@@ -306,7 +306,7 @@ export function useFormSchema(
       component: 'TextArea',
       componentProps: {
         disabled: formType === 'detail',
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },

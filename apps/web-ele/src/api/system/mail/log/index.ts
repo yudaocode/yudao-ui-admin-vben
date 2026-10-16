@@ -34,3 +34,10 @@ export function getMailLogPage(params: PageParam) {
     { params },
   );
 }
+
+/** 查询邮件日志详情 */
+export function getMailLog(id: number) {
+  return requestClient.get<SystemMailLogApi.MailLog>('/system/mail-log/get', {
+    params: { id },
+  });
+}

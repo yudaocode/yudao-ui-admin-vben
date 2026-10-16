@@ -37,6 +37,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '设备编码',
       component: 'Input',
@@ -49,9 +50,8 @@ export function useFormSchema(
       },
       rules: 'required',
       suffix:
-        formType === 'detail'
-          ? undefined
-          : () =>
+        formType === 'create'
+          ? () =>
               h(
                 Button,
                 {
@@ -64,7 +64,8 @@ export function useFormSchema(
                   },
                 },
                 { default: () => '生成' },
-              ),
+              )
+          : undefined,
     },
     {
       fieldName: 'name',

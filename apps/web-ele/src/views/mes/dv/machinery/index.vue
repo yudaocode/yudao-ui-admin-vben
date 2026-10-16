@@ -6,6 +6,7 @@ import type { MesDvMachineryTypeApi } from '#/api/mes/dv/machinery/type';
 import { ref } from 'vue';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { BarcodeBizTypeEnum } from '@vben/constants';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
 import { ElButton, ElLoading, ElMessage } from 'element-plus';
@@ -18,11 +19,13 @@ import {
 } from '#/api/mes/dv/machinery';
 import { $t } from '#/locales';
 import { MachineryTypeTree } from '#/views/mes/dv/machinery/type/components';
+import { BarcodeDetail } from '#/views/mes/wm/barcode/components';
 
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 import ImportForm from './modules/import-form.vue';
 
+const machineryTypeTreeRef = ref<InstanceType<typeof MachineryTypeTree>>();
 const selectedMachineryTypeId = ref<number>(); // 选中设备类型编号
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -33,6 +36,13 @@ const [ImportModal, importModalApi] = useVbenModal({
   connectedComponent: ImportForm,
   destroyOnClose: true,
 });
+
+const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>(); // 条码详情弹窗
+
+/** 查看设备条码 */
+function handleBarcode(row: MesDvMachineryApi.Machinery) {
+  barcodeDetailRef.value?.openByBusiness(row.id!, BarcodeBizTypeEnum.MACHINERY);
+}
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -70,7 +80,10 @@ async function handleDelete(row: MesDvMachineryApi.Machinery) {
 
 /** 导出设备 */
 async function handleExport() {
-  const data = await exportMachinery(await gridApi.formApi.getValues());
+  const data = await exportMachinery({
+    ...(await gridApi.formApi.getValues()),
+    machineryTypeId: selectedMachineryTypeId.value,
+  });
   downloadFileFromBlobPart({ fileName: '设备台账.xls', source: data });
 }
 
@@ -89,6 +102,12 @@ function handleTypeNodeClick(
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      selectedMachineryTypeId.value = undefined;
+      machineryTypeTreeRef.value?.reset(false);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -126,11 +145,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
         url="https://doc.iocoder.cn/mes/dv/device/"
       />
     </template>
+    <BarcodeDetail ref="barcodeDetailRef" />
     <FormModal @success="handleRefresh" />
     <ImportModal @success="handleRefresh" />
     <div class="flex h-full w-full">
       <div class="mr-4 h-full w-1/6">
-        <MachineryTypeTree @node-click="handleTypeNodeClick" />
+        <MachineryTypeTree
+          ref="machineryTypeTreeRef"
+          @node-click="handleTypeNodeClick"
+        />
       </div>
       <div class="w-5/6">
         <Grid table-title="设备台账列表">
@@ -169,6 +192,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
           <template #actions="{ row }">
             <TableAction
               :actions="[
+                {
+                  label: '条码',
+                  onClick: handleBarcode.bind(null, row),
+                  auth: ['mes:dv-machinery:query'],
+                },
                 {
                   label: $t('common.edit'),
                   type: 'primary',

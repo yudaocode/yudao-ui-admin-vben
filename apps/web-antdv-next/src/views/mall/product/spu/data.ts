@@ -2,16 +2,17 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallSpuApi } from '#/api/mall/product/spu';
 
+import { h } from 'vue';
+
 import { handleTree, treeToString } from '@vben/utils';
+
+import { Switch, Tag } from 'antdv-next';
 
 import { getCategoryList } from '#/api/mall/product/category';
 import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let categoryList: any[] = [];
-getCategoryList({}).then((data) => {
-  categoryList = handleTree(data, 'id', 'parentId', 'children');
-});
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -32,8 +33,18 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择商品分类',
         allowClear: true,
-        options: categoryList,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        api: async () => {
+          categoryList = handleTree(
+            await getCategoryList({}),
+            'id',
+            'parentId',
+            'children',
+          );
+          return categoryList;
+        },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
       },
     },
     {
@@ -88,14 +99,31 @@ export function useGridColumns(
       field: 'status',
       title: '销售状态',
       minWidth: 100,
-      cellRender: {
-        attrs: { beforeChange: onStatusChange },
-        name: 'CellSwitch',
-        props: {
-          checkedValue: 1,
-          checkedChildren: '上架',
-          unCheckedValue: 0,
-          unCheckedChildren: '下架',
+      slots: {
+        default: ({ row }) => {
+          if (row.status < 0) {
+            return h(Tag, {}, () => '回收站');
+          }
+          return h(Switch, {
+            checkedValue: 1,
+            unCheckedValue: 0,
+            checkedChildren: '上架',
+            unCheckedChildren: '下架',
+            checked: row.status,
+            loading: row.__loading_status ?? false,
+            'onUpdate:checked': async (value: unknown) => {
+              const status = Number(value);
+              row.__loading_status = true;
+              try {
+                const result = await onStatusChange?.(status, row);
+                if (result !== false) {
+                  row.status = status;
+                }
+              } finally {
+                row.__loading_status = false;
+              }
+            },
+          });
         },
       },
     },

@@ -20,8 +20,11 @@ import { ElCard, ElLoading, ElMessage, ElTag } from 'element-plus';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDeliveryExpressList } from '#/api/mall/trade/delivery/express';
 import { getDeliveryPickUpStore } from '#/api/mall/trade/delivery/pickUpStore';
-import * as TradeOrderApi from '#/api/mall/trade/order';
-import { getExpressTrackList } from '#/api/mall/trade/order';
+import {
+  getExpressTrackList,
+  getOrder,
+  pickUpOrder,
+} from '#/api/mall/trade/order';
 import { useDescription } from '#/components/description';
 import { DictTag } from '#/components/dict-tag';
 import { TableAction } from '#/components/table-action';
@@ -41,6 +44,14 @@ import {
 } from './data';
 
 defineOptions({ name: 'TradeOrderDetail' });
+
+const props = withDefaults(
+  defineProps<{ id?: number; showPickUp?: boolean }>(),
+  {
+    id: 0,
+    showPickUp: true,
+  },
+);
 
 const route = useRoute();
 const router = useRouter();
@@ -82,7 +93,11 @@ const [DeliveryInfoDescriptions] = useDescription({
   title: '收货信息',
   border: false,
   column: 3,
-  schema: useDeliveryInfoSchema(),
+  schema: useDeliveryInfoSchema(
+    (id) =>
+      deliveryExpressList.value.find((item) => item.id === id)?.name ?? '-',
+    () => pickUpStore.value?.name ?? '-',
+  ),
 });
 
 const [ProductGrid, productGridApi] = useVbenVxeGrid({
@@ -158,7 +173,7 @@ const [PriceFormModal, priceFormModalApi] = useVbenModal({
 async function getDetail() {
   loading.value = true;
   try {
-    const res = await TradeOrderApi.getOrder(orderId.value);
+    const res = await getOrder(orderId.value);
     if (res === null) {
       ElMessage.error('交易订单不存在');
       handleBack();
@@ -212,7 +227,7 @@ const handlePickUp = async () => {
     text: '正在处理中...',
   });
   try {
-    await TradeOrderApi.pickUpOrder(order.value.id!);
+    await pickUpOrder(order.value.id!);
     ElMessage.success('核销成功');
     await getDetail();
   } finally {
@@ -228,7 +243,7 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
-  orderId.value = Number(route.params.id);
+  orderId.value = props.id || Number(route.params.id);
   await getDetail();
 });
 </script>
@@ -240,23 +255,27 @@ onMounted(async () => {
         :actions="[
           {
             label: '返回',
+            ifShow: !props.id,
             type: 'default',
             icon: 'lucide:arrow-left',
             onClick: handleBack,
           },
           {
             label: '调整价格',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleUpdatePrice,
             ifShow: order.status === TradeOrderStatusEnum.UNPAID.status,
           },
           {
             label: '备注',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleRemark,
           },
           {
             label: '发货',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleDelivery,
             ifShow:
@@ -265,6 +284,7 @@ onMounted(async () => {
           },
           {
             label: '修改地址',
+            auth: ['trade:order:update'],
             type: 'primary',
             onClick: handleUpdateAddress,
             ifShow:
@@ -273,9 +293,11 @@ onMounted(async () => {
           },
           {
             label: '核销',
+            auth: ['trade:order:pick-up'],
             type: 'primary',
             onClick: handlePickUp,
             ifShow:
+              props.showPickUp &&
               order.status === TradeOrderStatusEnum.UNDELIVERED.status &&
               order.deliveryType === DeliveryTypeEnum.PICK_UP.type,
           },

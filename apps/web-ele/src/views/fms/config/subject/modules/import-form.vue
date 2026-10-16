@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadUserFile } from 'element-plus';
+import type {
+  UploadFile,
+  UploadInstance,
+  UploadRawFile,
+  UploadUserFile,
+} from 'element-plus';
 
 import type { FmsSubjectApi } from '#/api/fms/config/subject';
 
@@ -16,6 +21,7 @@ import {
   ElTable,
   ElTableColumn,
   ElUpload,
+  genFileId,
 } from 'element-plus';
 
 import {
@@ -31,6 +37,7 @@ const formLoading = ref(false); // 表单的加载中
 const templateLoading = ref(false); // 导入模板的下载中
 const accountSetId = ref(0); // 当前账套编号
 const file = ref<File>(); // 待导入的文件
+const uploadRef = ref<UploadInstance>(); // 上传组件
 const fileList = ref<UploadUserFile[]>([]); // 上传组件的文件列表
 const importResult = ref<FmsSubjectApi.ImportResp>(); // 导入结果
 
@@ -52,8 +59,12 @@ function handleRemove() {
 }
 
 /** 文件数超出提示 */
-function handleExceed() {
-  ElMessage.error('最多只能上传一个文件！');
+function handleExceed(files: File[]) {
+  const file = files[0] as undefined | UploadRawFile;
+  if (!file) return;
+  uploadRef.value?.clearFiles();
+  file.uid = genFileId();
+  uploadRef.value?.handleStart(file);
 }
 
 /** 下载模板操作 */
@@ -117,6 +128,7 @@ const [Modal, modalApi] = useVbenModal({
   <Modal title="科目导入" class="w-[600px]">
     <template v-if="!importResult">
       <ElUpload
+        ref="uploadRef"
         v-model:file-list="fileList"
         :auto-upload="false"
         :disabled="formLoading"

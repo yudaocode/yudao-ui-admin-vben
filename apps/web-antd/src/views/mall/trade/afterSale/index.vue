@@ -39,7 +39,7 @@ function handleOpenOrderDetail(row: MallAfterSaleApi.AfterSale) {
 /** 切换售后状态 */
 function handleChangeStatus(key: number | string) {
   statusTab.value = key.toString();
-  gridApi.query();
+  gridApi.reload();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -59,9 +59,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getAfterSalePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
+            ...formValues,
             status:
               statusTab.value === '0' ? undefined : Number(statusTab.value),
-            ...formValues,
           });
         },
       },

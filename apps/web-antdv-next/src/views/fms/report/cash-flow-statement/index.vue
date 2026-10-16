@@ -420,7 +420,7 @@ function itemClass(item: FmsCashFlowStatementRow) {
       v-if="adjustmentMode"
       class="mb-4 shrink-0"
       :closable="false"
-      message="辅助数据用于现金流量表 EX 项取数；可编辑公式或直接调整本期、本年金额"
+      title="辅助数据用于现金流量表 EX 项取数；可编辑公式或直接调整本期、本年金额"
       show-icon
       type="info"
     />
@@ -428,7 +428,7 @@ function itemClass(item: FmsCashFlowStatementRow) {
       v-if="statementAdjustmentMode"
       class="mb-4 shrink-0"
       :closable="false"
-      message="可直接调整非行次公式项目；金额为 0 时重新按公式计算"
+      title="可直接调整非行次公式项目；金额为 0 时重新按公式计算"
       show-icon
       type="warning"
     />

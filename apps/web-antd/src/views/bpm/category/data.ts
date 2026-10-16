@@ -57,6 +57,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'sort',
+      rules: 'required',
       label: '分类排序',
       component: 'InputNumber',
       componentProps: {

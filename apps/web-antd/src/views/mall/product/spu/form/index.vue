@@ -185,12 +185,27 @@ function handleTabChange(key: string) {
 
 /** 提交表单 */
 async function handleSubmit() {
-  const values: MallSpuApi.Spu = await infoFormApi
-    .merge(skuFormApi)
-    .merge(deliveryFormApi)
-    .merge(descriptionFormApi)
-    .merge(otherFormApi)
-    .submitAllForm(true);
+  if (formLoading.value) {
+    return;
+  }
+  const forms = [
+    ['info', infoFormApi],
+    ['sku', skuFormApi],
+    ['delivery', deliveryFormApi],
+    ['description', descriptionFormApi],
+    ['other', otherFormApi],
+  ] as const;
+  for (const [tab, api] of forms) {
+    const { valid } = await api.validate();
+    if (!valid) {
+      activeTabName.value = tab;
+      return;
+    }
+  }
+  const values: MallSpuApi.Spu = Object.assign(
+    {},
+    ...(await Promise.all(forms.map(([, api]) => api.getValues()))),
+  );
   // 校验商品名称不能为空（用于 SKU name）
   if (!values.name || values.name.trim() === '') {
     message.error('商品名称不能为空');
@@ -200,6 +215,7 @@ async function handleSubmit() {
     // 校验 sku
     skuListRef.value.validateSku();
   } catch {
+    activeTabName.value = 'sku';
     message.error('【库存价格】不完善，请填写相关信息');
     return;
   }
@@ -224,7 +240,14 @@ async function handleSubmit() {
   values.sliderPicUrls = newSliderPicUrls;
 
   // 提交数据
-  await (spuId.value ? updateSpu(values) : createSpu(values));
+  formLoading.value = true;
+  try {
+    await (spuId.value ? updateSpu(values) : createSpu(values));
+    message.success('保存成功');
+    await closeCurrentTab();
+  } finally {
+    formLoading.value = false;
+  }
 }
 
 /** 获得详情 */
@@ -367,7 +390,12 @@ onMounted(async () => {
         @tab-change="handleTabChange"
       >
         <template #tabBarExtraContent>
-          <Button type="primary" v-if="!isDetail" @click="handleSubmit">
+          <Button
+            type="primary"
+            v-if="!isDetail"
+            :loading="formLoading"
+            @click="handleSubmit"
+          >
             保存
           </Button>
           <Button type="default" v-else @click="() => closeCurrentTab()">

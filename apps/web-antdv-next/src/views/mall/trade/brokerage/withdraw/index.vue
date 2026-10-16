@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBrokerageWithdrawApi } from '#/api/mall/trade/brokerage/withdraw';
 
-import { h } from 'vue';
-
 import { confirm, Page, prompt } from '@vben/common-ui';
 import {
   BrokerageWithdrawStatusEnum,
@@ -50,27 +48,22 @@ async function handleApprove(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
 }
 
 /** 审核驳回 */
-function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
-  prompt({
-    component: () => {
-      return h(Input, {
-        placeholder: '请输入驳回原因',
-        allowClear: true,
-        rules: [{ required: true, message: '请输入驳回原因' }],
-      });
-    },
-    content: '请输入驳回原因',
-    title: '驳回',
-    modelPropName: 'value',
-  }).then(async (val) => {
-    if (val) {
-      await rejectBrokerageWithdraw({
-        id: row.id!,
-        auditReason: val,
-      });
-      handleRefresh();
-    }
-  });
+async function handleReject(row: MallBrokerageWithdrawApi.BrokerageWithdraw) {
+  let val: string | undefined;
+  try {
+    val = await prompt<string>({
+      component: Input,
+      componentProps: { placeholder: '请输入驳回原因' },
+      modelPropName: 'value',
+      content: '请输入驳回原因',
+      title: '驳回',
+    });
+  } catch {
+    return;
+  }
+  if (!val) return;
+  await rejectBrokerageWithdraw({ id: row.id!, auditReason: val });
+  handleRefresh();
 }
 
 /** 重新转账 */

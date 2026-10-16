@@ -70,6 +70,10 @@ function handleDayClick(data: { date: Date; day: string; type: string }) {
     ElMessage.warning('没有假期设置权限');
     return;
   }
+  if (!hasAccessByCodes(['mes:cal-holiday:query'])) {
+    ElMessage.warning('没有假期查询权限');
+    return;
+  }
   holidayFormModalApi.setData({ day: data.day }).open();
 }
 

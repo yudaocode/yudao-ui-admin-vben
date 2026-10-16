@@ -245,6 +245,7 @@ async function validateAllSteps() {
     await validateProcess();
   } catch {
     currentStep.value = 2;
+    message.warning('请设计并完善流程');
     return false;
   }
 
@@ -326,7 +327,9 @@ async function handleDeploy() {
     }
     deployLoading.value = true;
     // 1.2 校验所有步骤
-    await validateAllSteps();
+    if (!(await validateAllSteps())) {
+      return;
+    }
 
     // 2.1 更新表单数据
     const modelData = {
@@ -336,8 +339,7 @@ async function handleDeploy() {
     if (formData.value.id) {
       await updateModel(modelData);
     } else {
-      const result = await createModel(modelData);
-      formData.value.id = result.id;
+      formData.value.id = await createModel(modelData);
     }
     // 2.3 发布
     await deployModel(formData.value.id);

@@ -46,11 +46,14 @@ const salaryUnitOptions = getDictOptions(
 ).map(({ label, value }) => ({ label, value: Number(value) }));
 
 /** 是否面议：勾选后禁用范围输入，并清空已填薪资 */
-const salaryNegotiable = () => !!props.values?.salaryNegotiable;
+function salaryNegotiable() {
+  return !!props.values?.salaryNegotiable;
+}
 
-async function handleNegotiableChange(checked: boolean) {
-  await props.formApi?.setFieldValue('salaryNegotiable', checked);
-  if (!checked) {
+async function handleNegotiableChange(checked: boolean | number | string) {
+  const next = !!checked;
+  await props.formApi?.setFieldValue('salaryNegotiable', next);
+  if (!next) {
     return;
   }
   // 对齐源表单：勾选面议后清空最低/最高薪资

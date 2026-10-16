@@ -45,7 +45,7 @@ const [AddForm, addFormApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    labelWidth: 88,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useAddMemberFormSchema(),
@@ -95,6 +95,14 @@ const [AddModal, addModalApi] = useVbenModal({
       return;
     }
     await addFormApi.reset();
+    addFormApi.updateSchema([
+      {
+        fieldName: 'userIds',
+        componentProps: {
+          disabledIds: memberList.value.map((member) => member.userId),
+        },
+      },
+    ]);
   },
 });
 

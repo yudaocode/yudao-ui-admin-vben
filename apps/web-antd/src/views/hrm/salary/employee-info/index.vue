@@ -5,7 +5,7 @@ import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { DocAlert, Page } from '@vben/common-ui';
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { Button, Tabs } from 'ant-design-vue';
 
@@ -46,9 +46,18 @@ const statusTabOptions = computed(() => {
   }));
 });
 
-const employeeInfoFormRef = ref<InstanceType<typeof Form>>();
-const batchFormRef = ref<InstanceType<typeof BatchForm>>();
-const importFormRef = ref<InstanceType<typeof ImportForm>>();
+const [EmployeeInfoModal, employeeInfoModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+const [BatchModal, batchModalApi] = useVbenModal({
+  connectedComponent: BatchForm,
+  destroyOnClose: true,
+});
+const [ImportModal, importModalApi] = useVbenModal({
+  connectedComponent: ImportForm,
+  destroyOnClose: true,
+});
 
 async function getStatusCounts() {
   const formValues = await gridApi.formApi.getValues();
@@ -65,7 +74,9 @@ async function handleRefresh() {
 
 function handleStatusTabChange(key: number | string) {
   activeStatus.value = String(key);
-  handleRefresh();
+  gridApi.reload();
+  getStatusCounts();
+  checkedEmployeeIds.value = [];
 }
 
 function openDetail(employeeId?: number) {
@@ -79,15 +90,15 @@ function openDetail(employeeId?: number) {
 }
 
 function openSalaryForm(row: HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo) {
-  employeeInfoFormRef.value?.open(row.employeeId);
+  employeeInfoModalApi.setData({ employeeId: row.employeeId }).open();
 }
 
 function openBatchForm() {
-  batchFormRef.value?.open([...checkedEmployeeIds.value]);
+  batchModalApi.setData([...checkedEmployeeIds.value]).open();
 }
 
 function openImportForm(type: 'change' | 'fix') {
-  importFormRef.value?.open(type);
+  importModalApi.setData({ type }).open();
 }
 
 function handleRowCheckboxChange({
@@ -102,6 +113,16 @@ function handleRowCheckboxChange({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleSubmit: async (values) => {
+      gridApi.formApi.setLatestSubmissionValues(values);
+      await Promise.all([gridApi.reload(values), getStatusCounts()]);
+    },
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      activeStatus.value = String(HrmEmployeeStatusTab.ACTIVE);
+      checkedEmployeeIds.value = [];
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
     submitOnEnter: true,
   },
@@ -152,9 +173,9 @@ onMounted(() => {
         url="https://doc.iocoder.cn/hrm/salary/config/"
       />
     </template>
-    <Form ref="employeeInfoFormRef" @success="handleRefresh" />
-    <BatchForm ref="batchFormRef" @success="handleRefresh" />
-    <ImportForm ref="importFormRef" @success="handleRefresh" />
+    <EmployeeInfoModal @success="handleRefresh" />
+    <BatchModal @success="handleRefresh" />
+    <ImportModal @success="handleRefresh" />
 
     <Grid table-title="薪资档案">
       <template #toolbar-actions>

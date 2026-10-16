@@ -139,6 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getWorkOrderPage({
@@ -195,7 +196,10 @@ async function openModal(
     columns: useWorkOrderSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }
@@ -220,7 +224,12 @@ defineExpose({ open: openModal });
 </script>
 
 <template>
-  <ElDialog v-model="open" title="生产工单选择" width="80%">
+  <ElDialog
+    v-model="open"
+    title="生产工单选择"
+    width="80%"
+    :append-to-body="true"
+  >
     <ElAlert
       v-if="typeTip"
       :closable="false"

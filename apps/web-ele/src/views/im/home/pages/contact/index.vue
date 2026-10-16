@@ -104,6 +104,7 @@ watch(
   },
   { deep: true },
 );
+
 watch(
   groups,
   (list) => {
@@ -120,6 +121,7 @@ watch(
   },
   { deep: true },
 );
+
 watch(
   friendRequests,
   (list) => {

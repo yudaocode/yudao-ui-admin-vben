@@ -33,12 +33,12 @@ const structFormRef = ref();
 const formData = ref<any>(buildEmptyFormData());
 
 /** 校验结构体属性对象非空 */
-const validateStructSpecsList: any = (_rule: any, _value: any) => {
+function validateStructSpecsList(_rule: any, _value: any) {
   if (isEmpty(dataSpecsList.value)) {
     return Promise.reject(new Error('请至少添加一个结构体属性对象'));
   }
   return Promise.resolve();
-};
+}
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -131,7 +131,7 @@ onMounted(() => {
 <template>
   <ElFormItem
     :prop="fieldPath"
-    :rules="[{ validator: validateStructSpecsList, trigger: 'change' }]"
+    :rules="[{ asyncValidator: validateStructSpecsList, trigger: 'change' }]"
     label="属性对象"
   >
     <div

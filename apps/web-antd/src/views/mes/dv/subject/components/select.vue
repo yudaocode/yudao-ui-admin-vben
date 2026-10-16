@@ -45,6 +45,7 @@ const filteredList = computed(() => {
   // 历史数据可能绑定已禁用或其它类型的项目，补充当前选中项用于回显，并禁止重新选择
   if (
     props.modelValue !== null &&
+    props.modelValue !== undefined &&
     !result.some((item) => item.id === props.modelValue)
   ) {
     const current = list.value.find((item) => item.id === props.modelValue);

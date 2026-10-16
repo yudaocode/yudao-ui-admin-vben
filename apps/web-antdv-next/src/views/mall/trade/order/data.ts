@@ -15,13 +15,25 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let pickUpStoreList: MallDeliveryPickUpStoreApi.DeliveryPickUpStore[] = [];
-getSimpleDeliveryPickUpStoreList().then((data) => {
-  pickUpStoreList = data;
-});
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  pickUpStoreList = await getSimpleDeliveryPickUpStoreList();
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
+    {
+      fieldName: 'type',
+      label: '订单类型',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.TRADE_ORDER_TYPE, 'number'),
+        placeholder: '请选择订单类型',
+        allowClear: true,
+      },
+    },
     {
       fieldName: 'status',
       label: '订单状态',
@@ -37,7 +49,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '支付方式',
       component: 'Select',
       componentProps: {
-        options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE, 'number'),
+        options: getDictOptions(DICT_TYPE.PAY_CHANNEL_CODE),
         placeholder: '请选择支付方式',
         allowClear: true,
       },
@@ -212,7 +224,7 @@ export function useGridColumns(): VxeGridPropTypes.Columns {
     {
       field: 'payPrice',
       title: '实际支付',
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
       minWidth: 180,
     },
     {
@@ -446,7 +458,6 @@ export function useDeliveryFormSchema(): VbenFormSchema[] {
         triggerFields: ['expressType'],
         show: (values) => values.expressType === 'express',
       },
-      rules: 'required',
     },
   ];
 }

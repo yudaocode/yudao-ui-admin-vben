@@ -17,9 +17,9 @@ import { useChannelFormSchema } from '../data';
 const emit = defineEmits(['success']);
 const formData = ref<any>();
 const title = computed(() => {
-  return formData.value?.id === 0
-    ? $t('ui.actionTitle.create', ['渠道'])
-    : $t('ui.actionTitle.edit', ['渠道']);
+  return formData.value?.id
+    ? $t('ui.actionTitle.edit', ['渠道'])
+    : $t('ui.actionTitle.create', ['渠道']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -28,7 +28,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 160,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   showDefaultActions: false,
@@ -87,7 +87,7 @@ const [Modal, modalApi] = useVbenModal({
         appCertContent: undefined,
         alipayPublicCertContent: undefined,
         rootCertContent: undefined,
-        encryptType: undefined,
+        encryptType: '',
         encryptKey: undefined,
       };
     } else if (code.includes('mock')) {
@@ -96,9 +96,7 @@ const [Modal, modalApi] = useVbenModal({
       };
     } else if (code.includes('wallet')) {
       formData.value.config = {
-        config: {
-          name: 'wallet-conf',
-        },
+        name: 'wallet-conf',
       };
     } else if (code.includes('wx')) {
       formData.value.config = {

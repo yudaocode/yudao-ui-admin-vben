@@ -53,10 +53,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async () => {
           if (!accountSetId.value) {
+            isExpandAll.value = false;
             return { list: [], total: 0 };
           }
           const tree = await getLedgerSubjectBalanceList(queryParams);
           const list = flattenSubjectBalanceTree(tree);
+          isExpandAll.value = false;
           return { list, total: list.length };
         },
       },

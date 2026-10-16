@@ -10,7 +10,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  userList = await getSimpleUserList();
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -24,7 +28,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择用户',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -32,7 +36,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '写作类型',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择写作类型',
         options: getDictOptions(DICT_TYPE.AI_WRITE_TYPE, 'number'),
       },
@@ -42,7 +46,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '平台',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择平台',
         options: getDictOptions(DICT_TYPE.AI_PLATFORM, 'string'),
       },
@@ -53,7 +57,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -91,7 +95,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.AI_WRITE_TYPE },
+        props: { type: DICT_TYPE.AI_PLATFORM },
       },
     },
     {

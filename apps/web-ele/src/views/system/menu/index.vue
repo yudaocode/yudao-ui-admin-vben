@@ -4,17 +4,22 @@ import type { SystemMenuApi } from '#/api/system/menu';
 
 import { ref } from 'vue';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { SystemMenuTypeEnum } from '@vben/constants';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import { ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteMenu, getMenuList } from '#/api/system/menu';
+import {
+  deleteMenu,
+  getMenu,
+  getMenuList,
+  updateMenu,
+} from '#/api/system/menu';
 import { $t } from '#/locales';
 
-import { useGridColumns } from './data';
+import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -56,6 +61,19 @@ async function handleDelete(row: SystemMenuApi.Menu) {
   }
 }
 
+/** 切换菜单状态 */
+async function handleStatusChange(status: number, row: SystemMenuApi.Menu) {
+  const text = status === CommonStatusEnum.ENABLE ? '启用' : '停用';
+  try {
+    await confirm(`确认${text}菜单“${row.name}”吗？`);
+  } catch {
+    return false;
+  }
+  await updateMenu({ ...(await getMenu(row.id)), status });
+  ElMessage.success(`${text}成功`);
+  return true;
+}
+
 /** 切换树形展开/收缩状态 */
 const isExpanded = ref(false);
 function handleExpand() {
@@ -64,8 +82,11 @@ function handleExpand() {
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(),
+  },
   gridOptions: {
-    columns: useGridColumns(),
+    columns: useGridColumns(handleStatusChange),
     height: 'auto',
     keepSource: true,
     pagerConfig: {
@@ -73,8 +94,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     proxyConfig: {
       ajax: {
-        query: async (_params) => {
-          return await getMenuList();
+        query: async (_params, formValues) => {
+          return await getMenuList(formValues);
         },
       },
     },
@@ -84,6 +105,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
+      search: true,
     },
     treeConfig: {
       parentField: 'parentId',
@@ -126,22 +148,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #name="{ row }">
-        <div class="flex w-full items-center gap-1">
-          <div class="size-5 flex-shrink-0">
-            <IconifyIcon
-              v-if="row.type === SystemMenuTypeEnum.BUTTON"
-              icon="carbon:square-outline"
-              class="size-full"
-            />
-            <IconifyIcon
-              v-else-if="row.icon"
-              :icon="row.icon || 'carbon:circle-dash'"
-              class="size-full"
-            />
-          </div>
-          <span class="flex-auto">{{ $t(row.name) }}</span>
-          <div class="items-center justify-end"></div>
-        </div>
+        <span>{{ $t(row.name) }}</span>
+      </template>
+      <template #icon="{ row }">
+        <IconifyIcon v-if="row.icon" :icon="row.icon" class="mx-auto size-5" />
       </template>
       <template #actions="{ row }">
         <TableAction

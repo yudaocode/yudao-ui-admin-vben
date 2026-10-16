@@ -93,31 +93,35 @@ onMounted(async () => {
           <ElTabPane label="积分" name="PointList">
             <PointList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="签到" name="SignList">
+          <ElTabPane label="签到" name="SignList" lazy>
             <SignList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="成长值" name="ExperienceRecordList">
+          <ElTabPane label="成长值" name="ExperienceRecordList" lazy>
             <ExperienceRecordList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="余额" name="BalanceList">
-            <BalanceList class="h-full" :wallet-id="wallet?.id" />
+          <ElTabPane label="余额" name="BalanceList" lazy>
+            <BalanceList
+              v-if="wallet?.id"
+              class="h-full"
+              :wallet-id="wallet.id"
+            />
           </ElTabPane>
-          <ElTabPane label="收货地址" name="AddressList">
+          <ElTabPane label="收货地址" name="AddressList" lazy>
             <AddressList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="订单管理" name="OrderList">
+          <ElTabPane label="订单管理" name="OrderList" lazy>
             <OrderList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="售后管理" name="AfterSaleList">
+          <ElTabPane label="售后管理" name="AfterSaleList" lazy>
             <AfterSaleList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="收藏记录" name="FavoriteList">
+          <ElTabPane label="收藏记录" name="FavoriteList" lazy>
             <FavoriteList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="优惠劵" name="CouponList">
+          <ElTabPane label="优惠劵" name="CouponList" lazy>
             <CouponList class="h-full" :user-id="userId" />
           </ElTabPane>
-          <ElTabPane label="推广用户" name="BrokerageList">
+          <ElTabPane label="推广用户" name="BrokerageList" lazy>
             <BrokerageList class="h-full" :user-id="userId" />
           </ElTabPane>
         </ElTabs>

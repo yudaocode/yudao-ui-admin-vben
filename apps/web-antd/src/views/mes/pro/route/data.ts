@@ -29,7 +29,10 @@ import { RouteColorPicker } from './components';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 工艺路线表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -37,6 +40,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       dependencies: { triggerFields: [''], show: () => false },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '路线编码',
       component: 'Input',
@@ -45,20 +49,23 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         placeholder: '请输入工艺路线编码',
       },
       rules: z.string().min(1, '路线编码不能为空').max(64),
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.PRO_ROUTE_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.PRO_ROUTE_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
@@ -416,7 +423,7 @@ export function useRouteProductFormSchema(
         min: 1,
         precision: 0,
       },
-      rules: z.number().default(1),
+      defaultValue: 1,
     },
     {
       fieldName: 'productionTime',
@@ -427,7 +434,7 @@ export function useRouteProductFormSchema(
         min: 0,
         precision: 2,
       },
-      rules: z.number().default(1),
+      defaultValue: 1,
     },
     {
       fieldName: 'timeUnitType',
@@ -438,7 +445,7 @@ export function useRouteProductFormSchema(
         options: getDictOptions(DICT_TYPE.MES_TIME_UNIT_TYPE),
         placeholder: '请选择',
       },
-      rules: z.string().default('MINUTE'),
+      defaultValue: 'MINUTE',
     },
     {
       fieldName: 'remark',

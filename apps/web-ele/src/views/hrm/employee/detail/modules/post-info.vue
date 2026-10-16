@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
+import { ref } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 
 import { ElCard, ElDescriptions, ElDescriptionsItem } from 'element-plus';
@@ -13,6 +15,13 @@ import QuitInfo from './quit-info.vue';
 
 defineProps<{ employee: HrmEmployeeApi.Employee; employeeId: number }>();
 const emit = defineEmits<{ editQuit: []; refresh: [] }>();
+const changeRecordListRef = ref<InstanceType<typeof ChangeRecordList>>();
+const quitInfoRef = ref<InstanceType<typeof QuitInfo>>();
+
+defineExpose({
+  refreshChangeRecordList: () => changeRecordListRef.value?.refresh(),
+  refreshQuitInfo: () => quitInfoRef.value?.getQuitInfo(),
+});
 </script>
 <template>
   <!-- 对齐源 ContentWrap：首块无标题，块间距 15px -->
@@ -24,7 +33,7 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
       <ElDescriptionsItem label="所属部门">
         {{ employee.deptName || '-' }}
       </ElDescriptionsItem>
-      <ElDescriptionsItem label="职位名称">
+      <ElDescriptionsItem label="岗位">
         {{ employee.postName || '-' }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="岗位职级">
@@ -35,21 +44,21 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
       </ElDescriptionsItem>
       <ElDescriptionsItem label="入职状态">
         <DictTag
-          v-if="employee.entryStatus !== null"
+          v-if="employee.entryStatus != null"
           :type="DICT_TYPE.HRM_EMPLOYEE_ENTRY_STATUS"
           :value="employee.entryStatus"
         />
       </ElDescriptionsItem>
       <ElDescriptionsItem label="员工状态">
         <DictTag
-          v-if="employee.status !== null"
+          v-if="employee.status != null"
           :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
           :value="employee.status"
         />
       </ElDescriptionsItem>
       <ElDescriptionsItem label="聘用形式">
         <DictTag
-          v-if="employee.type !== null"
+          v-if="employee.type != null"
           :type="DICT_TYPE.HRM_EMPLOYEE_TYPE"
           :value="employee.type"
         />
@@ -58,7 +67,7 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
         {{ formatHrmDateTime(employee.entryTime) }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="试用期">
-        {{ employee.probation !== null ? `${employee.probation} 个月` : '-' }}
+        {{ employee.probation != null ? `${employee.probation} 个月` : '-' }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="转正时间">
         {{ formatHrmDateTime(employee.regularTime) }}
@@ -82,16 +91,21 @@ const emit = defineEmits<{ editQuit: []; refresh: [] }>();
         {{ formatHrmDateTime(employee.companyAgeStartTime) }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="司龄">
-        {{ employee.companyAge !== null ? `${employee.companyAge} 年` : '-' }}
+        {{ employee.companyAge != null ? `${employee.companyAge} 年` : '-' }}
       </ElDescriptionsItem>
     </ElDescriptions>
   </ElCard>
   <ElCard header="异动记录" :style="{ marginBottom: '15px' }">
     <ChangeRecordList
+      ref="changeRecordListRef"
       :employee="employee"
       :employee-id="employeeId"
       @success="emit('refresh')"
     />
   </ElCard>
-  <QuitInfo :employee-id="employeeId" @edit="emit('editQuit')" />
+  <QuitInfo
+    ref="quitInfoRef"
+    :employee-id="employeeId"
+    @edit="emit('editQuit')"
+  />
 </template>

@@ -200,13 +200,15 @@ function suggestChildCode(parent: FmsSubjectApi.Subject) {
 }
 
 /** 根据完整科目编码识别上级科目 */
-function handleCodeBlur() {
+async function handleCodeBlur() {
   if (formType.value !== 'create' || explicitParent.value) return;
   const code = formData.value.code?.trim();
   const parent = findParentByCode(code);
   if (!parent) {
     parentSubject.value = undefined;
     formData.value.parentId = FMS_SUBJECT_PARENT_ID_ROOT;
+    subjectUsage.value = createEmptySubjectUsage();
+    formData.value.migrateParentData = false;
     return;
   }
   parentSubject.value = parent;
@@ -218,6 +220,16 @@ function handleCodeBlur() {
   formData.value.quantityAccounting = parent.quantityAccounting;
   formData.value.quantityUnit = parent.quantityUnit;
   formData.value.cash = parent.cash;
+  formData.value.migrateParentData = false;
+  modalApi.lock();
+  try {
+    subjectUsage.value = await getSubjectUsage(
+      formData.value.accountSetId!,
+      parent.id!,
+    );
+  } finally {
+    modalApi.unlock();
+  }
 }
 
 /** 按会计科目级次和编码前缀查找已存在的上级科目 */
@@ -349,7 +361,7 @@ const [Modal, modalApi] = useVbenModal({
           getSubject(accountSetId, data.row.id),
           getSubjectUsage(accountSetId, data.row.id),
         ]);
-        subjectCodeRule.value = financeParameter!.subjectCodeRule;
+        subjectCodeRule.value = financeParameter?.subjectCodeRule || '';
         formData.value = subject;
         formData.value.auxiliaryMappings = [];
         originalAuxiliaryTypeIds.value = [...(subject.auxiliaryTypeIds || [])];
@@ -365,7 +377,7 @@ const [Modal, modalApi] = useVbenModal({
           : undefined,
         getSubjectList(accountSetId, data.subjectType),
       ]);
-      subjectCodeRule.value = financeParameter!.subjectCodeRule;
+      subjectCodeRule.value = financeParameter?.subjectCodeRule || '';
       subjectCandidates.value = subjects;
       // 新建下级时，继承上级科目的核算配置
       if (data.parent) {
@@ -393,7 +405,7 @@ const [Modal, modalApi] = useVbenModal({
     <Alert
       v-if="formType === 'create' && parentSubjectUsed"
       :closable="false"
-      :message="
+      :title="
         subjectUsage.childCount > 0
           ? '上级科目已有业务数据和下级科目，当前数据状态不允许继续新增下级'
           : `上级科目已有 ${subjectUsage.voucherEntryCount} 条凭证分录、${subjectUsage.initialBalanceCount} 条初始余额和 ${subjectUsage.auxiliaryCombinationCount} 个辅助核算组合，创建后将全部迁移到新科目`
@@ -407,7 +419,7 @@ const [Modal, modalApi] = useVbenModal({
         (subjectUsage.used || subjectUsage.childCount > 0)
       "
       :closable="false"
-      :message="
+      :title="
         subjectUsage.used
           ? '该科目已有业务数据，余额方向不能修改；首次启用辅助核算时，需要为历史数据指定迁移项目'
           : '该科目已有下级，科目类别、编码和辅助核算不能修改'
@@ -480,7 +492,7 @@ const [Modal, modalApi] = useVbenModal({
         <Alert
           :closable="false"
           class="mb-4"
-          message="请选择历史凭证要迁入的辅助核算项目，该操作不可撤销"
+          title="请选择历史凭证要迁入的辅助核算项目，该操作不可撤销"
           type="warning"
         />
         <FormItem

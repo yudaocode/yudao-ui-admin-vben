@@ -1,0 +1,171 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { OaScheduleApi } from '#/api/oa/schedule';
+
+import { nextTick } from 'vue';
+
+import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { useUserStore } from '@vben/stores';
+
+import { ElLoading, ElMessage } from 'element-plus';
+
+import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { deleteSchedule, getSchedulePage } from '#/api/oa/schedule';
+import { $t } from '#/locales';
+
+import { useGridColumns, useGridFormSchema } from './data';
+import Detail from './modules/detail.vue';
+import Form from './modules/form.vue';
+
+defineOptions({ name: 'OaScheduleList' });
+
+const userStore = useUserStore(); // 当前用户信息
+
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
+  destroyOnClose: true,
+});
+
+/** 是否为日程创建人，仅创建人可以修改、删除 */
+function isCreator(row: OaScheduleApi.Schedule) {
+  return row.creator === String(userStore.userInfo?.id);
+}
+
+/** 刷新表格 */
+function handleRefresh() {
+  gridApi.query();
+}
+
+/** 日程范围勾选变化后立即查询 */
+async function handleScopeChange() {
+  // 等勾选值写入表单后提交，同步查询条件并回到第一页
+  await nextTick();
+  await gridApi.formApi.submit();
+}
+
+/** 创建日程 */
+function handleCreate() {
+  formModalApi.setData(null).open();
+}
+
+/** 编辑日程 */
+function handleEdit(id: number) {
+  formModalApi.setData({ id }).open();
+}
+
+/** 查看日程详情 */
+function handleDetail(row: OaScheduleApi.Schedule) {
+  detailModalApi.setData({ id: row.id }).open();
+}
+
+/** 删除日程 */
+async function handleDelete(row: OaScheduleApi.Schedule) {
+  const loadingInstance = ElLoading.service({
+    text: $t('ui.actionMessage.deleting', [row.id]),
+  });
+  try {
+    await deleteSchedule(row.id!);
+    ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
+    handleRefresh();
+  } finally {
+    loadingInstance.close();
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useGridFormSchema(handleScopeChange),
+  },
+  gridOptions: {
+    columns: useGridColumns(),
+    height: 'auto',
+    keepSource: true,
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }, formValues) => {
+          return await getSchedulePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            ...formValues,
+          });
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+      search: true,
+    },
+  } as VxeTableGridOptions<OaScheduleApi.Schedule>,
+});
+</script>
+
+<template>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【协作】日程、任务、计划与汇报"
+        url="https://doc.iocoder.cn/oa/collaboration/work/"
+      />
+    </template>
+
+    <FormModal @success="handleRefresh" />
+    <DetailModal @edit="handleEdit" />
+
+    <Grid table-title="日程列表">
+      <template #toolbar-tools>
+        <TableAction
+          :actions="[
+            {
+              label: $t('ui.actionTitle.create', ['日程']),
+              type: 'primary',
+              icon: ACTION_ICON.ADD,
+              auth: ['oa:schedule:create'],
+              onClick: handleCreate,
+            },
+          ]"
+        />
+      </template>
+      <template #title="{ row }">
+        <span class="cursor-pointer text-primary" @click="handleDetail(row)">
+          {{ row.title }}
+        </span>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['oa:schedule:update'],
+              ifShow: isCreator(row),
+              onClick: handleEdit.bind(null, row.id!),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['oa:schedule:delete'],
+              ifShow: isCreator(row),
+              popConfirm: {
+                title: $t('ui.actionMessage.deleteConfirm', [row.id]),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </Page>
+</template>

@@ -11,7 +11,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let categoryList: MallArticleCategoryApi.ArticleCategory[] = [];
-getSimpleArticleCategoryList().then((data) => (categoryList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  categoryList = await getSimpleArticleCategoryList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

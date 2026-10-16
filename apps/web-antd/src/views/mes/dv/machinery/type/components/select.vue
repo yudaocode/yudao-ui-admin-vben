@@ -9,6 +9,8 @@ import { Tooltip, TreeSelect } from 'ant-design-vue';
 
 import { getMachineryTypeSimpleList } from '#/api/mes/dv/machinery/type';
 
+defineOptions({ name: 'DvMachineryTypeSelect', inheritAttrs: false });
+
 const props = withDefaults(
   defineProps<{
     allowClear?: boolean;

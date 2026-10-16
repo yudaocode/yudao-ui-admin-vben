@@ -160,7 +160,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
               type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
-              auth: ['product:category:update'],
+              auth: ['product:spu:query'],
               ifShow: row.parentId !== undefined && row.parentId > 0,
               onClick: handleViewSpu.bind(null, row.id!),
             },

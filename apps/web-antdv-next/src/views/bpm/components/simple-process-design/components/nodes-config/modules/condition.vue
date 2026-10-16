@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 
 import { computed, inject, reactive, ref } from 'vue';
 
-import { BpmModelFormType } from '@vben/constants';
+import { BpmModelFormType, ProcessVariableEnum } from '@vben/constants';
 import { IconifyIcon, Plus, Trash2 } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
@@ -56,20 +56,20 @@ const condition = computed({
 });
 
 const formType = inject<Ref<number>>('formType'); // 表单类型
-const conditionConfigTypes = computed(() => {
-  return CONDITION_CONFIG_TYPES.filter((item) => {
-    // 业务表单暂时去掉条件规则选项
-    return !(
-      formType?.value === BpmModelFormType.CUSTOM &&
-      item.value === ConditionType.RULE
-    );
-  });
-});
+const isCustomForm = computed(
+  () => formType?.value === BpmModelFormType.CUSTOM,
+); // 是否业务表单
 
-/** 条件规则可选择的表单字段 */
-const fieldOptions = useFormFieldsAndStartUser();
+const fieldOptions = useFormFieldsAndStartUser(); // 条件规则可选字段
+const conditionFieldOptions = computed(() =>
+  isCustomForm.value
+    ? fieldOptions.filter(
+        (field) => field.field === ProcessVariableEnum.START_USER_ID,
+      )
+    : fieldOptions,
+); // 业务表单仅提供发起人选项，其它字段可手工输入
 const fieldSelectOptions = computed(() =>
-  fieldOptions.map((field) => ({
+  conditionFieldOptions.value.map((field) => ({
     label: field.title,
     value: field.field,
     disabled: !field.required,
@@ -155,7 +155,7 @@ defineExpose({ validate });
         @change="changeConditionType"
       >
         <Radio
-          v-for="(dict, indexConditionType) in conditionConfigTypes"
+          v-for="(dict, indexConditionType) in CONDITION_CONFIG_TYPES"
           :key="indexConditionType"
           :value="dict.value"
         >
@@ -245,20 +245,37 @@ defineExpose({ validate });
                 ]"
               >
                 <Select
-                  v-model:value="rule.leftSide"
+                  :value="
+                    isCustomForm
+                      ? rule.leftSide
+                        ? [rule.leftSide]
+                        : []
+                      : rule.leftSide
+                  "
+                  :mode="isCustomForm ? 'tags' : undefined"
+                  @change="
+                    (value) =>
+                      (rule.leftSide = Array.isArray(value)
+                        ? value.at(-1)
+                        : value)
+                  "
                   allow-clear
-                  placeholder="请选择表单字段"
+                  show-search
+                  option-filter-prop="label"
+                  :placeholder="
+                    isCustomForm ? '请选择或输入字段' : '请选择表单字段'
+                  "
                   :options="fieldSelectOptions"
                 >
                   <template #optionRender="{ option }">
                     <Tooltip
                       title="表单字段非必填时不能作为流程分支条件"
                       placement="right"
-                      v-if="!option.data.raw.required"
+                      v-if="option.data.raw && !option.data.raw.required"
                     >
                       <span>{{ option.data.raw.title }}</span>
                     </Tooltip>
-                    <template v-else>{{ option.data.raw.title }}</template>
+                    <template v-else>{{ option.label }}</template>
                   </template>
                 </Select>
               </FormItem>

@@ -4,6 +4,8 @@ import type { Recordable } from '@vben/types';
 
 import { defineAsyncComponent, defineComponent, h, ref } from 'vue';
 
+import dayjs from 'dayjs';
+
 const RawDatePicker = defineAsyncComponent(
   () => import('antdv-next/dist/date-picker/index'),
 );
@@ -22,13 +24,23 @@ function isTimestampValueFormat(valueFormat: unknown) {
 }
 
 function normalizeTimestampPickerValue(value: any, valueFormat: unknown): any {
-  if (!isTimestampValueFormat(valueFormat)) {
-    return value;
-  }
   if (Array.isArray(value)) {
     return value.map((item) =>
       normalizeTimestampPickerValue(item, valueFormat),
     );
+  }
+  if (value instanceof Date) {
+    if (isTimestampValueFormat(valueFormat)) {
+      return String(
+        valueFormat === 'X' ? dayjs(value).unix() : value.getTime(),
+      );
+    }
+    return typeof valueFormat === 'string'
+      ? dayjs(value).format(valueFormat)
+      : dayjs(value);
+  }
+  if (!isTimestampValueFormat(valueFormat)) {
+    return value;
   }
   return typeof value === 'number' ? String(value) : value;
 }

@@ -14,7 +14,6 @@ const props = defineProps<{
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: useInterviewColumns(),
-    data: [],
     keepSource: true,
     pagerConfig: {
       enabled: false,

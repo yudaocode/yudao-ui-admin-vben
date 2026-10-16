@@ -119,14 +119,14 @@ onMounted(() => {
         <IconifyIcon class="size-4" icon="lucide:search" />
       </template>
     </Input>
-    <Spin :spinning="loading" :classes="{ root: 'w-full' }">
+    <Spin :spinning="loading" :classes="{ root: 'w-full overflow-x-auto' }">
       <Tree
         v-if="itemTypeTree.length > 0"
         :default-expand-all="true"
         :field-names="{ title: 'name', key: 'id', children: 'children' }"
         :selected-keys="selectedKeys"
         :tree-data="itemTypeTree"
-        class="pt-2"
+        class="w-max min-w-full whitespace-nowrap pt-2"
         @select="handleSelect"
       />
       <div v-else-if="!loading" class="py-4 text-center text-gray-500">

@@ -82,6 +82,10 @@ const [Form, formApi] = useVbenForm({
       fieldName: 'checkResult',
       label: '异常描述',
       component: 'Textarea',
+      dependencies: {
+        triggerFields: ['checkStatus'],
+        show: (values) => values.checkStatus === MesDvCheckResultEnum.ABNORMAL,
+      },
       componentProps: {
         placeholder: '请输入异常描述',
         rows: 3,
@@ -102,6 +106,7 @@ const [Form, formApi] = useVbenForm({
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: [
+      { field: 'subjectCode', title: '项目编码', minWidth: 140 },
       { field: 'subjectName', title: '项目名称', minWidth: 150 },
       { field: 'subjectContent', title: '项目内容', minWidth: 160 },
       { field: 'subjectStandard', title: '项目标准', minWidth: 160 },
@@ -192,6 +197,7 @@ async function handleDelete(id: number) {
   ElMessage.success($t('ui.actionMessage.deleteSuccess', ['明细']));
   await gridApi.query();
 }
+
 watch(
   () => props.recordId,
   (value) => {
@@ -237,7 +243,12 @@ watch(
         />
       </template>
     </Grid>
-    <ElDialog v-model="formOpen" :title="formTitle" width="620px">
+    <ElDialog
+      v-model="formOpen"
+      :title="formTitle"
+      width="620px"
+      :append-to-body="true"
+    >
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>

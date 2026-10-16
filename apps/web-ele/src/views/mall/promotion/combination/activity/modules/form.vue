@@ -46,7 +46,7 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    labelWidth: 100,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -219,11 +219,7 @@ const [Modal, modalApi] = useVbenModal({
         <!-- 商品选择 -->
         <template #spuId>
           <div class="w-full">
-            <ElButton
-              v-if="!formData?.id"
-              type="primary"
-              @click="openSpuSelect"
-            >
+            <ElButton type="primary" @click="openSpuSelect">
               选择商品
             </ElButton>
 

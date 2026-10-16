@@ -62,7 +62,11 @@ function handleReset() {
 
 /** 刷新表格 */
 function handleRefresh() {
-  gridApi.query();
+  if (viewMode.value === 'card') {
+    cardViewRef.value?.reload();
+  } else {
+    gridApi.query();
+  }
 }
 
 /** 视图切换 */
@@ -146,7 +150,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<IotProductApi.Product>,
 });

@@ -109,6 +109,9 @@ function handleRowCheckboxChange({
 
 /** 同步数据库 */
 async function handleSync(row: InfraCodegenApi.CodegenTable) {
+  await confirm(
+    '确认要强制同步数据库结构到代码生成配置吗？这会覆盖已有字段配置。',
+  );
   const loadingInstance = ElLoading.service({
     text: $t('ui.actionMessage.updating', [row.tableName]),
   });

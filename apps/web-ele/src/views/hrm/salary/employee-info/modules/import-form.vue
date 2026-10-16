@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadRawFile } from 'element-plus';
+import type { UploadFile } from 'element-plus';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
@@ -23,10 +23,6 @@ const importType = ref<'change' | 'fix'>('fix');
 const formLoading = ref(false);
 const file = ref<File>();
 const fileList = ref<UploadFile[]>([]);
-
-const dialogTitle = computed(
-  () => `薪资档案${importType.value === 'fix' ? '定薪' : '调薪'}导入`,
-);
 
 function buildImportResultText(data: {
   failureJobNumbers: Record<string, string>;
@@ -70,23 +66,32 @@ const [ModalComp, modalApi] = useVbenModal({
     }
   },
   onOpenChange(isOpen) {
-    if (!isOpen) {
-      file.value = undefined;
-      fileList.value = [];
-    }
+    file.value = undefined;
+    fileList.value = [];
+    if (!isOpen) return;
+    importType.value = (modalApi.getData() as any)?.type || 'fix';
+    modalApi.setState({
+      title: `薪资档案${importType.value === 'fix' ? '定薪' : '调薪'}导入`,
+    });
   },
 });
 
-function beforeUpload(uploadFile: UploadRawFile) {
+function handleChange(uploadFile: UploadFile) {
+  file.value = undefined;
+  if (!uploadFile.raw) return;
   const fileExtension = uploadFile.name
     .slice(uploadFile.name.lastIndexOf('.') + 1)
     .toLowerCase();
   if (!['xls', 'xlsx'].includes(fileExtension)) {
     ElMessage.error('仅允许导入 xls、xlsx 格式文件');
-    return false;
+    fileList.value = [];
+    return;
   }
-  file.value = uploadFile;
-  return false;
+  file.value = uploadFile.raw;
+}
+
+function handleExceed() {
+  ElMessage.warning('最多只能选择一个文件，请移除后重新选择');
 }
 
 async function handleDownloadTemplate() {
@@ -102,25 +107,16 @@ async function handleDownloadTemplate() {
     source: data,
   });
 }
-
-function open(type: 'change' | 'fix') {
-  importType.value = type;
-  file.value = undefined;
-  fileList.value = [];
-  modalApi.setState({ title: dialogTitle.value });
-  modalApi.open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>
-  <ModalComp :title="dialogTitle" class="w-[420px]">
+  <ModalComp class="w-[420px]">
     <div class="mx-4">
       <ElUpload
         v-model:file-list="fileList"
         :auto-upload="false"
-        :before-upload="beforeUpload"
+        :on-change="handleChange"
+        :on-exceed="handleExceed"
         :disabled="formLoading"
         :limit="1"
         accept=".xlsx,.xls"

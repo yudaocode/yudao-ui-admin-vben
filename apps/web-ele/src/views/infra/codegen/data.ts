@@ -173,7 +173,7 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
         childrenField: 'children',
         placeholder: '请选择上级菜单',
         checkStrictly: true,
-        filterTreeNode(input: string, node: Recordable<any>) {
+        filterNodeMethod(input: string, node: Recordable<any>) {
           if (!input || input.length === 0) {
             return true;
           }
@@ -181,10 +181,13 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
           if (!name) return false;
           return name.includes(input) || $t(name).includes(input);
         },
-        showSearch: true,
+        filterable: true,
         defaultExpandedKeys: [0],
       },
-      rules: 'selectRequired',
+      dependencies: {
+        triggerFields: ['scene'],
+        rules: (values) => (values.scene === 1 ? 'selectRequired' : null),
+      },
       renderComponentContent() {
         return {
           title({ label, icon }: { icon: string; label: string }) {
@@ -211,13 +214,6 @@ export function useGenerationInfoBaseFormSchema(): VbenFormSchema[] {
       fieldName: 'businessName',
       label: '业务名',
       help: '业务名，即二级目录，例如 user、permission、dict 等等',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
-      fieldName: 'className',
-      label: '类名称',
-      help: '类名称（首字母大写），例如SysUser、SysMenu、SysDictData 等等',
       rules: 'required',
     },
     {

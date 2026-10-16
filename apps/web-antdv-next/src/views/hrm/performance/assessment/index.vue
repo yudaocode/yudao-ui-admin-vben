@@ -55,6 +55,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'employeeId', isHover: true },
     checkboxConfig: { highlight: true },
+    toolbarConfig: { refresh: true, search: true },
   } as VxeTableGridOptions<HrmPerformanceAssessmentApi.PerformanceArchiveEmployee>,
   gridEvents: {
     checkboxAll: ({

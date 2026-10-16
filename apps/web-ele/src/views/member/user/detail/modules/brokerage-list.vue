@@ -24,10 +24,6 @@ const formSchema = (): any[] => {
       componentProps: {
         options: [
           {
-            label: '全部',
-            value: 0,
-          },
-          {
             label: '一级',
             value: 1,
           },
@@ -37,7 +33,7 @@ const formSchema = (): any[] => {
           },
         ],
         placeholder: '请选择用户类型',
-        allowClear: true,
+        clearable: true,
       },
     },
     {

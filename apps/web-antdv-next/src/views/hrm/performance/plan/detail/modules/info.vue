@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformancePlanApi } from '#/api/hrm/performance/plan';
 
-import { ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 import { formatDateTime } from '@vben/utils';
 
@@ -10,9 +11,9 @@ import {
   CollapsePanel,
   Descriptions,
   DescriptionsItem,
-  Table,
 } from 'antdv-next';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { formatHrmDate } from '#/views/hrm/utils/format';
 import {
   formatHrmPerformanceAppealTimeout,
@@ -21,32 +22,35 @@ import {
   formatHrmPerformanceRaterType,
 } from '#/views/hrm/utils/format-performance';
 
+import { useReviewStageGridColumns } from '../../data';
+
 defineOptions({ name: 'HrmPerformancePlanDetailsInfo' });
 
-defineProps<{
+const props = defineProps<{
   plan: HrmPerformancePlanApi.PerformancePlan;
 }>();
 
 const activeKeys = ref(['basicInfo', 'reviewStages']);
 
-const reviewColumns = [
-  { title: '顺序', key: 'index', width: 70, align: 'center' as const },
-  { title: '评分阶段', dataIndex: 'name', minWidth: 150 },
-  { title: '评分人类型', key: 'raterType', minWidth: 130 },
-  { title: '权重', key: 'weight', width: 90, align: 'center' as const },
-  {
-    title: '评语必填',
-    key: 'requiredSetting',
-    width: 100,
-    align: 'center' as const,
+const [ReviewGrid, reviewGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useReviewStageGridColumns(),
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
+
+watch(
+  () => props.plan.reviewStages,
+  async (rows) => {
+    await nextTick();
+    await reviewGridApi.grid.reloadData(rows || []);
   },
-  {
-    title: '允许驳回',
-    key: 'rejectAuthority',
-    width: 100,
-    align: 'center' as const,
-  },
-];
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -108,29 +112,12 @@ const reviewColumns = [
       </Descriptions>
     </CollapsePanel>
     <CollapsePanel key="reviewStages" header="评分流程">
-      <Table
-        :columns="reviewColumns"
-        :data-source="plan.reviewStages || []"
-        :pagination="false"
-        bordered
-        size="small"
-      >
-        <template #bodyCell="{ column, record, index }">
-          <template v-if="column.key === 'index'">{{ index + 1 }}</template>
-          <template v-else-if="column.key === 'raterType'">
-            {{ formatHrmPerformanceRaterType(record.rater?.type) }}
-          </template>
-          <template v-else-if="column.key === 'weight'">
-            {{ record.weight || 0 }}%
-          </template>
-          <template v-else-if="column.key === 'requiredSetting'">
-            {{ record.requiredSetting ? '是' : '否' }}
-          </template>
-          <template v-else-if="column.key === 'rejectAuthority'">
-            {{ record.rejectAuthority ? '是' : '否' }}
-          </template>
+      <ReviewGrid class="w-full">
+        <template #raterType="{ row }">
+          {{ formatHrmPerformanceRaterType(row.rater?.type) }}
         </template>
-      </Table>
+        <template #weight="{ row }">{{ row.weight || 0 }}%</template>
+      </ReviewGrid>
     </CollapsePanel>
   </Collapse>
 </template>

@@ -42,7 +42,12 @@ async function handleSubmit() {
 
 /** 获取配置 */
 async function getConfigInfo() {
-  const res = await getConfig();
+  const res = (await getConfig()) ?? {
+    pointTradeDeductEnable: true,
+    pointTradeDeductUnitPrice: 0,
+    pointTradeDeductMaxPrice: 0,
+    pointTradeGivePoint: 0,
+  };
   formData.value = res;
   // 转换金额单位
   res.pointTradeDeductUnitPrice = Number.parseFloat(

@@ -50,8 +50,10 @@ const [Form, formApi] = useVbenForm({
 
 /** 更新调拨单项 */
 function handleUpdateItems(items: ErpStockMoveApi.StockMoveItem[]) {
-  formData.value = modalApi.getData() as ErpStockMoveApi.StockMove;
-  formData.value.items = items;
+  formData.value = {
+    ...formData.value,
+    items,
+  } as ErpStockMoveApi.StockMove;
   formApi.setValues({
     items,
   });

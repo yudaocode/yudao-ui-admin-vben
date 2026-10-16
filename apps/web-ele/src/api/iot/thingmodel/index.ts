@@ -111,7 +111,7 @@ export namespace ThingModelApi {
 }
 
 /** 生成「必填 + 数字」类校验器：拼到 size / length / 枚举值上 */
-function buildRequiredNumberValidator(label: string): any {
+function buildRequiredNumberValidator(label: string) {
   return (_rule: any, value: any) => {
     if (isEmpty(value)) {
       return Promise.reject(new Error(`${label}不能为空`));
@@ -124,7 +124,7 @@ function buildRequiredNumberValidator(label: string): any {
 }
 
 /** 生成「标识符样式」名称校验器：开头需为中文 / 英文 / 数字，整体仅允许中文、英文、数字、下划线、短划线，长度 ≤ 20 */
-export function buildIdentifierLikeNameValidator(label: string): any {
+export function buildIdentifierLikeNameValidator(label: string) {
   return (_rule: any, value: string) => {
     if (isEmpty(value)) {
       return Promise.reject(new Error(`${label}不能为空`));
@@ -166,7 +166,7 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
       trigger: 'blur',
     },
     {
-      validator: ((_rule: any, value: string) => {
+      asyncValidator: ((_rule: any, value: string) => {
         const reservedKeywords = [
           'set',
           'get',
@@ -195,14 +195,14 @@ export const ThingModelFormRules: Record<string, FormItemRule[]> = {
   size: [
     {
       required: true,
-      validator: buildRequiredNumberValidator('元素个数'),
+      asyncValidator: buildRequiredNumberValidator('元素个数'),
       trigger: 'blur',
     },
   ],
   length: [
     {
       required: true,
-      validator: buildRequiredNumberValidator('文本长度'),
+      asyncValidator: buildRequiredNumberValidator('文本长度'),
       trigger: 'blur',
     },
   ],

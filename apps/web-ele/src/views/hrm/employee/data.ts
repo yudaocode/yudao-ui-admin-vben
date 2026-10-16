@@ -4,13 +4,13 @@ import type { HrmEmployeeApi } from '#/api/hrm/employee';
 
 import { markRaw } from 'vue';
 
-import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { handleTree } from '@vben/utils';
 
 import dayjs from 'dayjs';
 
+import { z } from '#/adapter/form';
 import { getInsuranceSchemeSimpleList } from '#/api/hrm/insurance/scheme';
 import { getRecruitChannelSimpleList } from '#/api/hrm/recruit/channel';
 import { getSimpleDeptList } from '#/api/system/dept';
@@ -33,86 +33,72 @@ import {
   HrmEmployeeQuitReasonOptions,
   HrmEmployeeQuitType,
   HrmEmployeeStatus,
+  HrmEmployeeStatusTab,
   HrmEmployeeTeachingMethodOptions,
   HrmEmployeeType,
 } from '#/views/hrm/utils/constants';
 
-/** DatePicker valueFormat=x 的可选时间戳 */
-const optionalTimestampSchema = z.union([
-  z.number(),
-  z.string(),
-  z.null(),
-  z.undefined(),
-]);
-
-/**
- * 结束时间不得早于开始时间。
- * - 合同/证书：不传 unit，做完整时间戳比较
- * - 教育/工作/培训/离职日期：传 'day'
- */
-function refineNotBeforeStart(
-  startValue: unknown,
-  message: string,
-  unit?: 'day',
-) {
-  return optionalTimestampSchema.refine(
-    (value) => {
-      if (value === null || value === undefined || value === '') return true;
-      if (
-        startValue === null ||
-        startValue === undefined ||
-        startValue === ''
-      ) {
-        return true;
-      }
-      const end = dayjs(Number(value));
-      const start = dayjs(Number(startValue));
-      return unit ? !end.isBefore(start, unit) : !end.isBefore(start);
+/** 从后台用户批量建档字段 */
+export function useCreateFromUserGridColumns(): VxeTableGridOptions<any>['columns'] {
+  return [
+    {
+      showOverflow: false,
+      field: 'nickname',
+      title: '后台用户',
+      minWidth: 170,
+      fixed: 'left',
+      slots: { default: 'user' },
     },
-    { message },
-  );
-}
-
-/** 必填时间戳（DatePicker valueFormat=x） */
-function refineRequiredTimestamp(message: string) {
-  return optionalTimestampSchema.refine(
-    (value) => value !== null && value !== undefined && value !== '',
-    { message },
-  );
-}
-
-/** 异动原因选项（调岗/晋升/转正） */
-function getNormalChangeReasonOptions() {
-  return HrmEmployeeChangeReasonOptions.filter(
-    (item) => item.value <= HrmEmployeeChangeReason.WORK_ARRANGEMENT,
-  );
-}
-
-/** 异动原因选项（降级） */
-function getDemoteChangeReasonOptions() {
-  return HrmEmployeeChangeReasonOptions.filter(
-    (item) => item.value >= HrmEmployeeChangeReason.VIOLATION,
-  );
-}
-
-/** 岗位异动表单岗位文案前缀 */
-function getPositionChangePostLabel(
-  changeType: 'demotion' | 'promotion' | 'regular' | 'transfer',
-): string {
-  switch (changeType) {
-    case 'demotion': {
-      return '降级后';
-    }
-    case 'promotion': {
-      return '晋升后';
-    }
-    case 'regular': {
-      return '转正后';
-    }
-    default: {
-      return '新';
-    }
-  }
+    {
+      field: 'mobile',
+      title: '手机号',
+      width: 170,
+      slots: { default: 'mobile' },
+    },
+    {
+      field: 'deptId',
+      title: '部门',
+      width: 180,
+      slots: { default: 'deptId' },
+    },
+    {
+      field: 'jobNumber',
+      title: '工号',
+      width: 150,
+      slots: { default: 'jobNumber' },
+    },
+    {
+      field: 'leaderEmployeeId',
+      title: '直属上级',
+      width: 190,
+      slots: { default: 'leaderEmployeeId' },
+    },
+    {
+      field: 'postName',
+      title: '岗位',
+      width: 170,
+      slots: { default: 'postName' },
+    },
+    {
+      field: 'entryTime',
+      title: '入职时间',
+      width: 190,
+      slots: { default: 'entryTime' },
+    },
+    {
+      field: 'type',
+      title: '聘用形式',
+      width: 130,
+      slots: { default: 'type' },
+    },
+    {
+      field: 'status',
+      title: '试用期/状态',
+      width: 150,
+      slots: { default: 'statusProbation' },
+    },
+    { title: '操作', width: 90, fixed: 'right', slots: { default: 'actions' } },
+  ];
 }
 
 /** 列表搜索表单 */
@@ -159,6 +145,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',
@@ -347,8 +334,8 @@ export function createDefaultEmployeeFormData(): HrmEmployeeApi.Employee {
 /** 状态页签配置 */
 export function getEmployeeStatusTabItems() {
   return [
-    { status: 11, label: '在职' },
-    { status: 12, label: '全职' },
+    { status: HrmEmployeeStatusTab.ACTIVE, label: '在职' },
+    { status: HrmEmployeeStatusTab.FULL_TIME, label: '全职' },
     {
       status: HrmEmployeeStatus.INTERN,
       label: getDictLabel(
@@ -405,9 +392,9 @@ export function getEmployeeStatusTabItems() {
         HrmEmployeeStatus.REGULAR,
       ),
     },
-    { status: 13, label: '待入职' },
-    { status: 14, label: '待离职' },
-    { status: 15, label: '已离职' },
+    { status: HrmEmployeeStatusTab.PENDING_ENTRY, label: '待入职' },
+    { status: HrmEmployeeStatusTab.PENDING_LEAVE, label: '待离职' },
+    { status: HrmEmployeeStatusTab.LEFT, label: '已离职' },
   ];
 }
 
@@ -453,13 +440,28 @@ export function useRegularFormSchema(): VbenFormSchema[] {
 
 /** 岗位异动共享表单 */
 export function usePositionChangeFormSchema(
-  changeType: 'demotion' | 'promotion' | 'regular' | 'transfer' = 'transfer',
+  changeType:
+    | 'demotion'
+    | 'full-time'
+    | 'promotion'
+    | 'regular'
+    | 'transfer' = 'transfer',
 ): VbenFormSchema[] {
   const reasonOptions =
-    changeType === 'demotion'
-      ? getDemoteChangeReasonOptions()
-      : getNormalChangeReasonOptions();
-  const postLabel = getPositionChangePostLabel(changeType);
+    changeType === 'regular' || changeType === 'full-time'
+      ? HrmEmployeeChangeReasonOptions
+      : HrmEmployeeChangeReasonOptions.filter((item) =>
+          changeType === 'demotion'
+            ? item.value >= HrmEmployeeChangeReason.VIOLATION
+            : item.value <= HrmEmployeeChangeReason.WORK_ARRANGEMENT,
+        );
+  const postLabel = {
+    demotion: '降级后',
+    'full-time': '新',
+    promotion: '晋升后',
+    regular: '转正后',
+    transfer: '新',
+  }[changeType];
   return [
     {
       fieldName: 'employeeId',
@@ -505,6 +507,7 @@ export function usePositionChangeFormSchema(
       label: `${postLabel}部门`,
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',
@@ -525,10 +528,10 @@ export function usePositionChangeFormSchema(
     },
     {
       fieldName: 'newPostLevel',
-      label: `${postLabel}职级`,
+      label: `${postLabel}岗位职级`,
       component: 'Input',
       componentProps: {
-        placeholder: '未调整则保持当前职级',
+        placeholder: '未调整则保持当前岗位职级',
         clearable: true,
       },
     },
@@ -563,7 +566,7 @@ export function usePositionChangeFormSchema(
 /** 转为全职表单 */
 export function useFullTimeFormSchema(): VbenFormSchema[] {
   return [
-    ...usePositionChangeFormSchema('transfer').filter(
+    ...usePositionChangeFormSchema('full-time').filter(
       (item) =>
         ![
           'newDeptId',
@@ -585,6 +588,7 @@ export function useFullTimeFormSchema(): VbenFormSchema[] {
       label: '转全职后部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',
@@ -602,7 +606,7 @@ export function useFullTimeFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'newPostLevel',
-      label: '转全职后职级',
+      label: '转全职后岗位职级',
       component: 'Input',
       componentProps: { clearable: true },
     },
@@ -654,13 +658,26 @@ export function useQuitFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['applyQuitTime', 'planQuitTime'],
         rules(values) {
-          return refineRequiredTimestamp('请选择计划离职时间').pipe(
-            refineNotBeforeStart(
-              values.applyQuitTime,
+          return z
+            .any()
+            .refine(
+              (value) => value !== null && value !== undefined && value !== '',
+              '请选择计划离职时间',
+            )
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.applyQuitTime === null ||
+                values.applyQuitTime === undefined ||
+                values.applyQuitTime === '' ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.applyQuitTime)),
+                  'day',
+                ),
               '计划离职日期不能早于申请离职日期',
-              'day',
-            ),
-          );
+            );
         },
       },
     },
@@ -721,13 +738,26 @@ export function useQuitFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['planQuitTime', 'salarySettlementTime'],
         rules(values) {
-          return refineRequiredTimestamp('请选择薪资结算日期').pipe(
-            refineNotBeforeStart(
-              values.planQuitTime,
+          return z
+            .any()
+            .refine(
+              (value) => value !== null && value !== undefined && value !== '',
+              '请选择薪资结算日期',
+            )
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.planQuitTime === null ||
+                values.planQuitTime === undefined ||
+                values.planQuitTime === '' ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.planQuitTime)),
+                  'day',
+                ),
               '薪资结算日期不能早于计划离职日期',
-              'day',
-            ),
-          );
+            );
         },
       },
     },
@@ -888,6 +918,13 @@ export function useEmployeeEntryFormSchema(
       fieldName: 'jobNumber',
       label: '工号',
       component: 'Input',
+      dependencies: {
+        triggerFields: ['entryStatus'],
+        rules: (values) =>
+          values.entryStatus === HrmEmployeeEntryStatus.ACTIVE
+            ? z.string().trim().min(1, '在职员工工号不能为空')
+            : null,
+      },
       componentProps: { maxlength: 64, clearable: true },
     },
     {
@@ -907,6 +944,7 @@ export function useEmployeeEntryFormSchema(
       label: '部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',
@@ -918,7 +956,7 @@ export function useEmployeeEntryFormSchema(
     },
     {
       fieldName: 'postName',
-      label: '职位名称',
+      label: '岗位',
       component: 'Input',
       componentProps: { maxlength: 255, clearable: true },
     },
@@ -941,6 +979,7 @@ export function useEmployeeEntryFormSchema(
       defaultValue: HrmEmployeeType.FORMAL,
       componentProps: {
         options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_TYPE, 'number'),
+        disabled: formType === 'update',
         placeholder: '请选择聘用形式',
         clearable: true,
       },
@@ -956,6 +995,7 @@ export function useEmployeeEntryFormSchema(
           values.type === HrmEmployeeType.INFORMAL ? 'required' : null,
       },
       componentProps: {
+        disabled: formType === 'update',
         options: nonFormalStatusOptions,
         placeholder: '请选择员工状态',
         clearable: true,
@@ -965,13 +1005,19 @@ export function useEmployeeEntryFormSchema(
       fieldName: 'probation',
       label: '试用期(月)',
       component: 'InputNumber',
+      help: '0 表示无试用期；转正时间按入职时间 + 试用期月数计算。',
       dependencies: {
         triggerFields: ['type'],
         show: (values) => values.type === HrmEmployeeType.FORMAL,
         rules: (values) =>
           values.type === HrmEmployeeType.FORMAL ? 'required' : null,
       },
-      componentProps: { min: 0, max: 24, class: 'w-full' },
+      componentProps: {
+        min: 0,
+        max: 6,
+        class: 'w-full',
+        disabled: formType === 'update',
+      },
     },
     {
       fieldName: 'entryTime',
@@ -979,6 +1025,12 @@ export function useEmployeeEntryFormSchema(
       component: 'DatePicker',
       rules: 'required',
       componentProps: {
+        ...(formType === 'confirm' || formType === 'rehire'
+          ? {
+              disabledDate: (date: Date) =>
+                date.getTime() > new Date().setHours(23, 59, 59, 999),
+            }
+          : {}),
         type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
@@ -990,6 +1042,8 @@ export function useEmployeeEntryFormSchema(
       label: '转正时间',
       component: 'DatePicker',
       componentProps: {
+        disabled: true,
+        placeholder: '保存后自动计算',
         type: 'datetime',
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
@@ -1070,7 +1124,7 @@ export function useEmployeeEntryFormSchema(
 export function useHeaderSchema() {
   return [
     { field: 'deptName', label: '所属部门' },
-    { field: 'postName', label: '职位名称' },
+    { field: 'postName', label: '岗位' },
     { field: 'jobNumber', label: '工号' },
     { field: 'mobile', label: '手机号' },
     { field: 'leaderEmployeeName', label: '直属上级' },
@@ -1172,10 +1226,19 @@ export function useCertificateFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['startTime', 'endTime'],
         rules(values) {
-          return refineNotBeforeStart(
-            values.startTime,
-            '有效结束日期不能早于有效开始日期',
-          );
+          return z
+            .any()
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.startTime === null ||
+                values.startTime === undefined ||
+                values.startTime === '' ||
+                !dayjs(Number(value)).isBefore(dayjs(Number(values.startTime))),
+              '有效结束日期不能早于有效开始日期',
+            );
         },
       },
     },
@@ -1260,11 +1323,22 @@ export function useEducationFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['admissionTime', 'graduationTime'],
         rules(values) {
-          return refineNotBeforeStart(
-            values.admissionTime,
-            '毕业日期不能早于入学日期',
-            'day',
-          );
+          return z
+            .any()
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.admissionTime === null ||
+                values.admissionTime === undefined ||
+                values.admissionTime === '' ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.admissionTime)),
+                  'day',
+                ),
+              '毕业日期不能早于入学日期',
+            );
         },
       },
     },
@@ -1331,11 +1405,22 @@ export function useWorkFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['startTime', 'endTime'],
         rules(values) {
-          return refineNotBeforeStart(
-            values.startTime,
-            '结束日期不能早于开始日期',
-            'day',
-          );
+          return z
+            .any()
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.startTime === null ||
+                values.startTime === undefined ||
+                values.startTime === '' ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.startTime)),
+                  'day',
+                ),
+              '结束日期不能早于开始日期',
+            );
         },
       },
     },
@@ -1410,11 +1495,22 @@ export function useTrainingFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['startTime', 'endTime'],
         rules(values) {
-          return refineNotBeforeStart(
-            values.startTime,
-            '结束日期不能早于开始日期',
-            'day',
-          );
+          return z
+            .any()
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.startTime === null ||
+                values.startTime === undefined ||
+                values.startTime === '' ||
+                !dayjs(Number(value)).isBefore(
+                  dayjs(Number(values.startTime)),
+                  'day',
+                ),
+              '结束日期不能早于开始日期',
+            );
         },
       },
     },
@@ -1496,12 +1592,23 @@ export function useContractFormSchema(): VbenFormSchema[] {
       dependencies: {
         triggerFields: ['startTime', 'endTime'],
         rules(values) {
-          return refineRequiredTimestamp('结束日期不能为空').pipe(
-            refineNotBeforeStart(
-              values.startTime,
+          return z
+            .any()
+            .refine(
+              (value) => value !== null && value !== undefined && value !== '',
+              '结束日期不能为空',
+            )
+            .refine(
+              (value) =>
+                value === null ||
+                value === undefined ||
+                value === '' ||
+                values.startTime === null ||
+                values.startTime === undefined ||
+                values.startTime === '' ||
+                !dayjs(Number(value)).isBefore(dayjs(Number(values.startTime))),
               '合同结束日期不能早于开始日期',
-            ),
-          );
+            );
         },
       },
     },
@@ -1562,6 +1669,7 @@ export function useContractFormSchema(): VbenFormSchema[] {
       formItemClass: 'col-span-2',
       componentProps: {
         maxNumber: 5,
+        multiple: true,
         maxSize: 20,
         accept: ['pdf', 'doc', 'docx'],
         directory: 'hrm/employee/contract',

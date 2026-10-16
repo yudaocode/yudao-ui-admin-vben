@@ -1,29 +1,26 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalarySlipSendRecordApi } from '#/api/hrm/salary/slip/send-record';
 import type { HrmSalarySlipTemplateApi } from '#/api/hrm/salary/slip/template';
 
 import { computed, ref } from 'vue';
 
-import { confirm, useVbenModal } from '@vben/common-ui';
+import { confirm, prompt, useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
 import {
   ElButton,
   ElEmpty,
   ElMessage,
-  ElMessageBox,
   ElOption,
-  ElPagination,
   ElSelect,
   ElStep,
   ElSteps,
   ElSwitch,
-  ElTable,
-  ElTableColumn,
-  ElTag,
 } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getSalarySlipSendEmployeePage,
   sendSalarySlip,
@@ -35,10 +32,10 @@ import {
 } from '#/api/hrm/salary/slip/template';
 import { getSimpleDeptList } from '#/api/system/dept';
 import { HrmSalaryOptionCategoryCode } from '#/views/hrm/utils/constants';
-import { formatHrmMoney } from '#/views/hrm/utils/format';
 
 import TemplateForm from '../../template/modules/template-form.vue';
 import TemplateOptionEditor from '../../template/modules/template-option-editor.vue';
+import { useSendEmployeeGridColumns } from '../data';
 
 defineOptions({ name: 'HrmSalarySlipSendForm' });
 
@@ -47,19 +44,19 @@ const emit = defineEmits(['success']);
 const currentStep = ref(0);
 const sendLoading = ref(false);
 const templateLoading = ref(false);
-const employeeLoading = ref(false);
 const employeeLoaded = ref(false);
 const employeeTotal = ref(0);
-const employeePageNo = ref(1);
-const employeePageSize = ref(10);
 const monthRecordId = ref<number>();
-const employeeList = ref<HrmSalarySlipSendRecordApi.SendEmployee[]>([]);
 const selectedEmployeeIdSet = ref<Set<number>>(new Set());
 const templateList = ref<HrmSalarySlipTemplateApi.SalarySlipTemplate[]>([]);
 const selectedTemplateId = ref<number>();
 const sendTemplate = ref<HrmSalarySlipTemplateApi.SalarySlipTemplate>();
-const templateFormRef = ref<InstanceType<typeof TemplateForm>>();
 const templateEditorRef = ref<InstanceType<typeof TemplateOptionEditor>>();
+
+const [TemplateFormModal, templateFormModalApi] = useVbenModal({
+  connectedComponent: TemplateForm,
+  destroyOnClose: true,
+});
 
 const selectedEmployeeIds = computed(() => [...selectedEmployeeIdSet.value]);
 const selectedTemplate = computed(() =>
@@ -94,7 +91,9 @@ const [SearchForm, searchFormApi] = useVbenForm({
         class: 'w-[220px]',
         clearable: true,
         defaultExpandAll: true,
-        fieldNames: { label: 'name', value: 'id', children: 'children' },
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
         placeholder: '请选择部门',
       },
     },
@@ -117,37 +116,81 @@ const [SearchForm, searchFormApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+function handleSelectionChange() {
+  const records = [
+    ...(employeeGridApi.grid.getCheckboxReserveRecords?.() || []),
+    ...(employeeGridApi.grid.getCheckboxRecords?.() || []),
+  ] as HrmSalarySlipSendRecordApi.SendEmployee[];
+  selectedEmployeeIdSet.value = new Set(
+    records.map((record) => record.employeeId),
+  );
+}
+
+const [EmployeeGrid, employeeGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    checkboxConfig: { highlight: true, reserve: true },
+    columns: useSendEmployeeGridColumns(),
+    height: 380,
+    proxyConfig: {
+      autoLoad: false,
+      ajax: {
+        query: async ({ page }) => {
+          if (!monthRecordId.value) return { list: [], total: 0 };
+          const formValues = await searchFormApi.getValues();
+          const data = await getSalarySlipSendEmployeePage({
+            deptId: formValues.deptId,
+            monthRecordId: monthRecordId.value,
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            search: formValues.search,
+            sent: formValues.sent,
+          });
+          employeeLoaded.value = true;
+          employeeTotal.value = data.total;
+          return data;
+        },
+      },
+    },
+    rowConfig: { keyField: 'employeeId', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmSalarySlipSendRecordApi.SendEmployee>,
+  gridEvents: {
+    checkboxAll: handleSelectionChange,
+    checkboxChange: handleSelectionChange,
+  },
+});
+
 const [Modal, modalApi] = useVbenModal({
   footer: false,
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       currentStep.value = 0;
       monthRecordId.value = undefined;
-      employeeList.value = [];
       employeeTotal.value = 0;
       employeeLoaded.value = false;
       selectedEmployeeIdSet.value = new Set();
       selectedTemplateId.value = undefined;
       sendTemplate.value = undefined;
+      return;
     }
+    const recordId = modalApi.getData() as number | undefined;
+    if (!recordId) return;
+    monthRecordId.value = recordId;
+    currentStep.value = 0;
+    selectedTemplateId.value = undefined;
+    sendTemplate.value = undefined;
+    employeeLoaded.value = false;
+    employeeTotal.value = 0;
+    selectedEmployeeIdSet.value = new Set();
+    await employeeGridApi.grid.clearCheckboxRow();
+    await employeeGridApi.grid.clearCheckboxReserve();
+    await searchFormApi.reset();
+    await searchFormApi.setValues({ sent: false });
+    await loadTemplates();
   },
   title: '发送工资条',
 });
-
-async function open(recordId: number) {
-  monthRecordId.value = recordId;
-  currentStep.value = 0;
-  selectedTemplateId.value = undefined;
-  sendTemplate.value = undefined;
-  employeeLoaded.value = false;
-  employeeList.value = [];
-  employeeTotal.value = 0;
-  selectedEmployeeIdSet.value = new Set();
-  await searchFormApi.reset();
-  await searchFormApi.setValues({ sent: false });
-  modalApi.open();
-  await loadTemplates();
-}
 
 async function loadTemplates(preferredId?: number) {
   templateLoading.value = true;
@@ -197,32 +240,8 @@ async function handleNextStep() {
   }
 }
 
-async function loadEmployees(
-  pageNo = employeePageNo.value,
-  pageSize = employeePageSize.value,
-) {
-  if (!monthRecordId.value) {
-    return;
-  }
-  employeeLoading.value = true;
-  try {
-    employeePageNo.value = pageNo;
-    employeePageSize.value = pageSize;
-    const formValues = await searchFormApi.getValues();
-    const data = await getSalarySlipSendEmployeePage({
-      deptId: formValues.deptId,
-      monthRecordId: monthRecordId.value,
-      pageNo,
-      pageSize,
-      search: formValues.search,
-      sent: formValues.sent,
-    });
-    employeeList.value = data.list;
-    employeeTotal.value = data.total;
-    employeeLoaded.value = true;
-  } finally {
-    employeeLoading.value = false;
-  }
+async function loadEmployees() {
+  if (monthRecordId.value) await employeeGridApi.query();
 }
 
 async function handleQuery() {
@@ -233,16 +252,6 @@ async function resetQuery() {
   await searchFormApi.reset();
   await searchFormApi.setValues({ sent: false });
   await loadEmployees();
-}
-
-function handleSelectionChange(
-  rows: HrmSalarySlipSendRecordApi.SendEmployee[],
-) {
-  employeeList.value.forEach((row) =>
-    selectedEmployeeIdSet.value.delete(row.employeeId),
-  );
-  rows.forEach((row) => selectedEmployeeIdSet.value.add(row.employeeId));
-  selectedEmployeeIdSet.value = new Set(selectedEmployeeIdSet.value);
 }
 
 async function submitForm(all: boolean) {
@@ -283,28 +292,31 @@ async function handleSaveAsTemplate() {
   if (!sendTemplate.value) {
     return;
   }
+  let value: string | undefined;
   try {
-    const { value } = await ElMessageBox.prompt(
-      '请输入新模板名称',
-      '另存为模板',
-    );
-    const name = value.trim();
-    if (!name) {
-      ElMessage.warning('模板名称不能为空');
-      return;
-    }
-    if (name.length > 64) {
-      ElMessage.warning('模板名称不能超过 64 个字符');
-      return;
-    }
-    const id = await createSalarySlipTemplate({
-      hideEmpty: Boolean(sendTemplate.value.hideEmpty),
-      name,
-      options: templateEditorRef.value?.getNormalizedOptions() || [],
+    value = await prompt<string>({
+      content: '请输入新模板名称',
+      title: '另存为模板',
     });
-    ElMessage.success('创建成功');
-    await loadTemplates(id);
-  } catch {}
+  } catch {
+    return;
+  }
+  const name = value?.trim();
+  if (!name) {
+    ElMessage.warning('模板名称不能为空');
+    return;
+  }
+  if (name.length > 64) {
+    ElMessage.warning('模板名称不能超过 64 个字符');
+    return;
+  }
+  const id = await createSalarySlipTemplate({
+    hideEmpty: Boolean(sendTemplate.value.hideEmpty),
+    name,
+    options: templateEditorRef.value?.getNormalizedOptions() || [],
+  });
+  ElMessage.success('创建成功');
+  await loadTemplates(id);
 }
 
 async function handleDeleteTemplate(id?: number) {
@@ -313,13 +325,13 @@ async function handleDeleteTemplate(id?: number) {
   }
   try {
     await confirm({ content: '确认删除该工资条模板吗？', title: '删除确认' });
-    await deleteSalarySlipTemplate(id);
-    ElMessage.success('删除成功');
-    await loadTemplates();
-  } catch {}
+  } catch {
+    return;
+  }
+  await deleteSalarySlipTemplate(id);
+  ElMessage.success('删除成功');
+  await loadTemplates();
 }
-
-defineExpose({ open });
 </script>
 
 <template>
@@ -355,14 +367,18 @@ defineExpose({ open });
           <ElButton
             v-access:code="['hrm:salary:slip:update']"
             type="primary"
-            @click="templateFormRef?.open('create')"
+            @click="templateFormModalApi.setData({ type: 'create' }).open()"
           >
             新增模板
           </ElButton>
           <ElButton
             v-access:code="['hrm:salary:slip:update']"
             :disabled="!selectedTemplate || selectedTemplate.defaultStatus"
-            @click="templateFormRef?.open('update', selectedTemplateId)"
+            @click="
+              templateFormModalApi
+                .setData({ type: 'update', id: selectedTemplateId })
+                .open()
+            "
           >
             编辑模板
           </ElButton>
@@ -413,49 +429,7 @@ defineExpose({ open });
         <ElButton @click="handleQuery">搜索</ElButton>
         <ElButton @click="resetQuery">重置</ElButton>
       </div>
-      <ElTable
-        :data="employeeList"
-        border
-        row-key="employeeId"
-        size="small"
-        @selection-change="handleSelectionChange"
-      >
-        <ElTableColumn reserve-selection type="selection" width="45" />
-        <ElTableColumn label="员工" min-width="120" prop="employeeName" />
-        <ElTableColumn label="工号" prop="jobNumber" width="110" />
-        <ElTableColumn label="部门" min-width="130" prop="deptName" />
-        <ElTableColumn label="岗位" min-width="130" prop="postName" />
-        <ElTableColumn label="手机号" prop="mobile" width="130" />
-        <ElTableColumn align="center" label="发送状态" width="100">
-          <template #default="{ row }">
-            <ElTag :type="row.sent ? 'success' : 'info'">
-              {{ row.sent ? '已发送' : '未发送' }}
-            </ElTag>
-          </template>
-        </ElTableColumn>
-        <ElTableColumn align="right" label="应发工资" width="120">
-          <template #default="{ row }">
-            {{ formatHrmMoney(row.expectedPaySalary) }}
-          </template>
-        </ElTableColumn>
-        <ElTableColumn align="right" label="实发工资" width="120">
-          <template #default="{ row }">
-            {{ formatHrmMoney(row.realPaySalary) }}
-          </template>
-        </ElTableColumn>
-      </ElTable>
-      <div class="mt-4 flex justify-end">
-        <ElPagination
-          v-model:current-page="employeePageNo"
-          v-model:page-size="employeePageSize"
-          :page-sizes="[10, 20, 50]"
-          :total="employeeTotal"
-          background
-          layout="total, sizes, prev, pager, next"
-          @current-change="(page) => loadEmployees(page)"
-          @size-change="(size) => loadEmployees(1, size)"
-        />
-      </div>
+      <EmployeeGrid class="w-full" />
     </div>
 
     <div class="mt-6 flex items-center justify-end gap-3 border-t pt-4">
@@ -486,6 +460,6 @@ defineExpose({ open });
       <ElButton @click="modalApi.close()">取消</ElButton>
     </div>
 
-    <TemplateForm ref="templateFormRef" @success="handleTemplateSuccess" />
+    <TemplateFormModal @success="handleTemplateSuccess" />
   </Modal>
 </template>

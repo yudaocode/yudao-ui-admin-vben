@@ -3,7 +3,7 @@ import type { DescriptionItemSchema } from '#/components/description';
 
 import { h } from 'vue';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DeliveryTypeEnum, DICT_TYPE } from '@vben/constants';
 import { fenToYuan, formatDateTime } from '@vben/utils';
 
 import { DictTag } from '#/components/dict-tag';
@@ -144,7 +144,10 @@ export function useOrderPriceSchema(): DescriptionItemSchema[] {
 }
 
 /** 收货信息 schema */
-export function useDeliveryInfoSchema(): DescriptionItemSchema[] {
+export function useDeliveryInfoSchema(
+  getExpressName: (id: number) => string,
+  getPickUpStoreName: () => string,
+): DescriptionItemSchema[] {
   return [
     {
       field: 'deliveryType',
@@ -167,6 +170,27 @@ export function useDeliveryInfoSchema(): DescriptionItemSchema[] {
       field: 'receiverAddress',
       label: '收货地址',
       render: (val, data) => `${data?.receiverAreaName} ${val}`.trim(),
+    },
+    {
+      field: 'logisticsId',
+      label: '物流公司',
+      show: (data) =>
+        data.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
+        !!data.logisticsId,
+      render: (val) => getExpressName(val),
+    },
+    {
+      field: 'logisticsNo',
+      label: '物流单号',
+      show: (data) =>
+        data.deliveryType === DeliveryTypeEnum.EXPRESS.type &&
+        !!data.logisticsId,
+    },
+    {
+      field: 'pickUpStoreId',
+      label: '自提门店',
+      show: (data) => data.deliveryType === DeliveryTypeEnum.PICK_UP.type,
+      render: () => getPickUpStoreName(),
     },
     {
       field: 'deliveryTime',

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { MpDraftApi } from '#/api/mp/draft';
 
-import { computed, provide, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -24,14 +24,13 @@ const getTitle = computed(() => {
   return formData.value?.mediaId ? '修改图文' : '新建图文';
 });
 
-provide(
-  'accountId',
-  computed(() => formData.value?.accountId),
-); // 提供 accountId 给子组件
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     if (!formData.value) {
+      return;
+    }
+    if (newsList.value.some((item) => !item.thumbMediaId)) {
+      message.warning('请先为每篇图文选择或上传封面');
       return;
     }
     modalApi.lock();
@@ -83,6 +82,7 @@ const [Modal, modalApi] = useVbenModal({
     <NewsForm
       v-if="formData"
       v-model="newsList"
+      :account-id="formData.accountId"
       :is-creating="!formData.mediaId"
     />
   </Modal>

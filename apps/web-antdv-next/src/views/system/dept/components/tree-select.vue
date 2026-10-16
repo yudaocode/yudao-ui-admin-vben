@@ -47,11 +47,13 @@ function handleSelect(selectedNodeKeys: any[], info: any) {
 }
 
 /** 重置选中状态（供外部重置按钮调用） */
-function reset() {
+function reset(emitEvent = true) {
   searchValue.value = '';
   selectedKeys.value = [];
   deptTree.value = handleTree(deptList.value);
-  emit('select', undefined);
+  if (emitEvent) {
+    emit('select', undefined);
+  }
 }
 
 defineExpose({ reset });
@@ -82,11 +84,11 @@ onMounted(async () => {
         <IconifyIcon class="size-4" icon="lucide:search" />
       </template>
     </Input>
-    <Spin :spinning="loading" :classes="{ root: 'w-full' }">
+    <Spin :spinning="loading" :classes="{ root: 'w-full overflow-x-auto' }">
       <Tree
         v-if="deptTree.length > 0"
         v-model:selected-keys="selectedKeys"
-        class="pt-2"
+        class="w-max min-w-full whitespace-nowrap pt-2"
         :default-expand-all="true"
         :field-names="{ title: 'name', key: 'id', children: 'children' }"
         :tree-data="deptTree"

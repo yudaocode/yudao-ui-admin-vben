@@ -62,6 +62,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '任务编码',
       component: 'Input',
@@ -464,10 +465,21 @@ export function useResultGridColumns(
 export function useResultFormSchema(
   formApi?: VbenFormApi,
   taskLines: MesWmStockTakingTaskLineApi.StockTakingTaskLine[] = [],
+  isExecute = false,
 ): VbenFormSchema[] {
   return [
     {
+      fieldName: 'id',
+      component: 'Input',
+      dependencies: { triggerFields: [''], show: () => false },
+    },
+    {
       fieldName: 'lineId',
+      dependencies: {
+        triggerFields: ['id'],
+        show: (values) => isExecute || !!values.lineId,
+        disabled: (values) => !!values.id,
+      },
       label: '盘点清单',
       component: 'Select',
       componentProps: {
@@ -505,8 +517,8 @@ export function useResultFormSchema(
       rules: 'selectRequired',
       // 选中盘点清单后，物料由清单带出且禁止改动
       dependencies: {
-        triggerFields: ['lineId'],
-        disabled: (values) => values.lineId !== null,
+        triggerFields: ['lineId', 'id'],
+        disabled: (values) => isExecute && !values.id && !!values.lineId,
       },
     },
     {
@@ -518,8 +530,8 @@ export function useResultFormSchema(
       },
       // 选中盘点清单后，批次由清单带出且禁止改动
       dependencies: {
-        triggerFields: ['lineId'],
-        disabled: (values) => values.lineId !== null,
+        triggerFields: ['lineId', 'id'],
+        disabled: (values) => isExecute && !values.id && !!values.lineId,
       },
     },
     {
@@ -549,8 +561,8 @@ export function useResultFormSchema(
       rules: 'selectRequired',
       // 选中盘点清单后，仓库由清单带出且禁止改动
       dependencies: {
-        triggerFields: ['lineId'],
-        disabled: (values) => values.lineId !== null,
+        triggerFields: ['lineId', 'id'],
+        disabled: (values) => isExecute && !values.id && !!values.lineId,
       },
     },
     {
@@ -559,10 +571,10 @@ export function useResultFormSchema(
       component: markRaw(WmWarehouseLocationSelect),
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['warehouseId', 'lineId'],
+        triggerFields: ['warehouseId', 'lineId', 'id'],
         show: (values) => !!values.warehouseId,
         // 选中盘点清单后，库区由清单带出且禁止改动
-        disabled: (values) => values.lineId !== null,
+        disabled: (values) => isExecute && !values.id && !!values.lineId,
         componentProps: (values) => ({
           onChange: () => formApi?.setFieldValue('areaId', undefined),
           placeholder: '请选择库区',
@@ -576,10 +588,10 @@ export function useResultFormSchema(
       component: markRaw(WmWarehouseAreaSelect),
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['locationId', 'lineId'],
+        triggerFields: ['locationId', 'lineId', 'id'],
         show: (values) => !!values.locationId,
         // 选中盘点清单后，库位由清单带出且禁止改动
-        disabled: (values) => values.lineId !== null,
+        disabled: (values) => isExecute && !values.id && !!values.lineId,
         componentProps: (values) => ({
           locationId: values.locationId,
           placeholder: '请选择库位',

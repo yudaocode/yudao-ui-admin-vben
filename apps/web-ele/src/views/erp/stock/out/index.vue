@@ -70,7 +70,7 @@ async function handleUpdateStatus(
   status: number,
 ) {
   const loadingInstance = ElLoading.service({
-    text: `确定${status === 20 ? '审批' : '反审批'}该出库单吗？`,
+    text: `${status === 20 ? '审批' : '反审批'}中...`,
   });
   try {
     await updateStockOutStatus(row.id!, status);

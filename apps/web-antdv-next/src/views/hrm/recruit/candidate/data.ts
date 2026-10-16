@@ -4,16 +4,16 @@ import type { HrmRecruitCandidateApi } from '#/api/hrm/recruit/candidate';
 
 import { markRaw } from 'vue';
 
-import { z } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { getRecruitChannelSimpleList } from '#/api/hrm/recruit/channel';
+import { z } from '#/adapter/form';
 import { getRecruitEliminateReasonList } from '#/api/hrm/recruit/config';
-import { getRecruitPostSimpleList } from '#/api/hrm/recruit/post';
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
 import EmployeeSelect from '#/views/hrm/employee/components/employee-select.vue';
+import ChannelSelect from '#/views/hrm/recruit/channel/components/channel-select.vue';
+import PostSelect from '#/views/hrm/recruit/post/components/post-select.vue';
 import {
   HrmEmployeeEntryStatus,
   HrmRecruitCandidateStatus,
@@ -101,14 +101,11 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'postId',
       label: '应聘职位',
-      component: 'ApiSelect',
+      component: markRaw(PostSelect),
       rules: 'required',
       componentProps: {
-        api: getRecruitPostSimpleList,
-        labelField: 'postName',
-        valueField: 'id',
         placeholder: '请选择应聘职位',
-        allowClear: false,
+        clearable: false,
         showSearch: true,
       },
     },
@@ -160,13 +157,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'channelId',
       label: '招聘渠道',
-      component: 'ApiSelect',
+      component: markRaw(ChannelSelect),
       componentProps: {
-        api: getRecruitChannelSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘渠道',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
       },
     },
@@ -177,6 +171,7 @@ export function useFormSchema(): VbenFormSchema[] {
       formItemClass: 'col-span-2',
       componentProps: {
         maxNumber: 5,
+        multiple: true,
         maxSize: 20,
         accept: ['doc', 'docx', 'pdf'],
         directory: 'hrm/recruit/candidate/resume',
@@ -213,13 +208,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'postId',
       label: '应聘职位',
-      component: 'ApiSelect',
+      component: markRaw(PostSelect),
       componentProps: {
-        api: getRecruitPostSimpleList,
-        labelField: 'postName',
-        valueField: 'id',
         placeholder: '请选择应聘职位',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
       },
     },
@@ -236,13 +228,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'channelId',
       label: '招聘渠道',
-      component: 'ApiSelect',
+      component: markRaw(ChannelSelect),
       componentProps: {
-        api: getRecruitChannelSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘渠道',
-        allowClear: true,
+        clearable: true,
         showSearch: true,
       },
     },
@@ -683,14 +672,11 @@ export function usePostBatchFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'postId',
       label: '应聘职位',
-      component: 'ApiSelect',
+      component: markRaw(PostSelect),
       rules: 'required',
       componentProps: {
-        api: getRecruitPostSimpleList,
-        labelField: 'postName',
-        valueField: 'id',
         placeholder: '请选择应聘职位',
-        allowClear: false,
+        clearable: false,
         showSearch: true,
       },
     },
@@ -709,14 +695,11 @@ export function useChannelBatchFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'channelId',
       label: '招聘渠道',
-      component: 'ApiSelect',
+      component: markRaw(ChannelSelect),
       rules: 'required',
       componentProps: {
-        api: getRecruitChannelSimpleList,
-        labelField: 'name',
-        valueField: 'id',
         placeholder: '请选择招聘渠道',
-        allowClear: false,
+        clearable: false,
         showSearch: true,
       },
     },
@@ -736,7 +719,12 @@ export function useEliminateFormSchema(): VbenFormSchema[] {
       fieldName: 'eliminate',
       label: '淘汰原因',
       component: 'ApiSelect',
-      rules: 'required',
+      rules: z.union([
+        z.string().min(1, '淘汰原因不能为空').max(255, '淘汰原因不能超过255字'),
+        z
+          .array(z.string().min(1).max(255, '淘汰原因不能超过255字'))
+          .length(1, '请选择一个淘汰原因'),
+      ]),
       componentProps: {
         api: getRecruitEliminateReasonList,
         afterFetch: (list: string[]) => {

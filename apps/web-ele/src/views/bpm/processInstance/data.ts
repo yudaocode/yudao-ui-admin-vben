@@ -17,19 +17,19 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入流程名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
-      fieldName: 'processDefinitionId',
+      fieldName: 'processDefinitionKey',
       label: '所属流程',
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择流程定义',
-        allowClear: true,
+        clearable: true,
         api: getSimpleProcessDefinitionList,
         labelField: 'name',
-        valueField: 'id',
+        valueField: 'key',
       },
     },
     {
@@ -38,7 +38,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请输入流程分类',
-        allowClear: true,
+        clearable: true,
         api: getCategorySimpleList,
         labelField: 'name',
         valueField: 'code',
@@ -54,7 +54,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
           'number',
         ),
         placeholder: '请选择流程状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -63,7 +63,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -79,6 +79,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       fixed: 'left',
     },
     {
+      showOverflow: false,
       field: 'summary',
       title: '摘要',
       minWidth: 200,

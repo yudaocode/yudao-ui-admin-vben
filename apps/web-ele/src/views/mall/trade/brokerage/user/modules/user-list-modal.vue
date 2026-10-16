@@ -11,7 +11,7 @@ import { useUserListColumns, useUserListFormSchema } from '../data';
 
 defineOptions({ name: 'BrokerageUserListModal' });
 
-const [Modal, modalApi] = useVbenModal({});
+const [Modal, modalApi] = useVbenModal<{ id: number }>({});
 
 const [Grid] = useVbenVxeGrid({
   formOptions: {
@@ -27,7 +27,7 @@ const [Grid] = useVbenVxeGrid({
           return await getBrokerageUserPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            bindUserId: modalApi.getData().id,
+            bindUserId: modalApi.getData()!.id,
             ...formValues,
           });
         },

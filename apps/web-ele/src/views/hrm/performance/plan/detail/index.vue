@@ -8,21 +8,22 @@ import type { SystemOperateLogApi } from '#/api/system/operate-log';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page } from '@vben/common-ui';
+import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel, useTabs } from '@vben/hooks';
+import { getDictLabel, getDictOptions, useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { handleTree } from '@vben/utils';
 
 import {
-  ElButton as Button,
-  ElCard as Card,
-  ElDropdown as Dropdown,
+  ElButton,
+  ElCard,
+  ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElMessage as message,
-  ElTabPane as TabPane,
-  ElTabs as Tabs,
-  ElTag as Tag,
+  ElMessage,
+  ElTabPane,
+  ElTabs,
+  ElTag,
 } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -42,6 +43,7 @@ import {
   startPerformancePlanInterview,
   terminatePerformancePlan,
 } from '#/api/hrm/performance/plan';
+import { getSimpleDeptList } from '#/api/system/dept';
 import { OperateLog } from '#/components/operate-log';
 import { $t } from '#/locales';
 import {
@@ -72,7 +74,10 @@ const logList = ref<SystemOperateLogApi.OperateLog[]>([]);
 const stageCountList = ref<HrmPerformancePlanApi.PerformanceStageCount[]>([]);
 const levelList = ref<string[]>([]);
 const checkedEmployeeIds = ref<number[]>([]);
-const assessmentAddFormRef = ref<InstanceType<typeof AssessmentAddForm>>();
+const [AssessmentAddModal, assessmentAddModalApi] = useVbenModal({
+  connectedComponent: AssessmentAddForm,
+  destroyOnClose: true,
+});
 
 const isEditable = computed(
   () =>
@@ -175,7 +180,7 @@ async function handleAction(
   else if (action === 'interview') await startPerformancePlanInterview(planId);
   else if (action === 'archive') await archivePerformancePlan(planId);
   else await terminatePerformancePlan(planId);
-  message.success($t('ui.actionMessage.operationSuccess'));
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
   if (action === 'terminate') {
     close();
     return;
@@ -186,7 +191,7 @@ async function handleAction(
 async function handleDelete() {
   await confirm('确认删除该 KPI 考核？');
   await deletePerformancePlan(planId);
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   close();
 }
 
@@ -199,7 +204,7 @@ async function handleRemoveEmployees() {
     planId,
     employeeIds: checkedEmployeeIds.value,
   });
-  message.success('参评员工移除成功');
+  ElMessage.success('参评员工移除成功');
   checkedEmployeeIds.value = [];
   await getData();
 }
@@ -227,9 +232,9 @@ function useEmployeeFormSchema(): VbenFormSchema[] {
       label: '部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         clearable: true,
-        api: () =>
-          import('#/api/system/dept').then((m) => m.getSimpleDeptList()),
+        api: async () => handleTree(await getSimpleDeptList()),
         class: 'w-full',
         labelField: 'name',
         valueField: 'id',
@@ -240,30 +245,33 @@ function useEmployeeFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'employeeType',
       label: '聘用形式',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
         clearable: true,
-        dictType: DICT_TYPE.HRM_EMPLOYEE_TYPE,
+        options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_TYPE, 'number'),
         placeholder: '请选择',
       },
     },
     {
       fieldName: 'employeeStatus',
       label: '员工状态',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
         clearable: true,
-        dictType: DICT_TYPE.HRM_EMPLOYEE_STATUS,
+        options: getDictOptions(DICT_TYPE.HRM_EMPLOYEE_STATUS, 'number'),
         placeholder: '请选择',
       },
     },
     {
       fieldName: 'stageType',
       label: '当前阶段',
-      component: 'DictSelect',
+      component: 'Select',
       componentProps: {
         clearable: true,
-        dictType: DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS,
+        options: getDictOptions(
+          DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS,
+          'number',
+        ),
         placeholder: '请选择',
       },
     },
@@ -372,6 +380,7 @@ const [EmployeeGrid, employeeGridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     checkboxConfig: { highlight: true },
+    toolbarConfig: { refresh: true, search: true },
   },
   gridEvents: {
     checkboxChange: ({
@@ -408,7 +417,7 @@ watch(isEditable, (editable) => {
 
 onMounted(async () => {
   if (!Number.isSafeInteger(planId) || planId <= 0) {
-    message.warning('参数错误，KPI 考核不能为空！');
+    ElMessage.warning('参数错误，KPI 考核不能为空！');
     close();
     return;
   }
@@ -418,7 +427,7 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
-    <AssessmentAddForm ref="assessmentAddFormRef" @success="getData" />
+    <AssessmentAddModal @success="getData" />
     <Header :loading="loading" :plan="plan" @back="close">
       <div class="flex flex-wrap items-center gap-2">
         <TableAction
@@ -439,9 +448,9 @@ onMounted(async () => {
             },
           ]"
         />
-        <Button v-else type="primary" @click="openSettings">
+        <ElButton v-else type="primary" @click="openSettings">
           查看考核设置
-        </Button>
+        </ElButton>
         <TableAction
           v-if="
             plan.status === HrmPerformancePlanStatus.RUNNING &&
@@ -456,11 +465,11 @@ onMounted(async () => {
             },
           ]"
         />
-        <Dropdown v-if="showMoreActions">
-          <Button>
+        <ElDropdown v-if="showMoreActions">
+          <ElButton>
             更多
             <IconifyIcon class="ml-1" icon="lucide:chevron-down" />
-          </Button>
+          </ElButton>
           <template #dropdown>
             <ElDropdownMenu>
               <ElDropdownItem
@@ -492,18 +501,18 @@ onMounted(async () => {
               </ElDropdownItem>
             </ElDropdownMenu>
           </template>
-        </Dropdown>
+        </ElDropdown>
       </div>
     </Header>
 
-    <Card class="mt-4">
-      <Tabs v-model="activeTab">
-        <TabPane label="详细资料" name="details">
+    <ElCard class="mt-4">
+      <ElTabs v-model="activeTab">
+        <ElTabPane label="详细资料" name="details">
           <Info :plan="plan" />
-        </TabPane>
-        <TabPane :label="`参评员工（${employeeTotal}）`" name="employees">
+        </ElTabPane>
+        <ElTabPane :label="`参评员工（${employeeTotal}）`" name="employees">
           <div v-if="stageCountList.length" class="mb-3 flex flex-wrap gap-2">
-            <Tag
+            <ElTag
               v-for="item in stageCountList"
               :key="item.stageType"
               color="processing"
@@ -514,7 +523,7 @@ onMounted(async () => {
                   item.stageType,
                 ) || '未知阶段'
               }}（{{ item.count }}）
-            </Tag>
+            </ElTag>
           </div>
           <EmployeeGrid>
             <template #toolbar-tools>
@@ -526,7 +535,7 @@ onMounted(async () => {
                     type: 'primary',
                     icon: ACTION_ICON.ADD,
                     auth: ['hrm:performance:plan:update'],
-                    onClick: () => assessmentAddFormRef?.open(planId),
+                    onClick: () => assessmentAddModalApi.setData(planId).open(),
                   },
                   {
                     label: '移除员工',
@@ -547,11 +556,11 @@ onMounted(async () => {
               </a>
             </template>
           </EmployeeGrid>
-        </TabPane>
-        <TabPane label="操作日志" name="operateLog">
+        </ElTabPane>
+        <ElTabPane label="操作日志" name="operateLog">
           <OperateLog :log-list="logList" />
-        </TabPane>
-      </Tabs>
-    </Card>
+        </ElTabPane>
+      </ElTabs>
+    </ElCard>
   </Page>
 </template>

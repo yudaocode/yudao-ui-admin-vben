@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessment';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -9,26 +10,26 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, useTabs } from '@vben/hooks';
 
 import {
-  ElAvatar as Avatar,
-  ElButton as Button,
-  ElDescriptions as Descriptions,
+  ElAvatar,
+  ElButton,
+  ElDescriptions,
   ElDescriptionsItem,
+  ElEmpty,
   ElStep,
-  ElTable,
-  ElTableColumn,
+  ElSteps,
   ElTabPane,
   ElTabs,
-  ElEmpty as Empty,
-  ElSteps as Steps,
-  ElTag as Tag,
+  ElTag,
 } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getPerformanceAssessment,
   getPerformanceAssessmentArchive,
   getPerformanceAssessmentArchiveProcessRecordList,
   getPerformanceAssessmentProcessRecordList,
 } from '#/api/hrm/performance/assessment';
+import { DictTag } from '#/components/dict-tag';
 import {
   HrmPerformanceAssessmentStageStatus,
   HrmPerformancePlanStatus,
@@ -39,24 +40,9 @@ import {
 } from '#/views/hrm/utils/format-performance';
 
 import ProcessRecordTimeline from '../components/process-record-timeline.vue';
+import { useScoreGridColumns } from '../data';
 
 defineOptions({ name: 'HrmPerformanceAssessmentDetail' });
-
-interface PerformanceScoreRow {
-  key: string;
-  dimensionId?: number;
-  quotaId?: number;
-  dimensionName?: string;
-  quotaName?: string;
-  description?: string;
-  standard?: string;
-  targetValue?: string;
-  actualValue?: string;
-  weight?: number;
-  raterName?: string;
-  score?: number;
-  comment?: string;
-}
 
 const route = useRoute();
 const router = useRouter();
@@ -91,7 +77,7 @@ const activeStage = computed(() => {
   return index === -1 ? stageList.value.length : index;
 });
 
-const scoreRows = computed<PerformanceScoreRow[]>(() =>
+const scoreRows = computed(() =>
   (detail.value.quotas || []).flatMap((quota) => buildQuotaScoreRows(quota)),
 );
 
@@ -102,23 +88,17 @@ const hasAssessmentComment = computed(
     !!detail.value.resultComment,
 );
 
-function tableSpanMethod({
-  rowIndex,
-  columnIndex,
-}: {
-  columnIndex: number;
-  rowIndex: number;
-}) {
-  const result = spanScoreCell(
-    scoreRows.value[rowIndex]!,
-    rowIndex,
-    columnIndex,
-  );
-  return {
-    rowspan: result.rowSpan,
-    colspan: result.colSpan,
-  };
-}
+const [ScoreGrid, scoreGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useScoreGridColumns(),
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'key', isHover: true },
+    spanMethod: getScoreSpanMethod,
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
 
 function close() {
   closeCurrentTab();
@@ -144,6 +124,7 @@ async function getDetail() {
   if (!assessmentId) return;
   loading.value = true;
   recordLoading.value = true;
+  scoreGridApi.setLoading(true);
   try {
     const [assessment, records] = archived
       ? await Promise.all([
@@ -159,12 +140,13 @@ async function getDetail() {
   } finally {
     loading.value = false;
     recordLoading.value = false;
+    scoreGridApi.setLoading(false);
   }
 }
 
 function buildQuotaScoreRows(
   quota: HrmPerformanceAssessmentApi.PerformanceAssessmentQuota,
-): PerformanceScoreRow[] {
+) {
   const scoreStages = (detail.value.reviewStages || []).filter((stage) =>
     stage.quotaScoreList?.some((score) => score.assessmentQuotaId === quota.id),
   );
@@ -182,7 +164,7 @@ function buildScoreRow(
   stage?: HrmPerformanceAssessmentApi.PerformanceAssessmentStage,
   score?: number,
   comment?: string,
-): PerformanceScoreRow {
+) {
   return {
     key: `${quota.id || 0}-${stage?.id || 0}`,
     dimensionId: quota.dimensionId,
@@ -200,27 +182,20 @@ function buildScoreRow(
   };
 }
 
-function spanScoreCell(
-  _record: PerformanceScoreRow,
-  index: number,
-  columnIndex: number,
-) {
-  const row = scoreRows.value[index]!;
+function getScoreSpanMethod({ columnIndex, rowIndex }: any) {
+  const row = scoreRows.value[rowIndex]!;
   if (columnIndex === 0) {
-    return getRowSpan(index, (item) => item.dimensionId === row.dimensionId);
+    return getRowSpan(rowIndex, (item) => item.dimensionId === row.dimensionId);
   }
   if (columnIndex >= 1 && columnIndex <= 6) {
-    return getRowSpan(index, (item) => item.quotaId === row.quotaId);
+    return getRowSpan(rowIndex, (item) => item.quotaId === row.quotaId);
   }
-  return { rowSpan: 1, colSpan: 1 };
+  return { rowspan: 1, colspan: 1 };
 }
 
-function getRowSpan(
-  rowIndex: number,
-  matcher: (row: PerformanceScoreRow) => boolean,
-) {
+function getRowSpan(rowIndex: number, matcher: (row: any) => boolean) {
   if (rowIndex > 0 && matcher(scoreRows.value[rowIndex - 1]!)) {
-    return { rowSpan: 0, colSpan: 0 };
+    return { rowspan: 0, colspan: 0 };
   }
   let rowSpan = 1;
   while (
@@ -229,8 +204,17 @@ function getRowSpan(
   ) {
     rowSpan += 1;
   }
-  return { rowSpan, colSpan: 1 };
+  return { rowspan: rowSpan, colspan: 1 };
 }
+
+watch(
+  scoreRows,
+  async (rows) => {
+    await nextTick();
+    await scoreGridApi.grid.reloadData(rows);
+  },
+  { immediate: true },
+);
 
 onMounted(getDetail);
 </script>
@@ -238,26 +222,26 @@ onMounted(getDetail);
 <template>
   <Page auto-content-height>
     <div class="mb-5 flex items-center gap-3">
-      <Button link @click="close">返回</Button>
+      <ElButton link @click="close">返回</ElButton>
       <span class="text-xl font-semibold">员工考核详情</span>
     </div>
 
     <div class="mb-6 flex items-center justify-between gap-6">
       <div class="flex min-w-0 items-center gap-3">
-        <Avatar :size="48">{{ detail.employeeName?.slice(0, 1) }}</Avatar>
+        <ElAvatar :size="48">{{ detail.employeeName?.slice(0, 1) }}</ElAvatar>
         <div class="min-w-0">
           <div class="flex items-center gap-2">
             <span class="truncate text-xl font-semibold">{{
               detail.name || '-'
             }}</span>
-            <Tag v-if="detail.status !== null">
+            <ElTag v-if="detail.status !== null && detail.status !== undefined">
               {{
                 getDictLabel(
                   DICT_TYPE.HRM_PERFORMANCE_PLAN_STATUS,
                   detail.status,
                 )
               }}
-            </Tag>
+            </ElTag>
           </div>
           <div class="mt-1 text-gray-500">
             {{ detail.employeeName || '-' }} · {{ detail.jobNumber || '-' }}
@@ -276,7 +260,9 @@ onMounted(getDetail);
           <div class="mt-1 text-lg font-semibold">
             {{ detail.resultLevel || '-' }}
             <span
-              v-if="detail.coefficient !== null"
+              v-if="
+                detail.coefficient !== null && detail.coefficient !== undefined
+              "
               class="text-sm font-normal"
             >
               （系数 {{ detail.coefficient }}）
@@ -286,7 +272,7 @@ onMounted(getDetail);
       </div>
     </div>
 
-    <Descriptions border :column="4" class="mb-6">
+    <ElDescriptions border :column="4" class="mb-6">
       <ElDescriptionsItem label="考核周期">
         {{ formatHrmPerformanceCycleType(detail.cycleType) }}
       </ElDescriptionsItem>
@@ -301,14 +287,14 @@ onMounted(getDetail);
       </ElDescriptionsItem>
       <ElDescriptionsItem label="聘用形式">
         {{
-          detail.employeeType !== null
+          detail.employeeType !== null && detail.employeeType !== undefined
             ? getDictLabel(DICT_TYPE.HRM_EMPLOYEE_TYPE, detail.employeeType)
             : '-'
         }}
       </ElDescriptionsItem>
       <ElDescriptionsItem label="当前阶段">
         {{
-          detail.stageType !== null
+          detail.stageType !== null && detail.stageType !== undefined
             ? getDictLabel(
                 DICT_TYPE.HRM_PERFORMANCE_STAGE_STATUS,
                 detail.stageType,
@@ -322,21 +308,29 @@ onMounted(getDetail);
       <ElDescriptionsItem label="考核时间">
         {{ formatHrmDateRange(detail.startTime, detail.endTime) }}
       </ElDescriptionsItem>
-    </Descriptions>
+    </ElDescriptions>
 
     <div class="mb-6">
       <div class="mb-4 border-l-4 border-primary pl-3 text-base font-semibold">
         考核流程
       </div>
-      <Steps v-if="stageList.length" :current="activeStage" class="mb-4">
+      <ElSteps v-if="stageList.length" :current="activeStage" class="mb-4">
         <ElStep
           v-for="stage in stageList"
           :key="stage.id"
           :title="stage.name || '-'"
-          :description="stage.handlerName || '系统'"
-        />
-      </Steps>
-      <Empty v-else-if="!loading" description="暂无考核流程" />
+        >
+          <template #description>
+            <div class="mt-1">{{ stage.handlerName || '系统' }}</div>
+            <DictTag
+              class="mt-1"
+              :type="DICT_TYPE.HRM_PERFORMANCE_ASSESSMENT_STAGE_STATUS"
+              :value="stage.status ?? 0"
+            />
+          </template>
+        </ElStep>
+      </ElSteps>
+      <ElEmpty v-else-if="!loading" description="暂无考核流程" />
     </div>
 
     <ElTabs v-model="activeTab">
@@ -346,34 +340,16 @@ onMounted(getDetail);
         >
           考核评分明细
         </div>
-        <ElTable
-          v-loading="loading"
-          border
-          :data="scoreRows"
-          row-key="key"
-          size="small"
-          :span-method="tableSpanMethod"
-        >
-          <ElTableColumn label="维度" prop="dimensionName" width="120" />
-          <ElTableColumn label="指标" prop="quotaName" width="140" />
-          <ElTableColumn label="指标说明" prop="description" width="180" />
-          <ElTableColumn label="考核标准" prop="standard" width="180" />
-          <ElTableColumn label="目标值" prop="targetValue" width="150" />
-          <ElTableColumn label="实际值" prop="actualValue" width="150" />
-          <ElTableColumn align="center" label="权重" width="90">
-            <template #default="{ row }">{{ row.weight ?? 0 }}%</template>
-          </ElTableColumn>
-          <ElTableColumn label="评分人" prop="raterName" width="110" />
-          <ElTableColumn align="center" label="评分" prop="score" width="90" />
-          <ElTableColumn label="评语" prop="comment" width="180" />
-        </ElTable>
+        <ScoreGrid class="w-full">
+          <template #weight="{ row }">{{ row.weight ?? 0 }}%</template>
+        </ScoreGrid>
         <template v-if="hasAssessmentComment">
           <div
             class="mb-3 mt-6 border-l-4 border-primary pl-3 text-base font-semibold"
           >
             考核评语
           </div>
-          <Descriptions border :column="3">
+          <ElDescriptions border :column="3">
             <ElDescriptionsItem label="自评说明">
               {{ detail.selfComment || '-' }}
             </ElDescriptionsItem>
@@ -383,7 +359,7 @@ onMounted(getDetail);
             <ElDescriptionsItem label="结果说明">
               {{ detail.resultComment || '-' }}
             </ElDescriptionsItem>
-          </Descriptions>
+          </ElDescriptions>
         </template>
       </ElTabPane>
       <ElTabPane label="考核记录" name="record">

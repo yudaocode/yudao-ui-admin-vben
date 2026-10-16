@@ -61,8 +61,8 @@ defineExpose({ validate });
         "
       />
     </FormItem>
-    <FormItem label="流程描述" name="description" class="mb-5">
-      <TextArea v-model:value="modelData.description" allow-clear />
+    <FormItem label="流程描述" name="remark" class="mb-5">
+      <TextArea v-model:value="modelData.remark" allow-clear />
     </FormItem>
   </Form>
 </template>

@@ -27,14 +27,14 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useFormSchema(),
   showDefaultActions: false,
 });
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useVbenModal<CrmPermissionApi.Permission>({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {

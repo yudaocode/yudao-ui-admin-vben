@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import { DatePicker, Radio, RadioGroup } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
+import { $t } from '#/locales';
 import { getRangePickerDefaultProps } from '#/utils/rangePickerProps';
 
 /** 快捷日期范围选择组件 */
@@ -19,32 +20,22 @@ const times = ref<[Dayjs, Dayjs]>(); // 日期范围
 
 const rangePickerProps = getRangePickerDefaultProps();
 const timeRangeOptions = [
-  rangePickerProps.presets[3]!, // 昨天
-  {
-    label: rangePickerProps.presets[1]!.label,
-    value: [
-      dayjs().subtract(7, 'day').startOf('day'),
-      dayjs().subtract(1, 'day').endOf('day'),
-    ],
-  },
-  {
-    label: rangePickerProps.presets[2]!.label,
-    value: [
-      dayjs().subtract(30, 'day').startOf('day'),
-      dayjs().subtract(1, 'day').endOf('day'),
-    ],
-  },
+  { label: $t('utils.rangePicker.yesterday'), value: 'yesterday', days: 1 },
+  { label: $t('utils.rangePicker.last7Days'), value: 'last7Days', days: 7 },
+  { label: $t('utils.rangePicker.last30Days'), value: 'last30Days', days: 30 },
 ];
-const timeRangeType = ref(timeRangeOptions[1]!.label); // 默认选中第一个选项
+const timeRangeType = ref('last7Days'); // 默认选中最近 7 天
 
 /** 设置时间范围 */
 function setTimes() {
-  // 根据选中的选项设置时间范围
   const selectedOption = timeRangeOptions.find(
-    (option) => option.label === timeRangeType.value,
+    (option) => option.value === timeRangeType.value,
   );
   if (selectedOption) {
-    times.value = selectedOption.value as [Dayjs, Dayjs];
+    times.value = [
+      dayjs().subtract(selectedOption.days, 'day').startOf('day'),
+      dayjs().subtract(1, 'day').endOf('day'),
+    ];
   }
 }
 
@@ -82,8 +73,8 @@ onMounted(() => {
     >
       <Radio
         v-for="option in timeRangeOptions"
-        :key="option.label"
-        :value="option.label"
+        :key="option.value"
+        :value="option.value"
       >
         {{ option.label }}
       </Radio>

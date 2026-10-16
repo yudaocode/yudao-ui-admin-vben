@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getAppList,
         labelField: 'name',
         valueField: 'id',
-        autoSelect: 'first',
+        clearable: true,
         placeholder: '请选择应用编号',
       },
     },

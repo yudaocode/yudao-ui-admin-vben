@@ -153,7 +153,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -162,16 +162,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号码',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
-      fieldName: 'email',
-      label: '邮箱',
+      fieldName: 'telephone',
+      label: '联系电话',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入邮箱',
-        allowClear: true,
+        placeholder: '请输入联系电话',
+        clearable: true,
       },
     },
   ];

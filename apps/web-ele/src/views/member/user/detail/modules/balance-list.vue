@@ -32,7 +32,6 @@ const [Grid] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<WalletTransactionApi.Transaction>,
 });

@@ -2,10 +2,11 @@
 import type { Rule } from 'antdv-next';
 import type { Dayjs } from 'dayjs';
 
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryEmployeeInfoApi } from '#/api/hrm/salary/employee-info';
 import type { SystemDeptApi } from '#/api/system/dept';
 
-import { reactive, ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
@@ -29,11 +30,11 @@ import {
   RadioGroup,
   Row,
   Select,
-  Table,
   TreeSelect,
 } from 'antdv-next';
 import dayjs from 'dayjs';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSalaryOptionSimpleList } from '#/api/hrm/salary/config/option';
 import {
   getSalaryAdjustmentMinEffectDate,
@@ -46,6 +47,8 @@ import {
   HrmSalaryChangeReason,
   HrmSalaryOptionCategoryCode,
 } from '#/views/hrm/utils/constants';
+
+import { useBatchSalaryEditGridColumns } from '../data';
 
 defineOptions({ name: 'HrmSalaryEmployeeInfoBatchForm' });
 
@@ -80,6 +83,19 @@ const formRules = reactive<Record<string, Rule[]>>({
   effectTime: [
     { required: true, message: '生效日期不能为空', trigger: 'change' },
   ],
+});
+
+const [OptionGrid, optionGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useBatchSalaryEditGridColumns(),
+    data: [],
+    maxHeight: 360,
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'code', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
 });
 
 function createDefaultFormData(): HrmSalaryEmployeeInfoApi.UpdateListReq {
@@ -130,40 +146,45 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       formData.value = createDefaultFormData();
       formRef.value?.clearValidate();
+      return;
+    }
+    formData.value = createDefaultFormData();
+    formData.value.employeeIds = [...((modalApi.getData() as number[]) || [])];
+    formLoading.value = true;
+    optionGridApi.setLoading(true);
+    try {
+      const [options, adjustmentMinEffectDate, deptList] = await Promise.all([
+        getSalaryOptionSimpleList(true),
+        getSalaryAdjustmentMinEffectDate(),
+        getSimpleDeptList(),
+      ]);
+      deptTree.value = handleTree(deptList);
+      formData.value.salaryOptions = options
+        .filter(
+          (option) =>
+            option.parentCode === HrmSalaryOptionCategoryCode.BASIC_SALARY,
+        )
+        .map((option) => ({ code: option.code, name: option.name, value: 0 }));
+      minEffectDate.value = adjustmentMinEffectDate || undefined;
+    } finally {
+      formLoading.value = false;
+      optionGridApi.setLoading(false);
     }
   },
   title: '批量调薪',
 });
 
-async function open(employeeIds: number[]) {
-  formData.value = createDefaultFormData();
-  formData.value.employeeIds = [...employeeIds];
-  modalApi.open();
-  formLoading.value = true;
-  try {
-    const [options, adjustmentMinEffectDate, deptList] = await Promise.all([
-      getSalaryOptionSimpleList(),
-      getSalaryAdjustmentMinEffectDate(),
-      getSimpleDeptList(),
-    ]);
-    deptTree.value = handleTree(deptList);
-    formData.value.salaryOptions = options
-      .filter(
-        (option) =>
-          option.parentCode === HrmSalaryOptionCategoryCode.BASIC_SALARY,
-      )
-      .map((option) => ({ code: option.code, name: option.name, value: 0 }));
-    minEffectDate.value = adjustmentMinEffectDate || undefined;
-  } finally {
-    formLoading.value = false;
-  }
-}
-
-defineExpose({ open });
+watch(
+  () => formData.value.salaryOptions,
+  (rows) => {
+    optionGridApi.setGridOptions({ data: rows || [] });
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -190,8 +211,9 @@ defineExpose({ open });
               class="w-full"
               multiple
               placeholder="请选择调薪部门"
+              show-search
+              tree-node-filter-prop="name"
               tree-default-expand-all
-              tree-checkable
               @change="formRef?.validateFields(['employeeIds'])"
             />
           </FormItem>
@@ -236,7 +258,7 @@ defineExpose({ open });
       <Alert
         v-if="isPendingChange()"
         class="mb-4"
-        message="批量调整将在生效日期前保持待生效，不会提前修改所选员工的薪资档案。"
+        title="批量调整将在生效日期前保持待生效，不会提前修改所选员工的薪资档案。"
         show-icon
         type="warning"
       />
@@ -248,55 +270,33 @@ defineExpose({ open });
         </RadioGroup>
       </FormItem>
 
-      <Table
-        bordered
-        size="small"
-        :data-source="formData.salaryOptions"
-        :loading="formLoading"
-        :pagination="false"
-        :row-key="(row) => row.code ?? 0"
-        :scroll="{ y: 260 }"
-        :columns="[
-          { title: '调薪项', dataIndex: 'name', key: 'name' },
-          {
-            title: '编码',
-            dataIndex: 'code',
-            key: 'code',
-            align: 'center',
-            width: 100,
-          },
-          {
-            title:
-              formData.type === HrmSalaryBatchAdjustType.PERCENT
-                ? '调薪比例'
-                : '调薪金额',
-            key: 'value',
-            align: 'center',
-            width: 240,
-          },
-        ]"
-      >
-        <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'value'">
-            <div class="flex items-center justify-center gap-2">
-              <InputNumber
-                v-model:value="record.value"
-                :controls="false"
-                :max="
-                  formData.type === HrmSalaryBatchAdjustType.PERCENT
-                    ? 9999.99
-                    : 9999999.99
-                "
-                :precision="2"
-                class="w-[180px]"
-              />
-              <span>{{
-                formData.type === HrmSalaryBatchAdjustType.PERCENT ? '%' : '元'
-              }}</span>
-            </div>
-          </template>
+      <OptionGrid class="w-full">
+        <template #valueHeader>
+          {{
+            formData.type === HrmSalaryBatchAdjustType.PERCENT
+              ? '调薪比例'
+              : '调薪金额'
+          }}
         </template>
-      </Table>
+        <template #value="{ row }">
+          <div class="flex items-center justify-center gap-2">
+            <InputNumber
+              v-model:value="row.value"
+              :controls="false"
+              :max="
+                formData.type === HrmSalaryBatchAdjustType.PERCENT
+                  ? 9999.99
+                  : 9999999.99
+              "
+              :precision="2"
+              class="w-[180px]"
+            />
+            <span>{{
+              formData.type === HrmSalaryBatchAdjustType.PERCENT ? '%' : '元'
+            }}</span>
+          </div>
+        </template>
+      </OptionGrid>
 
       <FormItem class="mt-4" label="备注" name="remark">
         <Input.TextArea

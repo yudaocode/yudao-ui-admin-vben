@@ -1,0 +1,175 @@
+<script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { PmsKnowledgeInteractionApi } from '#/api/pms/kb/interaction/types';
+
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
+
+import { Button, message, Tabs } from 'antdv-next';
+
+import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import {
+  deleteKnowledgeFavorite,
+  getKnowledgeFavoritePage,
+} from '#/api/pms/kb/interaction/favorite';
+import { PmsKnowledgeObjectType } from '#/views/pms/kb/utils/constants';
+import {
+  formatKnowledgeFileSize,
+  getKnowledgeObjectIcon,
+} from '#/views/pms/kb/utils/format';
+
+import { useGridColumns } from './data';
+
+defineOptions({ name: 'PmsKnowledgeFavorite' });
+
+const router = useRouter(); // 路由
+const activeType = ref('all'); // 当前对象类型
+
+/** 切换关注类型 */
+function handleTypeChange() {
+  gridApi.query();
+}
+
+/** 打开内容详情 */
+function openItem(item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem) {
+  if (item.type === PmsKnowledgeObjectType.LIBRARY) {
+    router.push(`/pms/kb/library/${item.libraryId}`);
+    return;
+  }
+  if (item.documentId) {
+    router.push({
+      path: `/pms/kb/library/${item.libraryId}`,
+      query: { documentId: String(item.documentId) },
+    });
+    return;
+  }
+  router.push({
+    path: `/pms/kb/library/${item.libraryId}`,
+    query: { folderId: String(item.folderId) },
+  });
+}
+
+/** 取消关注并刷新列表 */
+async function removeFavorite(
+  item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+) {
+  await deleteKnowledgeFavorite(item.type, item.entityId);
+  message.success('已取消关注');
+  await gridApi.reload();
+}
+
+/** 切换关注状态，取消确认时保持原值 */
+async function handleCancelFavorite(
+  newStatus: boolean,
+  item: PmsKnowledgeInteractionApi.KnowledgeInteractionItem,
+): Promise<boolean> {
+  if (newStatus) return false;
+  try {
+    await confirm(`确认取消关注“${item.name}”吗？`);
+    await removeFavorite(item);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    columns: useGridColumns(handleCancelFavorite),
+    height: 'auto',
+    proxyConfig: {
+      ajax: {
+        query: async ({ page }) => {
+          const data = await getKnowledgeFavoritePage({
+            pageNo: page.currentPage,
+            pageSize: page.pageSize,
+            type:
+              activeType.value === 'all' ? undefined : Number(activeType.value),
+          });
+          return {
+            ...data,
+            list: data.list.map((item) => ({
+              ...item,
+              favoriteStatus: true,
+            })),
+          };
+        },
+      },
+    },
+    rowConfig: {
+      keyField: 'id',
+      isHover: true,
+    },
+    toolbarConfig: {
+      refresh: true,
+    },
+  } as VxeTableGridOptions<PmsKnowledgeInteractionApi.KnowledgeInteractionItem>,
+});
+</script>
+
+<template>
+  <Page auto-content-height>
+    <template #doc>
+      <DocAlert
+        title="【PMS】文档与协作"
+        url="https://doc.iocoder.cn/pms/kb/document/"
+      />
+    </template>
+    <!-- 关注列表 -->
+    <Grid>
+      <template #toolbar-actions>
+        <!-- 对象类型 -->
+        <Tabs
+          v-model:active-key="activeType"
+          class="w-full"
+          @change="handleTypeChange"
+        >
+          <Tabs.TabPane key="all" tab="全部" />
+          <Tabs.TabPane key="1" tab="知识库" />
+          <Tabs.TabPane key="3" tab="文档" />
+          <Tabs.TabPane key="2" tab="文件夹" />
+          <Tabs.TabPane key="4" tab="文件" />
+        </Tabs>
+      </template>
+      <template #name="{ row }">
+        <Button class="!p-0" type="link" @click="openItem(row)">
+          <IconifyIcon
+            class="mr-1.5"
+            :icon="getKnowledgeObjectIcon(row.type)"
+          />
+          {{ row.name }}
+        </Button>
+        <div v-if="row.description" class="text-xs text-muted-foreground">
+          {{ row.description }}
+        </div>
+        <div
+          v-if="row.fileType || row.fileSize != null"
+          class="text-xs text-muted-foreground"
+        >
+          <span v-if="row.fileType">{{ row.fileType.toUpperCase() }}</span>
+          <span v-if="row.fileType && row.fileSize != null"> · </span>
+          <span v-if="row.fileSize != null">
+            {{ formatKnowledgeFileSize(row.fileSize) }}
+          </span>
+        </div>
+      </template>
+      <template #actions="{ row }">
+        <TableAction
+          :actions="[
+            {
+              label: '取消关注',
+              type: 'link',
+              popConfirm: {
+                title: `确认取消关注“${row.name}”吗？`,
+                confirm: removeFavorite.bind(null, row),
+              },
+            },
+          ]"
+        />
+      </template>
+    </Grid>
+  </Page>
+</template>

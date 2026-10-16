@@ -42,7 +42,7 @@ const [Form, formApi] = useVbenForm({
       componentProps: {
         placeholder: '请输入用户手机',
       },
-      rules: z.string(),
+      rules: 'mobile',
     },
     {
       label: '用户邮箱',
@@ -78,6 +78,9 @@ async function handleSubmit(values: Recordable<any>) {
   try {
     formApi.setLoading(true);
     // 提交表单
+    if (values.mobile === '') {
+      values.mobile = undefined;
+    }
     await updateUserProfile(values as SystemUserProfileApi.UpdateProfileReqVO);
     // 关闭并提示
     emit('success');

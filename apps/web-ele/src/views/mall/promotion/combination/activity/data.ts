@@ -59,6 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 2,
       },
       rules: 'required',
+      defaultValue: 2,
     },
     {
       fieldName: 'limitDuration',
@@ -69,6 +70,7 @@ export function useFormSchema(): VbenFormSchema[] {
         min: 0,
       },
       rules: 'required',
+      defaultValue: 24,
     },
     {
       fieldName: 'totalLimitCount',
@@ -78,6 +80,8 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入总限购数量',
         min: 0,
       },
+      rules: 'required',
+      defaultValue: 0,
     },
     {
       fieldName: 'singleLimitCount',
@@ -87,6 +91,8 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入单次限购数量',
         min: 0,
       },
+      rules: 'required',
+      defaultValue: 0,
     },
     {
       fieldName: 'virtualGroup',
@@ -95,6 +101,8 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
       },
+      rules: 'required',
+      defaultValue: false,
     },
     {
       fieldName: 'spuId',

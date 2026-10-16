@@ -294,7 +294,11 @@ async function handleFormComplete() {
   if (!valid || !validateDetails(true) || !formData.value?.id) {
     return;
   }
-  await confirm('确认完成出库？完成后将更新库存。');
+  try {
+    await confirm('确认完成出库？完成后将更新库存。');
+  } catch {
+    return;
+  }
   modalApi.lock();
   try {
     const data = await buildSubmitData();
@@ -315,7 +319,11 @@ async function handleFormCancel() {
   if (!formData.value?.id) {
     return;
   }
-  await confirm('确认作废该出库单？作废后不可恢复。');
+  try {
+    await confirm('确认作废该出库单？作废后不可恢复。');
+  } catch {
+    return;
+  }
   modalApi.lock();
   try {
     await cancelShipmentOrder(formData.value.id);
@@ -335,8 +343,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = await buildSubmitData();
     try {
+      const data = await buildSubmitData();
       await (formType.value === 'update'
         ? updateShipmentOrder(data)
         : createShipmentOrder(data));

@@ -50,6 +50,7 @@ export function useFormSchema(
       defaultValue: MesDvRepairStatusEnum.PREPARE,
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '维修单编码',
       component: 'Input',
@@ -63,21 +64,22 @@ export function useFormSchema(
         }),
       },
       rules: 'required',
-      suffix: headerReadonly
-        ? undefined
-        : () =>
-            h(
-              ElButton,
-              {
-                onClick: async () => {
-                  const code = await generateAutoCode(
-                    MesAutoCodeRuleCode.DV_REPAIR_CODE,
-                  );
-                  await formApi?.setFieldValue('code', code);
+      suffix:
+        formType === 'create'
+          ? () =>
+              h(
+                ElButton,
+                {
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.DV_REPAIR_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
                 },
-              },
-              { default: () => '生成' },
-            ),
+                { default: () => '生成' },
+              )
+          : undefined,
     },
     {
       fieldName: 'name',
@@ -245,12 +247,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'machineryName',
-      label: '设备名称',
-      component: 'Input',
+      fieldName: 'machineryId',
+      label: '设备',
+      component: markRaw(DvMachinerySelect),
       componentProps: {
         clearable: true,
-        placeholder: '请输入设备名称',
+        placeholder: '请选择设备',
       },
     },
     {
@@ -295,6 +297,7 @@ export function useGridColumns(): VxeTableGridOptions<MesDvRepairApi.Repair>['co
       },
     },
     { field: 'name', title: '维修单名称', minWidth: 150 },
+    { field: 'machineryCode', title: '设备编码', minWidth: 140 },
     { field: 'machineryName', title: '设备名称', minWidth: 150 },
     {
       field: 'requireDate',
@@ -302,6 +305,7 @@ export function useGridColumns(): VxeTableGridOptions<MesDvRepairApi.Repair>['co
       width: 180,
       formatter: 'formatDateTime',
     },
+    { field: 'confirmUserNickname', title: '验收人', minWidth: 120 },
     {
       field: 'finishDate',
       title: '完成日期',

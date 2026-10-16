@@ -7,12 +7,12 @@ import { getRangePickerDefaultProps } from '#/utils';
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
-      fieldName: 'name',
+      fieldName: 'processInstanceName',
       label: '流程名称',
       component: 'Input',
       componentProps: {
         placeholder: '请输入流程名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -21,7 +21,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

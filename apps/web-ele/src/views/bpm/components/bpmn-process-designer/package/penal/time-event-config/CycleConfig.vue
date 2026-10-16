@@ -157,8 +157,11 @@ function updateIsoStr() {
   isoStr.value = str;
   if (tab.value === 'iso') emit('change', isoStr.value);
 }
+
 watch([repeat, isoDate], updateIsoStr);
+
 watch(durationCustom, updateDurationStr, { deep: true });
+
 watch(
   () => props.value,
   (val) => {

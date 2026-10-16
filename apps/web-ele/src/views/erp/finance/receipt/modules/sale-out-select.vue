@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ErpSaleOutApi } from '#/api/erp/sale/out';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { ElButton, ElDialog, ElMessage } from 'element-plus';
 
@@ -29,6 +29,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 520,
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getSaleOutPage({
@@ -65,15 +66,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 /** 打开弹窗 */
-function openModal(id: number) {
+async function openModal(id: number) {
   // 重置数据
   customerId.value = id;
   open.value = true;
   selectedRows.value = [];
   // 查询列表
-  gridApi.formApi?.reset();
-  gridApi.formApi?.setValues({ customerId: id });
-  gridApi.query();
+  await nextTick();
+  await gridApi.formApi.reset();
+  await gridApi.formApi.setValues({ customerId: id });
+  await nextTick();
+  await gridApi.formApi.submit();
 }
 
 /** 确认选择销售出库单 */

@@ -138,6 +138,7 @@ onMounted(async () => {
             class="!w-full"
             clearable
             default-expand-all
+            filterable
             multiple
             node-key="id"
             placeholder="请选择部门"

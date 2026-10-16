@@ -69,7 +69,10 @@ function handleCancel(row: BpmOALeaveApi.Leave) {
         duration: 0,
       });
       try {
-        await cancelProcessInstanceByStartUser(row.id, scope.value);
+        await cancelProcessInstanceByStartUser(
+          row.processInstanceId,
+          scope.value,
+        );
         ElMessage.success('取消成功');
         handleRefresh();
       } catch {
@@ -150,6 +153,7 @@ onActivated(() => {
               label: '发起请假',
               type: 'primary',
               icon: ACTION_ICON.ADD,
+              auth: ['bpm:oa-leave:create'],
               onClick: handleCreate,
             },
           ]"
@@ -163,6 +167,7 @@ onActivated(() => {
               type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
+              auth: ['bpm:oa-leave:query'],
               onClick: handleDetail.bind(null, row),
             },
             {
@@ -170,6 +175,7 @@ onActivated(() => {
               type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
+              auth: ['bpm:oa-leave:query'],
               onClick: handleProgress.bind(null, row),
             },
             {
@@ -178,6 +184,7 @@ onActivated(() => {
               link: true,
               icon: ACTION_ICON.DELETE,
               ifShow: row.status === BpmProcessInstanceStatus.RUNNING,
+              auth: ['bpm:process-instance:cancel'],
               onClick: handleCancel.bind(null, row),
             },
             {
@@ -186,6 +193,7 @@ onActivated(() => {
               link: true,
               icon: ACTION_ICON.ADD,
               ifShow: row.status !== BpmProcessInstanceStatus.RUNNING,
+              auth: ['bpm:oa-leave:create'],
               onClick: handleReCreate.bind(null, row),
             },
           ]"

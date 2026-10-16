@@ -158,6 +158,7 @@ async function handleDelete(id: number) {
   ElMessage.success($t('ui.actionMessage.deleteSuccess', ['项目']));
   await getList();
 }
+
 watch(
   () => props.planId,
   (value) => {
@@ -192,7 +193,12 @@ watch(
         />
       </template>
     </Grid>
-    <ElDialog v-model="formOpen" title="添加项目" width="520px">
+    <ElDialog
+      v-model="formOpen"
+      title="添加项目"
+      width="520px"
+      :append-to-body="true"
+    >
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>

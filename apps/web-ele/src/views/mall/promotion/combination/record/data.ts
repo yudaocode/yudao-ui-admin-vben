@@ -14,7 +14,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择拼团状态',
         clearable: true,
-        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        options: getDictOptions(
+          DICT_TYPE.PROMOTION_COMBINATION_RECORD_STATUS,
+          'number',
+        ),
       },
     },
     {
@@ -59,9 +62,10 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
     },
     {
-      field: 'headId',
+      field: 'headNickname',
       title: '开团团长',
       minWidth: 100,
+      formatter: ({ cellValue }) => cellValue || '-',
     },
     {
       field: 'picUrl',
@@ -92,6 +96,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 80,
     },
     {
+      field: 'startTime',
+      title: '开团时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
+    },
+    {
       field: 'createTime',
       title: '参团时间',
       minWidth: 180,
@@ -109,7 +119,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
+        props: { type: DICT_TYPE.PROMOTION_COMBINATION_RECORD_STATUS },
       },
     },
     {
@@ -156,6 +166,12 @@ export function useUserGridColumns(): VxeTableGridOptions['columns'] {
       },
     },
     {
+      field: 'startTime',
+      title: '开团时间',
+      minWidth: 180,
+      formatter: 'formatDateTime',
+    },
+    {
       field: 'createTime',
       title: '参团时间',
       minWidth: 180,
@@ -173,7 +189,7 @@ export function useUserGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.COMMON_STATUS },
+        props: { type: DICT_TYPE.PROMOTION_COMBINATION_RECORD_STATUS },
       },
     },
   ];

@@ -31,7 +31,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: () => getModelSimpleList(AiModelTypeEnum.CHAT),
         labelField: 'name',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择模型',
       },
       rules: 'required',

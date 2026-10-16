@@ -120,7 +120,7 @@ async function handleSend() {
   );
   const targets = selectedKeys.value
     .map((key) => byKey.get(key))
-    .filter((c): c is Conversation => c !== null);
+    .filter((c): c is Conversation => c !== null && c !== undefined);
   if (targets.length === 0) {
     return;
   }
@@ -173,7 +173,7 @@ async function handleCreateGroupAndSend() {
   const byId = new Map(friends.value.map((f) => [f.id, f]));
   const members = selectedFriendIds.value
     .map((id) => byId.get(id))
-    .filter((f): f is FriendLite => f !== null);
+    .filter((f): f is FriendLite => f !== null && f !== undefined);
   if (members.length === 0) {
     return;
   }

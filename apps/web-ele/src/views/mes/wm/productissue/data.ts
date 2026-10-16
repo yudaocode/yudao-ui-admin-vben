@@ -59,6 +59,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '领料单编号',
       component: 'Input',
@@ -202,6 +203,16 @@ export function useGridColumns(): VxeTableGridOptions<MesWmProductIssueApi.Produ
     {
       field: 'workstationName',
       title: '工作站',
+      minWidth: 120,
+    },
+    {
+      field: 'clientCode',
+      title: '客户编号',
+      minWidth: 120,
+    },
+    {
+      field: 'clientName',
+      title: '客户名称',
       minWidth: 120,
     },
     {

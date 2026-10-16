@@ -97,8 +97,12 @@ function refreshColumns() {
 }
 
 /** 切换辅助核算类别 */
-function handleTypeChange(row?: FmsAuxiliaryTypeApi.AuxiliaryType) {
+async function handleTypeChange(row?: FmsAuxiliaryTypeApi.AuxiliaryType) {
+  const typeChanged = currentAuxiliaryType.value?.id !== row?.id;
   currentAuxiliaryType.value = row;
+  if (typeChanged) {
+    await gridApi.formApi.reset();
+  }
   refreshColumns();
   handleRefresh();
 }
@@ -107,7 +111,7 @@ function handleTypeChange(row?: FmsAuxiliaryTypeApi.AuxiliaryType) {
 async function getTypeList() {
   if (!accountSetId.value) {
     typeList.value = [];
-    handleTypeChange(undefined);
+    await handleTypeChange(undefined);
     return;
   }
   typeLoading.value = true;
@@ -121,7 +125,7 @@ async function getTypeList() {
       ) ||
       typeList.value.find((item) => item.id === routeAuxiliaryTypeId) ||
       typeList.value[0];
-    handleTypeChange(nextType);
+    await handleTypeChange(nextType);
   } finally {
     typeLoading.value = false;
   }
@@ -326,7 +330,7 @@ onMounted(() => {
     <div class="flex h-full w-full">
       <!-- 核算类别 -->
       <Card
-        :body-style="{ height: '100%', overflow: 'auto' }"
+        :styles="{ body: { height: '100%', overflow: 'auto' } }"
         class="mr-4 h-full w-[260px] shrink-0"
       >
         <div class="mb-4 flex items-center justify-between">

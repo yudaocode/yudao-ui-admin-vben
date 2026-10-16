@@ -261,7 +261,12 @@ watch(
       </template>
     </Grid>
 
-    <ElDialog v-model="formOpen" title="编辑 BOM" width="600px">
+    <ElDialog
+      v-model="formOpen"
+      title="编辑 BOM"
+      width="600px"
+      :append-to-body="true"
+    >
       <Form class="mx-4" />
       <template #footer>
         <ElButton @click="formOpen = false">取消</ElButton>

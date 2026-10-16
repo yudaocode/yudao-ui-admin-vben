@@ -1,12 +1,16 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { MpTagApi } from '#/api/mp/tag';
 import type { MpUserApi } from '#/api/mp/user';
+
+import { onMounted, ref } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { message } from 'ant-design-vue';
+import { message, Tag } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
+import { getSimpleTagList } from '#/api/mp/tag';
 import { getUserPage, syncUser } from '#/api/mp/user';
 import { $t } from '#/locales';
 import { WxAccountSelect } from '#/views/mp/components';
@@ -15,6 +19,12 @@ import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
 defineOptions({ name: 'MpUser' });
+
+const tagList = ref<MpTagApi.SimpleTag[]>([]);
+
+onMounted(async () => {
+  tagList.value = await getSimpleTagList();
+});
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -26,10 +36,13 @@ function handleRefresh() {
   gridApi.query();
 }
 
+const selectedAccountId = ref<number>();
+
 /** 公众号变化时查询数据 */
-function handleAccountChange(accountId: number) {
-  gridApi.formApi.setValues({ accountId });
-  gridApi.formApi.submitForm();
+async function handleAccountChange(accountId: number) {
+  selectedAccountId.value = accountId;
+  await gridApi.formApi.setValues({ accountId });
+  await gridApi.formApi.submitForm();
 }
 
 /** 编辑用户 */
@@ -64,6 +77,11 @@ async function handleSync() {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      await gridApi.formApi.setFieldValue('accountId', selectedAccountId.value);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -118,6 +136,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
+      </template>
+      <template #tagIds="{ row }">
+        <Tag v-for="tagId in row.tagIds || []" :key="tagId" class="mr-1">
+          {{ tagList.find((tag) => tag.tagId === tagId)?.name || tagId }}
+        </Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

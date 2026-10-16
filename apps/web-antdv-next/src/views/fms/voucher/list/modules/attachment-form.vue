@@ -69,7 +69,7 @@ async function submitForm() {
     v-model:open="dialogVisible"
     title="凭证附件"
     width="570px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <FileUpload
       v-if="editable || attachmentUrls.length"
@@ -77,6 +77,7 @@ async function submitForm() {
       :accept="FMS_VOUCHER_ATTACHMENT_FILE_TYPES"
       :disabled="!editable"
       :max-number="100"
+      :max-size="5"
       multiple
     />
     <Empty v-else description="暂无附件" />

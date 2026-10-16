@@ -131,7 +131,12 @@ async function handleGenerate() {
 </script>
 
 <template>
-  <ElDialog v-model="open" title="查看条码" width="500px">
+  <ElDialog
+    v-model="open"
+    title="查看条码"
+    width="500px"
+    :append-to-body="true"
+  >
     <div>
       <div
         class="mb-5 flex min-h-50 items-center justify-center rounded bg-gray-100 p-5"

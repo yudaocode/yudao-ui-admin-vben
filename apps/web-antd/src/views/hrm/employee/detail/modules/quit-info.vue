@@ -30,7 +30,9 @@ async function getQuitInfo() {
     loading.value = false;
   }
 }
+
 onMounted(getQuitInfo);
+
 defineExpose({ getQuitInfo });
 </script>
 <template>
@@ -67,7 +69,10 @@ defineExpose({ getQuitInfo });
       </Descriptions.Item>
       <Descriptions.Item label="原员工状态">
         <DictTag
-          v-if="quitInfo.oldEmployeeStatus !== null"
+          v-if="
+            quitInfo.oldEmployeeStatus !== null &&
+            quitInfo.oldEmployeeStatus !== undefined
+          "
           :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
           :value="quitInfo.oldEmployeeStatus"
         />

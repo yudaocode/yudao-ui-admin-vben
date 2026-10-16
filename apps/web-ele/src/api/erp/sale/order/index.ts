@@ -8,6 +8,7 @@ export namespace ErpSaleOrderApi {
     id?: number; // 订单工单编号
     no: string; // 销售订单号
     customerId: number; // 客户编号
+    saleUserId?: number; // 销售人员编号
     accountId?: number; // 收款账户编号
     orderTime: Date; // 订单时间
     totalCount: number; // 合计数量
@@ -59,13 +60,6 @@ export function getSaleOrderPage(params: PageParam) {
 export function getSaleOrder(id: number) {
   return requestClient.get<ErpSaleOrderApi.SaleOrder>(
     `/erp/sale-order/get?id=${id}`,
-  );
-}
-
-/** 查询销售订单项列表 */
-export function getSaleOrderItemListByOrderId(orderId: number) {
-  return requestClient.get<ErpSaleOrderApi.SaleOrderItem[]>(
-    `/erp/sale-order/item/list-by-order-id?orderId=${orderId}`,
   );
 }
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadRawFile } from 'element-plus';
+import type { UploadFile } from 'element-plus';
 
 import { useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
@@ -18,7 +18,7 @@ const emit = defineEmits(['success']);
 const [Form, formApi] = useVbenForm({
   commonConfig: {
     formItemClass: 'col-span-2',
-    labelWidth: 100,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useImportFormSchema(),
@@ -45,9 +45,16 @@ const [Modal, modalApi] = useVbenModal({
   },
 });
 
-function beforeUpload(file: UploadRawFile) {
-  formApi.setFieldValue('file', file);
-  return false;
+function handleChange(file: UploadFile) {
+  formApi.setFieldValue('file', file.raw);
+}
+
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
+}
+
+function handleExceed() {
+  ElMessage.warning('最多只能选择一个文件，请移除后重新选择');
 }
 
 async function handleDownload() {
@@ -65,7 +72,9 @@ async function handleDownload() {
       <template #file>
         <ElUpload
           :auto-upload="false"
-          :before-upload="beforeUpload"
+          :on-change="handleChange"
+          :on-remove="handleRemove"
+          :on-exceed="handleExceed"
           :limit="1"
           accept=".xls,.xlsx"
         >

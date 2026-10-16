@@ -89,10 +89,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          if (!route.query.documentId) {
+            return { list: [], total: 0 };
+          }
           return await getKnowledgeSegmentPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
+            documentId: route.query.documentId,
           });
         },
       },

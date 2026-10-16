@@ -3,7 +3,7 @@ import type { FormInstance, UploadProps } from 'antdv-next';
 
 import type { UploadData } from './upload';
 
-import { inject, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -21,8 +21,9 @@ import {
 
 import { beforeVideoUpload, HEADERS, UPLOAD_URL, UploadType } from './upload';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    accountId: number;
     open?: boolean;
   }>(),
   {
@@ -34,8 +35,6 @@ const emit = defineEmits<{
   'update:open': [v: boolean];
   uploaded: [];
 }>();
-
-const accountId = inject<number>('accountId');
 
 const uploadRules = {
   introduction: [
@@ -51,60 +50,70 @@ function handleCancel() {
 const fileList = ref<any[]>([]);
 
 const uploadData: UploadData = reactive({
-  accountId: accountId!,
   introduction: '',
   title: '',
   type: UploadType.Video,
 });
 
 const uploadFormRef = ref<FormInstance | null>(null);
-const uploadVideoRef = ref<any>(null);
+const uploading = ref(false);
+const selectedFile = ref<File>(); // 待上传的视频文件
+
+/** 选择文件 */
+const handleBeforeUpload: UploadProps['beforeUpload'] = function (file) {
+  if (beforeVideoUpload?.(file as any, [file as any]) === false) {
+    return Upload.LIST_IGNORE;
+  }
+  selectedFile.value = file as File;
+  fileList.value = [file];
+  return false;
+};
+
+/** 移除已选文件 */
+function handleRemove() {
+  selectedFile.value = undefined;
+  fileList.value = [];
+}
 
 async function submitVideo() {
   await uploadFormRef.value?.validate();
-  uploadVideoRef.value?.submit();
-}
-
-/** 自定义上传 */
-const customRequest: UploadProps['customRequest'] = async function (options) {
-  const { file, onError, onSuccess } = options;
-
+  if (!selectedFile.value) {
+    message.warning('请选择视频');
+    return;
+  }
   const formData = new FormData();
-  formData.append('file', file as File);
+  formData.append('file', selectedFile.value);
   formData.append('type', uploadData.type);
   formData.append('title', uploadData.title);
   formData.append('introduction', uploadData.introduction);
-  formData.append('accountId', String(uploadData.accountId));
-
+  formData.append('accountId', String(props.accountId));
+  uploading.value = true;
   try {
     const response = await fetch(UPLOAD_URL, {
       body: formData,
-      headers: HEADERS,
+      headers: HEADERS.value,
       method: 'POST',
     });
-
     const res = await response.json();
-
-    if (res.code !== 0) {
-      message.error(`上传出错：${res.msg}`);
-      onError?.(new Error(res.msg));
+    if (res?.code !== 0) {
+      handleRemove();
+      message.error(`上传出错：${res?.msg || '上传响应格式错误'}`);
       return;
     }
-
     // 清空上传时的各种数据
-    fileList.value = [];
+    handleRemove();
     uploadData.title = '';
     uploadData.introduction = '';
-
     emit('update:open', false);
     message.success('上传成功');
-    onSuccess?.(res);
     emit('uploaded');
   } catch (error: any) {
-    message.error(`上传失败: ${error.message}`);
-    onError?.(error);
+    handleRemove();
+    message.error(`上传失败: ${error?.message || '请重试'}`);
+  } finally {
+    uploading.value = false;
   }
-};
+}
 </script>
 
 <template>
@@ -112,20 +121,16 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
     :open="open"
     title="新建视频"
     width="600px"
+    :confirm-loading="uploading"
     @cancel="handleCancel"
     @ok="submitVideo"
   >
     <Upload
-      ref="uploadVideoRef"
-      :action="UPLOAD_URL"
-      :auto-upload="false"
-      :before-upload="beforeVideoUpload"
-      :custom-request="customRequest"
+      :before-upload="handleBeforeUpload"
       :file-list="fileList"
-      :headers="HEADERS"
-      :limit="1"
-      :multiple="true"
+      :max-count="1"
       class="mb-4"
+      @remove="handleRemove"
     >
       <Button type="primary">
         <IconifyIcon icon="lucide:video" class="mr-1" />

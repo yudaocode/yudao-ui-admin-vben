@@ -3,24 +3,23 @@ import type { HrmPerformanceAssessmentTemplateApi } from '#/api/hrm/performance/
 
 import { computed, ref } from 'vue';
 
+import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import {
-  ElAlert as Alert,
-  ElButton as Button,
-  ElCol as Col,
-  ElEmpty as Empty,
-  ElInput as Input,
-  ElInputNumber as InputNumber,
-  ElMessage as message,
-  ElRow as Row,
-  ElSelect as Select,
-  ElTag as Tag,
+  ElAlert,
+  ElButton,
+  ElCol,
+  ElEmpty,
+  ElInputNumber,
+  ElMessage,
+  ElRow,
+  ElSelect,
+  ElTag,
 } from 'element-plus';
 
 import {
-  HrmPerformanceQuotaScoreType,
   HrmPerformanceQuotaType,
   HrmPerformanceUpperLimitType,
 } from '#/views/hrm/utils/constants';
@@ -31,6 +30,7 @@ import {
 } from '#/views/hrm/utils/performance';
 
 import DimensionForm from '../modules/dimension-form.vue';
+import QuotaGrid from './quota-grid.vue';
 
 defineOptions({ name: 'HrmPerformanceAssessmentConfigEditor' });
 
@@ -53,8 +53,11 @@ const model = defineModel<HrmPerformanceAssessmentTemplateApi.AssessmentConfig>(
   },
 );
 
-const dimensionFormRef = ref<InstanceType<typeof DimensionForm>>();
 const currentDimensionIndex = ref<number>();
+const [DimensionModal, dimensionModalApi] = useVbenModal({
+  connectedComponent: DimensionForm,
+  destroyOnClose: true,
+});
 
 const dimensionWeightTotal = computed(() =>
   (model.value.dimensions || []).reduce(
@@ -71,7 +74,7 @@ const scoreCalculationOptions = getDictOptions(
 function validate() {
   const errorMessage = validateAssessmentConfig(model.value);
   if (errorMessage) {
-    message.warning(errorMessage);
+    ElMessage.warning(errorMessage);
     return false;
   }
   return true;
@@ -85,9 +88,9 @@ function formatQuotaType(quotaType?: number) {
 
 function openDimensionForm(index?: number) {
   currentDimensionIndex.value = index;
-  dimensionFormRef.value?.open(
-    index === undefined ? undefined : model.value.dimensions?.[index],
-  );
+  dimensionModalApi
+    .setData(index === undefined ? undefined : model.value.dimensions?.[index])
+    .open();
 }
 
 function handleDimensionConfirm(
@@ -105,32 +108,15 @@ function removeDimension(index: number) {
   model.value.dimensions?.splice(index, 1);
 }
 
-function addQuota(dimensionIndex: number) {
-  const dimension = model.value.dimensions?.[dimensionIndex];
-  if (!dimension) return;
-  dimension.quotas ||= [];
-  dimension.quotas.push({
-    name: '',
-    illustrate: '',
-    standard: '',
-    weight: undefined,
-    scoreType: HrmPerformanceQuotaScoreType.DIRECT_INPUT,
-  });
-}
-
-function removeQuota(dimensionIndex: number, quotaIndex: number) {
-  model.value.dimensions?.[dimensionIndex]?.quotas?.splice(quotaIndex, 1);
-}
-
 defineExpose({ validate });
 </script>
 
 <template>
-  <Row :gutter="20">
-    <Col :span="8">
+  <ElRow :gutter="20">
+    <ElCol :span="8">
       <div class="mb-4">
         <div class="mb-1 text-sm">总分计算</div>
-        <Select
+        <ElSelect
           v-model="model.scoreCalculation"
           :disabled="props.disabled"
           :options="scoreCalculationOptions"
@@ -138,11 +124,11 @@ defineExpose({ validate });
           placeholder="请选择"
         />
       </div>
-    </Col>
-    <Col :span="8">
+    </ElCol>
+    <ElCol :span="8">
       <div class="mb-4">
         <div class="mb-1 text-sm">评分上限类型</div>
-        <Select
+        <ElSelect
           v-model="model.upperLimitType"
           :disabled="props.disabled"
           class="w-full"
@@ -152,11 +138,11 @@ defineExpose({ validate });
           ]"
         />
       </div>
-    </Col>
-    <Col :span="8">
+    </ElCol>
+    <ElCol :span="8">
       <div class="mb-4">
         <div class="mb-1 text-sm">评分上限</div>
-        <InputNumber
+        <ElInputNumber
           v-model="model.upperLimitScore"
           :disabled="props.disabled"
           :min="0"
@@ -165,9 +151,9 @@ defineExpose({ validate });
           placeholder="请输入评分上限"
         />
       </div>
-    </Col>
-  </Row>
-  <Alert
+    </ElCol>
+  </ElRow>
+  <ElAlert
     :style="{ marginBottom: '16px' }"
     message="总分 = 评分 × 维度权重 × 指标权重，再累加；维度权重合计须为 100%，不可编辑维度的指标权重合计须为 100%，可编辑维度不可超过 100%。"
     show-icon
@@ -195,16 +181,16 @@ defineExpose({ validate });
           </span>
         </span>
       </div>
-      <Button
+      <ElButton
         :disabled="props.disabled"
         type="primary"
         @click="openDimensionForm()"
       >
         新增考核维度
-      </Button>
+      </ElButton>
     </div>
 
-    <Empty v-if="!model.dimensions?.length" description="暂无考核维度" />
+    <ElEmpty v-if="!model.dimensions?.length" description="暂无考核维度" />
     <div
       v-for="(dimension, dimensionIndex) in model.dimensions"
       :key="dimensionIndex"
@@ -216,37 +202,39 @@ defineExpose({ validate });
         <div>
           <div class="flex items-center gap-3">
             <span class="font-semibold">{{ dimension.name }}</span>
-            <Tag>{{ formatQuotaType(dimension.quotaType) }}</Tag>
+            <ElTag>{{ formatQuotaType(dimension.quotaType) }}</ElTag>
             <span class="text-sm">
               维度权重
               <span class="text-orange-500">{{ dimension.weight || 0 }}%</span>
             </span>
-            <Tag v-if="dimension.allowEdit" color="success">允许员工填写</Tag>
+            <ElTag v-if="dimension.allowEdit" color="success">
+              允许员工填写
+            </ElTag>
           </div>
           <div v-if="dimension.remark" class="mt-1 text-xs text-gray-500">
             {{ dimension.remark }}
           </div>
         </div>
         <div class="shrink-0">
-          <Button
+          <ElButton
             :disabled="props.disabled"
             link
             @click="openDimensionForm(dimensionIndex)"
           >
             编辑
-          </Button>
-          <Button
+          </ElButton>
+          <ElButton
             :disabled="props.disabled"
             danger
             link
             @click="removeDimension(dimensionIndex)"
           >
             删除
-          </Button>
+          </ElButton>
         </div>
       </div>
       <div class="p-4">
-        <div class="mb-3 flex items-center justify-between">
+        <div class="mb-3">
           <span class="text-sm text-gray-500">
             指标权重合计：
             <span
@@ -259,91 +247,10 @@ defineExpose({ validate });
               {{ getQuotaWeightTotal(dimension) }}%
             </span>
           </span>
-          <Button :disabled="props.disabled" @click="addQuota(dimensionIndex)">
-            新增指标项
-          </Button>
         </div>
-        <ElTable border :data="dimension.quotas || []" size="small">
-          <ElTableColumn label="指标名称" width="150">
-            <template #default="{ row }">
-              <Input
-                v-model="row.name"
-                :disabled="props.disabled"
-                :maxlength="50"
-                placeholder="请输入指标名称"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="指标说明" width="190">
-            <template #default="{ row }">
-              <Input
-                v-model="row.illustrate"
-                :autosize="{ minRows: 1, maxRows: 3 }"
-                :disabled="props.disabled"
-                :maxlength="200"
-                placeholder="请输入指标说明"
-                type="textarea"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="考核标准" width="190">
-            <template #default="{ row }">
-              <Input
-                v-model="row.standard"
-                :autosize="{ minRows: 1, maxRows: 3 }"
-                :disabled="props.disabled"
-                :maxlength="200"
-                placeholder="请输入考核标准"
-                type="textarea"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="指标权重" width="130">
-            <template #default="{ row }">
-              <div class="flex items-center gap-1">
-                <InputNumber
-                  v-model="row.weight"
-                  :controls="false"
-                  :disabled="props.disabled"
-                  :max="100"
-                  :min="0"
-                  :precision="2"
-                  class="w-full"
-                />
-                <span class="text-gray-500">%</span>
-              </div>
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="评分方式" width="130">
-            <template #default="{ row }">
-              <Select
-                v-model="row.scoreType"
-                :disabled="props.disabled"
-                class="w-full"
-                :options="[
-                  {
-                    label: '直接输入',
-                    value: HrmPerformanceQuotaScoreType.DIRECT_INPUT,
-                  },
-                ]"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn align="center" label="操作" width="80">
-            <template #default="{ $index }">
-              <Button
-                :disabled="props.disabled"
-                link
-                type="danger"
-                @click="removeQuota(dimensionIndex, $index)"
-              >
-                删除
-              </Button>
-            </template>
-          </ElTableColumn>
-        </ElTable>
+        <QuotaGrid v-model="dimension.quotas" :disabled="props.disabled" />
       </div>
     </div>
-    <DimensionForm ref="dimensionFormRef" @confirm="handleDimensionConfirm" />
+    <DimensionModal @confirm="handleDimensionConfirm" />
   </template>
 </template>

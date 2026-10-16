@@ -252,7 +252,7 @@ function summaryAmount(field: keyof FmsReportApi.Formula) {
 <template>
   <Modal
     v-model:open="dialogVisible"
-    destroy-on-close
+    destroy-on-hidden
     :title="`编辑公式——${currentItem?.name || ''}`"
     width="900px"
   >
@@ -345,7 +345,7 @@ function summaryAmount(field: keyof FmsReportApi.Formula) {
     <Alert
       class="!mt-4"
       :closable="false"
-      :message="
+      :title="
         formulaType === 'balance'
           ? '新公式将应用于当前报表和以后尚未生成的报表，不影响其他已生成的历史报表'
           : '新公式仅应用于当前报表，不影响其他期间报表'

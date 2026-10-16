@@ -44,7 +44,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 120,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useUpdateFormSchema(),
@@ -56,6 +56,17 @@ const [Modal, modalApi] = useVbenModal({
     await formApi.setValues(formData.value);
     const { valid } = await formApi.validate();
     if (!valid) {
+      return;
+    }
+    if (
+      !bindUser.value ||
+      Number(bindUser.value.id) !== Number(formData.value.bindUserId)
+    ) {
+      ElMessage.warning('请先查询并确认推广人');
+      return;
+    }
+    if (Number(formData.value.bindUserId) === Number(formData.value.id)) {
+      ElMessage.error('不能绑定自己为推广人');
       return;
     }
     modalApi.lock();
@@ -79,6 +90,7 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
+      bindUser.value = undefined;
       formData.value = {
         id: data.id,
         bindUserId: data.bindUserId,
@@ -97,17 +109,18 @@ const [Modal, modalApi] = useVbenModal({
 const bindUser = ref<MallBrokerageUserApi.BrokerageUser | undefined>();
 
 /** 查询分销员 */
-async function handleSearchUser(id: number, userType: string) {
+async function handleSearchUser(id: number | string, userType: string) {
+  bindUser.value = undefined;
   if (isEmpty(id)) {
     ElMessage.warning(`请先输入${userType}编号后重试！！！`);
     return;
   }
-  if (formData.value?.bindUserId === formData.value?.id) {
+  if (Number(id) === Number(formData.value?.id)) {
     ElMessage.error('不能绑定自己为推广人');
     return;
   }
 
-  const userData = await getBrokerageUser(id);
+  const userData = await getBrokerageUser(Number(id));
   if (!userData) {
     ElMessage.warning(`${userType}不存在`);
     return;

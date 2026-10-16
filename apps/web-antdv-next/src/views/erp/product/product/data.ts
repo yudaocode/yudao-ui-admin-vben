@@ -92,6 +92,8 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '保质期天数',
       component: 'InputNumber',
       componentProps: {
+        min: 0,
+        precision: 0,
         class: '!w-full',
         placeholder: '请输入保质期天数',
       },
@@ -101,6 +103,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '重量（kg）',
       component: 'InputNumber',
       componentProps: {
+        min: 0,
         class: '!w-full',
         placeholder: '请输入重量（kg）',
       },

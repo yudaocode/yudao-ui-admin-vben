@@ -162,6 +162,7 @@ function setTableToolbarRef(el: any) {
 function setTableRef(el: any) {
   tableRef.value = el;
 }
+
 onMounted(() => {
   getList();
 });
@@ -205,7 +206,8 @@ onMounted(() => {
           <ElDatePicker
             v-model="queryParams.createTime"
             type="daterange"
-            value-format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"

@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
+import { fenToYuan, formatDateTime } from '@vben/utils';
 
 import { ElTag } from 'element-plus';
 
@@ -96,6 +96,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    { field: 'appName', title: '支付应用', minWidth: 120 },
+    {
+      field: 'merchantOrderId',
+      title: '支付订单号',
+      minWidth: 240,
+      slots: { default: 'orderNo' },
+    },
     {
       field: 'id',
       title: '编号',
@@ -105,16 +112,16 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'payPrice',
       title: '支付金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
-      field: 'merchantRefundId',
+      field: 'no',
       title: '退款单号',
       minWidth: 240,
       slots: {
@@ -201,21 +208,13 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'payPrice',
       label: '支付金额',
       render: (val) =>
-        h(
-          ElTag,
-          { type: 'success' },
-          () => `￥${erpPriceInputFormatter(val || 0)}`,
-        ),
+        h(ElTag, { type: 'success' }, () => `￥${fenToYuan(val || 0)}`),
     },
     {
       field: 'refundPrice',
       label: '退款金额',
       render: (val) =>
-        h(
-          ElTag,
-          { type: 'danger' },
-          () => `￥${erpPriceInputFormatter(val || 0)}`,
-        ),
+        h(ElTag, { type: 'danger' }, () => `￥${fenToYuan(val || 0)}`),
     },
     {
       field: 'status',

@@ -23,7 +23,8 @@ import ChargeItemForm from './charge-item-form.vue';
 import FreeItemForm from './free-item-form.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<MallDeliveryExpressTemplateApi.DeliveryExpressTemplate>();
+const formData =
+  ref<Partial<MallDeliveryExpressTemplateApi.DeliveryExpressTemplate>>();
 const chargeItemFormRef = ref<InstanceType<typeof ChargeItemForm>>();
 const freeItemFormRef = ref<InstanceType<typeof FreeItemForm>>();
 const areaTree = ref<SystemAreaApi.Area[]>([]);
@@ -47,8 +48,8 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
   handleValuesChange: (values, changedFields) => {
     // 目的：触发子表单的 columns 变化
-    if (changedFields.includes('chargeMode')) {
-      formData.value!.chargeMode = values.chargeMode;
+    if (changedFields.includes('chargeMode') && formData.value) {
+      formData.value.chargeMode = values.chargeMode;
     }
   },
 });
@@ -138,6 +139,22 @@ const [Modal, modalApi] = useVbenModal({
     const data =
       modalApi.getData() as MallDeliveryExpressTemplateApi.DeliveryExpressTemplate;
     if (!data || !data.id) {
+      formData.value = {
+        name: '',
+        chargeMode: 1,
+        sort: 0,
+        charges: [
+          {
+            areaIds: [1],
+            startCount: 2,
+            startPrice: 5,
+            extraCount: 5,
+            extraPrice: 10,
+          },
+        ],
+        frees: [],
+      };
+      await formApi.setValues(formData.value);
       return;
     }
     modalApi.lock();

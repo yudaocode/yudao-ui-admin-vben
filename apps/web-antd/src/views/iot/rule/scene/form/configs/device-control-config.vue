@@ -114,7 +114,8 @@ function handleServiceChange(serviceIdentifier?: any) {
   if (service && service.inputParams && service.inputParams.length > 0) {
     const defaultParams: Record<string, any> = {};
     service.inputParams.forEach((param) => {
-      defaultParams[param.identifier!] = getDefaultValueForParam(param);
+      if (!param.identifier) return;
+      defaultParams[param.identifier] = getDefaultValueForParam(param);
     });
     // 将默认参数转换为 JSON 字符串保存
     action.value.params = JSON.stringify(defaultParams, null, 2) as any;

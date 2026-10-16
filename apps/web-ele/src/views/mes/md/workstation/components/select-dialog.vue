@@ -125,6 +125,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getWorkstationPage({
@@ -180,7 +181,10 @@ async function openModal(
     columns: useWorkstationSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }
@@ -212,6 +216,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="工作站选择"
     width="70%"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >

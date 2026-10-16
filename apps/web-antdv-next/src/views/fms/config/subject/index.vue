@@ -242,8 +242,11 @@ async function applyCheckboxVisible(writable: boolean) {
 }
 
 onMounted(() => applyCheckboxVisible(fmsStore.isAccountSetWritable));
+
 watch(() => fmsStore.isAccountSetWritable, applyCheckboxVisible);
+
 watch(accountSetId, () => handleRefresh());
+
 watch(subjectType, () => handleRefresh());
 
 const [Grid, gridApi] = useVbenVxeGrid({

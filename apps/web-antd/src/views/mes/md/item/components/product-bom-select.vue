@@ -45,7 +45,8 @@ const showClear = computed(
     !props.disabled &&
     hovering.value &&
     props.modelValue !== undefined &&
-    props.modelValue !== null,
+    props.modelValue !== null &&
+    props.modelValue !== undefined,
 );
 
 /** 根据 BOM 子物料编号回显选择器 */
@@ -62,7 +63,7 @@ async function resolveBomById(bomItemId: number | undefined) {
   if (selectedBom.value?.bomItemId === bomItemId) {
     return;
   }
-  const list = await getProductBomListByItemId(props.itemId as number);
+  const list = await getProductBomListByItemId(props.itemId);
   selectedBom.value = list.find((item) => item.bomItemId === bomItemId);
 }
 
@@ -101,7 +102,7 @@ function handleClick(event: MouseEvent) {
     clearSelected();
     return;
   }
-  dialogRef.value?.open(props.itemId as number, props.modelValue);
+  dialogRef.value?.open(props.itemId, props.modelValue);
 }
 
 /** 回填选中的 BOM 物料 */

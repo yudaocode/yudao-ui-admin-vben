@@ -97,20 +97,13 @@ watch(
 watch(
   () => [tableData.value, props.discountPrice],
   () => {
-    if (!tableData.value || tableData.value.length === 0) {
-      return;
-    }
-    const totalPrice = tableData.value.reduce(
-      (prev, curr) => prev + (curr.totalPrice || 0),
-      0,
-    );
     const receiptPrice = tableData.value.reduce(
       (prev, curr) => prev + (curr.receiptPrice || 0),
       0,
     );
     const finalReceiptPrice = receiptPrice - (props.discountPrice || 0);
     // 通知父组件更新
-    emit('update:totalPrice', totalPrice);
+    emit('update:totalPrice', receiptPrice);
     emit('update:receiptPrice', finalReceiptPrice);
   },
   { deep: true },
@@ -206,8 +199,8 @@ function validate() {
   // 检查每行的收款金额
   for (let i = 0; i < tableData.value.length; i++) {
     const item = tableData.value[i];
-    if (!item?.receiptPrice || item.receiptPrice <= 0) {
-      throw new Error(`第 ${i + 1} 行：本次收款必须大于0`);
+    if (item?.receiptPrice === undefined || item.receiptPrice === null) {
+      throw new Error(`第 ${i + 1} 行：请输入本次收款金额`);
     }
   }
 }

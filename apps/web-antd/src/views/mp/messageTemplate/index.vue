@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpMessageTemplateApi } from '#/api/mp/messageTemplate';
 
+import { ref } from 'vue';
+
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
@@ -28,10 +30,13 @@ function handleRefresh() {
   gridApi.query();
 }
 
+const selectedAccountId = ref<number>();
+
 /** 公众号变化时查询数据 */
-function handleAccountChange(accountId: number) {
-  gridApi.formApi.setValues({ accountId });
-  gridApi.formApi.submitForm();
+async function handleAccountChange(accountId: number) {
+  selectedAccountId.value = accountId;
+  await gridApi.formApi.setValues({ accountId });
+  await gridApi.formApi.submitForm();
 }
 
 /** 同步模板 */
@@ -79,6 +84,11 @@ async function handleDelete(row: MpMessageTemplateApi.MessageTemplate) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      await gridApi.formApi.setFieldValue('accountId', selectedAccountId.value);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {

@@ -22,7 +22,7 @@ export function useArchiveGridFormSchema(): VbenFormSchema[] {
 /** 档案员工列表列 */
 export function useArchiveGridColumns(): VxeTableGridOptions<HrmPerformanceAssessmentApi.PerformanceArchiveEmployee>['columns'] {
   return [
-    { type: 'checkbox' as const, width: 46 },
+    { type: 'checkbox', width: 46 },
     {
       field: 'employeeName',
       title: '员工姓名',
@@ -69,7 +69,7 @@ export function useArchiveGridColumns(): VxeTableGridOptions<HrmPerformanceAsses
 /** 员工历史考核列表列 */
 export function useEmployeeArchiveGridColumns(): VxeTableGridOptions<HrmPerformanceAssessmentApi.PerformanceAssessment>['columns'] {
   return [
-    { type: 'checkbox' as const, width: 46 },
+    { type: 'checkbox', width: 46 },
     {
       field: 'name',
       title: '方案名称',
@@ -110,5 +110,27 @@ export function useEmployeeArchiveFormSchema(
         allowClear: true,
       },
     },
+  ];
+}
+
+/** 考核评分明细列 */
+export function useScoreGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { field: 'dimensionName', minWidth: 120, title: '维度' },
+    { field: 'quotaName', minWidth: 140, title: '指标' },
+    { field: 'description', minWidth: 180, title: '指标说明' },
+    { field: 'standard', minWidth: 180, title: '考核标准' },
+    { field: 'targetValue', minWidth: 150, title: '目标值' },
+    { field: 'actualValue', minWidth: 150, title: '实际值' },
+    {
+      align: 'center',
+      field: 'weight',
+      slots: { default: 'weight' },
+      title: '权重',
+      width: 90,
+    },
+    { field: 'raterName', minWidth: 110, title: '评分人' },
+    { align: 'center', field: 'score', title: '评分', width: 90 },
+    { field: 'comment', minWidth: 180, title: '评语' },
   ];
 }

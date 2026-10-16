@@ -142,7 +142,7 @@ onMounted(() => {
       <span>参数：{{ item.name }}</span>
       <div>
         <Button type="link" @click="openStructForm(item)">编辑</Button>
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         <Button danger type="link" @click="deleteStructItem(index)">
           删除
         </Button>

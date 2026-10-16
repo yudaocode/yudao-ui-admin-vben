@@ -10,7 +10,6 @@ import { getDictOptions } from '@vben/hooks';
 import { $t } from '@vben/locales';
 
 import { z } from '#/adapter/form';
-import { getRangePickerDefaultProps } from '#/utils';
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -21,7 +20,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入活动名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -31,16 +30,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择活动状态',
-        allowClear: true,
-      },
-    },
-    {
-      fieldName: 'createTime',
-      label: '活动时间',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -117,7 +107,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入活动名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -127,7 +117,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请输入备注',
         rows: 4,
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -172,18 +162,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '选择商品',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope', 'productScopeValues'],
+        triggerFields: ['productScope'],
         show: (values) => {
           return values.productScope === PromotionProductScopeEnum.SPU.scope;
-        },
-        trigger(values, form) {
-          // 当加载已有数据时，根据 productScopeValues 设置 productSpuIds
-          if (
-            values.productScope === PromotionProductScopeEnum.SPU.scope &&
-            values.productScopeValues
-          ) {
-            form.setFieldValue('productSpuIds', values.productScopeValues);
-          }
         },
       },
       rules: 'required',
@@ -193,20 +174,11 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '选择分类',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope', 'productScopeValues'],
+        triggerFields: ['productScope'],
         show: (values) => {
           return (
             values.productScope === PromotionProductScopeEnum.CATEGORY.scope
           );
-        },
-        trigger(values, form) {
-          // 当加载已有数据时，根据 productScopeValues 设置 productCategoryIds
-          if (
-            values.productScope === PromotionProductScopeEnum.CATEGORY.scope &&
-            values.productScopeValues
-          ) {
-            form.setFieldValue('productCategoryIds', values.productScopeValues);
-          }
         },
       },
       rules: 'required',
@@ -222,29 +194,11 @@ export function useFormSchema(): VbenFormSchema[] {
         .default([]),
     },
     {
-      fieldName: 'productScopeValues', // 隐藏字段：用于自动同步 productScopeValues
+      fieldName: 'productScopeValues',
       component: 'Input',
       dependencies: {
-        triggerFields: ['productScope', 'productSpuIds', 'productCategoryIds'],
+        triggerFields: [''],
         show: () => false,
-        trigger(values, form) {
-          switch (values.productScope) {
-            case PromotionProductScopeEnum.CATEGORY.scope: {
-              let categoryIds: number[] = [];
-              if (Array.isArray(values.productCategoryIds)) {
-                categoryIds = values.productCategoryIds;
-              } else if (values.productCategoryIds) {
-                categoryIds = [values.productCategoryIds];
-              }
-              form.setFieldValue('productScopeValues', categoryIds);
-              break;
-            }
-            case PromotionProductScopeEnum.SPU.scope: {
-              form.setFieldValue('productScopeValues', values.productSpuIds);
-              break;
-            }
-          }
-        },
       },
     },
   ];

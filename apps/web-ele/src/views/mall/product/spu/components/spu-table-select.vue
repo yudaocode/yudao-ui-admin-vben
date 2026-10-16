@@ -52,7 +52,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'Input',
     componentProps: {
       placeholder: '请输入商品名称',
-      allowClear: true,
+      clearable: true,
     },
   },
   {
@@ -77,7 +77,7 @@ const formSchema = computed<VbenFormSchema[]>(() => [
     component: 'RangePicker',
     componentProps: {
       ...getRangePickerDefaultProps(),
-      allowClear: true,
+      clearable: true,
     },
   },
 ]);
@@ -202,13 +202,17 @@ async function openModal(data?: MallSpuApi.Spu | MallSpuApi.Spu[]) {
 async function closeModal() {
   visible.value = false;
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
   await gridApi.grid.clearRadioRow();
   initData.value = undefined;
 }
 
 /** 确认选择（多选模式） */
 function handleConfirm() {
-  const selectedRows = gridApi.grid.getCheckboxRecords() as MallSpuApi.Spu[];
+  const selectedRows = [
+    ...gridApi.grid.getCheckboxReserveRecords(),
+    ...gridApi.grid.getCheckboxRecords(),
+  ] as MallSpuApi.Spu[];
   emit('change', selectedRows);
   closeModal();
 }

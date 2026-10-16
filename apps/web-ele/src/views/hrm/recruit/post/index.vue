@@ -71,7 +71,8 @@ async function getStatusCounts() {
 /** 切换状态页签 */
 function handleStatusTabChange(key: number | string) {
   activeStatus.value = String(key);
-  handleRefresh();
+  gridApi.reload();
+  getStatusCounts();
 }
 
 /** 新增 */
@@ -116,6 +117,15 @@ async function handleStatus(row: HrmRecruitPostApi.RecruitPost) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleSubmit: async (values) => {
+      gridApi.formApi.setLatestSubmissionValues(values);
+      await Promise.all([gridApi.reload(values), getStatusCounts()]);
+    },
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      activeStatus.value = String(HrmRecruitPostStatus.RECRUITING);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {

@@ -439,6 +439,7 @@ const updatePermission = (type: string) => {
 };
 
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
+
 onMounted(async () => {
   // 获得用户列表
   userOptions.value = await getSimpleUserList();

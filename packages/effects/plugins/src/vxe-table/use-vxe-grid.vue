@@ -39,6 +39,7 @@ import {
 
 import { VbenHelpTooltip, VbenLoading } from '@vben-core/shadcn-ui';
 
+import { useResizeObserver } from '@vueuse/core';
 import { VxeButton } from 'vxe-pc-ui';
 import { VxeGrid, VxeUI } from 'vxe-table';
 
@@ -63,6 +64,24 @@ const TOOLBAR_TOOLS = 'toolbar-tools';
 const TABLE_TITLE = 'table-title';
 
 const gridRef = useTemplateRef<VxeGridInstance>('gridRef');
+const formWrapperRef = useTemplateRef<HTMLElement>('formWrapperRef');
+
+// 搜索表单的字段组件是异步加载的，首屏渲染后表单会继续变高；
+// 表格的自适应高度按首次布局时的表单高度计算，需要在表单尺寸变化（含显示 / 隐藏）后
+// 强制重新计算（recalculate 不传 true 时不会重新测量高度），否则表格会被撑出卡片底部
+let lastFormHeight: number | undefined;
+let recalculateFrame = 0;
+useResizeObserver(formWrapperRef, ([entry]) => {
+  const height = entry?.contentRect.height;
+  if (height === undefined || height === lastFormHeight) {
+    return;
+  }
+  lastFormHeight = height;
+  cancelAnimationFrame(recalculateFrame);
+  recalculateFrame = requestAnimationFrame(() => {
+    gridRef.value?.recalculate(true);
+  });
+});
 
 const state = props.api?.useStore?.();
 
@@ -151,21 +170,20 @@ const [Form, formApi] = useTableForm({
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
 });
 
+// 仅判断插槽是否存在，避免将工具栏内部状态收集为表格配置的依赖
 const showTableTitle = computed(() => {
-  return !!slots[TABLE_TITLE]?.() || tableTitle.value;
+  return !!slots[TABLE_TITLE] || tableTitle.value;
 });
 
 const showToolbar = computed(() => {
   return (
-    !!slots[TOOLBAR_ACTIONS]?.() ||
-    !!slots[TOOLBAR_TOOLS]?.() ||
-    showTableTitle.value
+    !!slots[TOOLBAR_ACTIONS] || !!slots[TOOLBAR_TOOLS] || showTableTitle.value
   );
 });
 
 const toolbarOptions = computed(() => {
-  const slotActions = slots[TOOLBAR_ACTIONS]?.();
-  const slotTools = slots[TOOLBAR_TOOLS]?.();
+  const slotActions = !!slots[TOOLBAR_ACTIONS];
+  const slotTools = !!slots[TOOLBAR_TOOLS];
   const searchBtn: VxeToolbarPropTypes.ToolConfig = {
     code: 'search',
     icon: 'vxe-icon-search',
@@ -388,6 +406,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  cancelAnimationFrame(recalculateFrame);
   formApi?.unmount?.();
   props.api?.unmount?.();
 });
@@ -447,6 +466,7 @@ onUnmounted(() => {
       <template #form>
         <div
           v-if="formOptions"
+          ref="formWrapperRef"
           v-show="showSearchForm !== false"
           :class="
             cn(

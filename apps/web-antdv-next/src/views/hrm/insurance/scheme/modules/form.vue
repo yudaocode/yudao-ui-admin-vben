@@ -20,12 +20,12 @@ import {
   InputNumber,
   Menu,
   message,
-  RadioButton,
-  RadioGroup,
-  Select,
+  SpaceAddon,
+  SpaceCompact,
   Table,
 } from 'antdv-next';
 
+import { useVbenForm } from '#/adapter/form';
 import {
   createInsuranceScheme,
   getInsuranceScheme,
@@ -35,7 +35,6 @@ import {
   getInsuranceStandardProjectList,
   getInsuranceStandardTypeList,
 } from '#/api/hrm/insurance/standard';
-import { AreaCascader } from '#/components/area';
 import { $t } from '#/locales';
 import {
   HrmInsuranceProjectType,
@@ -45,6 +44,8 @@ import {
   formatHrmInsuranceProjectName,
   formatHrmMoney,
 } from '#/views/hrm/utils/format';
+
+import { useInsuranceBaseFormSchema } from '../data';
 
 defineOptions({ name: 'HrmInsuranceSchemeForm' });
 
@@ -71,6 +72,38 @@ const insuranceTypeList = ref<{ code: string; label: string; value: string }[]>(
 const formData = ref<HrmInsuranceSchemeApi.InsuranceScheme>(
   createDefaultFormData(),
 );
+let syncingBaseForm = false;
+
+const [BaseForm, baseFormApi] = useVbenForm({
+  commonConfig: {
+    componentProps: { class: 'w-full' },
+    labelWidth: 118,
+  },
+  async handleValuesChange(values, changedFields) {
+    if (syncingBaseForm) return;
+    if (changedFields.includes('name')) formData.value.name = values.name;
+    if (changedFields.includes('type')) formData.value.type = values.type;
+    if (changedFields.includes('areaId')) {
+      formData.value.areaId = values.areaId;
+      await handleAreaChange(values.areaId);
+      await baseFormApi.updateSchema([
+        {
+          componentProps: { options: insuranceTypeList.value },
+          fieldName: 'householdType',
+        },
+      ]);
+      await baseFormApi.setFieldValue('householdType', '');
+    }
+    if (changedFields.includes('householdType')) {
+      formData.value.householdType = values.householdType || '';
+      await handleHouseTypeChange();
+    }
+  },
+  layout: 'horizontal',
+  schema: useInsuranceBaseFormSchema(),
+  showDefaultActions: false,
+  wrapperClass: 'grid-cols-3',
+});
 
 const dialogTitle = computed(() =>
   formType.value === 'create'
@@ -79,9 +112,6 @@ const dialogTitle = computed(() =>
 );
 
 const formRules = reactive<Record<string, Rule[]>>({
-  name: [{ required: true, message: '方案名称不能为空', trigger: 'blur' }],
-  areaId: [{ required: true, message: '参保城市不能为空', trigger: 'change' }],
-  type: [{ required: true, message: '方案类型不能为空', trigger: 'change' }],
   projectList: [{ validator: validateProjectList, trigger: 'change' }],
 });
 
@@ -354,6 +384,8 @@ function getSectionSummary(
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
+    const { valid } = await baseFormApi.validate();
+    if (!valid) return;
     await formRef.value?.validate();
     modalApi.lock();
     try {
@@ -374,6 +406,7 @@ const [Modal, modalApi] = useVbenModal({
     if (!isOpen) {
       formData.value = createDefaultFormData();
       insuranceTypeList.value = [];
+      await baseFormApi.resetForm();
       return;
     }
     const data = modalApi.getData() as {
@@ -389,6 +422,20 @@ const [Modal, modalApi] = useVbenModal({
     } else {
       formData.value = createDefaultFormData();
     }
+    await baseFormApi.setState({
+      schema: useInsuranceBaseFormSchema(insuranceTypeList.value),
+    });
+    syncingBaseForm = true;
+    try {
+      await baseFormApi.setValues({
+        areaId: formData.value.areaId,
+        householdType: formData.value.householdType,
+        name: formData.value.name,
+        type: formData.value.type,
+      });
+    } finally {
+      syncingBaseForm = false;
+    }
   },
 });
 </script>
@@ -402,54 +449,10 @@ const [Modal, modalApi] = useVbenModal({
       class="mx-4"
       label-width="118px"
     >
-      <div class="grid grid-cols-3 gap-4">
-        <FormItem label="方案名称" name="name">
-          <Input
-            v-model:value="formData.name"
-            :maxlength="64"
-            placeholder="请输入方案名称"
-          />
-        </FormItem>
-        <FormItem label="参保城市" name="areaId">
-          <AreaCascader
-            v-model:value="formData.areaId"
-            :change-on-select="true"
-            :selectable-levels="[2, 3]"
-            allow-clear
-            class="w-full"
-            placeholder="请选择参保城市"
-            @update:model-value="handleAreaChange"
-          />
-        </FormItem>
-        <FormItem label="可选参保方案" name="householdType">
-          <Select
-            v-model:value="formData.householdType"
-            :loading="standardLoading"
-            :options="insuranceTypeList"
-            allow-clear
-            class="w-full"
-            placeholder="请选择参保方案"
-            @change="handleHouseTypeChange"
-          />
-        </FormItem>
-      </div>
-      <FormItem label="方案类型" name="type">
-        <RadioGroup
-          v-model:value="formData.type"
-          button-style="solid"
-          option-type="button"
-        >
-          <RadioButton :value="HrmInsuranceSchemeType.PROPORTION">
-            设置参保基数和比例
-          </RadioButton>
-          <RadioButton :value="HrmInsuranceSchemeType.AMOUNT">
-            仅设置参保金额
-          </RadioButton>
-        </RadioGroup>
-      </FormItem>
+      <BaseForm />
       <Alert
         class="mb-4"
-        message="比例模式：公司或个人缴纳金额 = 参保基数 × 对应比例；金额模式直接填写公司和个人缴纳金额。"
+        title="比例模式：公司或个人缴纳金额 = 参保基数 × 对应比例；金额模式直接填写公司和个人缴纳金额。"
         show-icon
         type="info"
       />
@@ -526,26 +529,30 @@ const [Modal, modalApi] = useVbenModal({
                 />
               </template>
               <template v-else-if="column.key === 'corporateRate'">
-                <InputNumber
-                  v-model:value="record.corporateRate"
-                  :controls="false"
-                  :max="100"
-                  :min="0"
-                  :precision="2"
-                  addon-after="%"
-                  class="w-full"
-                />
+                <SpaceCompact block>
+                  <InputNumber
+                    v-model:value="record.corporateRate"
+                    :controls="false"
+                    :max="100"
+                    :min="0"
+                    :precision="2"
+                    class="min-w-0 flex-1"
+                  />
+                  <SpaceAddon>%</SpaceAddon>
+                </SpaceCompact>
               </template>
               <template v-else-if="column.key === 'personalRate'">
-                <InputNumber
-                  v-model:value="record.personalRate"
-                  :controls="false"
-                  :max="100"
-                  :min="0"
-                  :precision="2"
-                  addon-after="%"
-                  class="w-full"
-                />
+                <SpaceCompact block>
+                  <InputNumber
+                    v-model:value="record.personalRate"
+                    :controls="false"
+                    :max="100"
+                    :min="0"
+                    :precision="2"
+                    class="min-w-0 flex-1"
+                  />
+                  <SpaceAddon>%</SpaceAddon>
+                </SpaceCompact>
               </template>
               <template v-else-if="column.key === 'corporateAmount'">
                 <InputNumber

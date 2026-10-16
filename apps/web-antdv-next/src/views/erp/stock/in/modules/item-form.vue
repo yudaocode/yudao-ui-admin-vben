@@ -88,7 +88,7 @@ watch(
 function handleAdd() {
   const newRow = {
     id: undefined,
-    warehouseId: undefined,
+    warehouseId: warehouseOptions.value.find((item) => item.defaultStatus)?.id,
     productId: undefined,
     productUnitName: undefined, // 产品单位
     productBarCode: undefined, // 产品条码
@@ -145,7 +145,7 @@ async function handleProductChange(productId: any, row: any) {
   row.stockCount = row.warehouseId
     ? (await getStockCount(productId, row.warehouseId)) || 0
     : (await getStockCount(productId)) || 0;
-  row.productPrice = product.purchasePrice || 0;
+  row.productPrice = product.minPrice ?? 0;
   row.count = row.count || 1;
   handleRowChange(row);
 }
@@ -163,9 +163,13 @@ function handleRowChange(row: any) {
 
 /** 初始化行数据 */
 function initRow(row: ErpStockInApi.StockInItem) {
-  if (row.productPrice && row.count) {
-    row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-  }
+  row.totalPrice =
+    row.productPrice !== null &&
+    row.productPrice !== undefined &&
+    row.count !== null &&
+    row.count !== undefined
+      ? (erpPriceMultiply(row.productPrice, row.count) ?? 0)
+      : undefined;
 }
 
 /** 表单校验 */
@@ -181,9 +185,6 @@ function validate() {
       }
       if (!item.count || item.count <= 0) {
         throw new Error(`第 ${i + 1} 行：产品数量不能为空`);
-      }
-      if (!item.productPrice || item.productPrice <= 0) {
-        throw new Error(`第 ${i + 1} 行：产品单价不能为空`);
       }
     }
   }

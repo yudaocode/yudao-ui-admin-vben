@@ -253,6 +253,7 @@ export function useProfitLossSettingsFormSchema(
     },
     {
       fieldName: 'reverseBalance',
+      hideLabel: true,
       label: '',
       component: 'Checkbox',
       renderComponentContent: () => ({

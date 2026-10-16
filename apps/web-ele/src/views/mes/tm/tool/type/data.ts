@@ -34,6 +34,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '类型编码',
       component: 'Input',
@@ -193,7 +194,7 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolTypeApi.ToolType>
       title: '保养周期',
       width: 100,
       formatter: ({ row }) => {
-        if (row.maintenPeriod === null) {
+        if (row.maintenPeriod === null || row.maintenPeriod === undefined) {
           return '-';
         }
         if (row.maintenType === MesMaintenTypeEnum.REGULAR) {
@@ -204,6 +205,11 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolTypeApi.ToolType>
         }
         return '-';
       },
+    },
+    {
+      field: 'remark',
+      title: '备注',
+      minWidth: 150,
     },
     {
       field: 'createTime',

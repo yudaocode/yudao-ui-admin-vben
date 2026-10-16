@@ -63,7 +63,9 @@ const isMember = computed(() => {
 /** 历史退群群：只读，动作区两个按钮都不渲染（既不「进入群聊」也不「加入群聊」） */
 const isQuitGroup = computed(() => {
   const id = props.group?.id;
-  return id !== null && isGroupQuit(groupStore.getGroup(id));
+  return (
+    id !== null && id !== undefined && isGroupQuit(groupStore.getGroup(id))
+  );
 });
 /** 是否未加群：有 id、非成员、且非历史退群群；只有真·陌生人才给「加入群聊」 */
 const isStranger = computed(

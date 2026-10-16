@@ -10,7 +10,13 @@ import { computed, ref, toRefs, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
-import { checkFileType, isFunction, isObject, isString } from '@vben/utils';
+import {
+  checkFileType,
+  getFileNameFromUrl,
+  isFunction,
+  isObject,
+  isString,
+} from '@vben/utils';
 
 import { Button, message, Upload } from 'ant-design-vue';
 
@@ -33,6 +39,7 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   api: undefined,
   resultField: '',
   returnText: false,
+  returnTextType: 'text',
   showDescription: false,
   showDownloadIcon: true,
 });
@@ -43,6 +50,7 @@ const emit = defineEmits([
   'delete',
   'returnText',
   'preview',
+  'update:fileSize',
 ]);
 const { accept, helpText, maxNumber, maxSize } = toRefs(props);
 const isInnerOperate = ref<boolean>(false);
@@ -89,7 +97,7 @@ watch(
           if (item && isString(item)) {
             return {
               uid: `${-i}`,
-              name: item.slice(Math.max(0, item.lastIndexOf('/') + 1)),
+              name: getFileNameFromUrl(item),
               status: UploadResultStatus.DONE,
               url: item,
             };
@@ -173,13 +181,31 @@ async function beforeUpload(file: File) {
     return Upload.LIST_IGNORE;
   }
 
+  // 读取文件内容时不上传文件
+  if (props.returnText) {
+    const fileContent =
+      props.returnTextType === 'base64'
+        ? await readFileAsBase64(file)
+        : await file.text();
+    emit('returnText', fileContent);
+    return Upload.LIST_IGNORE;
+  }
   // 只有在验证通过后才增加计数器
   uploadNumber.value++;
-  if (props.returnText) {
-    const fileContent = await file.text();
-    emit('returnText', fileContent);
-  }
   return true;
+}
+
+/** 读取文件为 base64 */
+function readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      const result = String(reader.result ?? '');
+      resolve(result.slice(result.indexOf(',') + 1));
+    });
+    reader.addEventListener('error', () => reject(reader.error));
+    reader.readAsDataURL(file);
+  });
 }
 
 /** 自定义上传请求 */
@@ -197,7 +223,7 @@ async function customRequest(info: UploadRequestOption) {
     const res = await api?.(info.file as File, progressEvent);
 
     // 处理上传成功后的逻辑
-    handleUploadSuccess(res, info.file as File);
+    handleUploadSuccess(res, info.file as File & { uid: string });
 
     info.onSuccess!(res);
     message.success($t('ui.upload.uploadSuccess'));
@@ -213,9 +239,9 @@ async function customRequest(info: UploadRequestOption) {
  * @param res 上传响应结果
  * @param file 上传的文件
  */
-function handleUploadSuccess(res: any, file: File) {
+function handleUploadSuccess(res: any, file: File & { uid: string }) {
   // 删除临时文件
-  const index = fileList.value?.findIndex((item) => item.name === file.name);
+  const index = fileList.value?.findIndex((item) => item.uid === file.uid);
   if (index !== -1) {
     fileList.value?.splice(index!, 1);
   }
@@ -226,11 +252,14 @@ function handleUploadSuccess(res: any, file: File) {
     name: file.name,
     url: fileUrl,
     status: UploadResultStatus.DONE,
-    uid: file.name + Date.now(),
+    uid: file.uid,
   });
 
   // 检查是否所有文件都上传完成
   if (uploadList.value.length >= uploadNumber.value) {
+    fileList.value = fileList.value?.filter(
+      (item) => !uploadList.value.some((uploaded) => uploaded.uid === item.uid),
+    );
     fileList.value?.push(...uploadList.value);
     uploadList.value = [];
     uploadNumber.value = 0;
@@ -241,6 +270,8 @@ function handleUploadSuccess(res: any, file: File) {
     emit('update:value', value);
     emit('update:modelValue', value);
     emit('change', value);
+    // 通知调用方最新上传文件的大小（用于保存文件元数据）
+    emit('update:fileSize', file.size);
   }
 }
 

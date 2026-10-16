@@ -128,10 +128,12 @@ watch(
     currentNode.value = newValue;
   },
 );
+
 // 显示名称输入框
 const showInput = ref(false);
 // 输入框的引用
 const inputRef = ref<HTMLInputElement | null>(null);
+
 // 监听 showInput 的变化，当变为 true 时自动聚焦
 watch(showInput, (value) => {
   if (value) {
@@ -140,6 +142,7 @@ watch(showInput, (value) => {
     });
   }
 });
+
 function clickIcon() {
   showInput.value = true;
 }

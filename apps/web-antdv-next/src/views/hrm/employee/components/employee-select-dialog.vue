@@ -2,11 +2,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeApi } from '#/api/hrm/employee';
-import type { SystemDeptApi } from '#/api/system/dept';
 
 import { nextTick, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
+import { handleTree } from '@vben/utils';
 
 import { Button, message, Modal, Radio } from 'antdv-next';
 
@@ -15,8 +15,8 @@ import {
   getEmployeeSimpleList,
   getEmployeeSimplePage,
 } from '#/api/hrm/employee';
+import { getSimpleDeptList } from '#/api/system/dept';
 import { DictTag } from '#/components/dict-tag';
-import { DeptTreeSelect } from '#/views/system/dept/components';
 
 const emit = defineEmits<{
   selected: [rows: HrmEmployeeApi.Employee[]];
@@ -30,7 +30,6 @@ const enabledIds = ref<number[] | undefined>(undefined);
 const selectedRowMap = ref(new Map<number, HrmEmployeeApi.Employee>());
 const selectedRadioId = ref<number>();
 const selectedRadioRow = ref<HrmEmployeeApi.Employee>();
-const deptId = ref<number>();
 
 function useGridFormSchema(): VbenFormSchema[] {
   return [
@@ -45,6 +44,22 @@ function useGridFormSchema(): VbenFormSchema[] {
       label: '工号',
       component: 'Input',
       componentProps: { allowClear: true, placeholder: '请输入工号' },
+    },
+    {
+      fieldName: 'deptId',
+      label: '部门',
+      component: 'ApiTreeSelect',
+      componentProps: {
+        api: async () => handleTree(await getSimpleDeptList()),
+        labelField: 'name',
+        valueField: 'id',
+        childrenField: 'children',
+        placeholder: '请选择部门',
+        allowClear: true,
+        treeDefaultExpandAll: true,
+        showSearch: true,
+        treeNodeFilterProp: 'label',
+      },
     },
   ];
 }
@@ -93,6 +108,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     columns: useGridColumns(false),
     height: 420,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async (
           { page }: { page: { currentPage: number; pageSize: number } },
@@ -101,7 +117,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getEmployeeSimplePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            deptId: deptId.value,
             entryStatus: entryStatus.value,
             ...formValues,
           });
@@ -178,7 +193,11 @@ async function handleOpen(options: {
     }
   }
   await nextTick();
-  await gridApi.query();
+  await gridApi.formApi.reset();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
 }
 
 function handleConfirm() {
@@ -196,11 +215,6 @@ function handleConfirm() {
   open.value = false;
 }
 
-function handleDeptSelect(dept?: SystemDeptApi.Dept) {
-  deptId.value = dept?.id;
-  gridApi.query();
-}
-
 defineExpose({ open: handleOpen });
 </script>
 
@@ -210,15 +224,8 @@ defineExpose({ open: handleOpen });
     :footer="null"
     title="选择员工"
     width="960px"
-    destroy-on-close
+    destroy-on-hidden
   >
-    <div class="mb-3 flex gap-3">
-      <DeptTreeSelect
-        class="w-56"
-        placeholder="按部门筛选"
-        @select="handleDeptSelect"
-      />
-    </div>
     <Grid>
       <template #radio="{ row }">
         <Radio

@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiWriteApi } from '#/api/ai/write';
 
+import { onMounted } from 'vue';
+
 import { DocAlert, Page } from '@vben/common-ui';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -10,7 +12,11 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteWrite, getWritePage } from '#/api/ai/write';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import {
+  refreshGridRelatedData,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 
 /** 刷新表格 */
 function handleRefresh() {
@@ -40,6 +46,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getWritePage({
@@ -59,6 +66,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<AiWriteApi.Write>,
+});
+
+/** 初始化列表关联数据 */
+onMounted(async () => {
+  await refreshGridRelatedData();
+  gridApi.query();
 });
 </script>
 

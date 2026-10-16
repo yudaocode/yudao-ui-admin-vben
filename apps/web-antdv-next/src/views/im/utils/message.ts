@@ -632,7 +632,9 @@ export const getQuoteFromMessage = (content: string): null | QuoteMessage => {
 export const parseRecallMessageId = (content: string): number => {
   try {
     const parsed = JSON.parse(content);
-    return parsed?.messageId === null ? 0 : Number(parsed.messageId);
+    return parsed?.messageId === null || parsed?.messageId === undefined
+      ? 0
+      : Number(parsed.messageId);
   } catch {
     return 0;
   }
@@ -662,11 +664,15 @@ export const playAudioTip = () => {
     const playPromise = __tipAudio.play();
     if (playPromise && typeof playPromise.catch === 'function') {
       playPromise.catch((error) =>
-        console.warn('[IM] playAudioTip 失败', error),
+        // 自动播放限制属于预期情况，仅保留调试日志。
+        // oxlint-disable-next-line no-console
+        console.debug('[IM] playAudioTip 失败', error),
       );
     }
   } catch (error) {
-    console.warn('[IM] playAudioTip 失败', error);
+    // 自动播放限制属于预期情况，仅保留调试日志。
+    // oxlint-disable-next-line no-console
+    console.debug('[IM] playAudioTip 失败', error);
   }
 };
 

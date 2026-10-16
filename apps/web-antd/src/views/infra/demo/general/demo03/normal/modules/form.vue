@@ -81,6 +81,10 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     await formRef.value?.validate();
     // 校验子表单
+    if (!demo03CourseFormRef.value?.validate()) {
+      subTabsName.value = 'demo03Course';
+      return;
+    }
     try {
       await demo03GradeFormRef.value?.validate();
     } catch {

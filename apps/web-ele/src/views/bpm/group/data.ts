@@ -15,7 +15,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  userList = await getSimpleUserList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -54,7 +58,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
-        mode: 'tags',
+        multiple: true,
       },
       rules: z.array(z.number()).min(1, '请选择成员').default([]),
     },
@@ -79,7 +83,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入组名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -89,7 +93,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择状态',
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -98,7 +102,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -2,6 +2,7 @@
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
 import { useVbenModal } from '@vben/common-ui';
+import { yuanToFen } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -19,7 +20,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 80,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: useFormSchema(),
@@ -36,7 +37,7 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = (await formApi.getValues()) as DemoWithdrawApi.Withdraw;
     try {
-      await createDemoWithdraw(data);
+      await createDemoWithdraw({ ...data, price: yuanToFen(data.price) });
       // 关闭并提示
       await modalApi.close();
       emit('success');

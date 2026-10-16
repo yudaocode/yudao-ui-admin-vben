@@ -80,12 +80,6 @@ const [Modal, modalApi] = useVbenModal({
     }
   },
 });
-
-function open(type: 'create' | 'update', id?: number) {
-  modalApi.setData({ type, id }).open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>

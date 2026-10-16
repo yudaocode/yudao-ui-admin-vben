@@ -209,8 +209,7 @@ function normalizeDetail(
   detailSeq += 1;
   const row: DetailRow = {
     ...detail,
-    actualPrice:
-      detail.actualPrice ?? multiplyPrice(detail.checkQuantity, detail.price),
+    actualPrice: multiplyPrice(detail.checkQuantity, detail.price),
     seq: detailSeq,
   };
   refreshDetailCalculatedFields(row);
@@ -281,7 +280,11 @@ async function handleImportAllInventory() {
     return;
   }
   if (details.value.length > 0) {
-    await confirm('导入仓库库存会覆盖当前盘库明细，是否继续？');
+    try {
+      await confirm('导入仓库库存会覆盖当前盘库明细，是否继续？');
+    } catch {
+      return;
+    }
   }
   modalApi.lock();
   try {
@@ -465,7 +468,11 @@ async function handleFormComplete() {
   if (!valid || !validateDetails(true) || !formData.value?.id) {
     return;
   }
-  await confirm('确认完成盘库？完成后将更新库存。');
+  try {
+    await confirm('确认完成盘库？完成后将更新库存。');
+  } catch {
+    return;
+  }
   modalApi.lock();
   try {
     const data = await buildSubmitData();
@@ -486,7 +493,11 @@ async function handleFormCancel() {
   if (!formData.value?.id) {
     return;
   }
-  await confirm('确认作废该盘库单？作废后不可恢复。');
+  try {
+    await confirm('确认作废该盘库单？作废后不可恢复。');
+  } catch {
+    return;
+  }
   modalApi.lock();
   try {
     await cancelCheckOrder(formData.value.id);
@@ -510,8 +521,8 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = await buildSubmitData();
     try {
+      const data = await buildSubmitData();
       await (formType.value === 'update'
         ? updateCheckOrder(data)
         : createCheckOrder(data));

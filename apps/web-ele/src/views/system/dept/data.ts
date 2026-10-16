@@ -13,7 +13,9 @@ import { getSimpleUserList } from '#/api/system/user';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+export async function loadUserList() {
+  userList = await getSimpleUserList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -33,11 +35,13 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
         api: async () => {
-          const data = await getDeptList();
-          data.unshift({
-            id: 0,
-            name: '顶级部门',
-          });
+          const data: Partial<SystemDeptApi.Dept>[] = await getDeptList();
+          if (data.length === 0 || data.some((dept) => dept.parentId === 0)) {
+            data.unshift({
+              id: 0,
+              name: '顶级部门',
+            });
+          }
           return handleTree(data);
         },
         labelField: 'name',
@@ -88,10 +92,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '联系电话',
       component: 'Input',
       componentProps: {
-        maxLength: 11,
+        maxlength: 11,
         placeholder: '请输入联系电话',
       },
-      rules: 'mobileRequired',
+      rules: 'mobile',
     },
     {
       fieldName: 'email',
@@ -158,6 +162,31 @@ export function useGridColumns(): VxeTableGridOptions<SystemDeptApi.Dept>['colum
       width: 220,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 列表的搜索表单 */
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      fieldName: 'name',
+      label: '部门名称',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入部门名称',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'status',
+      label: '状态',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
+        clearable: true,
+        placeholder: '请选择状态',
+      },
     },
   ];
 }

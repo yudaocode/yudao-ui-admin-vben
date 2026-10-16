@@ -47,6 +47,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '归属部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => {
           const data = await getSimpleDeptList();
           return handleTree(data);
@@ -68,7 +69,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择员工',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

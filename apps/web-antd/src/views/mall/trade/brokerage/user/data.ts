@@ -2,6 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallBrokerageUserApi } from '#/api/mall/trade/brokerage/user';
 
+import { useAccess } from '@vben/access';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { fenToYuan } from '@vben/utils';
@@ -23,7 +24,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'brokerageEnabled',
       label: '推广资格',
-      component: 'RadioGroup',
+      component: 'Select',
       componentProps: {
         placeholder: '请选择推广资格',
         allowClear: true,
@@ -53,6 +54,7 @@ export function useGridColumns(
     row: MallBrokerageUserApi.BrokerageUser,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'id',
@@ -120,6 +122,9 @@ export function useGridColumns(
         attrs: { beforeChange: onBrokerageEnabledChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes([
+            'trade:brokerage-user:update-brokerage-enable',
+          ]),
           checkedValue: true,
           uncheckedValue: false,
           checkedChildren: '有',

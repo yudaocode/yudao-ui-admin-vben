@@ -40,6 +40,7 @@ const props = withDefaults(defineProps<TinymacProps>(), {
   plugins: defaultPlugins,
   toolbar: defaultToolbar,
   showImageUpload: true,
+  uploadImage: undefined,
 });
 
 const emit = defineEmits(['change']);
@@ -51,6 +52,7 @@ interface TinymacProps {
   height?: number | string;
   width?: number | string;
   showImageUpload?: boolean;
+  uploadImage?: (file: File) => Promise<string>;
 }
 
 /** 外部使用 v-model 绑定值 */
@@ -94,6 +96,7 @@ const langName = computed(() => {
 
 /** 监听 mode、locale 进行主题、语言切换 */
 const init = ref(true);
+
 watch(
   () => [preferences.theme.mode, preferences.app.locale],
   async () => {
@@ -141,8 +144,14 @@ const initOptions = computed((): InitOptions => {
     images_upload_handler: (blobInfo: any) => {
       return new Promise((resolve, reject) => {
         const file = blobInfo.blob() as File;
-        const { httpRequest } = useUpload();
-        httpRequest(file)
+        const uploadImage =
+          props.uploadImage ??
+          (async (image: File) => {
+            const { httpRequest } = useUpload();
+            const result = await httpRequest(image);
+            return typeof result === 'string' ? result : result.url;
+          });
+        uploadImage(file)
           .then((url) => {
             resolve(url);
           })
@@ -161,6 +170,7 @@ const initOptions = computed((): InitOptions => {
 
 /** 监听 options.readonly 是否只读 */
 const disabled = computed(() => props.options.readonly ?? false);
+
 watch(
   () => props.options,
   (options) => {
@@ -305,6 +315,7 @@ function handleError(name: string) {
       v-show="editorRef"
       :disabled="disabled"
       :fullscreen="fullscreen"
+      :upload-image="uploadImage"
       @done="handleDone"
       @error="handleError"
       @uploading="handleImageUploading"

@@ -83,6 +83,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ImageUpload',
       componentProps: {
         maxNumber: 9,
+        multiple: true,
         placeholder: '请上传评论图片',
       },
       rules: 'required',
@@ -214,6 +215,7 @@ export function useGridColumns(
       field: 'picUrls',
       title: '评论图片',
       minWidth: 120,
+      showOverflow: false,
       cellRender: {
         name: 'CellImages',
       },

@@ -98,8 +98,7 @@ async function loadThingModel(productId: number) {
 }
 
 /** 产品变化时清空设备 / 消息 / 标识符 */
-function handleProductChange(rowIndex: number) {
-  const row = formData.value[rowIndex];
+function handleProductChange(row: any) {
   row.deviceId = 0;
   row.method = undefined;
   row.identifier = undefined;
@@ -107,8 +106,7 @@ function handleProductChange(rowIndex: number) {
 }
 
 /** 消息方法变化时清空标识符 + 按需加载物模型 */
-async function handleMethodChange(rowIndex: number) {
-  const row = formData.value[rowIndex];
+async function handleMethodChange(row: any) {
   row.identifier = undefined;
   if (shouldShowIdentifierSelect(row) && row.productId) {
     row.identifierLoading = true;
@@ -211,14 +209,14 @@ defineExpose({ validate, getData, setData });
 <template>
   <div>
     <Grid>
-      <template #productId="{ rowIndex }">
+      <template #productId="{ row }">
         <ElSelect
-          v-model="formData[rowIndex].productId"
+          v-model="row.productId"
           placeholder="请选择产品"
           filterable
           clearable
           class="w-full"
-          @change="() => handleProductChange(rowIndex)"
+          @change="() => handleProductChange(row)"
         >
           <ElOption
             v-for="p in productList"
@@ -228,9 +226,9 @@ defineExpose({ validate, getData, setData });
           />
         </ElSelect>
       </template>
-      <template #deviceId="{ rowIndex }">
+      <template #deviceId="{ row }">
         <ElSelect
-          v-model="formData[rowIndex].deviceId"
+          v-model="row.deviceId"
           placeholder="请选择设备"
           filterable
           clearable
@@ -238,21 +236,21 @@ defineExpose({ validate, getData, setData });
         >
           <ElOption label="全部设备" :value="0" />
           <ElOption
-            v-for="d in getFilteredDevices(formData[rowIndex].productId)"
+            v-for="d in getFilteredDevices(row.productId)"
             :key="d.id"
             :label="d.deviceName"
             :value="d.id"
           />
         </ElSelect>
       </template>
-      <template #method="{ rowIndex }">
+      <template #method="{ row }">
         <ElSelect
-          v-model="formData[rowIndex].method"
+          v-model="row.method"
           placeholder="请选择消息"
           filterable
           clearable
           class="w-full"
-          @change="() => handleMethodChange(rowIndex)"
+          @change="() => handleMethodChange(row)"
         >
           <ElOption
             v-for="m in upstreamMethods"
@@ -262,18 +260,18 @@ defineExpose({ validate, getData, setData });
           />
         </ElSelect>
       </template>
-      <template #identifier="{ rowIndex }">
+      <template #identifier="{ row }">
         <ElSelect
-          v-if="shouldShowIdentifierSelect(formData[rowIndex])"
-          v-model="formData[rowIndex].identifier"
+          v-if="shouldShowIdentifierSelect(row)"
+          v-model="row.identifier"
           placeholder="请选择标识符"
           filterable
           clearable
-          :loading="formData[rowIndex].identifierLoading"
+          :loading="row.identifierLoading"
           class="w-full"
         >
           <ElOption
-            v-for="option in getThingModelOptions(formData[rowIndex])"
+            v-for="option in getThingModelOptions(row)"
             :key="option.value"
             :label="option.label"
             :value="option.value"

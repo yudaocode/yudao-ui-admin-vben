@@ -34,9 +34,11 @@ async function handleMidjourneyBtnClick(
 
 /** 监听详情 */
 const { detail } = toRefs(props);
+
 watch(detail, async (newVal) => {
   await handleLoading(newVal.status);
 });
+
 const loading = ref();
 
 /** 处理加载状态 */
@@ -74,8 +76,7 @@ onMounted(async () => {
           异常
         </Button>
       </div>
-      <div class="flex">
-        <!-- TODO @AI：居右对齐 -->
+      <div class="ml-auto flex">
         <Button
           class="m-0 p-2"
           type="text"

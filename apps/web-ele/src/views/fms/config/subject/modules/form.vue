@@ -206,13 +206,15 @@ function suggestChildCode(parent: FmsSubjectApi.Subject) {
 }
 
 /** 根据完整科目编码识别上级科目 */
-function handleCodeBlur() {
+async function handleCodeBlur() {
   if (formType.value !== 'create' || explicitParent.value) return;
   const code = formData.value.code?.trim();
   const parent = findParentByCode(code);
   if (!parent) {
     parentSubject.value = undefined;
     formData.value.parentId = FMS_SUBJECT_PARENT_ID_ROOT;
+    subjectUsage.value = createEmptySubjectUsage();
+    formData.value.migrateParentData = false;
     return;
   }
   parentSubject.value = parent;
@@ -224,6 +226,16 @@ function handleCodeBlur() {
   formData.value.quantityAccounting = parent.quantityAccounting;
   formData.value.quantityUnit = parent.quantityUnit;
   formData.value.cash = parent.cash;
+  formData.value.migrateParentData = false;
+  modalApi.lock();
+  try {
+    subjectUsage.value = await getSubjectUsage(
+      formData.value.accountSetId!,
+      parent.id!,
+    );
+  } finally {
+    modalApi.unlock();
+  }
 }
 
 /** 按会计科目级次和编码前缀查找已存在的上级科目 */
@@ -355,7 +367,7 @@ const [Modal, modalApi] = useVbenModal({
           getSubject(accountSetId, data.row.id),
           getSubjectUsage(accountSetId, data.row.id),
         ]);
-        subjectCodeRule.value = financeParameter!.subjectCodeRule;
+        subjectCodeRule.value = financeParameter?.subjectCodeRule || '';
         formData.value = subject;
         formData.value.auxiliaryMappings = [];
         originalAuxiliaryTypeIds.value = [...(subject.auxiliaryTypeIds || [])];
@@ -371,7 +383,7 @@ const [Modal, modalApi] = useVbenModal({
           : undefined,
         getSubjectList(accountSetId, data.subjectType),
       ]);
-      subjectCodeRule.value = financeParameter!.subjectCodeRule;
+      subjectCodeRule.value = financeParameter?.subjectCodeRule || '';
       subjectCandidates.value = subjects;
       // 新建下级时，继承上级科目的核算配置
       if (data.parent) {

@@ -303,7 +303,11 @@ function handleCardClick(card: CardMessage, e: MouseEvent) {
 }
 
 /** 媒体上传中：MessageBubble 自渲染遮罩 / 进度条；外层只用作 showSendingLoading 判定 */
-const isUploading = computed(() => props.message.uploadProgress !== null);
+const isUploading = computed(
+  () =>
+    props.message.uploadProgress !== null &&
+    props.message.uploadProgress !== undefined,
+);
 
 /**
  * 是否在气泡尾部显示「发送中」loading 转圈

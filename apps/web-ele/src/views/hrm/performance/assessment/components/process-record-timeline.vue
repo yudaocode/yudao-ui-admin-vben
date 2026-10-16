@@ -3,10 +3,7 @@ import type { HrmPerformanceAssessmentApi } from '#/api/hrm/performance/assessme
 
 import { formatDateTime } from '@vben/utils';
 
-import {
-  ElTimeline as Timeline,
-  ElTimelineItem as TimelineItem,
-} from 'element-plus';
+import { ElTimeline, ElTimelineItem } from 'element-plus';
 
 defineOptions({ name: 'HrmPerformanceProcessRecordTimeline' });
 
@@ -17,8 +14,8 @@ defineProps<{
 </script>
 
 <template>
-  <Timeline v-if="records.length">
-    <TimelineItem v-for="(record, index) in records" :key="index">
+  <ElTimeline v-if="records.length">
+    <ElTimelineItem v-for="(record, index) in records" :key="index">
       <div class="font-medium">{{ record.title }}</div>
       <div class="text-sm text-gray-500">
         {{ record.operatorName }} · {{ formatDateTime(record.operateTime) }}
@@ -36,8 +33,8 @@ defineProps<{
           附件 {{ fileIndex + 1 }}
         </a>
       </div>
-    </TimelineItem>
-  </Timeline>
+    </ElTimelineItem>
+  </ElTimeline>
   <div v-else-if="!loading" class="py-8 text-center text-gray-400">
     暂无考核记录
   </div>

@@ -88,7 +88,8 @@ watch(
 function handleAdd() {
   const newRow = {
     id: undefined,
-    fromWarehouseId: undefined,
+    fromWarehouseId: warehouseOptions.value.find((item) => item.defaultStatus)
+      ?.id,
     toWarehouseId: undefined,
     productId: undefined,
     productUnitName: undefined, // 产品单位
@@ -152,7 +153,7 @@ async function handleProductChange(productId: any, row: any) {
   row.stockCount = row.fromWarehouseId
     ? (await getStockCount(productId, row.fromWarehouseId)) || 0
     : (await getStockCount(productId)) || 0;
-  row.productPrice = product.purchasePrice || 0;
+  row.productPrice = product.minPrice ?? 0;
   row.count = row.count || 1;
   handleRowChange(row);
 }
@@ -170,9 +171,13 @@ function handleRowChange(row: any) {
 
 /** 初始化行数据 */
 function initRow(row: ErpStockMoveApi.StockMoveItem) {
-  if (row.productPrice && row.count) {
-    row.totalPrice = erpPriceMultiply(row.productPrice, row.count) ?? 0;
-  }
+  row.totalPrice =
+    row.productPrice !== null &&
+    row.productPrice !== undefined &&
+    row.count !== null &&
+    row.count !== undefined
+      ? (erpPriceMultiply(row.productPrice, row.count) ?? 0)
+      : undefined;
 }
 
 /** 表单校验 */

@@ -844,6 +844,9 @@ importers:
       pinia:
         specifier: ^4.0.2
         version: 4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3))
+      sortablejs:
+        specifier: 'catalog:'
+        version: 1.15.7
       steady-xml:
         specifier: 'catalog:'
         version: 0.1.0
@@ -874,6 +877,10 @@ importers:
       vuedraggable:
         specifier: 'catalog:'
         version: 4.1.0(vue@3.5.42(typescript@6.0.3))
+    devDependencies:
+      '@types/sortablejs':
+        specifier: 'catalog:'
+        version: 1.15.9
 
   apps/web-antdv-next:
     dependencies:
@@ -979,6 +986,9 @@ importers:
       pinia:
         specifier: ^4.0.2
         version: 4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3))
+      sortablejs:
+        specifier: 'catalog:'
+        version: 1.15.7
       steady-xml:
         specifier: 'catalog:'
         version: 0.1.0
@@ -1009,6 +1019,10 @@ importers:
       vuedraggable:
         specifier: 'catalog:'
         version: 4.1.0(vue@3.5.42(typescript@6.0.3))
+    devDependencies:
+      '@types/sortablejs':
+        specifier: 'catalog:'
+        version: 1.15.9
 
   apps/web-ele:
     dependencies:
@@ -1114,6 +1128,9 @@ importers:
       pinia:
         specifier: ^4.0.2
         version: 4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3))
+      sortablejs:
+        specifier: 'catalog:'
+        version: 1.15.7
       steady-xml:
         specifier: 'catalog:'
         version: 0.1.0
@@ -1145,6 +1162,9 @@ importers:
         specifier: 'catalog:'
         version: 4.1.0(vue@3.5.42(typescript@6.0.3))
     devDependencies:
+      '@types/sortablejs':
+        specifier: 'catalog:'
+        version: 1.15.9
       unplugin-element-plus:
         specifier: 'catalog:'
         version: 0.11.2(magic-string@1.2.3)(magicast@0.5.4)(oxc-parser@0.143.0)(rolldown@1.2.6)

@@ -6,14 +6,9 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
-import { getDictLabel } from '@vben/hooks';
+import { getDictLabel, useTabs } from '@vben/hooks';
 
-import {
-  ElAvatar as Avatar,
-  ElButton as Button,
-  ElCard as Card,
-  ElMessage as message,
-} from 'element-plus';
+import { ElAvatar, ElButton, ElCard, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -32,6 +27,7 @@ defineOptions({ name: 'HrmPerformanceAssessmentEmployee' });
 
 const route = useRoute();
 const router = useRouter();
+const { closeCurrentTab } = useTabs();
 const employeeId = computed(() => Number(route.params.employeeId));
 
 const employeeInfo = ref<
@@ -58,6 +54,7 @@ function openDetail(id: number) {
 }
 
 function handleBack() {
+  closeCurrentTab();
   router.push({ name: 'HrmPerformanceAssessment' });
 }
 
@@ -65,7 +62,7 @@ async function handleDelete(ids: number[]) {
   if (ids.length === 0) return;
   await confirm($t('ui.actionMessage.deleteConfirm'));
   await deletePerformanceArchiveRecords(ids);
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   const page = await getPerformanceAssessmentArchivePage({
     pageNo: 1,
     pageSize: 1,
@@ -106,6 +103,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     checkboxConfig: { highlight: true },
+    toolbarConfig: { refresh: true, search: true },
   },
   gridEvents: {
     checkboxAll: ({
@@ -136,10 +134,12 @@ onMounted(loadPlanOptions);
         url="https://doc.iocoder.cn/hrm/performance/assessment/"
       />
     </template>
-    <Card class="mb-4 shrink-0">
+    <ElCard class="mb-4 shrink-0">
       <div class="flex items-center gap-4">
-        <Button @click="handleBack">返回</Button>
-        <Avatar :size="48">{{ employeeInfo.employeeName?.slice(0, 1) }}</Avatar>
+        <ElButton @click="handleBack">返回</ElButton>
+        <ElAvatar :size="48">
+          {{ employeeInfo.employeeName?.slice(0, 1) }}
+        </ElAvatar>
         <div>
           <div class="text-lg font-semibold">
             {{ employeeInfo.employeeName }}
@@ -156,7 +156,7 @@ onMounted(loadPlanOptions);
           </div>
         </div>
       </div>
-    </Card>
+    </ElCard>
     <Grid class="min-h-0 flex-1" table-title="绩效档案记录">
       <template #toolbar-tools>
         <TableAction

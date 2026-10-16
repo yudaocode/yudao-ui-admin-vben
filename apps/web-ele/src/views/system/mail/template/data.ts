@@ -215,6 +215,12 @@ export function useGridColumns(
       minWidth: 120,
     },
     {
+      field: 'content',
+      title: '模板内容',
+      minWidth: 200,
+      showOverflow: true,
+    },
+    {
       field: 'accountId',
       title: '邮箱账号',
       minWidth: 120,

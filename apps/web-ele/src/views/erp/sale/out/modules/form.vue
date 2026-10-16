@@ -117,6 +117,7 @@ function handleUpdateOrder(order: ErpSaleOrderApi.SaleOrder) {
     orderNo: order.no!,
     customerId: order.customerId!,
     accountId: order.accountId!,
+    saleUserId: order.saleUserId,
     remark: order.remark!,
     discountPercent: order.discountPercent!,
     fileUrl: order.fileUrl!,
@@ -124,7 +125,7 @@ function handleUpdateOrder(order: ErpSaleOrderApi.SaleOrder) {
   // 将订单项设置到出库单项
   order.items!.forEach((item: any) => {
     item.totalCount = item.count;
-    item.count = item.totalCount - item.outCount;
+    item.count = (item.totalCount ?? 0) - (item.outCount ?? 0);
     item.orderItemId = item.id;
     item.id = undefined;
   });
@@ -208,7 +209,7 @@ const [Modal, modalApi] = useVbenModal({
       <template #items>
         <ItemForm
           ref="itemFormRef"
-          :items="formData?.items ?? []"
+          :items="formData?.items"
           :disabled="formType === 'detail'"
           :discount-percent="formData?.discountPercent ?? 0"
           :other-price="formData?.otherPrice ?? 0"

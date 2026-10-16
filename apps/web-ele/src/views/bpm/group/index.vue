@@ -2,6 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { BpmUserGroupApi } from '#/api/bpm/userGroup';
 
+import { onMounted } from 'vue';
+
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import { ElLoading, ElMessage } from 'element-plus';
@@ -10,7 +12,11 @@ import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteUserGroup, getUserGroupPage } from '#/api/bpm/userGroup';
 import { $t } from '#/locales';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import {
+  refreshGridRelatedData,
+  useGridColumns,
+  useGridFormSchema,
+} from './data';
 import Form from './modules/form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
@@ -56,6 +62,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getUserGroupPage({
@@ -75,6 +82,12 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<BpmUserGroupApi.UserGroup>,
+});
+
+/** 初始化列表关联数据 */
+onMounted(async () => {
+  await refreshGridRelatedData();
+  gridApi.query();
 });
 </script>
 

@@ -95,6 +95,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           const data = await getInventoryPage({
@@ -140,7 +141,10 @@ async function openModal(selectedInventoryKeys: string[] = []) {
   await gridApi.grid.clearCheckboxRow();
   await gridApi.grid.clearCheckboxReserve();
   await gridApi.formApi.reset();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
 }
 
 async function closeModal() {

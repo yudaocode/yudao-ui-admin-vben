@@ -1,3 +1,5 @@
+import type { Ref } from 'vue';
+
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
@@ -10,7 +12,7 @@ import { getCustomerSimpleList } from '#/api/crm/customer';
 import { getSimpleUserList } from '#/api/system/user';
 
 /** 新增/修改的表单 */
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
   const userStore = useUserStore();
   return [
     {
@@ -28,7 +30,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入商机名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -44,7 +46,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
@@ -53,17 +55,14 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'customerId',
       label: '客户名称',
       component: 'ApiSelect',
-      componentProps: {
+      componentProps: () => ({
+        disabled: customerLocked.value,
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        allowClear: true,
-      },
-      dependencies: {
-        triggerFields: ['id'],
-        disabled: (values) => values.customerDefault,
-      },
+        clearable: true,
+      }),
       rules: 'required',
     },
     {
@@ -84,7 +83,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择商机状态组',
-        allowClear: true,
+        clearable: true,
       },
       dependencies: {
         triggerFields: ['id'],
@@ -98,7 +97,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         showTime: false,
-        format: 'YYYY-MM-DD HH:mm:ss',
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         placeholder: '请选择预计成交日期',
         class: '!w-full',
@@ -111,7 +110,7 @@ export function useFormSchema(): VbenFormSchema[] {
       formItemClass: 'col-span-3',
       componentProps: {
         placeholder: '请输入产品清单',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -168,6 +167,14 @@ export function useFormSchema(): VbenFormSchema[] {
         },
       },
     },
+    {
+      fieldName: 'remark',
+      label: '备注',
+      component: 'Textarea',
+      componentProps: {
+        placeholder: '请输入备注',
+      },
+    },
   ];
 }
 
@@ -180,7 +187,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入商机名称',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

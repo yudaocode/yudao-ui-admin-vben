@@ -24,7 +24,10 @@ const emit = defineEmits<{
 }>();
 
 const UPLOAD_URL = `${import.meta.env.VITE_BASE_URL}/admin-api/mp/material/upload-temporary`;
-const HEADERS = { Authorization: `Bearer ${useAccessStore().accessToken}` };
+const accessStore = useAccessStore();
+const HEADERS = computed(() => ({
+  Authorization: `Bearer ${accessStore.accessToken}`,
+}));
 const reply = computed<Reply>({
   get: () => props.modelValue,
   set: (val) => emit('update:modelValue', val),
@@ -58,15 +61,16 @@ async function customRequest(options: any) {
   try {
     const response = await fetch(UPLOAD_URL, {
       method: 'POST',
-      headers: HEADERS,
+      headers: HEADERS.value,
       body: formData,
     });
 
     const result = await response.json();
 
-    if (result.code !== 0) {
-      message.error(result.msg || '上传出错');
-      onError(new Error(result.msg || '上传失败'));
+    if (result?.code !== 0) {
+      fileList.value = [];
+      message.error(result?.msg || '上传失败');
+      onError(new Error(result?.msg || '上传失败'));
       return;
     }
     // 清空上传时的各种数据
@@ -79,6 +83,7 @@ async function customRequest(options: any) {
     message.success('上传成功');
     onSuccess(result, file);
   } catch (error) {
+    fileList.value = [];
     message.error('上传失败，请重试');
     onError(error);
   }

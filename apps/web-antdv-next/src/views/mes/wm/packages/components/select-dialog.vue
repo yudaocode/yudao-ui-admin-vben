@@ -121,6 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           const data = await getPackagePage({
@@ -182,7 +183,10 @@ async function openModal(
     columns: useSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }
@@ -218,7 +222,7 @@ defineExpose({ open: openModal });
     <Alert
       v-if="childableOnly"
       class="mb-3"
-      message="仅展示可作为子箱的装箱单（无父箱 + 已完成）"
+      title="仅展示可作为子箱的装箱单（无父箱 + 已完成）"
       show-icon
       type="info"
     />

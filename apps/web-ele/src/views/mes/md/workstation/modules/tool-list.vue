@@ -43,7 +43,7 @@ const [Form, formApi] = useVbenForm({
       class: 'w-full',
     },
     formItemClass: 'col-span-2',
-    labelWidth: 90,
+    labelWidth: 'auto',
   },
   layout: 'horizontal',
   schema: [
@@ -251,6 +251,7 @@ watch(
       v-model="formOpen"
       :title="formData?.id ? '编辑工具' : '添加工具'"
       width="520px"
+      :append-to-body="true"
     >
       <Form class="mx-4" />
       <template #footer>

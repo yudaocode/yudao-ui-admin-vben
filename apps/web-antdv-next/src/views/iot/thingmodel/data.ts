@@ -24,7 +24,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<ThingModelApi.ThingModel>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'type',
       title: '功能类型',

@@ -167,7 +167,11 @@ function openDetail(row: FmsVoucherStatisticsApi.Statistics) {
 
 /** 导出凭证汇总表 */
 async function handleExport() {
-  if (!lastQuery.value) return;
+  if (!lastQuery.value) {
+    ElMessage.warning('请先查询凭证');
+    return;
+  }
+  if (exportLoading.value) return;
   try {
     await confirm('是否确认导出数据项？');
     exportLoading.value = true;
@@ -189,8 +193,12 @@ async function handleExport() {
 
 /** 打印凭证汇总表 */
 function handlePrint() {
+  if (!lastQuery.value) {
+    ElMessage.warning('请先查询凭证');
+    return;
+  }
   const tableElement = gridApi.grid?.getRefMaps?.().refElem?.value;
-  if (!tableElement || !lastQuery.value) {
+  if (!tableElement) {
     ElMessage.error('未找到可打印的表格');
     return;
   }

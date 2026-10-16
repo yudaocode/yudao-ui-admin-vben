@@ -4,7 +4,7 @@ import type { InventoryDimension } from './data';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { WmsInventoryApi } from '#/api/wms/inventory';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { DocAlert, Page } from '@vben/common-ui';
 
@@ -103,10 +103,19 @@ function handleSpanMethod({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      filterZero.value = false;
+      await nextTick();
+      const formValues = await gridApi.formApi.getValues();
+      gridApi.formApi.setLatestSubmissionValues(formValues);
+      await gridApi.reload(formValues);
+    },
     schema: useGridFormSchema(handleDimensionChange),
   },
   gridOptions: {
     columns: useGridColumns(),
+    showOverflow: false,
     height: 'auto',
     keepSource: true,
     proxyConfig: {

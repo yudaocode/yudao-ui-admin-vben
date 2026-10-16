@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-template';
 
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { ElOption, ElSelect } from 'element-plus';
 
@@ -40,20 +40,6 @@ function handleChange(value?: number) {
   emit('update:modelValue', value);
   emit('change');
 }
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    if (value === undefined && templateList.value.length > 0) {
-      const defaultTemplate = templateList.value.find(
-        (item) => item.defaultStatus,
-      );
-      if (defaultTemplate?.id) {
-        emit('update:modelValue', defaultTemplate.id);
-      }
-    }
-  },
-);
 
 onMounted(() => {
   init();

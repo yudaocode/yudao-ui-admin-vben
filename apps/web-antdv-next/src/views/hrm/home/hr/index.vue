@@ -4,7 +4,7 @@ import type { HrmHomeApi } from '#/api/hrm/home';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Col, Row, Spin } from 'antdv-next';
 
@@ -12,10 +12,10 @@ import { getHrHomeCalendar, getHrHomeStatisticsSummary } from '#/api/hrm/home';
 import { HrmHomeCalendarItemType } from '#/views/hrm/utils/constants';
 
 import HrmHomeCalendar from '../components/calendar.vue';
-import HrmHomeEmployeeSurvey from '../components/employee-survey.vue';
-import HrmHomeRecruitSurvey from '../components/recruit-survey.vue';
-import HrmHomeSalarySurvey from '../components/salary-survey.vue';
-import HrmHomeTodoSurvey from '../components/todo-survey.vue';
+import HrmHomeEmployeeSurvey from '../modules/employee-survey.vue';
+import HrmHomeRecruitSurvey from '../modules/recruit-survey.vue';
+import HrmHomeSalarySurvey from '../modules/salary-survey.vue';
+import HrmHomeTodoSurvey from '../modules/todo-survey.vue';
 
 defineOptions({ name: 'HrmHrHome' });
 
@@ -63,6 +63,12 @@ onMounted(() => {
 
 <template>
   <Page>
+    <template #doc>
+      <DocAlert
+        title="【组织】工作台、组织架构"
+        url="https://doc.iocoder.cn/hrm/organization/"
+      />
+    </template>
     <Spin :spinning="loading">
       <div class="mb-4 text-2xl leading-7">HR 工作台</div>
       <Row :gutter="[16, 16]" align="top">

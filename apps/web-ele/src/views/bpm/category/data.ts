@@ -55,6 +55,7 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'sort',
+      rules: 'required',
       label: '分类排序',
       component: 'InputNumber',
       componentProps: {
@@ -91,7 +92,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入分类名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -100,7 +101,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入分类标志',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -110,7 +111,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择分类状态',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -119,7 +120,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

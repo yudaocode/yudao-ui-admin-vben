@@ -2,8 +2,11 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpDraftApi } from '#/api/mp/draft';
 
+import { ref } from 'vue';
+
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
+import { cloneDeep } from '@vben/utils';
 
 import { ElImage, ElLink, ElLoading, ElMessage } from 'element-plus';
 
@@ -22,10 +25,13 @@ function handleRefresh() {
   gridApi.query();
 }
 
+const selectedAccountId = ref<number>();
+
 /** 公众号变化时查询数据 */
-function handleAccountChange(accountId: number) {
-  gridApi.formApi.setValues({ accountId });
-  gridApi.formApi.submitForm();
+async function handleAccountChange(accountId: number) {
+  selectedAccountId.value = accountId;
+  await gridApi.formApi.setValues({ accountId });
+  await gridApi.formApi.submitForm();
 }
 
 /** 新增草稿 */
@@ -58,7 +64,7 @@ async function handleEdit(row: MpDraftApi.DraftArticle) {
       isCreating: false,
       accountId,
       mediaId: row.mediaId,
-      newsList: row.content.newsItem,
+      newsList: cloneDeep(row.content.newsItem),
     })
     .open();
 }
@@ -115,6 +121,11 @@ const [FormModal, formModalApi] = useVbenModal({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      await gridApi.formApi.setFieldValue('accountId', selectedAccountId.value);
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {

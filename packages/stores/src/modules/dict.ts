@@ -16,6 +16,10 @@ interface DictState {
 export const useDictStore = defineStore('core-dict', {
   actions: {
     getDictData(dictType: string, value: any) {
+      // 值为空时直接返回，避免空值调用 toString 报错
+      if (value === undefined || value === null) {
+        return undefined;
+      }
       const dict = this.dictCache[dictType];
       if (!dict) {
         return undefined;

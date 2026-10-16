@@ -36,9 +36,11 @@ async function handleMidjourneyBtnClick(
 
 /** 监听详情 */
 const { detail } = toRefs(props);
+
 watch(detail, async (newVal) => {
   await handleLoading(newVal.status);
 });
+
 const loading = ref();
 
 /** 处理加载状态 */

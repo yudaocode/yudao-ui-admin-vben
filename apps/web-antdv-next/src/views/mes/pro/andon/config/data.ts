@@ -2,7 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesProAndonConfigApi } from '#/api/mes/pro/andon/config';
 
-import { DICT_TYPE } from '@vben/constants';
+import { DICT_TYPE, MesProAndonLevelEnum } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'TextArea',
       componentProps: {
         autoSize: { maxRows: 3, minRows: 1 },
-        maxLength: 200,
+        maxlength: 200,
         placeholder: '请输入呼叫原因',
       },
       rules: z.string().min(1, '呼叫原因不能为空').max(200),
@@ -61,6 +61,7 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(DICT_TYPE.MES_PRO_ANDON_LEVEL, 'number'),
         placeholder: '请选择级别',
       },
+      defaultValue: MesProAndonLevelEnum.LEVEL3,
       rules: 'selectRequired',
     },
     {
@@ -92,7 +93,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '备注',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入备注',
       },
     },

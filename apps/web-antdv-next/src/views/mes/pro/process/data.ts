@@ -21,7 +21,10 @@ import { generateAutoCode } from '#/api/mes/md/autocode/record';
 export type FormType = 'create' | 'detail' | 'update';
 
 /** 新增/修改生产工序的表单 */
-export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
+export function useFormSchema(
+  formType: FormType,
+  formApi?: VbenFormApi,
+): VbenFormSchema[] {
   return [
     {
       fieldName: 'id',
@@ -32,35 +35,39 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '工序编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入工序编码',
       },
       rules: z.string().min(1, '工序编码不能为空').max(64),
-      suffix: () =>
-        h(
-          Button,
-          {
-            type: 'default',
-            onClick: async () => {
-              const code = await generateAutoCode(
-                MesAutoCodeRuleCode.PRO_PROCESS_CODE,
-              );
-              await formApi?.setFieldValue('code', code);
-            },
-          },
-          { default: () => '生成' },
-        ),
+      suffix:
+        formType === 'detail'
+          ? undefined
+          : () =>
+              h(
+                Button,
+                {
+                  type: 'default',
+                  onClick: async () => {
+                    const code = await generateAutoCode(
+                      MesAutoCodeRuleCode.PRO_PROCESS_CODE,
+                    );
+                    await formApi?.setFieldValue('code', code);
+                  },
+                },
+                { default: () => '生成' },
+              ),
     },
     {
       fieldName: 'name',
       label: '工序名称',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入工序名称',
       },
       rules: z.string().min(1, '工序名称不能为空').max(100),
@@ -82,7 +89,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
-        maxLength: 500,
+        maxlength: 500,
         placeholder: '请输入工序说明',
         rows: 3,
       },
@@ -93,7 +100,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       component: 'TextArea',
       formItemClass: 'col-span-3',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 3,
       },
@@ -210,7 +217,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '步骤说明',
       component: 'TextArea',
       componentProps: {
-        maxLength: 500,
+        maxlength: 500,
         placeholder: '请输入步骤说明',
         rows: 3,
       },
@@ -220,7 +227,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '辅助设备',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入辅助设备',
       },
     },
@@ -229,7 +236,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '辅助材料',
       component: 'Input',
       componentProps: {
-        maxLength: 100,
+        maxlength: 100,
         placeholder: '请输入辅助材料',
       },
     },
@@ -238,7 +245,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '材料文档 URL',
       component: 'Input',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入材料文档 URL',
       },
     },
@@ -247,7 +254,7 @@ export function useContentFormSchema(): VbenFormSchema[] {
       label: '备注',
       component: 'TextArea',
       componentProps: {
-        maxLength: 250,
+        maxlength: 250,
         placeholder: '请输入备注',
         rows: 2,
       },

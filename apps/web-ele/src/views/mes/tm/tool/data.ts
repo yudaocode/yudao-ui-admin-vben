@@ -47,6 +47,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '工具编码',
       component: 'Input',
@@ -59,9 +60,8 @@ export function useFormSchema(
       },
       rules: 'required',
       suffix:
-        formType === 'detail'
-          ? undefined
-          : () =>
+        formType === 'create'
+          ? () =>
               h(
                 ElButton,
                 {
@@ -73,7 +73,8 @@ export function useFormSchema(
                   },
                 },
                 { default: () => '生成' },
-              ),
+              )
+          : undefined,
     },
     {
       fieldName: 'name',
@@ -309,7 +310,8 @@ export function useGridColumns(): VxeTableGridOptions<MesTmToolApi.Tool>['column
             : '-';
         }
         if (row.maintenType === MesMaintenTypeEnum.USAGE) {
-          return row.nextMaintenPeriod === null
+          return row.nextMaintenPeriod === null ||
+            row.nextMaintenPeriod === undefined
             ? '-'
             : `${row.nextMaintenPeriod} 次`;
         }

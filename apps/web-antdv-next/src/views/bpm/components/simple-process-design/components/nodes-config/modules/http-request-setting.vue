@@ -58,7 +58,7 @@ function deleteHttpResponseSetting(
 <template>
   <FormItem>
     <Alert
-      message="仅支持 POST 请求，以请求体方式接收参数"
+      title="仅支持 POST 请求，以请求体方式接收参数"
       type="warning"
       show-icon
       :closable="false"
@@ -94,7 +94,7 @@ function deleteHttpResponseSetting(
       :wrapper-col="{ span: 24 }"
     >
       <Alert
-        message="通过请求返回值, 可以修改流程表单的值"
+        title="通过请求返回值, 可以修改流程表单的值"
         type="warning"
         show-icon
         :closable="false"

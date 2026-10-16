@@ -2,6 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiKnowledgeSegmentApi } from '#/api/ai/knowledge/segment';
 
+import { useAccess } from '@vben/access';
 import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
@@ -69,6 +70,7 @@ export function useGridColumns(
     row: AiKnowledgeSegmentApi.KnowledgeSegment,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'id',
@@ -109,6 +111,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['ai:knowledge:update']),
           checkedValue: CommonStatusEnum.ENABLE,
           unCheckedValue: CommonStatusEnum.DISABLE,
         },

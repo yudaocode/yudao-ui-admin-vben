@@ -37,7 +37,7 @@ const columns = [
   {
     field: 'price',
     title: '商品售价',
-    formatter: 'formatAmount2',
+    formatter: 'formatFenToYuanAmount',
     minWidth: 120,
   },
   {

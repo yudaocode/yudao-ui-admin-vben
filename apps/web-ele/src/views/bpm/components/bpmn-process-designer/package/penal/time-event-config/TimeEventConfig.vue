@@ -76,6 +76,7 @@ function syncFromBusinessObject(): void {
     }
   }
 }
+
 onMounted(syncFromBusinessObject);
 
 // 切换类型
@@ -158,7 +159,9 @@ const [HelpModal, helpModalApi] = useVbenModal({
   title: '格式说明',
   showCancelButton: false,
   confirmText: '关闭',
-  onConfirm: () => helpModalApi.close(),
+  onConfirm: (): void => {
+    helpModalApi.close();
+  },
 });
 
 // 点击输入框时弹窗

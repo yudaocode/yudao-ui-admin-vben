@@ -12,7 +12,6 @@ import {
   Col,
   Form,
   FormItem,
-  Input,
   InputNumber,
   Row,
   Switch,
@@ -98,13 +97,12 @@ function handleDelete(ruleIndex: number) {
                   class="!w-40"
                   placeholder="请输入金额"
                 />
-                <Input
+                <InputNumber
                   v-else
                   v-model:value="rule.limit"
                   :min="0"
                   class="!w-40"
                   placeholder="请输入数量"
-                  type="number"
                 />
                 <span>{{ isPriceCondition ? '元' : '件' }}</span>
               </div>

@@ -16,7 +16,6 @@ import {
 import { Button } from 'ant-design-vue';
 
 import { generateAutoCode } from '#/api/mes/md/autocode/record';
-import { getRangePickerDefaultProps } from '#/utils';
 import { MdItemSelect } from '#/views/mes/md/item/components';
 import { ProWorkOrderSelect } from '#/views/mes/pro/workorder/components';
 import { WmMaterialStockSelect } from '#/views/mes/wm/materialstock/components';
@@ -57,6 +56,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '入库单编号',
       component: 'Input',
@@ -145,13 +145,16 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'receiptDate',
-      label: '入库日期',
-      component: 'RangePicker',
-      componentProps: {
-        ...getRangePickerDefaultProps(),
-        allowClear: true,
-      },
+      fieldName: 'workOrderId',
+      label: '生产工单',
+      component: markRaw(ProWorkOrderSelect),
+      componentProps: { placeholder: '请选择生产工单' },
+    },
+    {
+      fieldName: 'itemId',
+      label: '产品物料',
+      component: markRaw(MdItemSelect),
+      componentProps: { placeholder: '请选择产品物料' },
     },
   ];
 }
@@ -174,6 +177,26 @@ export function useGridColumns(): VxeTableGridOptions<MesWmProductReceiptApi.Pro
       field: 'workOrderCode',
       title: '生产工单',
       minWidth: 140,
+    },
+    {
+      field: 'itemCode',
+      title: '产品物料编码',
+      minWidth: 120,
+    },
+    {
+      field: 'itemName',
+      title: '产品物料名称',
+      minWidth: 150,
+    },
+    {
+      field: 'specification',
+      title: '规格型号',
+      minWidth: 120,
+    },
+    {
+      field: 'unitMeasureName',
+      title: '计量单位',
+      minWidth: 100,
     },
     {
       field: 'receiptDate',

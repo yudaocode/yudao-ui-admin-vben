@@ -28,10 +28,6 @@ defineOptions({ name: 'HrmAttendanceLeave' });
 const router = useRouter();
 const exportLoading = ref(false);
 
-function handleRefresh() {
-  gridApi.query();
-}
-
 function handleProcessDetail(processInstanceId?: string) {
   if (!processInstanceId) {
     return;
@@ -54,6 +50,7 @@ async function handleExport() {
       pageNo: 1,
       pageSize: 100,
       ...buildLeaveQueryParams(formValues),
+      ...buildSortingField(gridApi.grid.getSortColumns()),
     } as PageParam);
     downloadFileFromBlobPart({ fileName: '请假记录.xls', source: data });
   } catch {
@@ -68,7 +65,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     schema: useGridFormSchema(),
     handleValuesChange(_values, fieldsChanged) {
       if (fieldsChanged.includes('month')) {
-        handleRefresh();
+        gridApi.formApi.submit();
       }
     },
   },

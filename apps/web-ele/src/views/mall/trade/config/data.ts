@@ -139,6 +139,7 @@ export const schema: VbenFormSchema[] = [
     component: 'ImageUpload',
     componentProps: {
       maxNumber: 9,
+      multiple: true,
     },
     dependencies: {
       triggerFields: ['type'],

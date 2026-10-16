@@ -5,7 +5,7 @@ import type { Ref } from 'vue';
 
 import { computed, inject, reactive, ref } from 'vue';
 
-import { BpmModelFormType } from '@vben/constants';
+import { BpmModelFormType, ProcessVariableEnum } from '@vben/constants';
 import { IconifyIcon, Plus, Trash2 } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
@@ -58,18 +58,18 @@ const condition = computed({
 });
 
 const formType = inject<Ref<number>>('formType'); // 表单类型
-const conditionConfigTypes = computed(() => {
-  return CONDITION_CONFIG_TYPES.filter((item) => {
-    // 业务表单暂时去掉条件规则选项
-    return !(
-      formType?.value === BpmModelFormType.CUSTOM &&
-      item.value === ConditionType.RULE
-    );
-  });
-});
+const isCustomForm = computed(
+  () => formType?.value === BpmModelFormType.CUSTOM,
+); // 是否业务表单
 
-/** 条件规则可选择的表单字段 */
-const fieldOptions = useFormFieldsAndStartUser();
+const fieldOptions = useFormFieldsAndStartUser(); // 条件规则可选字段
+const conditionFieldOptions = computed(() =>
+  isCustomForm.value
+    ? fieldOptions.filter(
+        (field) => field.field === ProcessVariableEnum.START_USER_ID,
+      )
+    : fieldOptions,
+); // 业务表单仅提供发起人选项，其它字段可手工输入
 
 // 表单校验规则
 const formRules: Record<string, Rule[]> = reactive({
@@ -149,7 +149,7 @@ defineExpose({ validate });
         @change="changeConditionType"
       >
         <Radio
-          v-for="(dict, indexConditionType) in conditionConfigTypes"
+          v-for="(dict, indexConditionType) in CONDITION_CONFIG_TYPES"
           :key="indexConditionType"
           :value="dict.value"
         >
@@ -232,12 +232,29 @@ defineExpose({ validate });
                 }"
               >
                 <Select
-                  v-model:value="rule.leftSide"
+                  :value="
+                    isCustomForm
+                      ? rule.leftSide
+                        ? [rule.leftSide]
+                        : []
+                      : rule.leftSide
+                  "
+                  :mode="isCustomForm ? 'tags' : undefined"
+                  @change="
+                    (value) =>
+                      (rule.leftSide = Array.isArray(value)
+                        ? value.at(-1)
+                        : value)
+                  "
                   allow-clear
-                  placeholder="请选择表单字段"
+                  show-search
+                  option-filter-prop="label"
+                  :placeholder="
+                    isCustomForm ? '请选择或输入字段' : '请选择表单字段'
+                  "
                 >
                   <SelectOption
-                    v-for="(field, fIdx) in fieldOptions"
+                    v-for="(field, fIdx) in conditionFieldOptions"
                     :key="fIdx"
                     :label="field.title"
                     :value="field.field"

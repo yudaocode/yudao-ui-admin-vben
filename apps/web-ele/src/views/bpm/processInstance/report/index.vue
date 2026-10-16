@@ -5,7 +5,7 @@ import type { BpmProcessInstanceApi } from '#/api/bpm/processInstance';
 import { h, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { Page, prompt } from '@vben/common-ui';
+import { DocAlert, Page, prompt } from '@vben/common-ui';
 
 import { ElInput, ElMessage } from 'element-plus';
 
@@ -78,8 +78,13 @@ function handleCancel(row: BpmProcessInstanceApi.ProcessInstance) {
     title: '取消流程',
     modelPropName: 'modelValue',
   }).then(async (reason) => {
-    if (reason) {
-      await cancelProcessInstanceByAdmin(row.id, reason);
+    const cancelReason = reason?.trim();
+    if (!cancelReason) {
+      ElMessage.warning('请输入取消原因');
+      return;
+    }
+    if (cancelReason) {
+      await cancelProcessInstanceByAdmin(row.id, cancelReason);
       ElMessage.success('取消成功');
       handleRefresh();
     }
@@ -134,6 +139,9 @@ onMounted(async () => {
 
 <template>
   <Page auto-content-height>
+    <template #doc>
+      <DocAlert title="流程实例报表" url="https://doc.iocoder.cn/bpm/" />
+    </template>
     <Grid table-title="流程实例列表">
       <template #actions="{ row }">
         <TableAction
@@ -151,7 +159,7 @@ onMounted(async () => {
               type: 'danger',
               link: true,
               icon: ACTION_ICON.DELETE,
-              auth: ['bpm:process-instance:cancel'],
+              auth: ['bpm:process-instance:cancel-by-admin'],
               ifShow: row.status === 1,
               onClick: handleCancel.bind(null, row),
             },

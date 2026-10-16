@@ -2,8 +2,6 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallCommentApi } from '#/api/mall/product/comment';
 
-import { h } from 'vue';
-
 import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
 
 import { message, Rate, Textarea } from 'ant-design-vue';
@@ -35,27 +33,24 @@ function handleCreate() {
 }
 
 /** 回复评价 */
-function handleReply(row: MallCommentApi.Comment) {
-  prompt({
-    component: () => {
-      return h(Textarea, {
-        placeholder: '请输入回复内容',
-      });
-    },
-    content: row.content
-      ? `用户评论：${row.content}\n请输入回复内容：`
-      : '请输入回复内容：',
-    title: '回复评论',
-    modelPropName: 'value',
-  }).then(async (val) => {
-    if (val) {
-      await replyComment({
-        id: row.id!,
-        replyContent: val,
-      });
-      handleRefresh();
-    }
-  });
+async function handleReply(row: MallCommentApi.Comment) {
+  let val: string | undefined;
+  try {
+    val = await prompt<string>({
+      component: Textarea,
+      componentProps: { placeholder: '请输入回复内容', rows: 4 },
+      modelPropName: 'value',
+      content: row.content
+        ? `用户评论：${row.content}\n请输入回复内容：`
+        : '请输入回复内容：',
+      title: '回复评论',
+    });
+  } catch {
+    return;
+  }
+  if (!val) return;
+  await replyComment({ id: row.id!, replyContent: val });
+  handleRefresh();
 }
 
 /** 更新状态 */

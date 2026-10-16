@@ -183,7 +183,12 @@ const copyForm = reactive({
 });
 const copyFormRule: Record<string, Rule[]> = reactive({
   copyUserIds: [
-    { required: true, message: '抄送人不能为空', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '抄送人不能为空',
+      trigger: 'change',
+    },
   ],
 });
 
@@ -226,7 +231,12 @@ const addSignForm = reactive({
 });
 const addSignFormRule: Record<string, Rule[]> = reactive({
   addSignUserIds: [
-    { required: true, message: '加签处理人不能为空', trigger: 'change' },
+    {
+      type: 'array',
+      required: true,
+      message: '加签处理人不能为空',
+      trigger: 'change',
+    },
   ],
   reason: [{ required: true, message: '审批意见不能为空', trigger: 'blur' }],
 });
@@ -300,6 +310,9 @@ async function openPopover(type: string) {
   Object.keys(popOverVisible.value).forEach((item) => {
     if (popOverVisible.value[item]) popOverVisible.value[item] = item === type;
   });
+  if (type === 'approve' || type === 'return') {
+    popOverVisible.value[type] = true;
+  }
   if (type === 'approve') {
     // 当前任务有节点表单时，等 form-create 的 fApi 就绪后再计算下一个节点；
     // 没有节点表单时，approveFormFApi 永远不会被赋值，跳过等待
@@ -646,7 +659,7 @@ async function handleCancel() {
       props.processInstance.id,
       cancelForm.cancelReason,
     );
-    popOverVisible.value.return = false;
+    popOverVisible.value.cancel = false;
     message.success($t('ui.actionMessage.operationSuccess'));
     cancelFormRef.value.resetFields();
     // 2 重新加载数据
@@ -827,7 +840,7 @@ const imagePreviewUrl = ref('');
 
 /** 判断文件是否为图片类型 */
 function isImageUrl(url: string) {
-  return /\.(bmp|gif|jpe?g|png|svg|webp)$/i.test(url);
+  return /\.(bmp|gif|jpe?g|png|svg|webp)$/i.test(url.split(/[?#]/)[0] || '');
 }
 
 /** 处理文件预览 */
@@ -853,14 +866,6 @@ function handleImagePreviewOpenChange(open: boolean) {
   imagePreviewOpen.value = open;
 }
 
-/** 处理弹窗可见性 */
-function handlePopoverVisible(visible: boolean) {
-  if (!visible) {
-    // 拦截关闭事件
-    popOverVisible.value.approve = true;
-  }
-}
-
 defineExpose({ loadTodoTask });
 </script>
 <template>
@@ -872,8 +877,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.approve"
         placement="top"
         :styles="{ root: { minWidth: '400px', zIndex: 300 } }"
-        :trigger="['click']"
-        @open-change="handlePopoverVisible"
+        :trigger="[]"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1447,7 +1451,7 @@ defineExpose({ loadTodoTask });
         v-model:open="popOverVisible.return"
         placement="top"
         :styles="{ root: { width: '400px' } }"
-        :trigger="['click']"
+        :trigger="[]"
         v-if="
           runningTask &&
           isHandleTaskStatus() &&
@@ -1542,7 +1546,7 @@ defineExpose({ loadTodoTask });
                   type="warning"
                   size="small"
                   show-icon
-                  message="友情提醒：取消后，该审批流程将自动结束。"
+                  title="友情提醒：取消后，该审批流程将自动结束。"
                 />
                 <TextArea
                   v-model:value="cancelForm.cancelReason"

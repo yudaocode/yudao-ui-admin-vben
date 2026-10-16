@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadUserFile } from 'element-plus';
+import type { UploadRawFile, UploadUserFile } from 'element-plus';
 
 import type { FmsAuxiliaryItemApi } from '#/api/fms/config/auxiliary/item';
 import type { FmsAuxiliaryTypeApi } from '#/api/fms/config/auxiliary/type';
@@ -16,6 +16,7 @@ import {
   ElTable,
   ElTableColumn,
   ElUpload,
+  genFileId,
 } from 'element-plus';
 
 import {
@@ -123,8 +124,12 @@ function resetImport() {
 }
 
 /** 文件数超出提示 */
-function handleExceed() {
-  ElMessage.warning('每次只能上传一个文件');
+function handleExceed(files: File[]) {
+  const file = files[0] as undefined | UploadRawFile;
+  if (!file) return;
+  uploadRef.value?.clearFiles();
+  file.uid = genFileId();
+  uploadRef.value?.handleStart(file);
 }
 </script>
 

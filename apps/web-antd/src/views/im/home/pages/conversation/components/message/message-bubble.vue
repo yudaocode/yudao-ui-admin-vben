@@ -67,7 +67,9 @@ const isMerge = computed(() => props.type === ImContentType.MERGE);
 const isMaterial = computed(() => props.type === ImContentType.MATERIAL);
 
 /** 媒体上传中：uploadProgress 非 null 即视为上传中 */
-const isUploading = computed(() => props.uploadProgress !== null);
+const isUploading = computed(
+  () => props.uploadProgress !== null && props.uploadProgress !== undefined,
+);
 const uploadProgress = computed(() => props.uploadProgress ?? 0);
 const uploadProgressText = computed(() => `${uploadProgress.value}%`);
 

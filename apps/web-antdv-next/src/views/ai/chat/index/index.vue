@@ -8,7 +8,15 @@ import { useRoute } from 'vue-router';
 import { alert, confirm, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Layout, message, Switch } from 'antdv-next';
+import {
+  Button,
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+  message,
+  Switch,
+} from 'antdv-next';
 
 import { getChatConversationMy } from '#/api/ai/chat/conversation';
 import {
@@ -571,8 +579,7 @@ onMounted(async () => {
               size="small"
               @click="openChatConversationUpdateForm"
             >
-              <!-- eslint-disable-next-line vue/no-v-html -->
-              <span v-html="activeConversation?.modelName"></span>
+              <span>{{ activeConversation?.modelName }}</span>
               <IconifyIcon icon="lucide:settings" class="ml-2 size-4" />
             </Button>
             <Button size="small" class="mr-2 px-2" @click="handlerMessageClear">

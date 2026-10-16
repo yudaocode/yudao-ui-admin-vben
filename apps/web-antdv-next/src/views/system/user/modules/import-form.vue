@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { useVbenModal } from '@vben/common-ui';
+import { alert, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart } from '@vben/utils';
 
-import { Button, message, Upload } from 'antdv-next';
+import { Button, Upload } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { importUser, importUserTemplate } from '#/api/system/user';
-import { $t } from '#/locales';
 
 import { useImportFormSchema } from '../data';
 type FileType = any;
@@ -32,11 +31,20 @@ const [Modal, modalApi] = useVbenModal({
     // 提交表单
     const data = await formApi.getValues();
     try {
-      await importUser(data.file, data.updateSupport);
+      const result = await importUser(data.file, data.updateSupport);
+      const text = [
+        `新增成功数量：${result.createUsernames.length}；${result.createUsernames.join('、')}`,
+        `更新成功数量：${result.updateUsernames.length}；${result.updateUsernames.join('、')}`,
+        `导入失败数量：${Object.keys(result.failureUsernames).length}；${Object.entries(
+          result.failureUsernames,
+        )
+          .map(([username, reason]) => `${username}：${reason}`)
+          .join('；')}`,
+      ].join('\n');
       // 关闭并提示
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      await alert(text, '导入结果');
     } finally {
       modalApi.unlock();
     }
@@ -47,6 +55,11 @@ const [Modal, modalApi] = useVbenModal({
 function beforeUpload(file: FileType) {
   formApi.setFieldValue('file', file);
   return false;
+}
+
+/** 移除文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
 }
 
 /** 下载模版 */
@@ -65,6 +78,7 @@ async function handleDownload() {
             :max-count="1"
             accept=".xls,.xlsx"
             :before-upload="beforeUpload"
+            :on-remove="handleRemove"
           >
             <Button type="primary"> 选择 Excel 文件 </Button>
           </Upload>

@@ -60,7 +60,7 @@ const showClear = computed(
 async function resolveItems(value?: number | number[]) {
   const ids = Array.isArray(value)
     ? value
-    : [value].filter((id): id is number => id !== undefined);
+    : [value].filter((id): id is number => id !== undefined && id !== null);
   if (ids.length === 0) {
     selectedItems.value = [];
     return;

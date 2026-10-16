@@ -135,7 +135,7 @@ defineExpose({ open });
     v-model:open="dialogVisible"
     title="新增凭证模板"
     width="480px"
-    destroy-on-close
+    destroy-on-hidden
   >
     <Form
       ref="formRef"

@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MpMaterialApi } from '#/api/mp/material';
 
-import { computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { NewsType } from '@vben/constants';
@@ -113,98 +113,91 @@ const videoGridColumns: VxeTableGridOptions<MpMaterialApi.Material>['columns'] =
     },
   ];
 
-// Image Grid
-const [ImageGrid, imageGridApi] = useVbenVxeGrid({
-  gridOptions: {
-    columns: [],
-    height: 'auto',
-    keepSource: true,
-    pagerConfig: {
-      enabled: false,
-    },
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, { accountId }) => {
-          const finalAccountId = accountId ?? props.accountId;
-          if (!finalAccountId) {
-            return { list: [], total: 0 };
-          }
-          return await getMaterialPage({
-            pageNo: page.currentPage,
-            pageSize: page.pageSize,
-            accountId: finalAccountId,
-            type: 'image',
-          });
-        },
-      },
-      autoLoad: false,
-    },
-    rowConfig: {
-      keyField: 'mediaId',
-      isHover: true,
-    },
-    toolbarConfig: {
-      enabled: false,
-    },
-  } as VxeTableGridOptions<MpMaterialApi.Material>,
-});
+const imageList = ref<MpMaterialApi.Material[]>([]);
+const imageLoading = ref(false);
+const imageTotal = ref(0);
+const imageCurrentPage = ref(1);
+const imagePageSize = ref(10);
 
-// News Grid
-const [NewsGrid, newsGridApi] = useVbenVxeGrid({
-  gridOptions: {
-    columns: [],
-    height: 'auto',
-    keepSource: true,
-    pagerConfig: {
-      enabled: false,
-    },
-    proxyConfig: {
-      ajax: {
-        query: async ({ page }, { accountId }) => {
-          const finalAccountId = accountId ?? props.accountId;
-          if (!finalAccountId) {
-            return { list: [], total: 0 };
-          }
-          if (props.newsType === NewsType.Published) {
-            const data = await getFreePublishPage({
-              accountId: finalAccountId,
-              pageNo: page.currentPage,
-              pageSize: page.pageSize,
-            });
-            data.list.forEach((item: any) => {
-              const articles = item.content.newsItem;
-              articles.forEach((article: any) => {
-                article.picUrl = article.thumbUrl;
-              });
-            });
-            return data;
-          } else {
-            const data = await getDraftPage({
-              accountId: finalAccountId,
-              pageNo: page.currentPage,
-              pageSize: page.pageSize,
-            });
-            data.list.forEach((draft: any) => {
-              const articles = draft.content.newsItem;
-              articles.forEach((article: any) => {
-                article.picUrl = article.thumbUrl;
-              });
-            });
-            return data;
-          }
-        },
-      },
-      autoLoad: false,
-    },
-    rowConfig: {
-      keyField: 'mediaId',
-      isHover: true,
-    },
-    toolbarConfig: {
-      enabled: false,
-    },
-  } as VxeTableGridOptions<any>,
-});
+/** 加载图片素材 */
+async function loadImageList() {
+  if (!props.accountId) {
+    imageList.value = [];
+    imageTotal.value = 0;
+    return;
+  }
+  imageLoading.value = true;
+  try {
+    const data = await getMaterialPage({
+      pageNo: imageCurrentPage.value,
+      pageSize: imagePageSize.value,
+      accountId: props.accountId,
+      type: 'image',
+    });
+    imageList.value = data.list ?? [];
+    imageTotal.value = data.total ?? 0;
+  } finally {
+    imageLoading.value = false;
+  }
+}
+
+/** 重新加载图片素材 */
+function reloadImageList() {
+  if (imageCurrentPage.value === 1) {
+    loadImageList();
+  } else {
+    imageCurrentPage.value = 1;
+  }
+}
+
+watch([imageCurrentPage, imagePageSize], () => loadImageList());
+
+const newsList = ref<any[]>([]);
+const newsLoading = ref(false);
+const newsTotal = ref(0);
+const newsCurrentPage = ref(1);
+const newsPageSize = ref(10);
+
+/** 加载图文素材 */
+async function loadNewsList() {
+  if (!props.accountId) {
+    newsList.value = [];
+    newsTotal.value = 0;
+    return;
+  }
+  newsLoading.value = true;
+  try {
+    const params = {
+      accountId: props.accountId,
+      pageNo: newsCurrentPage.value,
+      pageSize: newsPageSize.value,
+    };
+    const data =
+      props.newsType === NewsType.Published
+        ? await getFreePublishPage(params)
+        : await getDraftPage(params);
+    data.list?.forEach((item: any) => {
+      item.content?.newsItem?.forEach((article: any) => {
+        article.picUrl = article.thumbUrl;
+      });
+    });
+    newsList.value = data.list ?? [];
+    newsTotal.value = data.total ?? 0;
+  } finally {
+    newsLoading.value = false;
+  }
+}
+
+/** 重新加载图文素材 */
+function reloadNewsList() {
+  if (newsCurrentPage.value === 1) {
+    loadNewsList();
+  } else {
+    newsCurrentPage.value = 1;
+  }
+}
+
+watch([newsCurrentPage, newsPageSize], () => loadNewsList());
 
 const [VoiceGrid, voiceGridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -278,103 +271,6 @@ const [VideoGrid, videoGridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<MpMaterialApi.Material>,
 });
 
-// 从 Grid 获取数据
-const imageList = computed(() => {
-  try {
-    const tableData = imageGridApi.grid?.getTableData();
-    return (tableData?.tableData as MpMaterialApi.Material[]) || [];
-  } catch {
-    return [];
-  }
-});
-
-const imageLoading = computed(() => {
-  return imageGridApi.grid?.loading || false;
-});
-
-const imageTotal = computed(() => {
-  try {
-    const proxyInfo = imageGridApi.grid?.getProxyInfo();
-    return proxyInfo?.pager?.total || 0;
-  } catch {
-    return 0;
-  }
-});
-
-const imageCurrentPage = computed({
-  get: () => {
-    try {
-      return imageGridApi.grid?.pagerConfig?.currentPage || 1;
-    } catch {
-      return 1;
-    }
-  },
-  set: (value: number) => {
-    imageGridApi.grid?.commitProxy('page', { currentPage: value });
-  },
-});
-
-const imagePageSize = computed({
-  get: () => {
-    try {
-      return imageGridApi.grid?.pagerConfig?.pageSize || 10;
-    } catch {
-      return 10;
-    }
-  },
-  set: (value: number) => {
-    imageGridApi.grid?.commitProxy('page', { pageSize: value, currentPage: 1 });
-  },
-});
-
-const newsList = computed(() => {
-  try {
-    const tableData = newsGridApi.grid?.getTableData();
-    return (tableData?.tableData as any[]) || [];
-  } catch {
-    return [];
-  }
-});
-
-const newsLoading = computed(() => {
-  return newsGridApi.grid?.loading || false;
-});
-
-const newsTotal = computed(() => {
-  try {
-    const proxyInfo = newsGridApi.grid?.getProxyInfo();
-    return proxyInfo?.pager?.total || 0;
-  } catch {
-    return 0;
-  }
-});
-
-const newsCurrentPage = computed({
-  get: () => {
-    try {
-      return newsGridApi.grid?.pagerConfig?.currentPage || 1;
-    } catch {
-      return 1;
-    }
-  },
-  set: (value: number) => {
-    newsGridApi.grid?.commitProxy('page', { currentPage: value });
-  },
-});
-
-const newsPageSize = computed({
-  get: () => {
-    try {
-      return newsGridApi.grid?.pagerConfig?.pageSize || 10;
-    } catch {
-      return 10;
-    }
-  },
-  set: (value: number) => {
-    newsGridApi.grid?.commitProxy('page', { pageSize: value, currentPage: 1 });
-  },
-});
-
 function selectMaterialFun(item: any) {
   emit('selectMaterial', item);
 }
@@ -385,11 +281,11 @@ watch(
   (accountId) => {
     switch (props.type) {
       case 'image': {
-        imageGridApi.reload({ accountId });
+        reloadImageList();
         break;
       }
       case 'news': {
-        newsGridApi.reload({ accountId });
+        reloadNewsList();
         break;
       }
       case 'video': {
@@ -411,11 +307,11 @@ watch(
   () => {
     switch (props.type) {
       case 'image': {
-        imageGridApi.reload({ accountId: props.accountId });
+        reloadImageList();
         break;
       }
       case 'news': {
-        newsGridApi.reload({ accountId: props.accountId });
+        reloadNewsList();
         break;
       }
       case 'video': {
@@ -435,7 +331,7 @@ watch(
   () => props.newsType,
   () => {
     if (props.type === 'news') {
-      newsGridApi.reload({ accountId: props.accountId });
+      reloadNewsList();
     }
   },
 );
@@ -446,45 +342,43 @@ watch(
     <!-- 类型：image -->
     <template v-if="props.type === 'image'">
       <div class="image-grid-wrapper">
-        <ImageGrid>
-          <template #default>
-            <Spin :spinning="imageLoading">
+        <div>
+          <Spin :spinning="imageLoading">
+            <div
+              class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+            >
               <div
-                class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+                v-for="item in imageList"
+                :key="item.mediaId"
+                class="mb-2.5 h-72 break-inside-avoid border border-[#eaeaea] p-2.5"
               >
-                <div
-                  v-for="item in imageList"
-                  :key="item.mediaId"
-                  class="mb-2.5 h-72 break-inside-avoid border border-[#eaeaea] p-2.5"
-                >
-                  <img
-                    class="h-48 w-full object-contain"
-                    :src="item.url"
-                    alt="素材图片"
-                  />
-                  <p class="truncate text-center text-xs leading-[30px]">
-                    {{ item.name }}
-                  </p>
-                  <Row class="flex justify-center pt-2.5">
-                    <Button type="primary" @click="selectMaterialFun(item)">
-                      选择
-                      <template #icon>
-                        <IconifyIcon icon="lucide:circle-check" />
-                      </template>
-                    </Button>
-                  </Row>
-                </div>
+                <img
+                  class="h-48 w-full object-contain"
+                  :src="item.url"
+                  alt="素材图片"
+                />
+                <p class="truncate text-center text-xs leading-[30px]">
+                  {{ item.name }}
+                </p>
+                <Row class="flex justify-center pt-2.5">
+                  <Button type="primary" @click="selectMaterialFun(item)">
+                    选择
+                    <template #icon>
+                      <IconifyIcon icon="lucide:circle-check" />
+                    </template>
+                  </Button>
+                </Row>
               </div>
-            </Spin>
-            <Pagination
-              v-model:current="imageCurrentPage"
-              v-model:page-size="imagePageSize"
-              :total="imageTotal"
-              class="mt-4"
-              show-size-changer
-            />
-          </template>
-        </ImageGrid>
+            </div>
+          </Spin>
+          <Pagination
+            v-model:current="imageCurrentPage"
+            v-model:page-size="imagePageSize"
+            :total="imageTotal"
+            class="mt-4"
+            show-size-changer
+          />
+        </div>
       </div>
     </template>
 
@@ -525,40 +419,38 @@ watch(
     <!-- 类型：news -->
     <template v-else-if="props.type === 'news'">
       <div class="news-grid-wrapper">
-        <NewsGrid>
-          <template #default>
-            <Spin :spinning="newsLoading">
+        <div>
+          <Spin :spinning="newsLoading">
+            <div
+              class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+            >
               <div
-                class="mx-auto w-full columns-1 [column-gap:10px] md:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5"
+                v-for="item in newsList"
+                :key="item.mediaId"
+                class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
               >
-                <div
-                  v-for="item in newsList"
-                  :key="item.mediaId"
-                  class="mb-2.5 break-inside-avoid border border-[#eaeaea] p-2.5"
-                >
-                  <div v-if="item.content && item.content.newsItem">
-                    <WxNews :articles="item.content.newsItem" />
-                    <Row class="flex justify-center pt-2.5">
-                      <Button type="primary" @click="selectMaterialFun(item)">
-                        选择
-                        <template #icon>
-                          <IconifyIcon icon="lucide:circle-check" />
-                        </template>
-                      </Button>
-                    </Row>
-                  </div>
+                <div v-if="item.content && item.content.newsItem">
+                  <WxNews :articles="item.content.newsItem" />
+                  <Row class="flex justify-center pt-2.5">
+                    <Button type="primary" @click="selectMaterialFun(item)">
+                      选择
+                      <template #icon>
+                        <IconifyIcon icon="lucide:circle-check" />
+                      </template>
+                    </Button>
+                  </Row>
                 </div>
               </div>
-            </Spin>
-            <Pagination
-              v-model:current="newsCurrentPage"
-              v-model:page-size="newsPageSize"
-              :total="newsTotal"
-              class="mt-4"
-              show-size-changer
-            />
-          </template>
-        </NewsGrid>
+            </div>
+          </Spin>
+          <Pagination
+            v-model:current="newsCurrentPage"
+            v-model:page-size="newsPageSize"
+            :total="newsTotal"
+            class="mt-4"
+            show-size-changer
+          />
+        </div>
       </div>
     </template>
   </Page>

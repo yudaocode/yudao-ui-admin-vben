@@ -48,8 +48,20 @@ async function loadTree() {
 /** 处理搜索逻辑 */
 function handleSearch(value: string) {
   filterText.value = value;
+  const matchingIds = new Set<number>();
+  const itemMap = new Map(categoryList.value.map((item) => [item.id, item]));
+  for (const item of categoryList.value) {
+    if (!item.name?.includes(value)) {
+      continue;
+    }
+    let current: undefined | WmsItemCategoryApi.ItemCategory = item;
+    while (current && !matchingIds.has(current.id!)) {
+      matchingIds.add(current.id!);
+      current = itemMap.get(current.parentId);
+    }
+  }
   const filteredList = value
-    ? categoryList.value.filter((item) => item.name?.includes(value))
+    ? categoryList.value.filter((item) => matchingIds.has(item.id!))
     : categoryList.value;
   categoryTree.value = handleTree(filteredList, 'id', 'parentId');
 }

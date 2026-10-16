@@ -108,7 +108,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入仓库名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -117,7 +117,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择仓库状态',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },

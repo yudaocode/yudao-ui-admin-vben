@@ -69,6 +69,7 @@ async function initDictTypeOptions() {
     };
   });
 }
+
 onMounted(async () => {
   await initDictTypeOptions();
 });

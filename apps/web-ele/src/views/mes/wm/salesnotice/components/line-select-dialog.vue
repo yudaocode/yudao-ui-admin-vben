@@ -77,6 +77,7 @@ async function syncSingleSelection(
   syncingSingleSelection.value = true;
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
   if (row) {
     await gridApi.grid.setCheckboxRow(row, true);
   }
@@ -125,6 +126,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       reserve: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }) => {
           if (!noticeId.value) {
@@ -159,7 +161,8 @@ async function openModal(id: number | undefined, selectedIds?: number[]) {
   selectedRows.value = [];
   await nextTick();
   await gridApi.grid.clearCheckboxRow();
-  await gridApi.query();
+  await gridApi.grid.clearCheckboxReserve();
+  await gridApi.reload();
   await nextTick();
   applyPreSelection();
 }
@@ -169,6 +172,7 @@ async function closeModal() {
   open.value = false;
   selectedRows.value = [];
   await gridApi.grid.clearCheckboxRow();
+  await gridApi.grid.clearCheckboxReserve();
 }
 
 /** 确认选择行 */
@@ -189,6 +193,7 @@ defineExpose({ open: openModal });
     v-model="open"
     title="发货通知单行选择"
     width="70%"
+    :append-to-body="true"
     destroy-on-close
     @close="closeModal"
   >

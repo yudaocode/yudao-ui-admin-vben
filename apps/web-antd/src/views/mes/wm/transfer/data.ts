@@ -64,6 +64,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '转移单编号',
       component: 'Input',

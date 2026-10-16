@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { HrmEmployeeWorkExperienceApi } from '#/api/hrm/employee/work-experience';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -29,10 +29,6 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
 });
 
-const title = computed(() =>
-  editingId.value ? '修改工作经历' : '新增工作经历',
-);
-
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
@@ -57,25 +53,29 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { employeeId: currentEmployeeId, row } = modalApi.getData() as {
+      employeeId: number;
+      row?: HrmEmployeeWorkExperienceApi.EmployeeWorkExperience;
+    };
+    employeeId.value = currentEmployeeId;
+    editingId.value = row?.id;
+    modalApi.setState({
+      title: editingId.value ? '修改工作经历' : '新增工作经历',
+    });
+    await formApi.reset();
+    await formApi.setValues({
+      sort: 1,
+      ...row,
+      employeeId: currentEmployeeId,
+    });
+  },
 });
-
-function open(
-  empId: number,
-  row?: HrmEmployeeWorkExperienceApi.EmployeeWorkExperience,
-) {
-  employeeId.value = empId;
-  editingId.value = row?.id;
-  modalApi.setState({ title: title.value });
-  formApi.reset();
-  formApi.setValues({ sort: 1, ...row, employeeId: empId });
-  modalApi.open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>
-  <Modal :title="title" class="w-[680px]">
+  <Modal class="w-[680px]">
     <Form class="mx-4" />
   </Modal>
 </template>

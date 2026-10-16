@@ -84,6 +84,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       label: '归属部门',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getSimpleDeptList()),
         labelField: 'name',
         valueField: 'id',
@@ -99,7 +100,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getSimpleUserList,
-        allowClear: true,
+        clearable: true,
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择员工',
@@ -110,6 +111,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       label: '产品分类',
       component: 'ApiTreeSelect',
       componentProps: {
+        checkStrictly: true,
         api: async () => handleTree(await getProductCategoryList()),
         labelField: 'name',
         valueField: 'id',
@@ -125,7 +127,7 @@ function useGridFormSchema(): VbenFormSchema[] {
       component: 'ApiSelect',
       componentProps: {
         api: getProductSimpleList,
-        allowClear: true,
+        clearable: true,
         filterable: true,
         labelField: 'name',
         valueField: 'id',

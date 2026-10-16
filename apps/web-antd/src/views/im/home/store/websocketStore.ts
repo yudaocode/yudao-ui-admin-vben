@@ -1135,10 +1135,10 @@ export const useImWebSocketStore = defineStore('imWebSocketStore', {
         return;
       }
       const fields: Partial<Group> = {};
-      if (payload.silent !== null) {
+      if (payload.silent !== null && payload.silent !== undefined) {
         fields.silent = payload.silent;
       }
-      if (payload.groupRemark !== null) {
+      if (payload.groupRemark !== null && payload.groupRemark !== undefined) {
         fields.groupRemark = payload.groupRemark;
       }
       if (Object.keys(fields).length > 0) {

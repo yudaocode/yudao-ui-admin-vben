@@ -29,7 +29,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '商品名称',
       component: 'Input',
       componentProps: {
-        maxLength: 60,
+        maxlength: 60,
         placeholder: '请输入商品名称',
       },
       rules: z.string().min(1, '商品名称不能为空').max(60),
@@ -45,7 +45,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '商品编号',
       component: 'Input',
       componentProps: {
-        maxLength: 20,
+        maxlength: 20,
         placeholder: '请输入商品编号',
       },
       rules: z.string().min(1, '商品编号不能为空').max(20),
@@ -67,7 +67,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '商品单位',
       component: 'Input',
       componentProps: {
-        maxLength: 20,
+        maxlength: 20,
         placeholder: '请输入单位',
       },
     },
@@ -81,7 +81,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '备注',
       component: 'Textarea',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入备注',
         rows: 3,
       },

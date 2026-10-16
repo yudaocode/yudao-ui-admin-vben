@@ -26,7 +26,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '往来企业编号',
       component: 'Input',
       componentProps: {
-        maxLength: 20,
+        maxlength: 20,
         placeholder: '请输入往来企业编号',
       },
       rules: z.string().min(1, '往来企业编号不能为空').max(20),
@@ -48,7 +48,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '往来企业名称',
       component: 'Input',
       componentProps: {
-        maxLength: 60,
+        maxlength: 60,
         placeholder: '请输入往来企业名称',
       },
       rules: z.string().min(1, '往来企业名称不能为空').max(60),
@@ -69,7 +69,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '级别',
       component: 'Input',
       componentProps: {
-        maxLength: 10,
+        maxlength: 10,
         placeholder: '请输入级别',
       },
     },
@@ -78,7 +78,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '开户行',
       component: 'Input',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入开户行',
       },
     },
@@ -87,7 +87,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '银行账户',
       component: 'Input',
       componentProps: {
-        maxLength: 40,
+        maxlength: 40,
         placeholder: '请输入银行账户',
       },
     },
@@ -96,7 +96,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '地址',
       component: 'Input',
       componentProps: {
-        maxLength: 200,
+        maxlength: 200,
         placeholder: '请输入地址',
       },
     },
@@ -105,7 +105,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '联系人',
       component: 'Input',
       componentProps: {
-        maxLength: 30,
+        maxlength: 30,
         placeholder: '请输入联系人',
       },
     },
@@ -114,7 +114,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '手机号',
       component: 'Input',
       componentProps: {
-        maxLength: 13,
+        maxlength: 13,
         placeholder: '请输入手机号',
       },
     },
@@ -123,7 +123,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '座机号',
       component: 'Input',
       componentProps: {
-        maxLength: 13,
+        maxlength: 13,
         placeholder: '请输入座机号',
       },
     },
@@ -132,7 +132,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: 'Email',
       component: 'Input',
       componentProps: {
-        maxLength: 50,
+        maxlength: 50,
         placeholder: '请输入 Email',
       },
     },
@@ -141,7 +141,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
       label: '备注',
       component: 'Input',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入备注',
       },
     },

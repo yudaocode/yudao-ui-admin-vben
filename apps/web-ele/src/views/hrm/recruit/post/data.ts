@@ -319,10 +319,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: markRaw(SalaryRangeField),
       formItemClass: 'items-start',
       description: '最低薪资不能大于最高薪资；勾选“面议”后无需填写范围。',
-      componentProps: (values, formApi) => ({
-        values,
-        formApi,
-      }),
+      dependencies: {
+        triggerFields: ['maxSalary', 'salaryUnit', 'salaryNegotiable'],
+        componentProps: (values, formApi) => ({ values, formApi }),
+      },
     },
     {
       fieldName: 'maxSalary',
@@ -361,10 +361,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: markRaw(AgeRangeField),
       formItemClass: 'items-start',
       description: '最小年龄不能大于最大年龄；勾选“不限”后无需填写范围。',
-      componentProps: (values, formApi) => ({
-        values,
-        formApi,
-      }),
+      dependencies: {
+        triggerFields: ['maxAge', 'ageUnlimited'],
+        componentProps: (values, formApi) => ({ values, formApi }),
+      },
     },
     {
       fieldName: 'maxAge',

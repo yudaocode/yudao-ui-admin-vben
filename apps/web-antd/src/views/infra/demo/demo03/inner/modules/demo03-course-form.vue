@@ -6,7 +6,7 @@ import { nextTick, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Input } from 'ant-design-vue';
+import { Button, Input, message } from 'ant-design-vue';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/inner';
@@ -48,31 +48,42 @@ async function handleDelete(row: Demo03StudentApi.Demo03Course) {
   await gridApi.grid.remove(row);
 }
 
-/** 提供获取表格数据的方法供父组件调用 */
-defineExpose({
-  getData: (): Demo03StudentApi.Demo03Course[] => {
-    const data = gridApi.grid.getData() as Demo03StudentApi.Demo03Course[];
-    const removeRecords =
-      gridApi.grid.getRemoveRecords() as Demo03StudentApi.Demo03Course[];
-    const insertRecords =
-      gridApi.grid.getInsertRecords() as Demo03StudentApi.Demo03Course[];
-    return [
-      ...data.filter(
-        (row) => !removeRecords.some((removed) => removed.id === row.id),
-      ),
-      ...insertRecords.map((row: any) => ({ ...row, id: undefined })),
-    ];
-  },
-});
+/** 获取当前课程，新增课程不提交表格生成的临时编号 */
+function getData(): Demo03StudentApi.Demo03Course[] {
+  const { fullData } = gridApi.grid.getTableData();
+  const inserted = new Set(gridApi.grid.getInsertRecords());
+  return fullData.map((row) =>
+    inserted.has(row) ? { ...row, id: undefined } : { ...row },
+  );
+}
+
+/** 校验课程子表 */
+function validate(): boolean {
+  for (const [index, row] of getData().entries()) {
+    if (
+      !row.name?.trim() ||
+      row.score === null ||
+      row.score === undefined ||
+      String(row.score).trim() === ''
+    ) {
+      message.error(`第 ${index + 1} 行：课程名称和分数不能为空`);
+      return false;
+    }
+  }
+  return true;
+}
+
+defineExpose({ getData, validate });
 
 /** 监听主表的关联字段的变化，加载对应的子表数据 */
 watch(
   () => props.studentId,
   async (val) => {
+    await nextTick();
     if (!val) {
+      await gridApi.grid.loadData([]);
       return;
     }
-    await nextTick();
     await gridApi.grid.loadData(
       await getDemo03CourseListByStudentId(props.studentId!),
     );

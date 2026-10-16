@@ -66,25 +66,25 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '余额',
       field: 'balance',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '累计支出',
       field: 'totalExpense',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '累计充值',
       field: 'totalRecharge',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '冻结金额',
       field: 'freezePrice',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       title: '创建时间',
@@ -106,6 +106,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 export function useTransactionGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
+      field: 'walletId',
+      title: '钱包编号',
+      minWidth: 100,
+    },
+    {
       field: 'id',
       title: '编号',
       minWidth: 100,
@@ -119,13 +124,13 @@ export function useTransactionGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '交易金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'balance',
       title: '钱包余额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'createTime',

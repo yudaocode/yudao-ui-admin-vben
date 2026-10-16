@@ -181,7 +181,12 @@ async function handleCategorySortSubmit() {
             @press-enter="getList"
             class="!w-60"
           />
-          <Button class="ml-2" type="primary" @click="createModel">
+          <Button
+            v-if="hasAccessByCodes(['bpm:model:create'])"
+            class="ml-2"
+            type="primary"
+            @click="createModel"
+          >
             <IconifyIcon icon="lucide:plus" /> 新建模型
           </Button>
           <Button

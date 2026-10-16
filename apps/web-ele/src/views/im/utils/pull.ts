@@ -140,7 +140,7 @@ export async function runMinIdPull<T extends { id?: number }>(options: {
     // 本批最大消息 id 作为下次游标；无有效 id 则本批 apply 后停（无法继续翻页）
     const validIds = list
       .map((record) => record.id)
-      .filter((id): id is number => id !== null);
+      .filter((id): id is number => id !== null && id !== undefined);
     const nextMinId = validIds.length > 0 ? Math.max(...validIds) : undefined;
     // applyPage 返回 false：本页未落地（如入库失败），不推进游标并终止，避免漏消息
     if ((await applyPage(list, nextMinId)) === false) {

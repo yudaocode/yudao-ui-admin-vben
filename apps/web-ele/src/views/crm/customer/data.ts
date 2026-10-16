@@ -10,7 +10,6 @@ import { useUserStore } from '@vben/stores';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { AreaCascader } from '#/components/area';
-import { getRangePickerDefaultProps } from '#/utils';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -31,7 +30,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入客户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -41,7 +40,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
         placeholder: '请选择客户来源',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -50,7 +49,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -66,7 +65,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: userStore.userInfo?.id,
       rules: 'required',
@@ -77,7 +76,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入电话',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -86,7 +85,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入邮箱',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -95,7 +94,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入微信',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -104,7 +103,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入QQ',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -114,7 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
         placeholder: '请选择客户行业',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -124,7 +123,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
         placeholder: '请选择客户级别',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -144,7 +143,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入详细地址',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -156,7 +155,7 @@ export function useFormSchema(): VbenFormSchema[] {
         format: 'YYYY-MM-DD HH:mm:ss',
         valueFormat: 'x',
         placeholder: '请选择下次联系时间',
-        allowClear: true,
+        clearable: true,
         class: '!w-full',
       },
     },
@@ -166,7 +165,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       componentProps: {
         placeholder: '请输入备注',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -181,40 +180,50 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
       fieldName: 'mobile',
-      label: '手机号',
+      label: '手机',
       component: 'Input',
       componentProps: {
-        placeholder: '请输入手机号',
-        allowClear: true,
+        placeholder: '请输入手机',
+        clearable: true,
       },
     },
     {
-      fieldName: 'telephone',
-      label: '电话',
-      component: 'Input',
+      fieldName: 'industryId',
+      label: '所属行业',
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入电话',
-        allowClear: true,
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_INDUSTRY, 'number'),
+        placeholder: '请选择所属行业',
+        clearable: true,
       },
     },
     {
-      fieldName: 'createTime',
-      label: '创建时间',
-      component: 'RangePicker',
+      fieldName: 'level',
+      label: '客户级别',
+      component: 'Select',
       componentProps: {
-        ...getRangePickerDefaultProps(),
-        placeholder: ['开始日期', '结束日期'],
-        allowClear: true,
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_LEVEL, 'number'),
+        placeholder: '请选择客户级别',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'source',
+      label: '客户来源',
+      component: 'Select',
+      componentProps: {
+        options: getDictOptions(DICT_TYPE.CRM_CUSTOMER_SOURCE, 'number'),
+        placeholder: '请选择客户来源',
+        clearable: true,
       },
     },
   ];
 }
-
 /** 导入客户的表单 */
 export function useImportFormSchema(): VbenFormSchema[] {
   return [
@@ -227,7 +236,7 @@ export function useImportFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
         class: 'w-full',
       },
       dependencies: {
@@ -248,7 +257,9 @@ export function useImportFormSchema(): VbenFormSchema[] {
       label: '是否覆盖',
       component: 'Switch',
       componentProps: {
+        activeText: '是',
         activeValue: true,
+        inactiveText: '否',
         inactiveValue: false,
       },
       rules: z.boolean().default(false),
@@ -359,7 +370,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       title: '距离进入公海天数',
       minWidth: 140,
       formatter: ({ cellValue }) =>
-        cellValue === null ? '-' : `${cellValue} 天`,
+        cellValue === null || cellValue === undefined ? '-' : `${cellValue} 天`,
     },
     {
       field: 'ownerUserName',

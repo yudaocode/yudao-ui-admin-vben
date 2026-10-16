@@ -8,6 +8,7 @@ import { erpPriceMultiply } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
+import { getBusiness } from '#/api/crm/business';
 import {
   createContract,
   getContract,
@@ -21,6 +22,7 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<CrmContractApi.Contract>();
+const productFormRef = ref<InstanceType<typeof ProductEditTable>>();
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['合同'])
@@ -28,25 +30,42 @@ const getTitle = computed(() => {
 });
 
 /** 更新产品列表 */
-function handleUpdateProducts(products: any) {
-  formData.value = modalApi.getData() as CrmContractApi.Contract;
-  formData.value!.products = products;
-  if (formData.value) {
-    const totalProductPrice =
-      formData.value.products?.reduce(
-        (prev, curr) => prev + curr.totalPrice,
-        0,
-      ) ?? 0;
-    const discountPercent = formData.value.discountPercent;
-    const discountPrice =
-      discountPercent === null
-        ? 0
-        : erpPriceMultiply(totalProductPrice, discountPercent / 100);
-    const totalPrice = totalProductPrice - (discountPrice ?? 0);
-    formData.value!.totalProductPrice = totalProductPrice;
-    formData.value!.totalPrice = totalPrice;
-    formApi.setValues(formData.value!);
+async function handleUpdateProducts(products: any) {
+  if (!formData.value) {
+    formData.value = {} as CrmContractApi.Contract;
   }
+  formData.value.products = products;
+  const totalProductPrice =
+    products?.reduce(
+      (prev: number, curr: any) => prev + (curr.totalPrice ?? 0),
+      0,
+    ) ?? 0;
+  const { discountPercent } = await formApi.getValues();
+  const discountPrice =
+    discountPercent === null || discountPercent === undefined
+      ? 0
+      : erpPriceMultiply(totalProductPrice, discountPercent / 100);
+  const totalPrice = totalProductPrice - (discountPrice ?? 0);
+  await formApi.setFieldValue('totalProductPrice', totalProductPrice);
+  await formApi.setFieldValue('totalPrice', totalPrice);
+}
+
+async function handleCustomerChange() {
+  await formApi.setValues({ businessId: undefined, signContactId: undefined });
+  await handleUpdateProducts([]);
+}
+
+async function handleBusinessChange(id?: number) {
+  if (!id) {
+    await handleUpdateProducts([]);
+    return;
+  }
+  const business = await getBusiness(id);
+  const products = (business.products ?? []).map((product) => ({
+    ...product,
+    contractPrice: product.businessPrice,
+  }));
+  await handleUpdateProducts(products);
 }
 
 const [Form, formApi] = useVbenForm({
@@ -58,7 +77,10 @@ const [Form, formApi] = useVbenForm({
   },
   wrapperClass: 'grid-cols-3',
   layout: 'vertical',
-  schema: useFormSchema(),
+  schema: useFormSchema({
+    onCustomerChange: handleCustomerChange,
+    onBusinessChange: handleBusinessChange,
+  }),
   showDefaultActions: false,
 });
 
@@ -66,6 +88,15 @@ const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) {
+      return;
+    }
+    const productForm = Array.isArray(productFormRef.value)
+      ? productFormRef.value[0]
+      : productFormRef.value;
+    try {
+      await productForm?.validate();
+    } catch (error: any) {
+      message.error(error.message || '产品明细校验失败');
       return;
     }
     modalApi.lock();
@@ -109,6 +140,7 @@ const [Modal, modalApi] = useVbenModal({
     <Form class="mx-4">
       <template #product="slotProps">
         <ProductEditTable
+          ref="productFormRef"
           v-bind="slotProps.componentProps"
           class="w-full"
           :products="formData?.products ?? []"

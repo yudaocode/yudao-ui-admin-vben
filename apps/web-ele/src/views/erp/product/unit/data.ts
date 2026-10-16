@@ -47,7 +47,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入单位名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -56,7 +56,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择单位状态',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },

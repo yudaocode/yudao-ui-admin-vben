@@ -7,6 +7,7 @@ export namespace MesDvCheckRecordApi {
   export interface CheckRecord {
     id?: number; // 记录编号
     planId?: number; // 点检计划编号
+    planCode?: string; // 计划编码
     planName?: string; // 计划名称
     machineryId?: number; // 设备编号
     machineryCode?: string; // 设备编码

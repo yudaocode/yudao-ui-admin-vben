@@ -6,13 +6,14 @@ import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-rec
 
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
 import {
   ElAlert,
   ElButton,
   ElCard,
   ElEmpty,
+  ElMessage,
   ElTabPane,
   ElTabs,
 } from 'element-plus';
@@ -36,14 +37,10 @@ import {
 import { formatHrmDateRange } from '#/views/hrm/utils/format';
 
 import SlipSendForm from '../slip/send-record/modules/slip-send-form.vue';
-import PayrollReadinessAlert from './components/payroll-readiness-alert.vue';
-import {
-  buildFooterMethod,
-  buildGridColumns,
-  useSearchFormSchema,
-} from './data';
+import { buildFooterMethod, buildGridColumns, useGridFormSchema } from './data';
 import BatchEmployeeRecordForm from './modules/batch-employee-record-form.vue';
 import ComputeForm from './modules/compute-form.vue';
+import PayrollReadinessAlert from './modules/payroll-readiness-alert.vue';
 
 defineOptions({ name: 'HrmSalaryMonthRecord' });
 
@@ -62,9 +59,19 @@ const employeeChangeCount = ref<Record<number, number>>({});
 const summaryList = ref<HrmSalaryOptionApi.OptionValue[]>([]);
 const employeeChangeType = ref<number>(HrmSalaryEmployeeChangeType.ALL);
 const readinessAlertRef = ref<InstanceType<typeof PayrollReadinessAlert>>();
-const batchFormRef = ref<InstanceType<typeof BatchEmployeeRecordForm>>();
-const computeFormRef = ref<InstanceType<typeof ComputeForm>>();
-const slipSendFormRef = ref<InstanceType<typeof SlipSendForm>>();
+
+const [BatchEmployeeRecordModal, batchEmployeeRecordModalApi] = useVbenModal({
+  connectedComponent: BatchEmployeeRecordForm,
+  destroyOnClose: true,
+});
+const [ComputeModal, computeModalApi] = useVbenModal({
+  connectedComponent: ComputeForm,
+  destroyOnClose: true,
+});
+const [SlipSendModal, slipSendModalApi] = useVbenModal({
+  connectedComponent: SlipSendForm,
+  destroyOnClose: true,
+});
 
 const isArchived = computed(
   () => record.value.status === HrmSalaryMonthStatus.HISTORY,
@@ -83,7 +90,7 @@ const summaryMap = computed<Record<number, number>>(() =>
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    schema: useSearchFormSchema(),
+    schema: useGridFormSchema(),
     submitOnEnter: true,
   },
   gridOptions: {
@@ -195,13 +202,8 @@ async function getReadiness() {
 }
 
 async function refreshData() {
-  await Promise.all([
-    getRecord(),
-    gridApi.query(),
-    getEmployeeChangeCount(),
-    getSummary(),
-    getReadiness(),
-  ]);
+  await getRecord();
+  await Promise.all([gridApi.query(), getReadiness()]);
 }
 
 async function handleTabChange(type: number | string) {
@@ -213,6 +215,7 @@ async function handleCreate() {
   createLoading.value = true;
   try {
     await createNextSalaryMonthRecord();
+    ElMessage.success('新建成功');
     await init();
   } finally {
     createLoading.value = false;
@@ -226,9 +229,12 @@ async function handleCreateNext() {
         '新建下月工资表后，当前工资表将归入历史工资且不可修改。请确认要新建下月工资表吗？',
       title: '新建确认',
     });
-    await createNextSalaryMonthRecord();
-    await init();
-  } catch {}
+  } catch {
+    return;
+  }
+  await createNextSalaryMonthRecord();
+  ElMessage.success('新建成功');
+  await init();
 }
 
 async function handleDelete() {
@@ -241,24 +247,32 @@ async function handleDelete() {
         '删除当前工资表后，上月工资表将恢复为当前工资表且支持修改。请确认要删除当前工资表吗？',
       title: '删除确认',
     });
-    await deleteSalaryMonthRecord(record.value.id);
-    await init();
-  } catch {}
+  } catch {
+    return;
+  }
+  await deleteSalaryMonthRecord(record.value.id);
+  ElMessage.success('删除成功');
+  await init();
 }
 
 async function openBatchEdit() {
   const formValues = await gridApi.formApi.getValues();
-  batchFormRef.value?.open(record.value, {
-    deptId: formValues.deptId,
-    employeeChangeType: employeeChangeType.value,
-    employeeName: formValues.employeeName,
-    jobNumber: formValues.jobNumber,
-  });
+  batchEmployeeRecordModalApi
+    .setData({
+      record: record.value,
+      queryParams: {
+        deptId: formValues.deptId,
+        employeeChangeType: employeeChangeType.value,
+        employeeName: formValues.employeeName,
+        jobNumber: formValues.jobNumber,
+      },
+    })
+    .open();
 }
 
 function openSlipSendForm() {
   if (record.value.id) {
-    slipSendFormRef.value?.open(record.value.id);
+    slipSendModalApi.setData(record.value.id).open();
   }
 }
 
@@ -276,12 +290,9 @@ async function init() {
       columns: buildGridColumns(record.value.optionHeaders),
       footerMethod: buildFooterMethod(summaryMap.value),
     });
-    await Promise.all([
-      gridApi.query(),
-      getEmployeeChangeCount(),
-      getSummary(),
-      getReadiness(),
-    ]);
+    // 工资表加载后才会挂载表格，统计随表格查询一起刷新
+    await nextTick();
+    await Promise.all([gridApi.query(), getReadiness()]);
   } finally {
     pageLoading.value = false;
   }
@@ -328,7 +339,7 @@ onMounted(() => {
                 icon: 'lucide:cpu',
                 auth: ['hrm:salary:month-record:compute'],
                 ifShow: isWritable,
-                onClick: () => computeFormRef?.open(record),
+                onClick: () => computeModalApi.setData(record).open(),
               },
               {
                 label: '发送工资条',
@@ -402,8 +413,8 @@ onMounted(() => {
       <Grid class="min-h-0 flex-1" />
     </template>
 
-    <BatchEmployeeRecordForm ref="batchFormRef" @success="refreshData" />
-    <ComputeForm ref="computeFormRef" @success="refreshData" />
-    <SlipSendForm ref="slipSendFormRef" @success="refreshData" />
+    <BatchEmployeeRecordModal @success="refreshData" />
+    <ComputeModal @success="refreshData" />
+    <SlipSendModal @success="refreshData" />
   </Page>
 </template>

@@ -22,7 +22,7 @@ import { useFormSchema } from '../data';
 import PurchaseOrderItemForm from './item-form.vue';
 
 const emit = defineEmits(['success']);
-const formData = ref<ErpPurchaseOrderApi.PurchaseOrder>();
+const formData = ref<Partial<ErpPurchaseOrderApi.PurchaseOrder>>();
 const formType = ref<FormType>('create'); // 表单类型：'create' | 'edit' | 'detail'
 const itemFormRef = ref<InstanceType<typeof PurchaseOrderItemForm>>();
 
@@ -57,8 +57,7 @@ const [Form, formApi] = useVbenForm({
 
 /** 更新采购订单项 */
 function handleUpdateItems(items: ErpPurchaseOrderApi.PurchaseOrderItem[]) {
-  formData.value = modalApi.getData() as ErpPurchaseOrderApi.PurchaseOrder;
-  formData.value.items = items;
+  formData.value = { ...formData.value, items };
   formApi.setValues({
     items,
   });
@@ -101,8 +100,7 @@ const [Modal, modalApi] = useVbenModal({
       (await formApi.getValues()) as ErpPurchaseOrderApi.PurchaseOrder;
     data.items = formData.value?.items?.map((item) => ({
       ...item,
-      // 解决新增采购订单报错
-      id: undefined,
+      id: formType.value === 'create' ? undefined : item.id, // 新增时不提交明细编号，编辑时保留已有编号
     }));
     // 将文件数组转换为字符串
     if (data.fileUrl && Array.isArray(data.fileUrl)) {
@@ -161,7 +159,7 @@ const [Modal, modalApi] = useVbenModal({
       <template #items>
         <PurchaseOrderItemForm
           ref="itemFormRef"
-          :items="formData?.items ?? []"
+          :items="formData?.items"
           :disabled="formType === 'detail'"
           :discount-percent="formData?.discountPercent ?? 0"
           @update:items="handleUpdateItems"

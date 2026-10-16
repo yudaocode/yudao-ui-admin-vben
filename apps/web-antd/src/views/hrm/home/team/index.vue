@@ -4,7 +4,7 @@ import type { HrmHomeApi } from '#/api/hrm/home';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Page } from '@vben/common-ui';
+import { DocAlert, Page } from '@vben/common-ui';
 
 import { Col, Row, Spin } from 'ant-design-vue';
 
@@ -15,8 +15,8 @@ import {
 import { HrmHomeCalendarItemType } from '#/views/hrm/utils/constants';
 
 import HrmHomeCalendar from '../components/calendar.vue';
-import HrmTeamOverview from './components/team-overview.vue';
-import HrmTeamSurvey from './components/team-survey.vue';
+import HrmTeamOverview from './modules/team-overview.vue';
+import HrmTeamSurvey from './modules/team-survey.vue';
 
 defineOptions({ name: 'HrmTeamHome' });
 
@@ -56,6 +56,10 @@ onMounted(() => {
 
 <template>
   <Page>
+    <DocAlert
+      title="【组织】工作台、组织架构"
+      url="https://doc.iocoder.cn/hrm/organization/"
+    />
     <Spin :spinning="loading">
       <div class="mb-4 text-2xl leading-7">团队工作台</div>
       <Row :gutter="[16, 16]" align="top">

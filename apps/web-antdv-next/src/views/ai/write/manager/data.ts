@@ -10,7 +10,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  userList = await getSimpleUserList();
+}
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -91,7 +95,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       minWidth: 120,
       cellRender: {
         name: 'CellDict',
-        props: { type: DICT_TYPE.AI_WRITE_TYPE },
+        props: { type: DICT_TYPE.AI_PLATFORM },
       },
     },
     {

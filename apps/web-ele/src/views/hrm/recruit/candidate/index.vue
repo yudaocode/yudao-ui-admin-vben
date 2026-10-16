@@ -208,7 +208,8 @@ async function getStatusCounts() {
 function handleStatusTabChange(key: number | string) {
   activeStatus.value = String(key);
   checkedIds.value = [];
-  handleRefresh();
+  gridApi.reload();
+  getStatusCounts();
 }
 
 /** 新增 */
@@ -720,6 +721,16 @@ function handleRowCheckboxChange({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleSubmit: async (values) => {
+      gridApi.formApi.setLatestSubmissionValues(values);
+      await Promise.all([gridApi.reload(values), getStatusCounts()]);
+    },
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      activeStatus.value = 'all';
+      checkedIds.value = [];
+      await gridApi.formApi.submit();
+    },
     collapsed: true,
     schema: useGridFormSchema(),
   },

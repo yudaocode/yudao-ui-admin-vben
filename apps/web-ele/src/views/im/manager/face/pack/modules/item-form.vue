@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ImManagerFacePackItemApi } from '#/api/im/manager/face/item';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -35,6 +35,11 @@ const [Form, formApi] = useVbenForm({
     labelWidth: 80,
   },
   layout: 'horizontal',
+  handleValuesChange(values, fieldsChanged) {
+    if (fieldsChanged.includes('url')) {
+      void applyImageSize(values.url as string | undefined);
+    }
+  },
   schema: useItemFormSchema(),
   showDefaultActions: false,
 });
@@ -59,13 +64,6 @@ async function applyImageSize(url?: string) {
     ElMessage.warning('图片尺寸探测失败，请手动填写宽高');
   }
 }
-
-watch(
-  () => formApi.form.values?.url,
-  (url) => {
-    void applyImageSize(url as string | undefined);
-  },
-);
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {

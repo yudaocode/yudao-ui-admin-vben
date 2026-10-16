@@ -59,6 +59,7 @@ defineExpose({
 
 /** 初始化 */
 const dictTypeOptions = ref<SystemDictTypeApi.DictType[]>([]); // 字典类型选项
+
 onMounted(async () => {
   dictTypeOptions.value = await getSimpleDictTypeList();
 });
@@ -157,7 +158,8 @@ function filterDictTypeOption(input: string, option: any) {
     <!-- 字典类型 -->
     <template #dictType="{ row }">
       <Select
-        v-model:value="row.dictType"
+        :value="row.dictType"
+        @change="(value) => (row.dictType = value ?? '')"
         class="w-full"
         allow-clear
         show-search

@@ -165,6 +165,7 @@ const [Modal, modalApi] = useVbenModal({
         };
         await formApi.setFieldValue('id', id);
         formType.value = 'update';
+        formApi.setState({ schema: useFormSchema('update', formApi) });
       } else {
         await updateRepair(data);
         formData.value = { ...formData.value, ...data };
@@ -228,14 +229,14 @@ const [Modal, modalApi] = useVbenModal({
         </Popconfirm>
         <Popconfirm
           v-if="formType === 'finish'"
-          title="确认完成验收？"
+          title="确认验收通过？"
           @confirm="handleFinish(MesDvRepairResultEnum.PASS)"
         >
           <Button type="primary">验收通过</Button>
         </Popconfirm>
         <Popconfirm
           v-if="formType === 'finish'"
-          title="确认完成验收？"
+          title="确认验收不通过？"
           @confirm="handleFinish(MesDvRepairResultEnum.FAIL)"
         >
           <Button>不通过</Button>

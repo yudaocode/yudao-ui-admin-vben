@@ -66,13 +66,18 @@ const [Modal, modalApi] = useVbenModal({
       otherContact: values.otherContact,
       address: values.address,
     };
+    const successMessage = $t(
+      formData.value?.id
+        ? 'ui.actionMessage.updateSuccess'
+        : 'ui.actionMessage.createSuccess',
+    );
     try {
       await (formData.value?.id
         ? updateAccountSet(data)
         : createAccountSet(data));
       await modalApi.close();
       emit('success');
-      message.success($t('ui.actionMessage.operationSuccess'));
+      message.success(successMessage);
     } finally {
       modalApi.unlock();
     }

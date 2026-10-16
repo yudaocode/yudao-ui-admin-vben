@@ -10,7 +10,9 @@ import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 
 /** 关联数据 */
 let apiKeyList: AiModelApiKeyApi.ApiKey[] = [];
-getApiKeySimpleList().then((data) => (apiKeyList = data));
+export async function loadApiKeyList() {
+  apiKeyList = await getApiKeySimpleList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -38,13 +40,14 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'type',
       label: '模型类型',
       component: 'Select',
-      componentProps: (values) => {
-        return {
-          placeholder: '请输入模型类型',
-          disabled: !!values.id,
-          options: getDictOptions(DICT_TYPE.AI_MODEL_TYPE, 'number'),
-          allowClear: true,
-        };
+      componentProps: {
+        placeholder: '请输入模型类型',
+        options: getDictOptions(DICT_TYPE.AI_MODEL_TYPE, 'number'),
+        allowClear: true,
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
       },
       rules: 'required',
     },
@@ -109,6 +112,7 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入温度参数',
         min: 0,
         max: 2,
+        precision: 2,
       },
       dependencies: {
         triggerFields: ['type'],

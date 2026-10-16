@@ -4,9 +4,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DescriptionItemSchema } from '#/components/description';
 
+import { h } from 'vue';
+
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
+
+import { ElImage } from 'element-plus';
 
 import { getBusinessPageByCustomer } from '#/api/crm/business';
 import { getContactPageByCustomer } from '#/api/crm/contact';
@@ -47,8 +51,8 @@ export function useFormSchema(
       label: '下次联系时间',
       component: 'DatePicker',
       componentProps: {
-        showTime: true,
-        format: 'YYYY-MM-DD HH:mm:ss',
+        showTime: false,
+        format: 'YYYY-MM-DD',
         valueFormat: 'x',
         placeholder: '请选择下次联系时间',
         class: '!w-full',
@@ -65,16 +69,28 @@ export function useFormSchema(
       fieldName: 'picUrls',
       label: '图片',
       component: 'ImageUpload',
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
     },
     {
       fieldName: 'fileUrls',
       label: '附件',
       component: 'FileUpload',
+      componentProps: {
+        maxNumber: 5,
+        multiple: true,
+      },
     },
     {
       fieldName: 'contactIds',
       label: '关联联系人',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['bizType'],
+        if: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER,
+      },
       componentProps: {
         api: async () => {
           if (!bizId.value) {
@@ -89,13 +105,17 @@ export function useFormSchema(
         },
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
       },
     },
     {
       fieldName: 'businessIds',
       label: '关联商机',
       component: 'ApiSelect',
+      dependencies: {
+        triggerFields: ['bizType'],
+        if: (values) => values.bizType === BizTypeEnum.CRM_CUSTOMER,
+      },
       componentProps: {
         api: async () => {
           if (!bizId.value) {
@@ -110,7 +130,7 @@ export function useFormSchema(
         },
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
       },
     },
   ];
@@ -136,6 +156,45 @@ export function useGridColumns(
       },
     },
     { field: 'content', title: '跟进内容' },
+    {
+      field: 'picUrls',
+      title: '图片',
+      minWidth: 180,
+      slots: {
+        default: ({ row }) =>
+          h(
+            'div',
+            { class: 'flex flex-wrap gap-2' },
+            (row.picUrls ?? []).map((url: string) =>
+              h(ElImage, {
+                src: url,
+                class: 'h-[50px] w-[50px] cursor-pointer',
+                previewSrcList: row.picUrls,
+                previewTeleported: true,
+              }),
+            ),
+          ),
+      },
+    },
+    {
+      field: 'fileUrls',
+      title: '附件',
+      minWidth: 180,
+      slots: {
+        default: ({ row }) =>
+          h(
+            'div',
+            { class: 'flex flex-col gap-1' },
+            (row.fileUrls ?? []).map((url: string, index: number) =>
+              h(
+                'a',
+                { href: url, target: '_blank', rel: 'noopener noreferrer' },
+                `附件${index + 1}`,
+              ),
+            ),
+          ),
+      },
+    },
     {
       field: 'nextTime',
       title: '下次联系时间',

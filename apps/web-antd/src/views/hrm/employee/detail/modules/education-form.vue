@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { HrmEmployeeEducationExperienceApi } from '#/api/hrm/employee/education-experience';
 
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
@@ -23,15 +23,11 @@ const employeeId = ref<number>();
 const editingId = ref<number>();
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112 },
+  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: useEducationFormSchema(),
   showDefaultActions: false,
 });
-
-const title = computed(() =>
-  editingId.value ? '修改教育经历' : '新增教育经历',
-);
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
@@ -57,25 +53,30 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
+  async onOpenChange(isOpen) {
+    if (!isOpen) return;
+    const { employeeId: currentEmployeeId, row } = modalApi.getData() as {
+      employeeId: number;
+      row?: HrmEmployeeEducationExperienceApi.EmployeeEducationExperience;
+    };
+    employeeId.value = currentEmployeeId;
+    editingId.value = row?.id;
+    modalApi.setState({
+      title: editingId.value ? '修改教育经历' : '新增教育经历',
+    });
+    await formApi.reset();
+    await formApi.setValues({
+      sort: 1,
+      firstDegree: false,
+      ...row,
+      employeeId: currentEmployeeId,
+    });
+  },
 });
-
-function open(
-  empId: number,
-  row?: HrmEmployeeEducationExperienceApi.EmployeeEducationExperience,
-) {
-  employeeId.value = empId;
-  editingId.value = row?.id;
-  modalApi.setState({ title: title.value });
-  formApi.reset();
-  formApi.setValues({ sort: 1, firstDegree: false, ...row, employeeId: empId });
-  modalApi.open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>
-  <Modal :title="title" class="w-[680px]">
+  <Modal class="w-[680px]">
     <Form class="mx-4" />
   </Modal>
 </template>

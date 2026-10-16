@@ -17,6 +17,7 @@ const props = withDefaults(
   defineProps<{
     allowClear?: boolean;
     disabled?: boolean;
+    disabledIds?: number[];
     modelValue?: null | number | number[];
     multiple?: boolean;
     placeholder?: string;
@@ -24,6 +25,7 @@ const props = withDefaults(
   {
     allowClear: true,
     disabled: false,
+    disabledIds: () => [],
     modelValue: undefined,
     multiple: false,
     placeholder: '请选择用户',
@@ -116,6 +118,7 @@ function handleClick(event: MouseEvent) {
     return;
   }
   dialogRef.value?.open(getSelectedIds(props.modelValue), {
+    disabledIds: props.disabledIds,
     multiple: props.multiple,
   });
 }

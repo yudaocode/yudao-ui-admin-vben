@@ -186,6 +186,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       isHover: true,
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         async query({ page }: any, formValues: any) {
           return await getSeckillActivityPage({
@@ -206,18 +207,21 @@ const [Modal, modalApi] = useVbenModal({
   destroyOnClose: true,
   showConfirmButton: props.multiple, // 特殊：radio 单选情况下，走 handleRadioChange 处理。
   onConfirm: () => {
-    const selectedRows =
-      gridApi.grid.getCheckboxRecords() as MallSeckillActivityApi.SeckillActivity[];
+    const selectedRows = [
+      ...gridApi.grid.getCheckboxReserveRecords(),
+      ...gridApi.grid.getCheckboxRecords(),
+    ] as MallSeckillActivityApi.SeckillActivity[];
     emit('change', selectedRows);
     modalApi.close();
   },
   async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       await gridApi.grid.clearCheckboxRow();
+      await gridApi.grid.clearCheckboxReserve();
       await gridApi.grid.clearRadioRow();
-      return;
     }
-
+  },
+  async onOpened() {
     // 1. 先查询数据
     await gridApi.query();
     // 2. 设置已选中行

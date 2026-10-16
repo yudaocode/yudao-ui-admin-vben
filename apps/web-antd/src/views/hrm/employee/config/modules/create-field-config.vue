@@ -1,30 +1,36 @@
 <script lang="ts" setup>
-import type { HrmEmployeeConfigApi } from '#/api/hrm/employee/config';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { onMounted, ref } from 'vue';
 
-import { message, Switch, Table } from 'ant-design-vue';
+import { message, Switch } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getEmployeeCreateFieldConfigList,
   saveEmployeeCreateFieldConfig,
 } from '#/api/hrm/employee/config';
 import { HrmEmployeeEntryStatus } from '#/views/hrm/utils/constants';
 
+import { useCreateFieldGridColumns } from '../data';
+
 defineOptions({ name: 'HrmEmployeeCreateFieldConfig' });
 
-type FieldRow = HrmEmployeeConfigApi.FieldConfig & {
-  activeVisible: boolean;
-  activeVisibleLocked: boolean;
-  pendingEntryVisible: boolean;
-  pendingEntryVisibleLocked: boolean;
-};
+const list = ref<any[]>([]);
 
-const loading = ref(false);
-const list = ref<FieldRow[]>([]);
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useCreateFieldGridColumns(),
+    minHeight: 240,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
 
 async function getList() {
-  loading.value = true;
+  gridApi.setLoading(true);
   try {
     const [activeFields, pendingEntryFields] = await Promise.all([
       getEmployeeCreateFieldConfigList(HrmEmployeeEntryStatus.ACTIVE),
@@ -43,8 +49,9 @@ async function getList() {
         pendingEntryVisibleLocked: pending.visibleLocked,
       };
     });
+    await gridApi.grid.reloadData(list.value);
   } finally {
-    loading.value = false;
+    gridApi.setLoading(false);
   }
 }
 
@@ -67,33 +74,23 @@ async function submitForm() {
 }
 
 onMounted(getList);
+
 defineExpose({ submitForm });
 </script>
 
 <template>
-  <Table :data-source="list" :loading="loading" :pagination="false" bordered>
-    <Table.Column data-index="groupName" title="字段分组" width="180" />
-    <Table.Column data-index="title" title="字段名称" />
-    <Table.Column key="active" title="新建在职员工" align="center" width="180">
-      <template #default="{ record }">
-        <Switch
-          v-model:checked="record.activeVisible"
-          :disabled="record.activeVisibleLocked"
-        />
-      </template>
-    </Table.Column>
-    <Table.Column
-      key="pending"
-      title="新建待入职员工"
-      align="center"
-      width="180"
-    >
-      <template #default="{ record }">
-        <Switch
-          v-model:checked="record.pendingEntryVisible"
-          :disabled="record.pendingEntryVisibleLocked"
-        />
-      </template>
-    </Table.Column>
-  </Table>
+  <Grid class="w-full">
+    <template #activeVisible="{ row }">
+      <Switch
+        v-model:checked="row.activeVisible"
+        :disabled="row.activeVisibleLocked"
+      />
+    </template>
+    <template #pendingEntryVisible="{ row }">
+      <Switch
+        v-model:checked="row.pendingEntryVisible"
+        :disabled="row.pendingEntryVisibleLocked"
+      />
+    </template>
+  </Grid>
 </template>

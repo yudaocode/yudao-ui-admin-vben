@@ -68,7 +68,10 @@ async function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportSpu(await gridApi.formApi.getValues());
+  const data = await exportSpu({
+    ...(await gridApi.formApi.getValues()),
+    tabType: Number(tabType.value),
+  });
   downloadFileFromBlobPart({ fileName: '商品.xls', source: data });
 }
 
@@ -113,6 +116,9 @@ async function handleStatusChange(
   newStatus: number,
   row: MallSpuApi.Spu,
 ): Promise<boolean | undefined> {
+  if (row.status! < 0) {
+    return false;
+  }
   // 二次确认
   const text = newStatus ? '上架' : '下架';
   try {
@@ -199,9 +205,10 @@ onMounted(async () => {
     await gridApi.formApi.setValues({
       categoryId: Number(route.query.categoryId),
     });
+    await gridApi.formApi.submit();
   }
   // 获得每个 Tab 的数量
-  await getTabCount();
+  await getTabCount(await gridApi.formApi.getValues());
 });
 </script>
 
@@ -268,6 +275,7 @@ onMounted(async () => {
             },
             {
               label: '恢复',
+              ifShow: Number(tabType) === 4,
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],
@@ -279,6 +287,7 @@ onMounted(async () => {
             },
             {
               label: '回收',
+              ifShow: Number(tabType) !== 4,
               type: 'link',
               icon: ACTION_ICON.EDIT,
               auth: ['product:spu:update'],

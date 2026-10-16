@@ -4,7 +4,7 @@ import type { MallOrderApi } from '#/api/mall/trade/order';
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { fenToYuan } from '@vben/utils';
+import { fenToYuan, yuanToFen } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 
@@ -48,7 +48,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       await updateOrderPrice({
         id: data.id,
-        adjustPrice: data.adjustPrice * 100, // 转换为分
+        adjustPrice: yuanToFen(data.adjustPrice), // 转换为分
       });
       // 关闭并提示
       await modalApi.close();

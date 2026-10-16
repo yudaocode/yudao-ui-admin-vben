@@ -92,12 +92,6 @@ function createDefault(): HrmPerformanceAssessmentTemplateApi.PerformanceAssessm
     dimensions: [],
   };
 }
-
-function open(type: 'create' | 'update', id?: number) {
-  modalApi.setData({ type, id }).open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>

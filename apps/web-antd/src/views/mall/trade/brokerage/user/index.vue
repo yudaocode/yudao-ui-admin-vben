@@ -69,6 +69,11 @@ function handleOpenOrderList(row: MallBrokerageUserApi.BrokerageUser) {
 
 /** 清除上级推广人 */
 async function handleClearBindUser(row: MallBrokerageUserApi.BrokerageUser) {
+  try {
+    await confirm('确定清除该用户的上级推广人吗？');
+  } catch {
+    return;
+  }
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.nickname]),
     duration: 0,

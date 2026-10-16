@@ -6,7 +6,7 @@ import { h } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { erpPriceInputFormatter, formatDateTime } from '@vben/utils';
+import { fenToYuan, formatDateTime } from '@vben/utils';
 
 import { ElTag } from 'element-plus';
 
@@ -36,22 +36,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'merchantTransferId',
+      fieldName: 'merchantOrderId',
       label: '商户单号',
       component: 'Input',
       componentProps: {
         clearable: true,
         placeholder: '请输入商户单号',
-      },
-    },
-    {
-      fieldName: 'type',
-      label: '类型',
-      component: 'Select',
-      componentProps: {
-        options: getDictOptions(DICT_TYPE.PAY_TRANSFER_TYPE),
-        clearable: true,
-        placeholder: '请选择类型',
       },
     },
     {
@@ -115,7 +105,7 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '转账金额',
       minWidth: 120,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'merchantTransferId',
@@ -214,11 +204,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'price',
       label: '转账金额',
       render: (val) =>
-        h(
-          ElTag,
-          { color: 'success' },
-          () => `￥${erpPriceInputFormatter(val || 0)}`,
-        ),
+        h(ElTag, { color: 'success' }, () => `￥${fenToYuan(val || 0)}`),
     },
     {
       field: 'successTime',

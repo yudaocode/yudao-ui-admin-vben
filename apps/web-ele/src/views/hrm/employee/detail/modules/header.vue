@@ -33,12 +33,15 @@ const [Descriptions] = useDescription({
             employee.name || '-'
           }}</span>
           <DictTag
-            v-if="employee.entryStatus !== null"
+            v-if="
+              employee.entryStatus !== null &&
+              employee.entryStatus !== undefined
+            "
             :type="DICT_TYPE.HRM_EMPLOYEE_ENTRY_STATUS"
             :value="employee.entryStatus"
           />
           <DictTag
-            v-if="employee.status !== null"
+            v-if="employee.status != null"
             :type="DICT_TYPE.HRM_EMPLOYEE_STATUS"
             :value="employee.status"
           />

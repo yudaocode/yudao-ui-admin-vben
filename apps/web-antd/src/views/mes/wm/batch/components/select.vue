@@ -53,7 +53,8 @@ const showClear = computed(
     props.allowClear &&
     !props.disabled &&
     hovering.value &&
-    props.modelValue !== null,
+    props.modelValue !== null &&
+    props.modelValue !== undefined,
 );
 
 /** 根据编号单条查询批次信息（用于编辑回显） */
@@ -89,7 +90,9 @@ function handleClick(event: MouseEvent) {
     return;
   }
   const selectedIds = (
-    props.modelValue === null ? [] : [props.modelValue]
+    props.modelValue === null || props.modelValue === undefined
+      ? []
+      : [props.modelValue]
   ) as number[];
   dialogRef.value?.open(selectedIds, {
     clientId: props.clientId,

@@ -8,7 +8,7 @@ import { onMounted, ref } from 'vue';
 import { useVModel } from '@vueuse/core';
 import { ElForm, ElFormItem, ElOption, ElSelect } from 'element-plus';
 
-import * as ArticleApi from '#/api/mall/promotion/article/index';
+import { getArticlePage } from '#/api/mall/promotion/article/index';
 
 import ComponentContainerProperty from '../../component-container-property.vue';
 
@@ -27,7 +27,7 @@ const loading = ref(false); // 加载中
 /** 查询文章列表 */
 const queryArticleList = async (title?: string) => {
   loading.value = true;
-  const { list } = await ArticleApi.getArticlePage({
+  const { list } = await getArticlePage({
     title,
     pageNo: 1,
     pageSize: 10,

@@ -41,7 +41,7 @@ function handleEdit(row: MallBargainActivityApi.BargainActivity) {
 
 /** 关闭砍价活动 */
 async function handleClose(row: MallBargainActivityApi.BargainActivity) {
-  await confirm('确定关闭该砍价活动吗？');
+  await confirm('确认关闭该砍价活动吗？');
   const loadingInstance = ElLoading.service({
     text: '关闭中...',
   });

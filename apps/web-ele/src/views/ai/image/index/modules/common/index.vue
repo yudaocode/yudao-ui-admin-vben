@@ -14,6 +14,7 @@ import {
 
 import {
   ElButton,
+  ElInput,
   ElInputNumber,
   ElOption,
   ElSelect,
@@ -114,7 +115,7 @@ defineExpose({ settingValues });
   <div class="prompt">
     <b>画面描述</b>
     <p>建议使用"形容词 + 动词 + 风格"的格式，使用"，"隔开</p>
-    <el-input
+    <ElInput
       v-model="prompt"
       :maxlength="1024"
       :rows="5"

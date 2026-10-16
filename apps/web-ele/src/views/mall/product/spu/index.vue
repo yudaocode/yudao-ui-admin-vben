@@ -25,7 +25,7 @@ import { useGridColumns, useGridFormSchema } from './data';
 
 const { push } = useRouter();
 const route = useRoute();
-const tabType = ref('0');
+const tabType = ref(0);
 const tabsData = ref([
   {
     name: '出售中',
@@ -62,7 +62,10 @@ async function handleRefresh() {
 
 /** 导出表格 */
 async function handleExport() {
-  const data = await exportSpu(await gridApi.formApi.getValues());
+  const data = await exportSpu({
+    ...(await gridApi.formApi.getValues()),
+    tabType: Number(tabType.value),
+  });
   downloadFileFromBlobPart({ fileName: '商品.xls', source: data });
 }
 
@@ -106,6 +109,9 @@ async function handleStatusChange(
   newStatus: number,
   row: MallSpuApi.Spu,
 ): Promise<boolean | undefined> {
+  if (row.status! < 0) {
+    return false;
+  }
   // 二次确认
   const text = newStatus ? '上架' : '下架';
   try {
@@ -181,7 +187,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 function onChangeTab(key: number | string) {
-  tabType.value = key.toString();
+  tabType.value = Number(key);
   gridApi.query();
 }
 
@@ -191,9 +197,10 @@ onMounted(async () => {
     await gridApi.formApi.setValues({
       categoryId: Number(route.query.categoryId),
     });
+    await gridApi.formApi.submit();
   }
   // 获得每个 Tab 的数量
-  await getTabCount();
+  await getTabCount(await gridApi.formApi.getValues());
 });
 </script>
 
@@ -213,7 +220,7 @@ onMounted(async () => {
             v-for="item in tabsData"
             :key="item.type"
             :label="`${item.name} (${item.count})`"
-            :name="String(item.type)"
+            :name="item.type"
           />
         </ElTabs>
       </template>
@@ -261,7 +268,7 @@ onMounted(async () => {
               link: true,
               icon: ACTION_ICON.DELETE,
               auth: ['product:spu:delete'],
-              ifShow: () => tabType === '4',
+              ifShow: () => tabType === 4,
               popConfirm: {
                 title: $t('ui.actionMessage.deleteConfirm', [row.name]),
                 confirm: handleDelete.bind(null, row),
@@ -269,6 +276,7 @@ onMounted(async () => {
             },
             {
               label: '恢复',
+              ifShow: Number(tabType) === 4,
               type: 'primary',
               link: true,
               icon: ACTION_ICON.EDIT,
@@ -281,6 +289,7 @@ onMounted(async () => {
             },
             {
               label: '回收',
+              ifShow: Number(tabType) !== 4,
               type: 'danger',
               link: true,
               icon: ACTION_ICON.EDIT,

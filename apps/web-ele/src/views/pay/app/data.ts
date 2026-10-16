@@ -457,11 +457,10 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
         label: '接口内容加密方式',
         fieldName: 'config.encryptType',
         component: 'RadioGroup',
-        rules: 'required',
         componentProps: {
           options: [
             {
-              value: 'NONE',
+              value: '',
               label: '无加密',
             },
             {
@@ -470,7 +469,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
             },
           ],
         },
-        defaultValue: 'NONE',
+        defaultValue: '',
       },
       {
         label: '接口内容加密密钥',
@@ -537,7 +536,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v2';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -551,6 +550,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           },
           fileUploadProps: {
             accept: ['p12'],
+            returnTextType: 'base64',
           },
         }),
         rules: 'required',
@@ -558,7 +558,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v2';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -573,7 +573,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -594,7 +594,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -610,7 +610,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -630,7 +630,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
       {
@@ -646,7 +646,7 @@ export function useChannelFormSchema(formType: string = ''): VbenFormSchema[] {
           show(values: any) {
             return values?.config?.apiVersion === 'v3';
           },
-          triggerFields: ['config.mode', 'mode', 'config'],
+          triggerFields: ['config.apiVersion', 'config'],
         },
       },
     );

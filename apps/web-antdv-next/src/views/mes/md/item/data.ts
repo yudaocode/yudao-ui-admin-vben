@@ -5,6 +5,7 @@ import type { MesMdProductBomApi } from '#/api/mes/md/item/productBom';
 
 import { h, markRaw } from 'vue';
 
+import { useAccess } from '@vben/access';
 import {
   CommonStatusEnum,
   DICT_TYPE,
@@ -37,11 +38,12 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '物料编码',
       component: 'Input',
       componentProps: {
-        maxLength: 64,
+        maxlength: 64,
         placeholder: '请输入物料编码',
       },
       rules: z.string().min(1, '物料编码不能为空').max(64),
@@ -68,7 +70,7 @@ export function useFormSchema(
       label: '物料名称',
       component: 'Input',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入物料名称',
       },
       rules: z.string().min(1, '物料名称不能为空').max(255),
@@ -78,7 +80,7 @@ export function useFormSchema(
       label: '规格型号',
       component: 'Input',
       componentProps: {
-        maxLength: 255,
+        maxlength: 255,
         placeholder: '请输入规格型号',
       },
     },
@@ -263,6 +265,7 @@ export function useGridColumns(
     row: MesMdItemApi.Item,
   ) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions<MesMdItemApi.Item>['columns'] {
+  const { hasAccessByCodes } = useAccess();
   return [
     {
       field: 'code',
@@ -321,6 +324,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
+          disabled: !hasAccessByCodes(['mes:md-item:update']),
           checkedValue: CommonStatusEnum.ENABLE,
           unCheckedValue: CommonStatusEnum.DISABLE,
         },

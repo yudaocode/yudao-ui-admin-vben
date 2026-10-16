@@ -217,6 +217,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <TableAction
           :actions="[
             {
+              label: $t('common.detail'),
+              type: 'link',
+              icon: ACTION_ICON.VIEW,
+              auth: ['crm:contract:query'],
+              onClick: handleDetail.bind(null, row),
+            },
+            {
               label: $t('common.edit'),
               type: 'link',
               icon: ACTION_ICON.EDIT,

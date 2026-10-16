@@ -21,11 +21,11 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: [
-          { label: '华为手机 --- 1.00元', value: 1 },
-          { label: '小米电视 --- 10.00元', value: 2 },
-          { label: '苹果手表 --- 100.00元', value: 3 },
-          { label: '华硕笔记本 --- 1000.00元', value: 4 },
-          { label: '蔚来汽车 --- 200000.00元', value: 5 },
+          { label: '华为手机 --- 0.01元', value: 1 },
+          { label: '小米电视 --- 0.10元', value: 2 },
+          { label: '苹果手表 --- 1.00元', value: 3 },
+          { label: '华硕笔记本 --- 10.00元', value: 4 },
+          { label: '蔚来汽车 --- 2000.00元', value: 5 },
         ],
         placeholder: '请选择下单商品',
         clearable: true,
@@ -57,13 +57,13 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'price',
       title: '支付价格',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'refundPrice',
       title: '退款金额',
       minWidth: 100,
-      formatter: 'formatAmount2',
+      formatter: 'formatFenToYuanAmount',
     },
     {
       field: 'createTime',

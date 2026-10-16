@@ -119,6 +119,7 @@ export function useSkuFormSchema(
     },
     {
       fieldName: 'subCommissionType',
+      defaultValue: false,
       label: '分销类型',
       component: 'RadioGroup',
       componentProps: {
@@ -138,6 +139,7 @@ export function useSkuFormSchema(
     },
     {
       fieldName: 'specType',
+      defaultValue: false,
       label: '商品规格',
       component: 'RadioGroup',
       componentProps: {
@@ -280,6 +282,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'sort',
+      defaultValue: 0,
       label: '商品排序',
       component: 'InputNumber',
       componentProps: {
@@ -289,6 +292,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'giveIntegral',
+      defaultValue: 0,
       label: '赠送积分',
       component: 'InputNumber',
       componentProps: {
@@ -298,6 +302,7 @@ export function useOtherFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'virtualSalesCount',
+      defaultValue: 0,
       label: '虚拟销量',
       component: 'InputNumber',
       componentProps: {

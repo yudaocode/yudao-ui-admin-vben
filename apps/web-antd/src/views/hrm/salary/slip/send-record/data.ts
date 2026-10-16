@@ -1,10 +1,13 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { HrmSalarySlipApi } from '#/api/hrm/salary/slip';
 import type { HrmSalarySlipSendRecordApi } from '#/api/hrm/salary/slip/send-record';
 
 import { formatDate } from '@vben/utils';
 
-export { formatHrmYearMonth } from '#/views/hrm/utils/format';
+import { formatHrmMoney, formatHrmYearMonth } from '#/views/hrm/utils/format';
+
+export { formatHrmYearMonth };
 export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
@@ -81,6 +84,53 @@ export function useGridColumns(): VxeTableGridOptions<HrmSalarySlipSendRecordApi
       width: 140,
       fixed: 'right',
       slots: { default: 'actions' },
+    },
+  ];
+}
+
+/** 工资条明细字段 */
+export function useSlipOptionGridColumns(): VxeTableGridOptions<HrmSalarySlipApi.SlipOption>['columns'] {
+  return [
+    { field: 'name', title: '项目', minWidth: 240, treeNode: true },
+    {
+      field: 'value',
+      title: '金额',
+      width: 150,
+      align: 'right',
+      formatter: ({ row }) =>
+        row.children?.length ? '-' : formatHrmMoney(row.value),
+    },
+  ];
+}
+
+/** 工资条发放员工字段 */
+export function useSendEmployeeGridColumns(): VxeTableGridOptions<HrmSalarySlipSendRecordApi.SendEmployee>['columns'] {
+  return [
+    { type: 'checkbox', width: 50, fixed: 'left' },
+    { field: 'employeeName', title: '员工', minWidth: 120, showOverflow: true },
+    { field: 'jobNumber', title: '工号', width: 110, showOverflow: true },
+    { field: 'deptName', title: '部门', minWidth: 130, showOverflow: true },
+    { field: 'postName', title: '岗位', minWidth: 130, showOverflow: true },
+    { field: 'mobile', title: '手机号', width: 130 },
+    {
+      field: 'sent',
+      title: '发送状态',
+      width: 100,
+      formatter: ({ cellValue }) => (cellValue ? '已发送' : '未发送'),
+    },
+    {
+      field: 'expectedPaySalary',
+      title: '应发工资',
+      width: 120,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
+    },
+    {
+      field: 'realPaySalary',
+      title: '实发工资',
+      width: 120,
+      align: 'right',
+      formatter: ({ cellValue }) => formatHrmMoney(cellValue),
     },
   ];
 }

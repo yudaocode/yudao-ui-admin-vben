@@ -42,7 +42,8 @@ const syncToSalary = computed({
   },
 });
 
-function handleResultTemplateChange(resultTemplateId?: number) {
+function handleResultTemplateChange() {
+  const resultTemplateId = model.value.resultTemplateId;
   const resultTemplate = props.resultTemplateList.find(
     (t) => t.id === resultTemplateId,
   );

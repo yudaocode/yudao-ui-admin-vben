@@ -8,7 +8,7 @@ import {
 } from '#/views/hrm/salary/utils/option';
 import { formatHrmMoney } from '#/views/hrm/utils/format';
 
-export { buildFooterMethod, useSearchFormSchema } from '../data';
+export { buildFooterMethod, useGridFormSchema } from '../data';
 
 /** 构建详情员工明细列 */
 export function buildDetailGridColumns(

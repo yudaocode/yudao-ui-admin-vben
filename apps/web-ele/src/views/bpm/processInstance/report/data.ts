@@ -29,7 +29,7 @@ export function useGridFormSchema(
       component: 'ApiSelect',
       componentProps: {
         placeholder: '请选择发起人',
-        allowClear: true,
+        clearable: true,
         api: getSimpleUserList,
         labelField: 'nickname',
         valueField: 'id',
@@ -41,7 +41,7 @@ export function useGridFormSchema(
       component: 'Input',
       componentProps: {
         placeholder: '请输入流程名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -50,7 +50,7 @@ export function useGridFormSchema(
       component: 'Select',
       componentProps: {
         placeholder: '请选择流程状态',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(
           DICT_TYPE.BPM_PROCESS_INSTANCE_STATUS,
           'number',
@@ -63,7 +63,7 @@ export function useGridFormSchema(
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -72,7 +72,7 @@ export function useGridFormSchema(
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -86,7 +86,7 @@ export function useGridFormSchema(
       component: 'Input',
       componentProps: {
         placeholder: `请输入${item.title}`,
-        allowClear: true,
+        clearable: true,
       },
     }));
 

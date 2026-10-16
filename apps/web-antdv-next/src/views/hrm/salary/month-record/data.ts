@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmSalaryOptionApi } from '#/api/hrm/salary/config/option';
 import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-record/employee';
 
-import { handleTree } from '@vben/utils';
+import { formatDateTime, handleTree } from '@vben/utils';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 import {
@@ -25,7 +25,7 @@ export function useDeptTreeSelectProps() {
 }
 
 /** 搜索表单 */
-export function useSearchFormSchema(): VbenFormSchema[] {
+export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       fieldName: 'employeeName',
@@ -109,6 +109,24 @@ export function buildGridColumns(
   ];
 }
 
+/** 在线编辑工资字段 */
+export function buildEditableGridColumns(
+  options: Array<Pick<HrmSalaryOptionApi.SalaryOption, 'code' | 'name'>>,
+): VxeTableGridOptions<HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord>['columns'] {
+  return [
+    { field: 'employeeName', fixed: 'left', title: '员工姓名', minWidth: 150 },
+    { field: 'jobNumber', fixed: 'left', title: '工号', width: 120 },
+    { field: 'deptName', title: '部门', minWidth: 140 },
+    { field: 'postName', title: '岗位', minWidth: 140 },
+    ...options.map((option) => ({
+      field: `option-${option.code}`,
+      title: option.name,
+      width: 150,
+      slots: { default: 'optionValue' },
+    })),
+  ];
+}
+
 /** 构建合计行 */
 export function buildFooterMethod(summaryMap: Record<number, number>) {
   return ({ columns }: { columns: Array<{ field?: string }> }) => {
@@ -124,4 +142,27 @@ export function buildFooterMethod(summaryMap: Record<number, number>) {
       }),
     ];
   };
+}
+/** 工资核算就绪员工字段 */
+export function usePayrollReadinessEmployeeGridColumns(): VxeTableGridOptions['columns'] {
+  return [
+    { field: 'employeeName', title: '员工姓名', minWidth: 150 },
+    { field: 'jobNumber', title: '工号', width: 120 },
+    { field: 'deptName', title: '部门', minWidth: 150 },
+    { field: 'postName', title: '岗位', minWidth: 150 },
+    {
+      field: 'status',
+      title: '员工状态',
+      width: 100,
+      align: 'center',
+      slots: { default: 'status' },
+    },
+    {
+      field: 'entryTime',
+      title: '入职日期',
+      width: 180,
+      formatter: ({ cellValue }) =>
+        cellValue ? formatDateTime(cellValue as number | string) : '-',
+    },
+  ];
 }

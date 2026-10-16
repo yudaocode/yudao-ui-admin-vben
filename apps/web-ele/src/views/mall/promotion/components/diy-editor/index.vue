@@ -55,7 +55,7 @@ const props = defineProps({
 
 const emits = defineEmits(['reset', 'save', 'update:modelValue']); // 工具栏操作
 
-const qrcode = useQRCode(props.previewUrl, {
+const qrcode = useQRCode(() => props.previewUrl, {
   errorCorrectionLevel: 'H',
   margin: 4,
 }); // 预览二维码

@@ -20,6 +20,10 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       fieldName: 'code',
       label: '频道编码',
+      dependencies: {
+        triggerFields: ['id'],
+        disabled: (values) => !!values.id,
+      },
       component: 'Input',
       componentProps: {
         placeholder: '如 system_notice',

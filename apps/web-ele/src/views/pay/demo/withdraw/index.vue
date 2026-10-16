@@ -2,8 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { erpPriceInputFormatter } from '@vben/utils';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { fenToYuan } from '@vben/utils';
 
 import { ElLoading, ElMessage, ElTag } from 'element-plus';
 
@@ -33,6 +33,11 @@ function handleCreate() {
 
 /** 处理转账操作 */
 async function handleTransfer(row: DemoWithdrawApi.Withdraw) {
+  try {
+    await confirm('确认发起转账？');
+  } catch {
+    return;
+  }
   const loadingInstance = ElLoading.service({
     text: '转账中，请稍后...',
   });
@@ -67,7 +72,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<DemoWithdrawApi.Withdraw>,
 });
@@ -106,7 +110,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <ElTag v-else-if="row.type === 3">钱包余额</ElTag>
       </template>
       <template #price="{ row }">
-        <span>￥{{ erpPriceInputFormatter(row.price) }}</span>
+        <span>￥{{ fenToYuan(row.price) }}</span>
       </template>
       <template #status="{ row }">
         <ElTag v-if="row.status === 0 && !row.payTransferId" type="warning">

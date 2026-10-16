@@ -121,6 +121,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           const data = await getPackagePage({
@@ -182,7 +183,10 @@ async function openModal(
     columns: useSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }
@@ -212,6 +216,7 @@ defineExpose({ open: openModal });
     destroy-on-close
     title="装箱单选择"
     width="80%"
+    :append-to-body="true"
     @close="closeModal"
   >
     <ElAlert

@@ -2,7 +2,7 @@
 import type { SystemDeptApi } from '#/api/system/dept';
 import type { SystemRoleApi } from '#/api/system/role';
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { Tree, useVbenModal } from '@vben/common-ui';
 import { SystemDataScopeEnum } from '@vben/constants';
@@ -25,7 +25,7 @@ const deptLoading = ref(false); // 加载部门列表
 const isAllSelected = ref(false); // 全选状态
 const isExpanded = ref(false); // 展开状态
 const isCheckStrictly = ref(true); // 父子联动状态
-const expandedKeys = ref<number[]>([]); // 展开的节点
+const deptTreeRef = ref<InstanceType<typeof Tree>>(); // 部门树引用
 
 const [Form, formApi] = useVbenForm({
   commonConfig: {
@@ -76,9 +76,11 @@ const [Modal, modalApi] = useVbenModal({
     try {
       // 加载部门列表
       await loadDeptTree();
-      handleExpandAll();
       // 设置表单值，一定要在加载树之后
       await formApi.setValues(await getRole(data.id));
+      isExpanded.value = true;
+      await nextTick();
+      deptTreeRef.value?.expandAll();
     } finally {
       modalApi.unlock();
     }
@@ -110,7 +112,11 @@ function handleSelectAll() {
 /** 展开/折叠所有节点 */
 function handleExpandAll() {
   isExpanded.value = !isExpanded.value;
-  expandedKeys.value = isExpanded.value ? getAllNodeIds(deptTree.value) : [];
+  if (isExpanded.value) {
+    deptTreeRef.value?.expandAll();
+  } else {
+    deptTreeRef.value?.collapseAll();
+  }
 }
 
 /** 切换父子联动 */
@@ -139,7 +145,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
           :tree-data="deptTree"
           multiple
           bordered
-          :default-expanded-keys="expandedKeys"
+          ref="deptTreeRef"
           v-bind="slotProps.componentProps"
           :check-strictly="!isCheckStrictly"
           value-field="id"

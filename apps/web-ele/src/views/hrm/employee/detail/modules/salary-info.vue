@@ -18,6 +18,7 @@ import { formatHrmDate, formatHrmMoney } from '#/views/hrm/utils/format';
 const props = defineProps<{ employeeId: number }>();
 const loading = ref(false);
 const salaryInfo = ref<HrmSalaryEmployeeInfoApi.SalaryEmployeeInfo>();
+
 onMounted(async () => {
   loading.value = true;
   try {
@@ -45,14 +46,20 @@ onMounted(async () => {
       </ElDescriptionsItem>
       <ElDescriptionsItem label="调整类型">
         <DictTag
-          v-if="salaryInfo.changeType !== null"
+          v-if="
+            salaryInfo.changeType !== null &&
+            salaryInfo.changeType !== undefined
+          "
           :type="DICT_TYPE.HRM_SALARY_CHANGE_TYPE"
           :value="salaryInfo.changeType"
         />
       </ElDescriptionsItem>
       <ElDescriptionsItem label="调整原因">
         <DictTag
-          v-if="salaryInfo.changeReason !== null"
+          v-if="
+            salaryInfo.changeReason !== null &&
+            salaryInfo.changeReason !== undefined
+          "
           :type="DICT_TYPE.HRM_SALARY_CHANGE_REASON"
           :value="salaryInfo.changeReason"
         />

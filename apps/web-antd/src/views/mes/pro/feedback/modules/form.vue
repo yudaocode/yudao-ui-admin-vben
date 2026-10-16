@@ -121,11 +121,11 @@ async function handleSave() {
       formType.value = 'update';
       formApi.setState({ schema: useFormSchema(formType.value, formApi) });
       await formApi.setFieldValue('id', id);
-      message.success($t('common.createSuccess'));
+      message.success($t('ui.actionMessage.operationSuccess'));
     } else {
       await updateFeedback(data);
       formData.value = { ...formData.value, ...data };
-      message.success($t('common.updateSuccess'));
+      message.success($t('ui.actionMessage.operationSuccess'));
     }
     // 刷新快照（已对齐数量并补 id），后续 submit 用于判断是否需要再保存
     originalSnapshot.value = JSON.stringify(data);

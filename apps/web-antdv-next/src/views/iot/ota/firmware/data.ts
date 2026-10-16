@@ -10,7 +10,9 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let productList: IotProductApi.Product[] = [];
-getSimpleProductList().then((data) => (productList = data));
+export async function loadProductList() {
+  productList = await getSimpleProductList();
+}
 
 /** 根据产品 ID 取产品名称 */
 export function getProductName(productId?: number): string {

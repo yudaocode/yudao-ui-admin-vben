@@ -2,23 +2,23 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MallOrderApi } from '#/api/mall/trade/order';
 
-import { h, ref } from 'vue';
+import { ref } from 'vue';
 
-import { Page, prompt, SummaryCard } from '@vben/common-ui';
-import { DeliveryTypeEnum } from '@vben/constants';
-import { $t } from '@vben/locales';
+import { Page, prompt, SummaryCard, useVbenModal } from '@vben/common-ui';
+import { DeliveryTypeEnum, TradeOrderStatusEnum } from '@vben/constants';
 import { fenToYuan } from '@vben/utils';
 
 import { Card, Image, Input, message, Tag } from 'ant-design-vue';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
+  getOrderByPickUpVerifyCode,
   getOrderPage,
   getOrderSummary,
-  pickUpOrderByVerifyCode,
 } from '#/api/mall/trade/order';
 
-import { useGridColumns, useGridFormSchema } from './data';
+import { loadPickUpStoreList, useGridColumns, useGridFormSchema } from './data';
+import PickUpForm from './modules/pick-up-form.vue';
 
 const summary = ref<MallOrderApi.OrderSummaryRespVO>();
 
@@ -27,46 +27,37 @@ function handleRefresh() {
   gridApi.query();
 }
 
-/** 获取订单统计数据 */
-async function getOrderSum() {
-  const query = await gridApi.formApi.getValues();
-  query.deliveryType = DeliveryTypeEnum.PICK_UP.type;
-  summary.value = await getOrderSummary(query);
-}
+const [PickUpFormModal, pickUpFormModalApi] = useVbenModal({
+  connectedComponent: PickUpForm,
+  destroyOnClose: true,
+});
 
 /** 核销订单 */
 async function handlePickup(pickUpVerifyCode?: string) {
-  // 如果没有传核销码，则弹窗输入
   if (!pickUpVerifyCode) {
-    await prompt({
-      component: () => {
-        return h(Input, {});
-      },
-      content: '请输入核销码',
-      title: '核销订单',
-      modelPropName: 'value',
-    }).then(async (val) => {
-      if (val) {
-        pickUpVerifyCode = val;
-      }
-    });
+    try {
+      pickUpVerifyCode = await prompt<string>({
+        component: Input,
+        componentProps: { placeholder: '请输入核销码' },
+        modelPropName: 'value',
+        content: '请输入核销码',
+        title: '核销订单',
+      });
+    } catch {
+      return;
+    }
   }
-  if (!pickUpVerifyCode) {
+  if (!pickUpVerifyCode) return;
+  const order = await getOrderByPickUpVerifyCode(pickUpVerifyCode);
+  if (order?.deliveryType !== DeliveryTypeEnum.PICK_UP.type) {
+    message.error('未查询到订单');
     return;
   }
-
-  // 执行核销
-  const hideLoading = message.loading({
-    content: '订单核销中 ...',
-    duration: 0,
-  });
-  try {
-    await pickUpOrderByVerifyCode(pickUpVerifyCode);
-    message.success($t('ui.actionMessage.operationSuccess'));
-    handleRefresh();
-  } finally {
-    hideLoading();
+  if (order.status !== TradeOrderStatusEnum.UNDELIVERED.status) {
+    message.error('订单不是待核销状态');
+    return;
   }
+  pickUpFormModalApi.setData({ order, pickUpVerifyCode }).open();
 }
 
 const port = ref('');
@@ -164,12 +155,34 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          await getOrderSum();
+          const stores = await loadPickUpStoreList();
+          if (stores.length === 0) {
+            summary.value = {
+              orderCount: 0,
+              orderPayPrice: 0,
+              afterSaleCount: 0,
+              afterSalePrice: 0,
+            };
+            message.warning('当前登录人没绑定任何自提点');
+            return { list: [], total: 0 };
+          }
+          const selectedStore =
+            stores.find((store) => store.id === formValues.pickUpStoreIds) ??
+            stores[0]!;
+          await gridApi.formApi.setFieldValue(
+            'pickUpStoreIds',
+            selectedStore.id,
+          );
+          const query = {
+            ...formValues,
+            deliveryType: DeliveryTypeEnum.PICK_UP.type,
+            pickUpStoreIds: [selectedStore.id],
+          };
+          summary.value = await getOrderSummary(query);
           return await getOrderPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            deliveryType: DeliveryTypeEnum.PICK_UP.type,
-            ...formValues,
+            ...query,
           });
         },
       },
@@ -188,6 +201,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <Page auto-content-height>
+    <PickUpFormModal @success="handleRefresh" />
     <Card class="mb-2">
       <div class="flex flex-row gap-4">
         <SummaryCard

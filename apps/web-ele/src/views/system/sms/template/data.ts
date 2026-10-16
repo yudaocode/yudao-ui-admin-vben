@@ -11,7 +11,11 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let channelList: SystemSmsChannelApi.SmsChannel[] = [];
-getSimpleSmsChannelList().then((data) => (channelList = data));
+
+/** 刷新列表关联数据 */
+export async function refreshGridRelatedData() {
+  channelList = await getSimpleSmsChannelList();
+}
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -136,15 +140,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'name',
-      label: '模板名称',
-      component: 'Input',
-      componentProps: {
-        clearable: true,
-        placeholder: '请输入模板名称',
-      },
-    },
-    {
       fieldName: 'channelId',
       label: '短信渠道',
       component: 'ApiSelect',
@@ -162,6 +157,24 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'content',
+      label: '模板内容',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入模板内容',
+        clearable: true,
+      },
+    },
+    {
+      fieldName: 'apiTemplateId',
+      label: '短信 API 的模板编号',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入短信 API 的模板编号',
         clearable: true,
       },
     },
@@ -203,6 +216,15 @@ export function useSendSmsFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
+    {
+      field: 'channelCode',
+      title: '渠道编码',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.SYSTEM_SMS_CHANNEL_CODE },
+      },
+    },
     { type: 'checkbox', width: 40 },
     {
       field: 'id',

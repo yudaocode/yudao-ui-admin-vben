@@ -103,8 +103,6 @@ export function getProductByKey(productKey: string) {
 }
 
 /** 同步产品物模型 TDengine 超级表结构 */
-export function syncProductPropertyTable(productId: number) {
-  return requestClient.post(
-    `/iot/product/sync-property-table?productId=${productId}`,
-  );
+export function syncProductPropertyTable(id: number) {
+  return requestClient.post(`/iot/product/sync-property-table?id=${id}`);
 }

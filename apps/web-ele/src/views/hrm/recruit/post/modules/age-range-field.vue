@@ -25,8 +25,20 @@ const emit = defineEmits<{
   'update:modelValue': [value: null | number | undefined];
 }>();
 
+/** 清空数值时统一提交 undefined，保留零值 */
+function toOptionalNumber(
+  value: null | number | string | undefined,
+): number | undefined {
+  if (value === null || value === undefined || value === '') {
+    return undefined;
+  }
+  return typeof value === 'number' ? value : Number(value);
+}
+
 /** 是否不限年龄：勾选后禁用范围输入，并清空已填年龄 */
-const ageUnlimited = () => !!props.values?.ageUnlimited;
+function ageUnlimited() {
+  return !!props.values?.ageUnlimited;
+}
 
 async function handleUnlimitedChange(checked: boolean | number | string) {
   const next = !!checked;
@@ -51,7 +63,9 @@ async function handleUnlimitedChange(checked: boolean | number | string) {
         :min="0"
         class="!w-0 flex-1"
         placeholder="最小年龄"
-        @update:model-value="(v) => emit('update:modelValue', v ?? undefined)"
+        @update:model-value="
+          (v) => emit('update:modelValue', toOptionalNumber(v))
+        "
       />
       <span class="text-muted-foreground shrink-0">至</span>
       <ElInputNumber
@@ -63,7 +77,7 @@ async function handleUnlimitedChange(checked: boolean | number | string) {
         class="!w-0 flex-1"
         placeholder="最大年龄"
         @update:model-value="
-          (v) => formApi?.setFieldValue('maxAge', v ?? undefined)
+          (v) => formApi?.setFieldValue('maxAge', toOptionalNumber(v))
         "
       />
       <ElCheckbox

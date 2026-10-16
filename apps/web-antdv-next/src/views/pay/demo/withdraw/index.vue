@@ -2,8 +2,8 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DemoWithdrawApi } from '#/api/pay/demo/withdraw';
 
-import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
-import { erpPriceInputFormatter } from '@vben/utils';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { fenToYuan } from '@vben/utils';
 
 import { message, Tag } from 'antdv-next';
 
@@ -33,6 +33,11 @@ function handleCreate() {
 
 /** 处理转账操作 */
 async function handleTransfer(row: DemoWithdrawApi.Withdraw) {
+  try {
+    await confirm('确认发起转账？');
+  } catch {
+    return;
+  }
   const hideLoading = message.loading({
     content: '转账中，请稍后...',
     duration: 0,
@@ -68,7 +73,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     toolbarConfig: {
       refresh: true,
-      search: true,
     },
   } as VxeTableGridOptions<DemoWithdrawApi.Withdraw>,
 });
@@ -107,17 +111,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
         <Tag v-else-if="row.type === 3">钱包余额</Tag>
       </template>
       <template #price="{ row }">
-        <span>￥{{ erpPriceInputFormatter(row.price) }}</span>
+        <span>￥{{ fenToYuan(row.price) }}</span>
       </template>
       <template #status="{ row }">
-        <Tag v-if="row.status === 0 && !row.payTransferId" type="warning">
+        <Tag v-if="row.status === 0 && !row.payTransferId" color="warning">
           等待转账
         </Tag>
-        <Tag v-else-if="row.status === 0 && row.payTransferId" type="info">
+        <Tag v-else-if="row.status === 0 && row.payTransferId" color="default">
           转账中
         </Tag>
-        <Tag v-else-if="row.status === 10" type="success"> 转账成功 </Tag>
-        <Tag v-else-if="row.status === 20" type="danger"> 转账失败 </Tag>
+        <Tag v-else-if="row.status === 10" color="success"> 转账成功 </Tag>
+        <Tag v-else-if="row.status === 20" color="error"> 转账失败 </Tag>
       </template>
       <template #actions="{ row }">
         <TableAction

@@ -54,7 +54,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 /** 列表的字段 */
 export function useGridColumns(): VxeTableGridOptions<DataSinkApi.DataSink>['columns'] {
   return [
-    { type: 'checkbox', width: 40 },
     {
       field: 'id',
       title: '目的编号',

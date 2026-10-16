@@ -59,6 +59,7 @@ const [Modal, modalApi] = useVbenModal({
 <template>
   <Modal title="试算平衡" class="w-[680px]">
     <ElResult
+      v-if="result"
       :icon="result?.balanced ? 'success' : 'warning'"
       :title="result?.balanced ? '期初余额试算平衡' : '期初余额试算不平衡'"
       :sub-title="

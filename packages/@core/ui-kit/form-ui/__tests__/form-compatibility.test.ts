@@ -58,6 +58,21 @@ describe('form api compatibility', () => {
     );
   });
 
+  it('ignores nullish values passed to setValues', async () => {
+    const formApi = new FormApi({
+      schema: [{ component: 'input', fieldName: 'name' }],
+    });
+    const form = { meta: {}, setValues: vi.fn(), values: {} } as any;
+    formApi.mount(form);
+
+    await expect(formApi.setValues(undefined as any)).resolves.toBeUndefined();
+    await expect(formApi.setValues(null as any)).resolves.toBeUndefined();
+    expect(form.setValues).not.toHaveBeenCalled();
+
+    await formApi.setValues({ name: 'Ada' });
+    expect(form.setValues).toHaveBeenCalledWith({ name: 'Ada' }, false);
+  });
+
   it('prefers the codec when deprecated transforms are also configured', async () => {
     const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const formApi = new FormApi<

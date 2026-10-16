@@ -124,7 +124,7 @@ async function handleQuit() {
     .getData()
     .find(
       (item) =>
-        item.id === userStore.userInfo?.id &&
+        item.userId === userStore.userInfo?.id &&
         item.level === PermissionLevelEnum.OWNER,
     );
   if (permission) {
@@ -134,7 +134,7 @@ async function handleQuit() {
 
   const userPermission = gridApi.grid
     .getData()
-    .find((item) => item.id === userStore.userInfo?.id);
+    .find((item) => item.userId === userStore.userInfo?.id);
   if (!userPermission) {
     ElMessage.warning('你不是团队成员！');
     return;
@@ -190,7 +190,7 @@ watch(
   (data) => {
     isPool.value = false;
     if (data.length > 0) {
-      isPool.value = data.some(
+      isPool.value = !data.some(
         (item) => item.level === PermissionLevelEnum.OWNER,
       );
       validateOwnerUser.value = false;
@@ -250,7 +250,7 @@ watch(
             {
               label: '退出团队',
               type: 'danger',
-              ifShow: !validateOwnerUser,
+              ifShow: !validateOwnerUser && gridData.length > 0,
               onClick: handleQuit,
             },
           ]"

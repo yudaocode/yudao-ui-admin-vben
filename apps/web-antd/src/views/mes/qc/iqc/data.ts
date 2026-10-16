@@ -58,6 +58,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '检验单编号',
       component: 'Input',
@@ -142,9 +143,9 @@ export function useFormSchema(
       },
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           placeholder: '请选择供应商',
         }),
       },
@@ -169,10 +170,10 @@ export function useFormSchema(
       },
       rules: 'required',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
           class: '!w-full',
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           min: 0,
           precision: 2,
           placeholder: '请输入本次接收数量',

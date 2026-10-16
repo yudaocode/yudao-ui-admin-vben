@@ -23,9 +23,11 @@ import {
 import { useGridColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-type ItemSkuRow = WmsItemSkuApi.ItemSku;
+type ItemSkuRow = WmsItemSkuApi.ItemSku & { rowKey: string };
 
 defineOptions({ name: 'WmsItem' });
+
+const categoryTreeRef = ref<InstanceType<typeof WmsItemCategoryTree>>();
 
 const currentRows = ref<ItemSkuRow[]>([]);
 
@@ -42,9 +44,12 @@ function handleRefresh() {
 /** 展开商品 SKU 列表 */
 function buildItemSkuRows(items: WmsItemApi.Item[]) {
   return items.flatMap((item) => {
-    const skus = item.skus?.length ? item.skus : [{}];
+    const skus: Partial<WmsItemSkuApi.ItemSku>[] = item.skus?.length
+      ? item.skus
+      : [{}];
     return skus.map((sku) => ({
       ...sku,
+      rowKey: sku.id === undefined ? `item-${item.id}` : `sku-${sku.id}`,
       itemId: item.id,
       itemCode: item.code,
       itemName: item.name,
@@ -84,7 +89,10 @@ async function handleDelete(row: ItemSkuRow) {
 
 /** 导出商品 */
 async function handleExport() {
-  const data = await exportItem(await gridApi.formApi.getValues());
+  const data = await exportItem({
+    ...(await gridApi.formApi.getValues()),
+    categoryId: searchCategoryId.value,
+  });
   downloadFileFromBlobPart({ fileName: '商品.xls', source: data });
 }
 
@@ -127,6 +135,12 @@ function hasValue(value: unknown) {
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
+    handleReset: async () => {
+      await gridApi.formApi.reset();
+      searchCategoryId.value = undefined;
+      categoryTreeRef.value?.reset();
+      await gridApi.formApi.submit();
+    },
     schema: useGridFormSchema(),
   },
   gridOptions: {
@@ -152,7 +166,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
     rowConfig: {
-      keyField: 'id',
+      keyField: 'rowKey',
       isHover: true,
     },
     spanMethod: handleSpanMethod,
@@ -177,7 +191,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
     <div class="flex h-full w-full">
       <Card class="mr-4 h-full w-1/6">
-        <WmsItemCategoryTree @node-click="handleCategoryNodeClick" />
+        <WmsItemCategoryTree
+          ref="categoryTreeRef"
+          @node-click="handleCategoryNodeClick"
+        />
       </Card>
       <div class="w-5/6">
         <Grid table-title="商品列表">

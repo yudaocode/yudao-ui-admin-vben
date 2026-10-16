@@ -1,33 +1,20 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS,
+  BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS,
+  CommonStatusEnum,
+  DICT_TYPE,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
 
-export const EVENT_EXECUTION_OPTIONS = [
-  {
-    label: '开始',
-    value: 'start',
-  },
-  {
-    label: '结束',
-    value: 'end',
-  },
-];
-
-export const EVENT_OPTIONS = [
-  { label: '创建', value: 'create' },
-  { label: '指派', value: 'assignment' },
-  { label: '完成', value: 'complete' },
-  { label: '删除', value: 'delete' },
-  { label: '更新', value: 'update' },
-  { label: '超时', value: 'timeout' },
-];
-
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
+  let prevValueType: string | undefined;
+
   return [
     {
       fieldName: 'id',
@@ -63,7 +50,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.BPM_PROCESS_LISTENER_TYPE, 'string'),
         placeholder: '请选择类型',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -72,19 +59,30 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '事件',
       component: 'Select',
       componentProps: {
-        options: EVENT_OPTIONS,
+        options: BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS,
         placeholder: '请选择事件',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
       dependencies: {
         triggerFields: ['type'],
-        trigger: (values) => (values.event = undefined),
+        trigger: (values, actions) => {
+          const options =
+            values.type === 'execution'
+              ? BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS
+              : BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS;
+          if (
+            values.event &&
+            !options.some((opt) => opt.value === values.event)
+          ) {
+            actions.setFieldValue('event', undefined);
+          }
+        },
         componentProps: (values) => ({
           options:
             values.type === 'execution'
-              ? EVENT_EXECUTION_OPTIONS
-              : EVENT_OPTIONS,
+              ? BPM_PROCESS_LISTENER_EXECUTION_EVENT_OPTIONS
+              : BPM_PROCESS_LISTENER_TASK_EVENT_OPTIONS,
         }),
       },
     },
@@ -98,7 +96,7 @@ export function useFormSchema(): VbenFormSchema[] {
           'string',
         ),
         placeholder: '请选择值类型',
-        allowClear: true,
+        clearable: true,
       },
       rules: 'required',
     },
@@ -109,7 +107,16 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       dependencies: {
         triggerFields: ['valueType'],
-        trigger: (values) => (values.value = undefined),
+        trigger: (values, actions) => {
+          if (
+            prevValueType &&
+            values.valueType &&
+            prevValueType !== values.valueType
+          ) {
+            actions.setFieldValue('value', undefined);
+          }
+          prevValueType = values.valueType;
+        },
         componentProps: (values) => ({
           placeholder:
             values.valueType === 'class' ? '请输入类路径' : '请输入表达式',
@@ -128,7 +135,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入名字',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -138,7 +145,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择类型',
         options: getDictOptions(DICT_TYPE.BPM_PROCESS_LISTENER_TYPE, 'string'),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

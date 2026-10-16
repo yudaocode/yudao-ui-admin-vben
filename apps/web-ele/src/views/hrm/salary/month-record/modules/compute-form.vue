@@ -59,7 +59,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (!isOpen) {
       currentRecord.value = undefined;
       payrollEmployeeCount.value = 0;
@@ -68,7 +68,19 @@ const [Modal, modalApi] = useVbenModal({
       attendanceFiles.value = [];
       cumulativeTaxFiles.value = [];
       additionalDeductionFiles.value = [];
+      return;
     }
+    const record =
+      modalApi.getData() as HrmSalaryMonthRecordApi.SalaryMonthRecord;
+    if (!record?.id) return;
+    currentRecord.value = record;
+    payrollEmployeeCount.value = record.employeeCount || 0;
+    syncInsuranceData.value = true;
+    syncAttendanceData.value = false;
+    attendanceFiles.value = [];
+    cumulativeTaxFiles.value = [];
+    additionalDeductionFiles.value = [];
+    await getPayrollEmployeeCount();
   },
   title: '核算工资表',
 });
@@ -115,20 +127,6 @@ async function downloadTemplate(
     source: data,
   });
 }
-
-function open(record: HrmSalaryMonthRecordApi.SalaryMonthRecord) {
-  currentRecord.value = record;
-  payrollEmployeeCount.value = record.employeeCount || 0;
-  attendanceFiles.value = [];
-  cumulativeTaxFiles.value = [];
-  additionalDeductionFiles.value = [];
-  syncInsuranceData.value = true;
-  syncAttendanceData.value = false;
-  modalApi.open();
-  getPayrollEmployeeCount();
-}
-
-defineExpose({ open });
 </script>
 
 <template>

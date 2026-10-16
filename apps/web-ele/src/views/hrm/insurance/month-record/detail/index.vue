@@ -6,7 +6,7 @@ import type { HrmInsuranceMonthEmployeeRecordApi } from '#/api/hrm/insurance/mon
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
 import {
@@ -33,7 +33,7 @@ import { formatHrmMoney } from '#/views/hrm/utils/format';
 import { useGridColumns, useGridFormSchema } from './data';
 import AddEmployeeForm from './modules/add-employee-form.vue';
 import BatchEmployeeRecordForm from './modules/batch-employee-record-form.vue';
-import EmployeeDetailDrawer from './modules/employee-detail-drawer.vue';
+import EmployeeDetailDrawerContent from './modules/employee-detail-drawer.vue';
 import EmployeeRecordForm from './modules/employee-record-form.vue';
 
 defineOptions({ name: 'HrmInsuranceMonthRecordDetail' });
@@ -46,6 +46,9 @@ const monthRecordId = Number(route.params.id);
 const recordLoading = ref(true);
 const monthRecord = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>({});
 const checkedIds = ref<number[]>([]);
+const selectedRows = ref<
+  HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord[]
+>([]);
 const activeStatus = ref<number>(HrmInsuranceEmployeeStatus.NORMAL);
 
 const editable = computed(
@@ -53,7 +56,7 @@ const editable = computed(
 );
 
 const stoppableSelectedIds = computed(() =>
-  (gridApi.grid?.getCheckboxRecords() || [])
+  selectedRows.value
     .filter(
       (row: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord) =>
         row.status === HrmInsuranceEmployeeStatus.NORMAL,
@@ -64,8 +67,6 @@ const stoppableSelectedIds = computed(() =>
     )
     .filter(Boolean),
 );
-
-const employeeDetailRef = ref<InstanceType<typeof EmployeeDetailDrawer>>();
 
 const [AddEmployeeModal, addEmployeeModalApi] = useVbenModal({
   connectedComponent: AddEmployeeForm,
@@ -79,6 +80,11 @@ const [EmployeeRecordModal, employeeRecordModalApi] = useVbenModal({
 
 const [BatchEmployeeRecordModal, batchEmployeeRecordModalApi] = useVbenModal({
   connectedComponent: BatchEmployeeRecordForm,
+  destroyOnClose: true,
+});
+
+const [EmployeeDetailDrawer, employeeDetailDrawerApi] = useVbenDrawer({
+  connectedComponent: EmployeeDetailDrawerContent,
   destroyOnClose: true,
 });
 
@@ -106,6 +112,12 @@ function handleRefresh() {
   gridApi.query();
 }
 
+function handleEditEmployee(
+  row: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord,
+) {
+  employeeRecordModalApi.setData(row).open();
+}
+
 async function refreshData() {
   await Promise.all([getMonthRecord(), gridApi.query()]);
 }
@@ -121,6 +133,7 @@ function handleRowCheckboxChange({
 }: {
   records: HrmInsuranceMonthEmployeeRecordApi.InsuranceMonthEmployeeRecord[];
 }) {
+  selectedRows.value = records;
   checkedIds.value = records.map((row) => row.id!).filter(Boolean);
 }
 
@@ -135,6 +148,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
+          selectedRows.value = [];
+          checkedIds.value = [];
           return await getInsuranceMonthEmployeeRecordPage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
@@ -169,10 +184,12 @@ async function handleStop(ids: number[]) {
       content: `确认停止选中的 ${ids.length} 名员工参保吗？`,
       title: '停止参保确认',
     });
-    await stopInsuranceMonthEmployeeRecordList({ ids });
-    ElMessage.success('停止参保成功');
-    await refreshData();
-  } catch {}
+  } catch {
+    return;
+  }
+  await stopInsuranceMonthEmployeeRecordList({ ids });
+  ElMessage.success('停止参保成功');
+  await refreshData();
 }
 
 async function init() {
@@ -286,7 +303,11 @@ watch(editable, (value) => {
         />
       </template>
       <template #employeeName="{ row }">
-        <ElButton link type="primary" @click="employeeDetailRef?.open(row.id)">
+        <ElButton
+          link
+          type="primary"
+          @click="employeeDetailDrawerApi.setData(row.id).open()"
+        >
           {{ row.employeeName || '-' }}
         </ElButton>
       </template>
@@ -295,10 +316,6 @@ watch(editable, (value) => {
     <AddEmployeeModal @success="refreshData" />
     <EmployeeRecordModal @success="refreshData" />
     <BatchEmployeeRecordModal @success="refreshData" />
-    <EmployeeDetailDrawer
-      ref="employeeDetailRef"
-      :editable="editable"
-      @edit="(row) => employeeRecordModalApi.setData(row).open()"
-    />
+    <EmployeeDetailDrawer :editable="editable" @edit="handleEditEmployee" />
   </Page>
 </template>

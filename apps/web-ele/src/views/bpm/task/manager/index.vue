@@ -76,7 +76,7 @@ const [Grid] = useVbenVxeGrid({
               type: 'primary',
               link: true,
               icon: ACTION_ICON.VIEW,
-              auth: ['bpm:task:query'],
+              auth: ['bpm:task:manager-query'],
               onClick: handleHistory.bind(null, row),
             },
           ]"

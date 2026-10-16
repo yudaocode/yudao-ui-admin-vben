@@ -96,13 +96,17 @@ function handleEdit() {
 
 /** 转移线索 */
 function handleTransfer() {
-  transferModalApi.setData({ id: customerId.value }).open();
+  transferModalApi
+    .setData({ id: customerId.value, bizType: BizTypeEnum.CRM_CUSTOMER })
+    .open();
 }
 
 /** 锁定客户 */
 async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
   try {
-    await confirm(`确定锁定客户【${customer.value.name}】吗？`);
+    await confirm(
+      `确定${lockStatus ? '锁定' : '解锁'}客户【${customer.value.name}】吗？`,
+    );
   } catch {
     return false;
   }
@@ -110,6 +114,7 @@ async function handleLock(lockStatus: boolean): Promise<boolean | undefined> {
   await lockCustomer(customerId.value, lockStatus);
   // 提示并返回成功
   message.success(lockStatus ? '锁定客户成功' : '解锁客户成功');
+  await loadCustomerDetail();
   return true;
 }
 
@@ -124,6 +129,7 @@ async function handleReceive(): Promise<boolean | undefined> {
   await receiveCustomer([customerId.value]);
   // 提示并返回成功
   message.success('领取客户成功');
+  await loadCustomerDetail();
   return true;
 }
 
@@ -143,6 +149,7 @@ async function handlePutPool(): Promise<boolean | undefined> {
   await putCustomerPool(customerId.value);
   // 提示并返回成功
   message.success('放入公海成功');
+  handleBack();
   return true;
 }
 
@@ -160,6 +167,7 @@ async function handleUpdateDealStatus(): Promise<boolean | undefined> {
   await updateCustomerDealStatus(customerId.value, dealStatus);
   // 提示并返回成功
   message.success('更新成交状态成功');
+  await loadCustomerDetail();
   return true;
 }
 
@@ -173,7 +181,7 @@ onMounted(() => {
 <template>
   <Page auto-content-height :title="customer?.name" :loading="loading">
     <FormModal @success="loadCustomerDetail" />
-    <TransferModal @success="loadCustomerDetail" />
+    <TransferModal @success="handleBack" />
     <DistributeModal @success="loadCustomerDetail" />
     <template #extra>
       <TableAction
@@ -262,7 +270,7 @@ onMounted(() => {
             ref="permissionListRef"
             :biz-id="customerId"
             :biz-type="BizTypeEnum.CRM_CUSTOMER"
-            :show-action="true"
+            :show-action="!permissionListRef?.isPool"
             @quit-team="handleBack"
           />
         </Tabs.TabPane>

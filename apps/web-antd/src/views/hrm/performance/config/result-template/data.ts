@@ -70,3 +70,34 @@ export function useFormSchema(): VbenFormSchema[] {
     },
   ];
 }
+
+/** 结果等级明细列 */
+export function useLevelGridColumns(): VxeTableGridOptions<HrmPerformanceResultTemplateApi.ResultLevel>['columns'] {
+  return [
+    { field: 'name', title: '等级', minWidth: 180, slots: { default: 'name' } },
+    {
+      field: 'minScore',
+      title: '最低分数',
+      minWidth: 140,
+      slots: { default: 'minScore' },
+    },
+    {
+      field: 'maxScore',
+      title: '最高分数',
+      minWidth: 140,
+      slots: { default: 'maxScore' },
+    },
+    {
+      field: 'coefficient',
+      title: '绩效系数',
+      minWidth: 140,
+      slots: { default: 'coefficient' },
+    },
+    {
+      title: '操作',
+      width: 80,
+      align: 'center',
+      slots: { default: 'actions' },
+    },
+  ];
+}

@@ -32,7 +32,6 @@ const [Grid] = useVbenVxeGrid({
   },
   gridOptions: {
     columns: useEmployeeGridColumns(),
-    height: 'auto',
     keepSource: true,
     proxyConfig: {
       ajax: {

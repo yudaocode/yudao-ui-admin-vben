@@ -7,12 +7,7 @@ import { useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 
-import {
-  ElTabPane,
-  ElMessage as message,
-  ElTabs as Tabs,
-  ElTag as Tag,
-} from 'element-plus';
+import { ElMessage, ElTabPane, ElTabs, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
@@ -88,14 +83,14 @@ async function handleAction(
     await startPerformancePlanInterview(plan.id!);
   else if (action === 'archive') await archivePerformancePlan(plan.id!);
   else await terminatePerformancePlan(plan.id!);
-  message.success($t('ui.actionMessage.operationSuccess'));
+  ElMessage.success($t('ui.actionMessage.operationSuccess'));
   handleRefresh();
 }
 
 async function handleDelete(plan: HrmPerformancePlanApi.PerformancePlan) {
   await confirm(`确认删除绩效计划"${plan.name}"？`);
   await deletePerformancePlan(plan.id!);
-  message.success($t('ui.actionMessage.deleteSuccess'));
+  ElMessage.success($t('ui.actionMessage.deleteSuccess'));
   handleRefresh();
 }
 
@@ -218,6 +213,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
     },
     rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { refresh: true, search: true },
   } as VxeTableGridOptions<HrmPerformancePlanApi.PerformancePlan>,
 });
 
@@ -240,7 +236,7 @@ onMounted(() => loadStatusCount());
     <Grid class="performance-plan-grid">
       <template #toolbar-actions>
         <div class="performance-plan-status-tabs">
-          <Tabs
+          <ElTabs
             v-model="activeStatus"
             class="w-full"
             @tab-change="handleStatusChange"
@@ -251,7 +247,7 @@ onMounted(() => loadStatusCount());
               :label="`${tab.label}（${tab.count}）`"
               :name="tab.value"
             />
-          </Tabs>
+          </ElTabs>
         </div>
       </template>
       <template #toolbar-tools>
@@ -274,9 +270,9 @@ onMounted(() => loadStatusCount());
       </template>
       <template #stageCount="{ row }">
         <div v-if="getStageCountList(row).length" class="flex flex-wrap gap-1">
-          <Tag v-for="item in getStageCountList(row)" :key="item.stageType">
+          <ElTag v-for="item in getStageCountList(row)" :key="item.stageType">
             {{ formatStageCountLabel(item.stageType, item.count) }}
-          </Tag>
+          </ElTag>
         </div>
         <span v-else>-</span>
       </template>

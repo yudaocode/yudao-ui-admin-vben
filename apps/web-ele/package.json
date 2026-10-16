@@ -60,6 +60,7 @@
     "highlight.js": "catalog:",
     "livekit-client": "catalog:",
     "pinia": "catalog:",
+    "sortablejs": "catalog:",
     "steady-xml": "catalog:",
     "tinymce": "catalog:",
     "tyme4ts": "catalog:",
@@ -72,6 +73,7 @@
     "vuedraggable": "catalog:"
   },
   "devDependencies": {
+    "@types/sortablejs": "catalog:",
     "unplugin-element-plus": "catalog:"
   }
 }

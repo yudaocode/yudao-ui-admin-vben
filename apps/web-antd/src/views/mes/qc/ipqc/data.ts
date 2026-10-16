@@ -79,6 +79,7 @@ export function useFormSchema(
       },
     },
     {
+      formItemClass: 'col-span-full',
       fieldName: 'code',
       label: '检验单编号',
       component: 'Input',
@@ -161,9 +162,9 @@ export function useFormSchema(
       },
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           placeholder: '请选择生产工单',
           status: MesProWorkOrderStatusEnum.CONFIRMED,
           onChange: () => formApi?.setFieldValue('taskId', undefined),
@@ -179,9 +180,9 @@ export function useFormSchema(
       },
       rules: 'selectRequired',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           placeholder: '请选择工位',
         }),
       },
@@ -195,9 +196,9 @@ export function useFormSchema(
         statuses: [MesProTaskStatusEnum.PREPARE],
       },
       dependencies: {
-        triggerFields: ['sourceDocId', 'workOrderId', 'workstationId'],
+        triggerFields: ['id', 'sourceDocId', 'workOrderId', 'workstationId'],
         componentProps: (values) => ({
-          disabled: !!values.sourceDocId || !values.workOrderId,
+          disabled: (!values.id && !!values.sourceDocId) || !values.workOrderId,
           placeholder: '请选择生产任务',
           statuses: [MesProTaskStatusEnum.PREPARE],
           workOrderId: values.workOrderId,
@@ -217,10 +218,10 @@ export function useFormSchema(
       },
       rules: 'required',
       dependencies: {
-        triggerFields: ['sourceDocId'],
+        triggerFields: ['id', 'sourceDocId'],
         componentProps: (values) => ({
           class: '!w-full',
-          disabled: !!values.sourceDocId,
+          disabled: !values.id && !!values.sourceDocId,
           min: 0,
           placeholder: '请输入检测数量',
           precision: 2,

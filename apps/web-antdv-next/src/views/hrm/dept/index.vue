@@ -78,7 +78,7 @@ const [Grid] = useVbenVxeGrid({
       class="mb-4 shrink-0"
       :closable="false"
       show-icon
-      message="人数格式为：直属人数（包含下级部门人数）"
+      title="人数格式为：直属人数（包含下级部门人数）"
       type="info"
     />
     <Grid class="min-h-0 flex-1" table-title="组织列表">

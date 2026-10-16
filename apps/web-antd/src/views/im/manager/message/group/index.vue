@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ImManagerGroupMessageApi } from '#/api/im/manager/message/group';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -33,7 +33,7 @@ function handleDetail(row: ImManagerGroupMessageApi.GroupMessage) {
   detailRef.value?.open(row);
 }
 
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     schema: useGroupGridFormSchema(),
   },
@@ -42,14 +42,12 @@ const [Grid] = useVbenVxeGrid({
     height: 'auto',
     keepSource: true,
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getManagerGroupMessagePage({
             pageNo: page.currentPage,
             pageSize: page.pageSize,
-            groupId: route.query.groupId
-              ? Number(route.query.groupId)
-              : undefined,
             ...formValues,
           });
         },
@@ -64,6 +62,13 @@ const [Grid] = useVbenVxeGrid({
       search: true,
     },
   } as VxeTableGridOptions<ImManagerGroupMessageApi.GroupMessage>,
+});
+
+onMounted(async () => {
+  await gridApi.formApi.setValues({
+    groupId: route.query.groupId ? Number(route.query.groupId) : undefined,
+  });
+  await gridApi.formApi.submit();
 });
 </script>
 

@@ -109,6 +109,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       trigger: 'row',
     },
     proxyConfig: {
+      autoLoad: false,
       ajax: {
         query: async ({ page }, formValues) => {
           return await getCardPage({
@@ -160,7 +161,10 @@ async function openModal(
     columns: useCardSelectGridColumns(multiple.value),
   });
   await resetQueryState();
-  await gridApi.query();
+  await nextTick();
+  const formValues = await gridApi.formApi.getValues();
+  gridApi.formApi.setLatestSubmissionValues(formValues);
+  await gridApi.reload(formValues);
   await nextTick();
   await applyPreSelection();
 }
@@ -185,7 +189,12 @@ defineExpose({ open: openModal });
 </script>
 
 <template>
-  <ElDialog v-model="open" title="流转卡选择" width="70%">
+  <ElDialog
+    v-model="open"
+    title="流转卡选择"
+    width="70%"
+    :append-to-body="true"
+  >
     <Grid table-title="流转卡列表" />
     <template #footer>
       <ElButton @click="closeModal">取消</ElButton>

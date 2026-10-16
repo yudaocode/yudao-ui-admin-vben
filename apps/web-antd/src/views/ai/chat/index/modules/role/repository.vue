@@ -202,7 +202,7 @@ onMounted(async () => {
         </div>
         <!-- 标签页内容 -->
         <Tabs
-          v-model:value="activeTab"
+          v-model:active-key="activeTab"
           class="relative h-full p-4"
           @tab-click="handleTabsClick"
         >

@@ -46,8 +46,10 @@ const [Form, formApi] = useVbenForm({
 
 /** 更新入库单项 */
 function handleUpdateItems(items: ErpStockInApi.StockInItem[]) {
-  formData.value = modalApi.getData() as ErpStockInApi.StockIn;
-  formData.value.items = items;
+  formData.value = {
+    ...formData.value,
+    items,
+  } as ErpStockInApi.StockIn;
   formApi.setValues({
     items,
   });

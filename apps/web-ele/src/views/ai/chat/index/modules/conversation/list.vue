@@ -278,6 +278,7 @@ const handleRoleRepository = async () => {
 
 /** 监听选中的对话 */
 const { activeId } = toRefs(props);
+
 watch(activeId, async (newValue) => {
   activeConversationId.value = newValue;
 });

@@ -20,7 +20,10 @@ import { convertRecruitCandidateToEmployee } from '#/api/hrm/recruit/candidate';
 import { $t } from '#/locales';
 import {
   HRM_EMPLOYEE_NO_PROBATION_MONTHS,
+  HRM_EMPLOYEE_NON_FORMAL_STATUSES,
   HrmEmployeeEntryStatus,
+  HrmEmployeeStatus,
+  HrmEmployeeType,
 } from '#/views/hrm/utils/constants';
 import { UserSelect } from '#/views/system/user/components';
 
@@ -41,6 +44,7 @@ const createFieldVisibleMap = ref<Record<number, Set<string>>>({});
 const leaderEmployeeId = ref<number>();
 const userId = ref<number>();
 const candidateId = ref<number>();
+const employeeId = ref<number>(); // 员工编号
 
 const modalTitle = computed(() => {
   if (formType.value === 'confirm') return '确认入职';
@@ -68,7 +72,7 @@ const entrySchema = computed(() =>
 );
 
 const [Form, formApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
   schema: [],
   showDefaultActions: false,
@@ -76,8 +80,13 @@ const [Form, formApi] = useVbenForm({
 });
 
 const [EntryForm, entryFormApi] = useVbenForm({
-  commonConfig: { labelWidth: 112, componentProps: { class: 'w-full' } },
+  commonConfig: { labelWidth: 'auto', componentProps: { class: 'w-full' } },
   layout: 'horizontal',
+  async handleValuesChange(values, fieldsChanged) {
+    if (fieldsChanged.includes('type') && formType.value !== 'update') {
+      await handleTypeChange(values as HrmEmployeeApi.Employee);
+    }
+  },
   schema: [],
   showDefaultActions: false,
   wrapperClass: 'grid-cols-1 md:grid-cols-2',
@@ -86,9 +95,38 @@ const [EntryForm, entryFormApi] = useVbenForm({
 watch(personalSchema, (schema) => formApi.setState({ schema }), {
   immediate: true,
 });
+
 watch(entrySchema, (schema) => entryFormApi.setState({ schema }), {
   immediate: true,
 });
+
+/** 切换聘用形式时清理互斥字段 */
+async function handleTypeChange(values: HrmEmployeeApi.Employee) {
+  if (values.type === HrmEmployeeType.FORMAL) {
+    if (values.probation === null || values.probation === undefined) {
+      await entryFormApi.setFieldValue(
+        'probation',
+        HRM_EMPLOYEE_NO_PROBATION_MONTHS,
+      );
+    }
+    if (
+      values.status !== HrmEmployeeStatus.REGULAR &&
+      values.status !== HrmEmployeeStatus.PROBATION
+    ) {
+      await entryFormApi.setFieldValue('status', undefined);
+    }
+    return;
+  }
+  await entryFormApi.setFieldValue('probation', undefined);
+  await entryFormApi.setFieldValue('regularTime', undefined);
+  if (
+    !(HRM_EMPLOYEE_NON_FORMAL_STATUSES as readonly number[]).includes(
+      values.status!,
+    )
+  ) {
+    await entryFormApi.setFieldValue('status', HrmEmployeeStatus.INTERN);
+  }
+}
 
 async function loadCreateFieldConfig() {
   const [activeFields, pendingEntryFields] = await Promise.all([
@@ -145,6 +183,7 @@ const [Modal, modalApi] = useVbenModal({
         leaderEmployeeId: leaderEmployeeId.value,
         userId: userId.value,
         candidateId: candidateId.value,
+        id: employeeId.value,
       } as HrmEmployeeApi.Employee;
       const submitData = buildSubmitData(values);
       if (formType.value === 'create') {
@@ -191,6 +230,7 @@ const [Modal, modalApi] = useVbenModal({
     leaderEmployeeId.value = undefined;
     userId.value = undefined;
     candidateId.value = undefined;
+    employeeId.value = undefined;
     modalApi.lock();
     try {
       if (formType.value !== 'update') {
@@ -198,6 +238,7 @@ const [Modal, modalApi] = useVbenModal({
       }
       if (data?.id) {
         const employee = await getEmployee(data.id);
+        employeeId.value = employee.id ?? data.id;
         await formApi.setValues(employee);
         await entryFormApi.setValues(employee);
         leaderEmployeeId.value = employee.leaderEmployeeId;

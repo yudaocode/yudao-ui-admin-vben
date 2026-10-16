@@ -75,6 +75,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
+      // 是否需要设置访问租户；该配置仅供前端请求拦截器使用，不作为请求头发送
+      const isVisitTenant = config.headers.get('isVisitTenant') !== false;
+      config.headers.delete('isVisitTenant');
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
@@ -83,9 +86,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
         ? accessStore.tenantId
         : undefined;
       // 只有登录时，才设置 visit-tenant-id 访问租户
-      config.headers['visit-tenant-id'] = tenantEnable
-        ? accessStore.visitTenantId
-        : undefined;
+      config.headers['visit-tenant-id'] =
+        tenantEnable && isVisitTenant ? accessStore.visitTenantId : undefined;
 
       // 是否 API 加密
       if ((config.headers || {}).isEncrypt) {
@@ -201,6 +203,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
         responseData?.error ?? responseData?.message ?? responseData.msg ?? '';
       // add by 芋艿：特殊：避免 401 “账号未登录”，重复提示。因为，此时会跳转到登录界面，只需提示一次！！！
       if (error?.data?.code === 401) {
+        return;
+      }
+      if (error?.data?.code === 901 || responseData.code === 901) {
+        message.error(
+          `${errorMessage || msg}，参考 https://doc.iocoder.cn/ 教程搭建本地环境`,
+        );
         return;
       }
       // 如果没有错误信息，则会根据状态码进行提示

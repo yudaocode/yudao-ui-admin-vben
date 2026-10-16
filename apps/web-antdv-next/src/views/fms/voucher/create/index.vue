@@ -22,7 +22,7 @@ import {
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
-import { confirm, Page, useVbenModal } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
@@ -221,6 +221,7 @@ const creatorUserName = computed(
 ); // 制单人名称
 
 watch(accountSetId, () => init());
+
 watch(
   () => [route.query.id, route.query.copyFrom],
   () => init(),
@@ -1059,7 +1060,9 @@ function handlePageShortcut(event: KeyboardEvent) {
     event.isComposing ||
     event.repeat ||
     loading.value ||
-    (event.target as HTMLElement | null)?.closest('.ant-modal')
+    (event.target as HTMLElement | null)?.closest(
+      '.ant-modal, [role="dialog"], [role="alertdialog"]',
+    )
   ) {
     return;
   }
@@ -1113,13 +1116,22 @@ onMounted(() => {
   init();
   addPageShortcutListener();
 });
+
 onActivated(addPageShortcutListener);
+
 onDeactivated(removePageShortcutListener);
+
 onBeforeUnmount(removePageShortcutListener);
 </script>
 
 <template>
   <Page>
+    <template #doc>
+      <DocAlert
+        title="【凭证】凭证管理"
+        url="https://doc.iocoder.cn/fms/voucher/"
+      />
+    </template>
     <!-- 凭证操作 -->
     <div class="mb-4 flex items-center justify-between rounded-md bg-card p-4">
       <div class="flex items-center gap-2">

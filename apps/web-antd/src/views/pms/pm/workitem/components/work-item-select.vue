@@ -1,0 +1,88 @@
+<script lang="ts" setup>
+import type { PmsWorkItemApi } from '#/api/pms/pm/workitem';
+
+import { ref, watch } from 'vue';
+
+import { getAllPageItems } from '@vben/utils';
+
+import { Select } from 'ant-design-vue';
+
+import { getWorkItemPage } from '#/api/pms/pm/workitem';
+
+defineOptions({ name: 'PmsWorkItemSelect' });
+
+const props = withDefaults(
+  defineProps<{
+    allowClear?: boolean;
+    disabled?: boolean;
+    excludeId?: number;
+    modelValue?: number;
+    placeholder?: string;
+    projectId: number;
+    type: number;
+  }>(),
+  {
+    allowClear: true,
+    disabled: false,
+    excludeId: undefined,
+    modelValue: undefined,
+    placeholder: '请选择工作项',
+  },
+);
+
+const emit = defineEmits(['update:modelValue']);
+
+const loading = ref(false); // 选项加载中
+const workItemList = ref<PmsWorkItemApi.WorkItem[]>([]); // 工作项选项
+
+/** 查询工作项选项 */
+async function getWorkItemList() {
+  if (!props.projectId || props.type === undefined) {
+    workItemList.value = [];
+    return;
+  }
+  loading.value = true;
+  try {
+    const list = await getAllPageItems<PmsWorkItemApi.WorkItem>(
+      (pageNo, pageSize) =>
+        getWorkItemPage({
+          pageNo,
+          pageSize,
+          projectId: props.projectId,
+          type: props.type,
+        }),
+    );
+    workItemList.value = list.filter(
+      (workItem) => workItem.id !== props.excludeId,
+    );
+  } finally {
+    loading.value = false;
+  }
+}
+
+watch(() => [props.projectId, props.type, props.excludeId], getWorkItemList, {
+  immediate: true,
+});
+</script>
+
+<template>
+  <Select
+    :allow-clear="allowClear"
+    :disabled="disabled"
+    :loading="loading"
+    :options="
+      workItemList
+        .filter((workItem) => workItem.id !== undefined)
+        .map((workItem) => ({
+          label: `#${workItem.serialNumber} ${workItem.name}`,
+          value: workItem.id!,
+        }))
+    "
+    :placeholder="placeholder"
+    :value="modelValue"
+    class="w-full"
+    option-filter-prop="label"
+    show-search
+    @update:value="emit('update:modelValue', $event)"
+  />
+</template>

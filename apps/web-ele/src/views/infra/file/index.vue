@@ -149,8 +149,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
         />
       </template>
       <template #file-content="{ row }">
-        <ElImage v-if="row.type && row.type.includes('image')" :src="row.url" />
-        <ElButton type="primary" link @click="() => openWindow(row.url!)">
+        <ElImage
+          v-if="row.type && row.type.includes('image')"
+          :src="row.url"
+          :preview-src-list="row.url ? [row.url] : []"
+          preview-teleported
+        />
+        <ElButton
+          v-else
+          type="primary"
+          link
+          @click="() => openWindow(row.url!)"
+        >
           {{ row.type && row.type.includes('pdf') ? '预览' : '下载' }}
         </ElButton>
       </template>

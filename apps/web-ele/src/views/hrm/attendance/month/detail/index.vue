@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics';
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
@@ -18,11 +19,10 @@ import {
   ElRadioButton,
   ElRadioGroup,
   ElSelect,
-  ElTable,
-  ElTableColumn,
   ElTag,
 } from 'element-plus';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getAttendanceMonthDetail } from '#/api/hrm/attendance/statistics';
 import { DictTag } from '#/components/dict-tag';
 import { HRM_WEEK_OPTIONS } from '#/views/hrm/utils/constants';
@@ -37,6 +37,7 @@ import {
   dailyStatusOptions,
   getAttendanceResultTagType,
   isDailyDetailVisible,
+  useLeaveGridColumns,
 } from './data';
 
 defineOptions({ name: 'HrmAttendanceMonthDetail' });
@@ -68,6 +69,17 @@ const filteredLeaveList = computed(() =>
   ),
 );
 
+const [LeaveGrid, leaveGridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useLeaveGridColumns(),
+    minHeight: 180,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'id', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<any>,
+});
+
 async function getDetail() {
   if (!employeeId.value || !dayjs(`${yearMonth.value}-01`).isValid()) {
     return;
@@ -85,7 +97,17 @@ async function getDetail() {
 }
 
 onMounted(getDetail);
+
 watch([employeeId, year, month], getDetail);
+
+watch(
+  filteredLeaveList,
+  async (rows) => {
+    await nextTick();
+    await leaveGridApi.grid.reloadData(rows);
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -267,37 +289,21 @@ watch([employeeId, year, month], getDetail);
             />
           </ElSelect>
         </div>
-        <ElTable :data="filteredLeaveList" row-key="id" size="small">
-          <ElTableColumn label="类型" prop="type" width="120">
-            <template #default="{ row }">
-              <DictTag
-                :type="DICT_TYPE.HRM_ATTENDANCE_LEAVE_TYPE"
-                :value="row.type"
-              />
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="开始时间" prop="startTime" width="180">
-            <template #default="{ row }">
-              {{ formatHrmDateTime(row.startTime) }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="结束时间" prop="endTime" width="180">
-            <template #default="{ row }">
-              {{ formatHrmDateTime(row.endTime) }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn label="时长" prop="day" width="100">
-            <template #default="{ row }">
-              {{ formatHrmDays(row.day) }} 天
-            </template>
-          </ElTableColumn>
-          <ElTableColumn
-            label="事由"
-            min-width="180"
-            prop="reason"
-            show-overflow-tooltip
-          />
-        </ElTable>
+        <LeaveGrid class="w-full">
+          <template #type="{ row }">
+            <DictTag
+              :type="DICT_TYPE.HRM_ATTENDANCE_LEAVE_TYPE"
+              :value="row.type"
+            />
+          </template>
+          <template #startTime="{ row }">
+            {{ formatHrmDateTime(row.startTime) }}
+          </template>
+          <template #endTime="{ row }">
+            {{ formatHrmDateTime(row.endTime) }}
+          </template>
+          <template #day="{ row }"> {{ formatHrmDays(row.day) }} 天 </template>
+        </LeaveGrid>
       </ElCard>
     </div>
   </Page>

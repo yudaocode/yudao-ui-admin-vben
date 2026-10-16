@@ -75,6 +75,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
     rowConfig: { keyField: 'id', isHover: true },
     checkboxConfig: { highlight: true },
+    toolbarConfig: { refresh: true, search: true },
   } as VxeTableGridOptions<HrmPerformanceResultTemplateApi.PerformanceResultTemplate>,
   gridEvents: {
     checkboxAll: ({

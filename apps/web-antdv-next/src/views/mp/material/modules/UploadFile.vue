@@ -3,7 +3,7 @@ import type { UploadProps } from 'antdv-next';
 
 import type { UploadData } from './upload';
 
-import { inject, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
@@ -17,17 +17,17 @@ import {
   UploadType,
 } from './upload';
 
-const props = defineProps<{ type: UploadType }>();
+const props = defineProps<{
+  accountId: number;
+  type: UploadType;
+}>();
 
 const emit = defineEmits<{
   uploaded: [];
 }>();
 
-const accountId = inject<number>('accountId');
-
 const fileList = ref<any[]>([]);
 const uploadData: UploadData = reactive({
-  accountId: accountId!,
   introduction: '',
   title: '',
   type: props.type,
@@ -46,20 +46,21 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
   formData.append('type', uploadData.type);
   formData.append('title', uploadData.title);
   formData.append('introduction', uploadData.introduction);
-  formData.append('accountId', String(uploadData.accountId));
+  formData.append('accountId', String(props.accountId));
 
   try {
     const response = await fetch(UPLOAD_URL, {
       body: formData,
-      headers: HEADERS,
+      headers: HEADERS.value,
       method: 'POST',
     });
 
     const res = await response.json();
 
-    if (res.code !== 0) {
-      message.error(`上传出错：${res.msg}`);
-      onError?.(new Error(res.msg));
+    if (res?.code !== 0) {
+      fileList.value = [];
+      message.error(`上传出错：${res?.msg || '上传失败'}`);
+      onError?.(new Error(res?.msg || '上传失败'));
       return;
     }
 
@@ -72,7 +73,8 @@ const customRequest: UploadProps['customRequest'] = async function (options) {
     onSuccess?.(res);
     emit('uploaded');
   } catch (error: any) {
-    message.error(`上传失败: ${error.message}`);
+    fileList.value = [];
+    message.error(`上传失败: ${error?.message || '请重试'}`);
     onError?.(error);
   }
 };

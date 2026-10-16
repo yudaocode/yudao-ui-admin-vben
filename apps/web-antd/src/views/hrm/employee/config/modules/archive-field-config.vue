@@ -1,26 +1,41 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmEmployeeConfigApi } from '#/api/hrm/employee/config';
 
 import { onMounted, ref } from 'vue';
 
-import { message, Switch, Table } from 'ant-design-vue';
+import { message, Switch } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   getEmployeeArchiveFieldConfigList,
   saveEmployeeArchiveFieldConfig,
 } from '#/api/hrm/employee/config';
 
+import { useArchiveFieldGridColumns } from '../data';
+
 defineOptions({ name: 'HrmEmployeeArchiveFieldConfig' });
 
-const loading = ref(false);
 const list = ref<HrmEmployeeConfigApi.FieldConfig[]>([]);
 
+const [Grid, gridApi] = useVbenVxeGrid({
+  gridOptions: {
+    border: true,
+    columns: useArchiveFieldGridColumns(),
+    minHeight: 240,
+    pagerConfig: { enabled: false },
+    rowConfig: { keyField: 'name', isHover: true },
+    toolbarConfig: { enabled: false },
+  } as VxeTableGridOptions<HrmEmployeeConfigApi.FieldConfig>,
+});
+
 async function getList() {
-  loading.value = true;
+  gridApi.setLoading(true);
   try {
     list.value = await getEmployeeArchiveFieldConfigList();
+    await gridApi.grid.reloadData(list.value);
   } finally {
-    loading.value = false;
+    gridApi.setLoading(false);
   }
 }
 
@@ -45,35 +60,25 @@ async function submitForm() {
 }
 
 onMounted(getList);
+
 defineExpose({ submitForm });
 </script>
 
 <template>
-  <Table :data-source="list" :loading="loading" :pagination="false" bordered>
-    <Table.Column data-index="groupName" title="字段分组" width="180" />
-    <Table.Column data-index="title" title="字段名称" />
-    <Table.Column key="visible" title="员工是否可见" align="center" width="160">
-      <template #default="{ record }">
-        <Switch
-          v-model:checked="record.visible"
-          :disabled="record.visibleLocked"
-          @change="handleVisibleChange(record)"
-        />
-      </template>
-    </Table.Column>
-    <Table.Column
-      key="editable"
-      title="员工是否可编辑"
-      align="center"
-      width="160"
-    >
-      <template #default="{ record }">
-        <Switch
-          v-model:checked="record.editable"
-          :disabled="!record.visible || record.editableLocked"
-          @change="handleEditableChange(record)"
-        />
-      </template>
-    </Table.Column>
-  </Table>
+  <Grid class="w-full">
+    <template #visible="{ row }">
+      <Switch
+        v-model:checked="row.visible"
+        :disabled="row.visibleLocked"
+        @change="handleVisibleChange(row)"
+      />
+    </template>
+    <template #editable="{ row }">
+      <Switch
+        v-model:checked="row.editable"
+        :disabled="!row.visible || row.editableLocked"
+        @change="handleEditableChange(row)"
+      />
+    </template>
+  </Grid>
 </template>

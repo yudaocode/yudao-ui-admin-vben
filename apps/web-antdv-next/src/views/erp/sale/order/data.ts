@@ -300,7 +300,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
-      fieldName: 'supplierId',
+      fieldName: 'customerId',
       label: '客户',
       component: 'ApiSelect',
       componentProps: {

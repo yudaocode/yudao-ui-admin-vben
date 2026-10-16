@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       defaultValue: userStore.userInfo?.id,
     },
@@ -57,22 +57,24 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '客户名称',
       component: 'ApiSelect',
       rules: 'required',
-      componentProps: (_values, form) => ({
+      componentProps: {
         api: getCustomerSimpleList,
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        onChange: () => {
-          form.setFieldValue('contractId', undefined);
-          form.setFieldValue('planId', undefined);
-          form.setFieldValue('price', undefined);
-          form.setFieldValue('returnTime', undefined);
-          form.setFieldValue('returnType', undefined);
-        },
-      }),
+      },
       dependencies: {
         triggerFields: ['id'],
         disabled: (values) => values.id,
+        componentProps: (_values, form) => ({
+          onChange: () => {
+            form.setFieldValue('contractId', undefined);
+            form.setFieldValue('planId', undefined);
+            form.setFieldValue('price', undefined);
+            form.setFieldValue('returnTime', undefined);
+            form.setFieldValue('returnType', undefined);
+          },
+        }),
       },
     },
     {
@@ -93,6 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
           const contracts = await getContractSimpleList(values.customerId);
           return {
             options: contracts.map((item) => ({
+              disabled: item.auditStatus !== 20,
               label: item.name,
               value: item.id,
             })),
@@ -117,7 +120,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'planId',
       label: '回款期数',
       component: 'Select',
-      rules: 'required',
       dependencies: {
         triggerFields: ['contractId'],
         disabled: (values) => !values.contractId || values.id,
@@ -171,7 +173,7 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         placeholder: '请输入回款金额',
-        min: 0,
+        min: 0.01,
         precision: 2,
         controlsPosition: 'right',
         class: '!w-full',
@@ -211,7 +213,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入回款编号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -223,7 +225,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         placeholder: '请选择客户',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

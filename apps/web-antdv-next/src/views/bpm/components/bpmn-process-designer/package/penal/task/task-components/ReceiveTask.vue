@@ -93,6 +93,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   bpmnElement.value = null;
 });
+
 watch(
   () => props.id,
   () => {
