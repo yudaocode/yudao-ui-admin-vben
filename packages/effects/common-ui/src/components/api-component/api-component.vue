@@ -45,7 +45,14 @@ const modelValue = defineModel<any>({ default: undefined });
 
 const attrs = useAttrs();
 const usesDefaultModelValue = computed(() => {
-  return ['model-value', 'modelValue'].includes(props.modelPropName);
+  // modelPropName 指定内部组件的模型属性，外部仍可使用标准 v-model。
+  // 显式传入自定义模型属性或更新事件时，沿用自定义模型协议。
+  return (
+    ['model-value', 'modelValue'].includes(props.modelPropName) ||
+    !(
+      props.modelPropName in attrs || `onUpdate:${props.modelPropName}` in attrs
+    )
+  );
 });
 const currentModelValue = computed(() => {
   return usesDefaultModelValue.value

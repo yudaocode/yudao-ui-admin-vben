@@ -1,6 +1,6 @@
 import type { ApiComponentProps } from '../types';
 
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, markRaw, nextTick, ref } from 'vue';
 
 import { describe, expect, it, vi } from 'vitest';
@@ -10,7 +10,7 @@ import ApiComponent from '../api-component.vue';
 const ValueInput = defineComponent({
   name: 'ValueInput',
   props: {
-    value: { type: String, default: undefined },
+    value: { type: [Array, Number, String], default: undefined },
   },
   emits: ['update:value'],
   setup(props, { emit }) {
@@ -18,7 +18,7 @@ const ValueInput = defineComponent({
       h(
         'button',
         { onClick: () => emit('update:value', 'selected') },
-        props.value,
+        String(props.value ?? ''),
       );
   },
 });
@@ -56,6 +56,74 @@ const KebabModelInput = defineComponent({
 });
 
 describe('api-component.vue', () => {
+  it.each([
+    { name: 'tree selection', initial: 42, selected: 43 },
+    { name: 'multiple selection', initial: [1, 2], selected: [2, 3] },
+  ])(
+    'bridges modelValue to a custom value prop for $name',
+    async ({ initial, selected }) => {
+      const wrapper = mount(ApiComponent, {
+        props: {
+          component: markRaw(ValueInput),
+          modelPropName: 'value',
+          modelValue: undefined,
+        },
+      });
+      const input = wrapper.findComponent(ValueInput);
+
+      await wrapper.setProps({ modelValue: initial });
+      expect(input.props('value')).toEqual(initial);
+      expect(wrapper.vm.getValue()).toEqual(initial);
+
+      input.vm.$emit('update:value', selected);
+      await nextTick();
+      expect(wrapper.emitted('update:modelValue')).toEqual([[selected]]);
+
+      await wrapper.setProps({ modelValue: selected });
+      expect(input.props('value')).toEqual(selected);
+
+      await wrapper.setProps({ modelValue: undefined });
+      expect(input.props('value')).toBeUndefined();
+      expect(wrapper.vm.getValue()).toBeUndefined();
+      wrapper.unmount();
+    },
+  );
+
+  it('preserves a saved modelValue when options arrive with autoSelect', async () => {
+    const wrapper = mount(ApiComponent, {
+      props: {
+        api: async () => [{ label: 'First', value: 'first' }],
+        autoSelect: 'first',
+        component: markRaw(ValueInput),
+        modelPropName: 'value',
+        modelValue: 'saved',
+      },
+    });
+
+    await flushPromises();
+
+    expect(wrapper.findComponent(ValueInput).props('value')).toBe('saved');
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  it('auto-selects through modelValue when the inner component uses value', async () => {
+    const wrapper = mount(ApiComponent, {
+      props: {
+        api: async () => [{ label: 'First', value: 'first' }],
+        autoSelect: 'first',
+        component: markRaw(ValueInput),
+        modelPropName: 'value',
+      },
+    });
+
+    await flushPromises();
+
+    expect(wrapper.emitted('update:modelValue')).toEqual([['first']]);
+    expect(wrapper.findComponent(ValueInput).props('value')).toBe('first');
+    wrapper.unmount();
+  });
+
   it('bridges a custom model prop in both directions', async () => {
     const outerValue = ref('initial');
     const handleUpdate = vi.fn((value: string) => {
