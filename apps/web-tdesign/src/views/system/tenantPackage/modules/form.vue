@@ -159,7 +159,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
             multiple
             bordered
             :default-expanded-keys="expandedKeys"
-            v-bind="slotProps"
+            v-bind="slotProps.componentProps"
             value-field="id"
             label-field="name"
           />

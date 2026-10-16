@@ -36,10 +36,10 @@ overrides:
   pinia: 'catalog:'
   vue: 'catalog:'
 catalog:
-  '@ast-grep/napi': ^0.44.1
-  '@changesets/changelog-github': ^0.7.0
-  '@changesets/cli': ^2.31.1
-  '@changesets/git': ^3.0.4
+  '@ast-grep/napi': ^0.45.2
+  '@changesets/changelog-github': ^1.0.1
+  '@changesets/cli': ^3.0.3
+  '@changesets/git': ^4.0.1
   '@clack/prompts': ^1.7.0
   '@commitlint/cli': ^21.2.1
   '@commitlint/config-conventional': ^21.2.0
@@ -52,13 +52,13 @@ catalog:
   '@form-create/designer': ^3.5.0
   '@form-create/element-ui': ^3.3.3
   '@form-create/naive-ui': ^3.3.3
-  '@iconify/json': ^2.2.504
+  '@iconify/json': ^2.2.520
   '@iconify/tailwind4': ^1.2.3
   '@iconify/vue': ^5.0.1
-  '@intlify/core-base': ^11.4.7
+  '@intlify/core-base': ^11.4.10
   '@intlify/unplugin-vue-i18n': ^11.2.4
   '@jspm/generator': ^2.16.3
-  '@lucide/vue': ^1.26.0
+  '@lucide/vue': ^1.34.0
   '@manypkg/get-packages': ^3.1.0
   '@microsoft/fetch-event-source': ^2.0.1
   '@nolebase/vitepress-plugin-git-changelog': ^2.18.2
@@ -71,18 +71,18 @@ catalog:
   '@tanstack/vue-store': ^0.11.0
   '@tinyflow-ai/vue': ^1.3.7
   '@tinymce/tinymce-vue': ^6.3.0
-  '@tiptap/core': ^3.28.0
-  '@tiptap/extension-document': ^3.28.0
-  '@tiptap/extension-highlight': ^3.28.0
-  '@tiptap/extension-image': ^3.28.0
-  '@tiptap/extension-link': ^3.28.0
-  '@tiptap/extension-placeholder': ^3.28.0
-  '@tiptap/extension-text-align': ^3.28.0
-  '@tiptap/extension-text-style': ^3.28.0
-  '@tiptap/extension-underline': ^3.28.0
-  '@tiptap/pm': ^3.28.0
-  '@tiptap/starter-kit': ^3.28.0
-  '@tiptap/vue-3': ^3.28.0
+  '@tiptap/core': ^3.30.3
+  '@tiptap/extension-document': ^3.30.3
+  '@tiptap/extension-highlight': ^3.30.3
+  '@tiptap/extension-image': ^3.30.3
+  '@tiptap/extension-link': ^3.30.3
+  '@tiptap/extension-placeholder': ^3.30.3
+  '@tiptap/extension-text-align': ^3.30.3
+  '@tiptap/extension-text-style': ^3.30.3
+  '@tiptap/extension-underline': ^3.30.3
+  '@tiptap/pm': ^3.30.3
+  '@tiptap/starter-kit': ^3.30.3
+  '@tiptap/vue-3': ^3.30.3
   '@tsdown/css': ^0.22.14
   '@types/archiver': ^8.0.0
   '@types/codemirror': ^5.60.18
@@ -91,19 +91,19 @@ catalog:
   '@types/json-bigint': ^1.0.4
   '@types/lodash.clonedeep': ^4.5.9
   '@types/markdown-it': ^14.2.0
-  '@types/node': ^25.9.5
+  '@types/node': ^25.9.7
   '@types/nprogress': ^0.2.3
   '@types/qrcode': ^1.5.6
   '@types/qs': ^6.15.1
   '@types/sortablejs': ^1.15.9
-  '@typescript-eslint/parser': ^8.65.0
+  '@typescript-eslint/parser': ^8.68.0
   '@videojs-player/vue': ^1.0.0
   '@vite-pwa/vitepress': ^1.1.0
-  '@vitejs/plugin-vue': ^6.0.8
+  '@vitejs/plugin-vue': ^6.0.9
   '@vitejs/plugin-vue-jsx': ^5.1.6
   '@vue/shared': ^3.5.40
   '@vue/test-utils': ^2.4.11
-  '@vueuse/core': ^14.3.0
+  '@vueuse/core': ^14.4.0
   '@vueuse/integrations': ^14.3.0
   '@vueuse/motion': ^3.0.3
   ant-design-vue: ^4.2.6
@@ -128,9 +128,9 @@ catalog:
   cropperjs: ^1.6.3
   cross-env: ^10.1.0
   crypto-js: ^4.2.0
-  cspell: ^10.1.0
-  cz-git: ^1.13.1
-  czg: ^1.13.1
+  cspell: ^10.3.3
+  cz-git: ^1.14.0
+  czg: ^1.14.0
   dayjs: ^1.11.21
   defu: ^6.1.7
   dhtmlx-gantt: ^9.1.4
@@ -138,11 +138,11 @@ catalog:
   dotenv: ^17.4.2
   echarts: ^6.1.0
   element-plus: ^2.14.3
-  es-toolkit: ^1.49.0
-  eslint: ^10.9.0
+  es-toolkit: ^1.51.0
+  eslint: ^10.10.0
   eslint-plugin-better-tailwindcss: ^4.7.0
   eslint-plugin-command: ^3.5.3
-  eslint-plugin-jsonc: ^3.3.0
+  eslint-plugin-jsonc: ^3.4.2
   eslint-plugin-n: ^18.2.2
   eslint-plugin-perfectionist: ^5.10.0
   eslint-plugin-pnpm: ^1.7.0
@@ -154,7 +154,7 @@ catalog:
   find-up: ^8.0.0
   get-port: ^7.2.0
   globals: ^17.7.0
-  happy-dom: ^20.11.6
+  happy-dom: ^20.14.5
   highlight.js: ^11.11.1
   html-minifier-terser: ^7.2.0
   is-ci: ^4.1.0
@@ -162,7 +162,7 @@ catalog:
   jsencrypt: ^3.5.4
   json-bigint: ^1.0.0
   knip: ^6.29.0
-  lefthook: ^2.1.10
+  lefthook: ^2.1.14
   livekit-client: ^2.22.1
   lodash.clonedeep: ^4.5.0
   markdown-it: ^14.3.0
@@ -175,20 +175,20 @@ catalog:
   nitropack: ^2.13.4
   nprogress: ^0.2.0
   ora: ^9.4.1
-  oxfmt: ^0.60.0
-  oxlint: ^1.79.0
+  oxfmt: ^0.65.0
+  oxlint: ^1.83.0
   oxlint-tsgolint: ^0.25.0
   pinia: ^4.0.2
   pinia-plugin-persistedstate: ^4.7.1
   pkg-types: ^2.3.1
-  playwright: ^1.62.1
+  playwright: ^1.63.0
   postcss: ^8.5.22
   postcss-html: ^1.8.1
   postcss-scss: ^4.0.9
   publint: ^0.3.22
   qrcode: ^1.5.4
   qs: ^6.15.3
-  reka-ui: ^2.10.1
+  reka-ui: ^2.10.4
   resolve.exports: ^2.0.3
   rimraf: ^6.1.3
   rollup-plugin-visualizer: ^7.0.1
@@ -212,7 +212,7 @@ catalog:
   tinymce: ^7.9.3
   tippy.js: ^6.3.7
   tsdown: ^0.22.14
-  turbo: ^2.10.11
+  turbo: ^2.10.13
   tw-animate-css: ^1.4.0
   tyme4ts: ^1.5.2
   typescript: ^6.0.3
@@ -220,7 +220,7 @@ catalog:
   unplugin-element-plus: ^0.11.2
   unplugin-vue: ^7.2.0
   video.js: ^7.21.7
-  vite: ^8.2.2
+  vite: ^8.3.0
   vite-plugin-compression: ^0.5.1
   vite-plugin-lazy-import: ^1.0.7
   vite-plugin-pwa: ^1.3.0
@@ -228,10 +228,10 @@ catalog:
   vitepress: ^2.0.0-alpha.18
   vitepress-plugin-group-icons: ^1.7.5
   vitest: ^4.1.11
-  vue: ^3.5.40
+  vue: 3.5.41
   vue-dompurify-html: ^5.3.0
   vue-eslint-parser: ^10.4.1
-  vue-i18n: ^11.4.7
+  vue-i18n: ^11.4.10
   vue-json-pretty: ^2.6.0
   vue-router: ^5.2.0
   vue-tippy: ^6.7.1
@@ -239,8 +239,8 @@ catalog:
   vue3-print-nb: ^0.1.4
   vue3-signature: ^0.4.4
   vuedraggable: ^4.1.0
-  vxe-pc-ui: ^4.16.19
-  vxe-table: ^4.20.6
+  vxe-pc-ui: ^4.17.18
+  vxe-table: ^4.21.2
   watermark-js-plus: ^1.6.6
   yaml-eslint-parser: ^2.1.0
   zod: ^4.4.3

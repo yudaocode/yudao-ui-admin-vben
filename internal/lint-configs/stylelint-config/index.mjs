@@ -71,6 +71,7 @@ export default {
         ],
       },
     ],
+    'at-rule-prelude-no-invalid': [true, { ignoreAtRules: ['apply'] }],
     'font-family-no-missing-generic-family-keyword': null,
     'function-no-unknown': null,
     'import-notation': null,

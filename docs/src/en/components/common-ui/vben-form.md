@@ -41,6 +41,8 @@ The current adapter pattern is:
 - map special `v-model:*` prop names through `modelPropNameMap`
 - keep the form empty state aligned with the actual UI library behavior
 
+Each `setupVbenForm` call rebuilds the component and model-prop mappings from the current shared component registry. Repeated setup removes components that are no longer registered while preserving built-in components and their default bindings.
+
 ### Form Adapter Example
 
 ```ts
@@ -227,6 +229,8 @@ Create the form through `useVbenForm`:
 
 Use `useVbenForm<TFormValues, TSubmitValues>` to declare component-facing form values and submission values separately. Schema, slots, selectors, and `setValues` use `TFormValues`; `getValues()` and `submit()` return `Promise<TSubmitValues>`, while `submit()` only accepts an optional native `Event`; the first `handleSubmit` argument is `TSubmitValues`. Pass one generic when both shapes are identical.
 
+`setValues` accepts a deep `FormValuePatch<TFormValues>`. With the default `filterFields=true`, plain objects are merged as patches before fields outside the schema are removed, so updating `profile.email` preserves declared sibling fields and defaults under `profile`. Arrays, dates, Day.js values, `null`, and `undefined` replace the corresponding value atomically. Use `setFieldValue('profile', nextProfile)` to replace an entire object branch, or set `filterFields` to `false` to bypass schema filtering.
+
 ```vue
 <script setup lang="ts">
 import { useVbenForm } from '#/adapter/form';
@@ -287,6 +291,69 @@ Control bindings are grouped under `componentProps`. It contains the model value
 ```
 
 Root metadata remains available for template logic through `field`, `componentField`, `modelValue`, `name`, `disabled`, `isInValid`, `values`, and `formApi`; it is not forwarded automatically to the rendered control.
+
+## Field Groups
+
+Add a `type: 'group'` item to `schema` to organize fields into a collapsible section. A group is not a field: it has no `fieldName` and takes no part in values or validation. Fields in `children` behave exactly like top-level fields, so `setValues`, `updateSchema`, `removeSchemaByFields`, and named field slots address them by `fieldName`.
+
+```ts
+const [Form, formApi] = useVbenForm({
+  schema: [
+    { component: 'Input', fieldName: 'name', label: 'Name' },
+    {
+      type: 'group',
+      title: 'Advanced',
+      defaultCollapsed: true,
+      children: [
+        { component: 'Input', fieldName: 'remark', label: 'Remark' },
+        { component: 'Switch', fieldName: 'enabled', label: 'Enabled' },
+      ],
+    },
+  ],
+});
+
+// grouped fields are still updated by fieldName
+formApi.updateSchema([{ fieldName: 'remark', label: 'Description' }]);
+```
+
+- `collapsible: false` renders a titled section that cannot be collapsed.
+- A group spans the full row by default; adjust it with `formItemClass`. `wrapperClass` controls the grid inside the group and inherits the form `wrapperClass` by default.
+- A collapsed group expands automatically when one of its fields fails validation.
+- Groups are single-level: `children` only accepts fields, and array-field `children` cannot contain groups either.
+
+## useCustomFieldValue
+
+When a component's value does not live on a single control (a composite built from several controls, a third-party component), the enclosing field cannot read it and the schema `rules` have nothing to validate. Such a component can call `useCustomFieldValue` internally to hand its value getter to the enclosing field, without drilling props through the slot:
+
+```vue
+<script lang="ts" setup>
+import { useCustomFieldValue } from '@vben/common-ui';
+
+// The form still owns the value: it comes down through modelValue and the
+// component only emits changes back
+const modelValue = defineModel<string[]>({ default: () => [] });
+
+const { disabled, error } = useCustomFieldValue(() => modelValue.value);
+</script>
+```
+
+```vue
+<Form>
+  <template #tags="slotProps">
+    <TagPicker v-bind="slotProps.componentProps" />
+  </template>
+</Form>
+```
+
+Every getter change writes the value back to the field, clears its validation state, and revalidates according to the field `validateOn`. A getter value that already equals the current field value (the case when `setValues` or a reset flows through the component) is neither written back nor validated; with `deep` the form stores a copy of the value, so mutating the same object in place is still detected. Options are `deep` (getter returns an object or array mutated in place) and `immediate` (write the current value on mount without validating). A field accepts one getter only; later registrations are ignored with a console warning.
+
+::: warning Keep the component controlled
+
+The value must keep flowing in through `modelValue` (in a slot that means `v-bind="slotProps.componentProps"`) so `setValues` and reset reach the component as props. When `component` is a string, the model prop name comes from the adapter (`value` for antdv), so a slot component using the standard `modelValue` needs an explicit `modelPropName: 'modelValue'` — otherwise reset only clears the form value while the component keeps rendering the stale one.
+
+Only components that fully own their internal state need to sync from the returned `value`.
+
+:::
 
 ## Form Codec
 
@@ -359,6 +426,7 @@ Use benchmark results to compare relative changes on the same machine and runtim
 - top-level `componentProps`, `help`, and `renderComponentContent` functions receive `FormSchemaContext`; value-dependent rendering belongs in `dependencies.resolve`
 - use `formFieldProps.validateOn` with `blur` and/or `change`; submit always validates, and `asyncDebounceMs` debounces async validators
 - use `changeEventFallback: true` only for components that emit `change` without an `update:*` event
+- `type: 'group'` schema items render collapsible sections; `FormSchema` is `FormFieldSchema | FormGroupSchema`, and `updateSchema` only accepts field schemas
 
 ## Reference
 
