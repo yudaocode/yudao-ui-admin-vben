@@ -568,6 +568,7 @@ export function useFullTimeFormSchema(): VbenFormSchema[] {
   return [
     ...usePositionChangeFormSchema('full-time').filter(
       (item) =>
+        !item.fieldName ||
         ![
           'newDeptId',
           'newLeaderEmployeeId',

@@ -48,8 +48,8 @@ export function useTypeFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -73,7 +73,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -82,7 +82,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典类型',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -92,7 +92,7 @@ export function useTypeGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -229,8 +229,8 @@ export function useDataFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -272,7 +272,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入字典标签',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -282,7 +282,7 @@ export function useDataGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

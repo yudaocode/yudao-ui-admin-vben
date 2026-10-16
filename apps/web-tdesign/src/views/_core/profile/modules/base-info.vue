@@ -58,8 +58,8 @@ const [Form, formApi] = useVbenForm({
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number(),
     },

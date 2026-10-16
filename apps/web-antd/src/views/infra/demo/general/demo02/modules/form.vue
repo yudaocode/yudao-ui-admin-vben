@@ -81,6 +81,8 @@ const [Modal, modalApi] = useVbenModal({
       resetForm();
       return;
     }
+    // 加载树数据（新增时 data 为空，也需要加载）
+    await getDemo02CategoryTree();
     // 加载数据
     let data = modalApi.getData() as Demo02CategoryApi.Demo02Category;
     if (!data) {
@@ -95,8 +97,6 @@ const [Modal, modalApi] = useVbenModal({
       }
     }
     formData.value = data;
-    // 加载树数据
-    await getDemo02CategoryTree();
   },
 });
 </script>

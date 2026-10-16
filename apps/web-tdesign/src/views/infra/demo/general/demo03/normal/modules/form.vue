@@ -12,9 +12,11 @@ import { getDictOptions } from '@vben/hooks';
 import {
   DatePicker,
   Form,
+  FormItem,
   Input,
   Radio,
   RadioGroup,
+  TabPanel,
   Tabs,
 } from 'tdesign-vue-next';
 
@@ -68,16 +70,18 @@ const resetForm = () => {
     birthday: undefined,
     description: undefined,
   };
-  formRef.value?.resetFields();
+  formRef.value?.clearValidate();
 };
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const valid = await formRef.value?.validate();
+    if (valid !== true) {
+      return;
+    }
     // 校验子表单
-    try {
-      await demo03GradeFormRef.value?.validate();
-    } catch {
+    const demo03GradeValid = await demo03GradeFormRef.value?.validate();
+    if (demo03GradeValid !== true) {
       subTabsName.value = 'demo03Grade';
       return;
     }
@@ -124,17 +128,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle">
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="rules"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 18 }"
-    >
-      <Form.Item label="名字" name="name">
+    <Form ref="formRef" :data="formData" :rules="rules" label-width="80px">
+      <FormItem label="名字" name="name">
         <Input v-model="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="性别" name="sex">
+      </FormItem>
+      <FormItem label="性别" name="sex">
         <RadioGroup v-model="formData.sex">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
@@ -144,29 +142,29 @@ const [Modal, modalApi] = useVbenModal({
             {{ dict.label }}
           </Radio>
         </RadioGroup>
-      </Form.Item>
-      <Form.Item label="出生日期" name="birthday">
+      </FormItem>
+      <FormItem label="出生日期" name="birthday">
         <DatePicker
           v-model="formData.birthday"
-          value-format="x"
+          value-type="time-stamp"
           placeholder="选择出生日期"
         />
-      </Form.Item>
-      <Form.Item label="简介" name="description">
+      </FormItem>
+      <FormItem label="简介" name="description">
         <RichTextarea v-model="formData.description" height="500px" />
-      </Form.Item>
+      </FormItem>
     </Form>
     <!-- 子表的表单 -->
-    <Tabs v-model:active-key="subTabsName">
-      <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+    <Tabs v-model="subTabsName">
+      <TabPanel value="demo03Course" label="学生课程" :destroy-on-hide="false">
         <Demo03CourseForm
           ref="demo03CourseFormRef"
           :student-id="formData?.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+      </TabPanel>
+      <TabPanel value="demo03Grade" label="学生班级" :destroy-on-hide="false">
         <Demo03GradeForm ref="demo03GradeFormRef" :student-id="formData?.id" />
-      </Tabs.TabPane>
+      </TabPanel>
     </Tabs>
   </Modal>
 </template>

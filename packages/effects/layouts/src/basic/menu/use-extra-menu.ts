@@ -71,6 +71,26 @@ function useExtraMenu(useRootMenus?: ComputedRef<MenuRecordRaw[]>) {
   };
 
   /**
+   * 解析当前路径所属的一级菜单。
+   * 默认子路由 path 为 '' 时（如 /cards），父子菜单路径相同，findMenuByPath 会先命中
+   * 一级菜单自身，而一级菜单没有 parents，rootMenu 解析不出来会导致二级菜单为空。
+   */
+  function resolveRootMenu(currentPath: string, level = 0) {
+    const { findMenu, rootMenu, rootMenuPath } = findRootMenuByPath(
+      menus.value,
+      currentPath,
+      level,
+    );
+    const resolved =
+      rootMenu ?? menus.value.find((item) => item.path === currentPath);
+    return {
+      findMenu,
+      rootMenu: resolved,
+      rootMenuPath: rootMenuPath ?? resolved?.path,
+    };
+  }
+
+  /**
    * 侧边菜单鼠标移出事件
    */
   const handleSideMouseLeave = () => {
@@ -78,9 +98,8 @@ function useExtraMenu(useRootMenus?: ComputedRef<MenuRecordRaw[]>) {
       return;
     }
 
-    const { findMenu, rootMenu, rootMenuPath } = findRootMenuByPath(
-      menus.value,
-      route.path,
+    const { findMenu, rootMenu, rootMenuPath } = resolveRootMenu(
+      route.meta?.activePath || route.path,
     );
     extraActiveMenu.value = rootMenuPath ?? findMenu?.path ?? '';
     extraMenus.value = rootMenu?.children ?? [];
@@ -97,8 +116,7 @@ function useExtraMenu(useRootMenus?: ComputedRef<MenuRecordRaw[]>) {
 
   function calcExtraMenus(path: string) {
     const currentPath = route.meta?.activePath || path;
-    const { findMenu, rootMenu, rootMenuPath } = findRootMenuByPath(
-      menus.value,
+    const { findMenu, rootMenu, rootMenuPath } = resolveRootMenu(
       currentPath,
       parentLevel.value,
     );
@@ -106,13 +124,25 @@ function useExtraMenu(useRootMenus?: ComputedRef<MenuRecordRaw[]>) {
     if (rootMenuPath) defaultSubMap.set(rootMenuPath, currentPath);
     extraActiveMenu.value = rootMenuPath ?? findMenu?.path ?? '';
     extraMenus.value = rootMenu?.children ?? [];
-    if (preferences.sidebar.expandOnHover) {
-      sidebarExtraVisible.value = extraMenus.value.length > 0;
-    }
+    sidebarExtraVisible.value = extraMenus.value.length > 0;
   }
 
+  // 悬停时 layout-sidebar 会直接把 sidebarExtraVisible 置真，没有二级菜单时必须压回去，
+  // 否则空面板仍会展开并遮挡正文
+  watch([sidebarExtraVisible, extraMenus], ([visible, items]) => {
+    if (visible && items.length === 0) {
+      sidebarExtraVisible.value = false;
+    }
+  });
+
   watch(
-    () => [route.path, preferences.app.layout],
+    () =>
+      [
+        route.path,
+        preferences.app.layout,
+        preferences.sidebar.expandOnHover,
+        menus.value,
+      ] as const,
     ([path]) => {
       calcExtraMenus(path || '');
     },

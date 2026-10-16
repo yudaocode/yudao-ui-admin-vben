@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { TreeNodeModel } from 'tdesign-vue-next';
+
 import type { InfraCodegenApi } from '#/api/infra/codegen';
 
 import { ref } from 'vue';
@@ -8,7 +10,7 @@ import { IconifyIcon } from '@vben/icons';
 import { CodeEditor } from '@vben/plugins/code-editor';
 
 import { useClipboard } from '@vueuse/core';
-import { Button, Tabs } from 'tdesign-vue-next';
+import { Button, TabPanel, Tabs, Tree } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import { previewCodegen } from '#/api/infra/codegen';
@@ -64,12 +66,12 @@ async function copyCode() {
 }
 
 /** 文件节点点击事件 */
-function handleNodeClick(_: any[], e: any) {
-  if (!e.node.isLeaf) {
+function handleNodeClick({ node }: { node: TreeNodeModel }) {
+  if (!node.data.isLeaf) {
     return;
   }
 
-  activeKey.value = e.node.key;
+  activeKey.value = node.data.key;
   const file = previewFiles.value.find((item) => {
     const list = activeKey.value.split('.');
     // 特殊处理 - 包合并
@@ -215,26 +217,29 @@ const [Modal, modalApi] = useVbenModal({
       <div
         class="h-full w-1/3 overflow-auto border-r border-gray-200 pr-4 dark:border-gray-700"
       >
-        <DirectoryTree
+        <Tree
           v-if="fileTree.length > 0"
-          default-expand-all
-          v-model:active-key="activeKey"
-          @select="handleNodeClick"
-          :tree-data="fileTree"
+          :data="fileTree"
+          :keys="{ value: 'key', label: 'title', children: 'children' }"
+          expand-all
+          activable
+          :actived="[activeKey]"
+          @click="handleNodeClick"
         />
       </div>
       <!-- 代码预览 -->
       <div class="h-full w-2/3 overflow-auto pl-4">
         <Tabs
-          v-model:active-key="activeKey"
-          hide-add
-          type="editable-card"
-          @edit="removeCodeMapKey"
+          v-model="activeKey"
+          theme="card"
+          @remove="({ value }) => removeCodeMapKey(value)"
         >
-          <Tabs.TabPane
+          <TabPanel
             v-for="key in codeMap.keys()"
             :key="key"
-            :tab="key.split('/').pop()"
+            :value="key"
+            :label="key.split('/').pop()"
+            removable
           >
             <div
               class="h-full rounded-md bg-gray-50 !p-0 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
@@ -248,8 +253,8 @@ const [Modal, modalApi] = useVbenModal({
                 :auto-format="false"
               />
             </div>
-          </Tabs.TabPane>
-          <template #rightExtra>
+          </TabPanel>
+          <template #action>
             <Button theme="primary" ghost @click="copyCode">
               <IconifyIcon icon="lucide:copy" />
               复制代码

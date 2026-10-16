@@ -9,7 +9,14 @@ import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
-import { DatePicker, Form, Input, Radio, RadioGroup } from 'tdesign-vue-next';
+import {
+  DatePicker,
+  Form,
+  FormItem,
+  Input,
+  Radio,
+  RadioGroup,
+} from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import {
@@ -53,12 +60,15 @@ function resetForm() {
     birthday: undefined,
     description: undefined,
   };
-  formRef.value?.resetFields();
+  formRef.value?.clearValidate();
 }
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const valid = await formRef.value?.validate();
+    if (valid !== true) {
+      return;
+    }
     modalApi.lock();
     // 提交表单
     const data = formData.value as Demo03StudentApi.Demo03Student;
@@ -99,17 +109,11 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle">
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="rules"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 18 }"
-    >
-      <Form.Item label="名字" name="name">
+    <Form ref="formRef" :data="formData" :rules="rules" label-width="80px">
+      <FormItem label="名字" name="name">
         <Input v-model="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="性别" name="sex">
+      </FormItem>
+      <FormItem label="性别" name="sex">
         <RadioGroup v-model="formData.sex">
           <Radio
             v-for="dict in getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number')"
@@ -119,17 +123,17 @@ const [Modal, modalApi] = useVbenModal({
             {{ dict.label }}
           </Radio>
         </RadioGroup>
-      </Form.Item>
-      <Form.Item label="出生日期" name="birthday">
+      </FormItem>
+      <FormItem label="出生日期" name="birthday">
         <DatePicker
           v-model="formData.birthday"
-          value-format="x"
+          value-type="time-stamp"
           placeholder="选择出生日期"
         />
-      </Form.Item>
-      <Form.Item label="简介" name="description">
+      </FormItem>
+      <FormItem label="简介" name="description">
         <RichTextarea v-model="formData.description" height="500px" />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

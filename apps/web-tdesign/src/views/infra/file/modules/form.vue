@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { UploadFile } from 'tdesign-vue-next';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { Upload } from 'tdesign-vue-next';
@@ -48,9 +50,14 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 /** 上传前 */
-function beforeUpload(file: File) {
-  formApi.setFieldValue('file', file);
-  return false;
+function beforeUpload(file: UploadFile) {
+  formApi.setFieldValue('file', file.raw);
+  return true;
+}
+
+/** 移除文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
 }
 </script>
 
@@ -60,21 +67,25 @@ function beforeUpload(file: File) {
       <template #file>
         <div class="w-full">
           <!-- 上传区域 -->
-          <Upload.Dragger
+          <Upload
             name="file"
-            :max-count="1"
+            :max="1"
             accept=".jpg,.png,.gif,.webp"
+            :auto-upload="false"
             :before-upload="beforeUpload"
-            list-type="picture-card"
+            draggable
+            @remove="handleRemove"
           >
-            <p class="ant-upload-drag-icon">
-              <span class="icon-[ant-design--inbox-outlined] text-2xl"></span>
-            </p>
-            <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
-            <p class="ant-upload-hint">
-              支持 .jpg、.png、.gif、.webp 格式图片文件
-            </p>
-          </Upload.Dragger>
+            <template #dragContent>
+              <p class="ant-upload-drag-icon">
+                <span class="icon-[ant-design--inbox-outlined] text-2xl"></span>
+              </p>
+              <p class="ant-upload-text">点击或拖拽文件到此区域上传</p>
+              <p class="ant-upload-hint">
+                支持 .jpg、.png、.gif、.webp 格式图片文件
+              </p>
+            </template>
+          </Upload>
         </div>
       </template>
     </Form>

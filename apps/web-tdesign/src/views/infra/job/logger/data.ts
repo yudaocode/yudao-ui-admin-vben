@@ -8,8 +8,6 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { formatDateTime } from '@vben/utils';
 
-import dayjs from 'dayjs';
-
 import { DictTag } from '#/components/dict-tag';
 
 /** 列表的搜索表单 */
@@ -20,7 +18,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '处理器的名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入处理器的名字',
       },
     },
@@ -29,13 +27,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '开始执行时间',
       component: 'DatePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '选择开始执行时间',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
-        showTime: {
-          format: 'HH:mm:ss',
-          defaultValue: dayjs('00:00:00', 'HH:mm:ss'),
-        },
+        format: 'YYYY-MM-DD HH:mm:ss',
+        valueType: 'YYYY-MM-DD HH:mm:ss',
+        enableTimePicker: true,
+        defaultTime: '00:00:00',
       },
     },
     {
@@ -43,13 +40,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '结束执行时间',
       component: 'DatePicker',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '选择结束执行时间',
-        valueFormat: 'YYYY-MM-DD HH:mm:ss',
-        showTime: {
-          format: 'HH:mm:ss',
-          defaultValue: dayjs('23:59:59', 'HH:mm:ss'),
-        },
+        format: 'YYYY-MM-DD HH:mm:ss',
+        valueType: 'YYYY-MM-DD HH:mm:ss',
+        enableTimePicker: true,
+        defaultTime: '23:59:59',
       },
     },
     {
@@ -58,7 +54,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_JOB_LOG_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择任务状态',
       },
     },

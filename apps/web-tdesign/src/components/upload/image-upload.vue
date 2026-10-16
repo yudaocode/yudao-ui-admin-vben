@@ -3,11 +3,8 @@ import type { UploadFile, UploadProps } from 'tdesign-vue-next';
 
 import type { FileUploadProps } from './typing';
 
-import type { AxiosProgressEvent } from '#/api/infra/file';
-
 import { computed, ref, toRefs, watch } from 'vue';
 
-import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import {
   defaultImageAccepts,
@@ -18,7 +15,7 @@ import {
   isString,
 } from '@vben/utils';
 
-import { Dialog, Upload } from 'tdesign-vue-next';
+import { Upload } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 
@@ -66,16 +63,13 @@ const currentValue = computed(() => {
 const isUsingModelValue = computed(() => {
   return props.modelValue !== undefined;
 });
-const previewOpen = ref<boolean>(false); // 是否展示预览
-const previewImage = ref<string>(''); // 预览图片
-const previewTitle = ref<string>(''); // 预览标题
+// TDesign 的 multiple 同时决定文件列表是否追加，多文件数量时需要开启
+const isMultiple = computed(() => props.multiple || props.maxNumber > 1);
 
 const fileList = ref<UploadProps['files']>([]);
 const isLtMsg = ref<boolean>(true); // 文件大小错误提示
 const isActMsg = ref<boolean>(true); // 文件类型错误提示
 const isFirstRender = ref<boolean>(true); // 是否第一次渲染
-const uploadNumber = ref<number>(0); // 上传文件计数器
-const uploadList = ref<any[]>([]); // 临时上传列表
 
 watch(
   currentValue,
@@ -116,47 +110,21 @@ watch(
   },
 );
 
-function getBase64<T extends ArrayBuffer | null | string>(file: File) {
-  return new Promise<T>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.addEventListener('load', () => {
-      resolve(reader.result as T);
-    });
-    reader.addEventListener('error', (error) => reject(error));
-  });
+// TDesign 已先从 files 中移除该文件，这里只同步绑定值
+function handleRemove({ file }: { file?: UploadFile }) {
+  const value = getValue();
+  isInnerOperate.value = true;
+  emit('update:value', value);
+  emit('update:modelValue', value);
+  emit('change', value);
+  emit('delete', file);
 }
 
-async function handlePreview(file: UploadFile) {
-  if (!file.url && !file.preview) {
-    // TDesign 使用 raw 而不是 originFileObj
-    file.preview = await getBase64<string>(file.raw!);
+// 处理文件数量超限
+function handleValidate({ type }: { type: string }) {
+  if (type === 'FILES_OVER_LENGTH_LIMIT') {
+    message.error($t('ui.upload.maxNumber', [maxNumber.value]));
   }
-  previewImage.value = file.url || file.preview || '';
-  previewOpen.value = true;
-  previewTitle.value =
-    file.name ||
-    previewImage.value.slice(
-      Math.max(0, previewImage.value.lastIndexOf('/') + 1),
-    );
-}
-
-async function handleRemove(file: UploadFile) {
-  if (fileList.value) {
-    const index = fileList.value.findIndex((item) => item.uid === file.uid);
-    index !== -1 && fileList.value.splice(index, 1);
-    const value = getValue();
-    isInnerOperate.value = true;
-    emit('update:value', value);
-    emit('update:modelValue', value);
-    emit('change', value);
-    emit('delete', file);
-  }
-}
-
-function handleCancel() {
-  previewOpen.value = false;
-  previewTitle.value = '';
 }
 
 async function beforeUpload(file: UploadFile) {
@@ -166,7 +134,7 @@ async function beforeUpload(file: UploadFile) {
     fileList.value!.length >= props.maxNumber
   ) {
     message.error($t('ui.upload.maxNumber', [props.maxNumber]));
-    return Upload.LIST_IGNORE;
+    return false;
   }
 
   const { maxSize, accept } = props;
@@ -176,7 +144,7 @@ async function beforeUpload(file: UploadFile) {
     isActMsg.value = false;
     // 防止弹出多个错误提示
     setTimeout(() => (isActMsg.value = true), 1000);
-    return Upload.LIST_IGNORE;
+    return false;
   }
   const isLt = file.size! / 1024 / 1024 > maxSize;
   if (isLt) {
@@ -184,11 +152,8 @@ async function beforeUpload(file: UploadFile) {
     isLtMsg.value = false;
     // 防止弹出多个错误提示
     setTimeout(() => (isLtMsg.value = true), 1000);
-    return Upload.LIST_IGNORE;
+    return false;
   }
-
-  // 只有在验证通过后才增加计数器
-  uploadNumber.value++;
   return true;
 }
 
@@ -209,18 +174,8 @@ async function customRequest(info: UploadFile | UploadFile[]) {
     api = useUpload(props.directory).httpRequest;
   }
   try {
-    // 上传文件
-    const progressEvent: AxiosProgressEvent = (e) => {
-      const percent = Math.trunc((e.loaded / e.total!) * 100);
-      uploadFile.onProgress!({ percent });
-    };
-    // TDesign 使用 raw 而不是 file
-    const res = await api?.(uploadFile.raw as File, progressEvent);
-
-    // 处理上传成功后的逻辑
-    handleUploadSuccess(res, uploadFile.raw as File);
-
-    uploadFile.onSuccess!(res);
+    // 上传文件（进度由 TDesign 的上传进度展示）
+    const res = await api?.(uploadFile.raw!);
     message.success($t('ui.upload.uploadSuccess'));
 
     // 提取 URL，兼容不同的返回格式
@@ -230,11 +185,11 @@ async function customRequest(info: UploadFile | UploadFile[]) {
       status: 'success' as const,
       response: {
         url: fileUrl,
+        // 保留 api 原始响应，供 resultField 场景按原契约输出
+        rawResponse: res,
       },
     };
   } catch (error: any) {
-    console.error(error);
-    uploadFile.onError!(error);
     handleUploadError(error);
     return {
       status: 'fail' as const,
@@ -244,53 +199,29 @@ async function customRequest(info: UploadFile | UploadFile[]) {
   }
 }
 
-// 处理上传成功
-function handleUploadSuccess(res: any, file: File) {
-  // 删除临时文件
-  const index = fileList.value?.findIndex((item) => item.name === file.name);
-  if (index !== -1) {
-    fileList.value?.splice(index!, 1);
-  }
-
-  // 添加到临时上传列表
-  const fileUrl = res?.url || res?.data || res;
-  uploadList.value.push({
-    name: file.name,
-    url: fileUrl,
-    status: UploadResultStatus.SUCCESS,
-    uid: file.name + Date.now(),
-  });
-
-  // 检查是否所有文件都上传完成
-  if (uploadList.value.length >= uploadNumber.value) {
-    fileList.value?.push(...uploadList.value);
-    uploadList.value = [];
-    uploadNumber.value = 0;
-
-    // 更新值
-    const value = getValue();
-    isInnerOperate.value = true;
-    emit('update:value', value);
-    emit('update:modelValue', value);
-    emit('change', value);
-  }
+// 处理上传成功：TDesign 已把上传结果写回 files
+function handleUploadSuccess() {
+  const value = getValue();
+  isInnerOperate.value = true;
+  emit('update:value', value);
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
 // 处理上传错误
 function handleUploadError(error: any) {
   console.error('上传错误:', error);
-  // 上传失败时减少计数器
-  uploadNumber.value = Math.max(0, uploadNumber.value - 1);
 }
 
 function getValue() {
   const list = (fileList.value || [])
     .filter((item) => item?.status === UploadResultStatus.SUCCESS)
     .map((item: any) => {
+      // TDesign 的 response 是展示用包装，原始 api 响应在 rawResponse 中
       if (item?.response && props?.resultField) {
-        return item?.response;
+        return item?.response?.rawResponse;
       }
-      return item?.url || item?.response?.url || item?.response;
+      return item?.url || item?.response?.url || item?.response?.rawResponse;
     });
 
   // 单个文件的情况，根据输入参数类型决定返回格式
@@ -319,26 +250,19 @@ function getValue() {
   <div>
     <Upload
       v-bind="$attrs"
-      v-model:file-list="fileList"
+      v-model:files="fileList"
       :accept="getStringAccept"
       :before-upload="beforeUpload"
       :request-method="customRequest"
       :disabled="disabled"
-      :list-type="listType"
-      :max-count="maxNumber"
-      :multiple="multiple"
-      :progress="{ showInfo: true }"
-      @preview="handlePreview"
+      :theme="listType === 'picture-card' ? 'image' : 'image-flow'"
+      :max="maxNumber"
+      :multiple="isMultiple"
+      allow-upload-duplicate-file
       @remove="handleRemove"
-    >
-      <div
-        v-if="fileList && fileList.length < maxNumber"
-        class="flex flex-col items-center justify-center"
-      >
-        <IconifyIcon icon="lucide:cloud-upload" />
-        <div class="mt-2">{{ $t('ui.upload.imgUpload') }}</div>
-      </div>
-    </Upload>
+      @success="handleUploadSuccess"
+      @validate="handleValidate"
+    />
     <div
       v-if="showDescription"
       class="mt-2 flex flex-wrap items-center text-sm"
@@ -349,14 +273,6 @@ function getValue() {
       <div class="mx-1 font-bold text-primary">{{ accept.join('/') }}</div>
       格式文件
     </div>
-    <Dialog
-      :footer="false"
-      :visible="previewOpen"
-      :header="previewTitle"
-      @close="handleCancel"
-    >
-      <img :src="previewImage" alt="" class="w-full" />
-    </Dialog>
   </div>
 </template>
 

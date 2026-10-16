@@ -29,12 +29,15 @@ import type {
 } from '@vben/common-ui';
 import type { Recordable } from '@vben/types';
 
+import type { FileUploadProps } from '#/components/upload/typing';
+
 import { defineAsyncComponent, defineComponent, h, ref } from 'vue';
 
 import { ApiComponent, globalShareState, IconPicker } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { notification } from '#/adapter/tdesign';
+import { FileUpload, ImageUpload } from '#/components/upload';
 
 /**
  * 通用组件共同的使用的基础组件，原先放在 adapter/form 内部，限制了使用范围，这里提取出来，方便其他地方使用
@@ -133,7 +136,9 @@ export type ComponentType =
   | 'DatePicker'
   | 'DefaultButton'
   | 'Divider'
+  | 'FileUpload'
   | 'IconPicker'
+  | 'ImageUpload'
   | 'Input'
   | 'InputNumber'
   // | 'InputPassword'
@@ -164,7 +169,9 @@ export interface ComponentPropsMap {
   DatePicker: DatePickerProps;
   DefaultButton: ButtonProps;
   Divider: DividerProps;
+  FileUpload: FileUploadProps;
   IconPicker: IconPickerProps;
+  ImageUpload: FileUploadProps;
   Input: InputProps;
   InputNumber: InputNumberProps;
   PrimaryButton: ButtonProps;
@@ -195,7 +202,7 @@ async function initComponentAdapter() {
       {
         component: Select,
         loadingSlot: 'suffixIcon',
-        visibleEvent: 'onDropdownVisibleChange',
+        visibleEvent: 'onPopupVisibleChange',
         modelPropName: 'value',
       },
     ),
@@ -207,11 +214,11 @@ async function initComponentAdapter() {
       'select',
       {
         component: TreeSelect,
-        fieldNames: { label: 'label', value: 'value', children: 'children' },
+        keys: { label: 'label', value: 'value', children: 'children' },
         loadingSlot: 'suffixIcon',
         modelPropName: 'value',
         optionsPropName: 'data',
-        visibleEvent: 'onVisibleChange',
+        visibleEvent: 'onPopupVisibleChange',
       },
     ),
     AutoComplete,
@@ -234,7 +241,7 @@ async function initComponentAdapter() {
     },
     Divider,
     IconPicker: withDefaultPlaceholder(IconPicker, 'select', {
-      iconSlot: 'addonAfter',
+      iconSlot: 'suffixIcon',
       inputComponent: Input,
       modelValueProp: 'value',
     }),
@@ -261,7 +268,7 @@ async function initComponentAdapter() {
     RangePicker: (props, { attrs, slots }) => {
       return h(
         RangePicker,
-        { ...props, ...attrs, modelValue: props.modelValue ?? [] },
+        { ...props, ...attrs, value: props.value ?? [] },
         slots,
       );
     },
@@ -273,6 +280,8 @@ async function initComponentAdapter() {
     TimePicker,
     TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
     Upload,
+    FileUpload,
+    ImageUpload,
   };
 
   // 将组件注册到全局共享状态中

@@ -15,7 +15,7 @@ export namespace Demo03StudentApi {
 
   /** 学生班级信息 */
   export interface Demo03Grade {
-    id: number; // 编号
+    id?: number; // 编号
     studentId?: number; // 学生编号
     name?: string; // 名字
     teacher?: string; // 班主任

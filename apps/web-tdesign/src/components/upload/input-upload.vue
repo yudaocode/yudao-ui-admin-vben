@@ -60,11 +60,11 @@ const fileUploadProps = computed(() => {
 </script>
 <template>
   <Row>
-    <Col :span="18">
+    <Col :span="9">
       <Input readonly v-if="inputType === 'input'" v-bind="inputProps" />
-      <Textarea readonly v-else :row="4" v-bind="textareaProps" />
+      <Textarea readonly v-else :rows="4" v-bind="textareaProps" />
     </Col>
-    <Col :span="6">
+    <Col :span="3">
       <FileUpload
         class="ml-4"
         v-bind="fileUploadProps"

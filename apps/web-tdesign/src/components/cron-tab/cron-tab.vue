@@ -9,11 +9,15 @@ import {
   Button,
   Dialog,
   Form,
+  FormItem,
   Input,
+  InputAdornment,
   InputNumber,
+  Option,
   RadioButton,
   RadioGroup,
   Select,
+  TabPanel,
   Tabs,
 } from 'tdesign-vue-next';
 
@@ -414,241 +418,243 @@ function inputChange() {
 </script>
 
 <template>
-  <Input
-    v-model="defaultValue"
-    class="input-with-select"
-    v-bind="$attrs"
-    @input="inputChange"
-  >
-    <template #addonAfter>
+  <InputAdornment>
+    <template #append>
       <Select v-model="select" placeholder="生成器" class="w-36">
-        <Select.Option value="0 * * * * ?">每分钟</Select.Option>
-        <Select.Option value="0 0 * * * ?">每小时</Select.Option>
-        <Select.Option value="0 0 0 * * ?">每天零点</Select.Option>
-        <Select.Option value="0 0 0 1 * ?">每月一号零点</Select.Option>
-        <Select.Option value="0 0 0 L * ?">每月最后一天零点</Select.Option>
-        <Select.Option value="0 0 0 ? * 1">每周星期日零点</Select.Option>
-        <Select.Option
+        <Option value="0 * * * * ?" label="每分钟" />
+        <Option value="0 0 * * * ?" label="每小时" />
+        <Option value="0 0 0 * * ?" label="每天零点" />
+        <Option value="0 0 0 1 * ?" label="每月一号零点" />
+        <Option value="0 0 0 L * ?" label="每月最后一天零点" />
+        <Option value="0 0 0 ? * 1" label="每周星期日零点" />
+        <Option
           v-for="(item, index) in shortcuts"
           :key="index"
           :value="item.value"
+          :label="item.text"
         >
           {{ item.text }}
-        </Select.Option>
-        <Select.Option value="custom">自定义</Select.Option>
+        </Option>
+        <Option value="custom" label="自定义" />
       </Select>
     </template>
-  </Input>
+    <Input
+      v-model="defaultValue"
+      class="input-with-select"
+      v-bind="$attrs"
+      @change="inputChange"
+    />
+  </InputAdornment>
 
   <Dialog
-    v-model:open="dialogVisible"
+    v-model:visible="dialogVisible"
     :width="720"
     destroy-on-close
-    title="cron规则生成器"
+    header="cron规则生成器"
   >
     <div class="sc-cron">
-      <Tabs>
-        <Tabs.TabPane key="second">
-          <template #tab>
+      <Tabs default-value="second">
+        <TabPanel value="second">
+          <template #label>
             <div class="sc-cron-num">
               <h2>秒</h2>
               <h4>{{ value_second }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.second.type">
                 <RadioButton value="0">任意值</RadioButton>
                 <RadioButton value="1">范围</RadioButton>
                 <RadioButton value="2">间隔</RadioButton>
                 <RadioButton value="3">指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.second.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.second.type === '1'" label="范围">
               <InputNumber
                 v-model="cronValue.second.range.start"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               <span style="padding: 0 15px">-</span>
               <InputNumber
                 v-model="cronValue.second.range.end"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
-            </Form.Item>
-            <Form.Item v-if="cronValue.second.type === '2'" label="间隔">
+            </FormItem>
+            <FormItem v-if="cronValue.second.type === '2'" label="间隔">
               <InputNumber
                 v-model="cronValue.second.loop.start"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               秒开始，每
               <InputNumber
                 v-model="cronValue.second.loop.end"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               秒执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.second.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.second.type === '3'" label="指定">
               <Select
                 v-model="cronValue.second.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.second"
                   :key="index"
                   :label="item"
                   :value="item"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
 
-        <Tabs.TabPane key="minute">
-          <template #tab>
+        <TabPanel value="minute">
+          <template #label>
             <div class="sc-cron-num">
               <h2>分钟</h2>
               <h4>{{ value_minute }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.minute.type">
                 <RadioButton value="0">任意值</RadioButton>
                 <RadioButton value="1">范围</RadioButton>
                 <RadioButton value="2">间隔</RadioButton>
                 <RadioButton value="3">指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.minute.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.minute.type === '1'" label="范围">
               <InputNumber
                 v-model="cronValue.minute.range.start"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               <span style="padding: 0 15px">-</span>
               <InputNumber
                 v-model="cronValue.minute.range.end"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
-            </Form.Item>
-            <Form.Item v-if="cronValue.minute.type === '2'" label="间隔">
+            </FormItem>
+            <FormItem v-if="cronValue.minute.type === '2'" label="间隔">
               <InputNumber
                 v-model="cronValue.minute.loop.start"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               分钟开始，每
               <InputNumber
                 v-model="cronValue.minute.loop.end"
                 :max="59"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               分钟执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.minute.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.minute.type === '3'" label="指定">
               <Select
                 v-model="cronValue.minute.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.minute"
                   :key="index"
                   :label="item"
                   :value="item"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
 
-        <Tabs.TabPane key="hour">
-          <template #tab>
+        <TabPanel value="hour">
+          <template #label>
             <div class="sc-cron-num">
               <h2>小时</h2>
               <h4>{{ value_hour }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.hour.type">
                 <RadioButton value="0">任意值</RadioButton>
                 <RadioButton value="1">范围</RadioButton>
                 <RadioButton value="2">间隔</RadioButton>
                 <RadioButton value="3">指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.hour.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.hour.type === '1'" label="范围">
               <InputNumber
                 v-model="cronValue.hour.range.start"
                 :max="23"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               <span style="padding: 0 15px">-</span>
               <InputNumber
                 v-model="cronValue.hour.range.end"
                 :max="23"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
-            </Form.Item>
-            <Form.Item v-if="cronValue.hour.type === '2'" label="间隔">
+            </FormItem>
+            <FormItem v-if="cronValue.hour.type === '2'" label="间隔">
               <InputNumber
                 v-model="cronValue.hour.loop.start"
                 :max="23"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               小时开始，每
               <InputNumber
                 v-model="cronValue.hour.loop.end"
                 :max="23"
                 :min="0"
-                controls-position="right"
+                theme="column"
               />
               小时执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.hour.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.hour.type === '3'" label="指定">
               <Select
                 v-model="cronValue.hour.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.hour"
                   :key="index"
                   :label="item"
                   :value="item"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
 
-        <Tabs.TabPane key="day">
-          <template #tab>
+        <TabPanel value="day">
+          <template #label>
             <div class="sc-cron-num">
               <h2>日</h2>
               <h4>{{ value_day }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.day.type">
                 <RadioButton value="0">任意值</RadioButton>
                 <RadioButton value="1">范围</RadioButton>
@@ -657,128 +663,128 @@ function inputChange() {
                 <RadioButton value="4">本月最后一天</RadioButton>
                 <RadioButton value="5">不指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.day.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.day.type === '1'" label="范围">
               <InputNumber
                 v-model="cronValue.day.range.start"
                 :max="31"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               <span style="padding: 0 15px">-</span>
               <InputNumber
                 v-model="cronValue.day.range.end"
                 :max="31"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
-            </Form.Item>
-            <Form.Item v-if="cronValue.day.type === '2'" label="间隔">
+            </FormItem>
+            <FormItem v-if="cronValue.day.type === '2'" label="间隔">
               <InputNumber
                 v-model="cronValue.day.loop.start"
                 :max="31"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               号开始，每
               <InputNumber
                 v-model="cronValue.day.loop.end"
                 :max="31"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               天执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.day.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.day.type === '3'" label="指定">
               <Select
                 v-model="cronValue.day.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.day"
                   :key="index"
                   :label="item"
                   :value="item"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
 
-        <Tabs.TabPane key="month">
-          <template #tab>
+        <TabPanel value="month">
+          <template #label>
             <div class="sc-cron-num">
               <h2>月</h2>
               <h4>{{ value_month }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.month.type">
                 <RadioButton value="0">任意值</RadioButton>
                 <RadioButton value="1">范围</RadioButton>
                 <RadioButton value="2">间隔</RadioButton>
                 <RadioButton value="3">指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.month.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.month.type === '1'" label="范围">
               <InputNumber
                 v-model="cronValue.month.range.start"
                 :max="12"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               <span style="padding: 0 15px">-</span>
               <InputNumber
                 v-model="cronValue.month.range.end"
                 :max="12"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
-            </Form.Item>
-            <Form.Item v-if="cronValue.month.type === '2'" label="间隔">
+            </FormItem>
+            <FormItem v-if="cronValue.month.type === '2'" label="间隔">
               <InputNumber
                 v-model="cronValue.month.loop.start"
                 :max="12"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               月开始，每
               <InputNumber
                 v-model="cronValue.month.loop.end"
                 :max="12"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               月执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.month.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.month.type === '3'" label="指定">
               <Select
                 v-model="cronValue.month.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.month"
                   :key="index"
                   :label="item"
                   :value="item"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
 
-        <Tabs.TabPane key="week">
-          <template #tab>
+        <TabPanel value="week">
+          <template #label>
             <div class="sc-cron-num">
               <h2>周</h2>
               <h4>{{ value_week }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.week.type">
                 <RadioButton value="0">任意值</RadioButton>
                 <RadioButton value="1">范围</RadioButton>
@@ -787,10 +793,10 @@ function inputChange() {
                 <RadioButton value="4">本月最后一周</RadioButton>
                 <RadioButton value="5">不指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.week.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.week.type === '1'" label="范围">
               <Select v-model="cronValue.week.range.start">
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.week"
                   :key="index"
                   :label="item.label"
@@ -799,25 +805,25 @@ function inputChange() {
               </Select>
               <span style="padding: 0 15px">-</span>
               <Select v-model="cronValue.week.range.end">
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.week"
                   :key="index"
                   :label="item.label"
                   :value="item.value"
                 />
               </Select>
-            </Form.Item>
-            <Form.Item v-if="cronValue.week.type === '2'" label="间隔">
+            </FormItem>
+            <FormItem v-if="cronValue.week.type === '2'" label="间隔">
               第
               <InputNumber
                 v-model="cronValue.week.loop.start"
                 :max="4"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               周的星期
               <Select v-model="cronValue.week.loop.end">
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.week"
                   :key="index"
                   :label="item.label"
@@ -825,43 +831,43 @@ function inputChange() {
                 />
               </Select>
               执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.week.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.week.type === '3'" label="指定">
               <Select
                 v-model="cronValue.week.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.week"
                   :key="index"
                   :label="item.label"
                   :value="item.value"
                 />
               </Select>
-            </Form.Item>
-            <Form.Item v-if="cronValue.week.type === '4'" label="最后一周">
+            </FormItem>
+            <FormItem v-if="cronValue.week.type === '4'" label="最后一周">
               <Select v-model="cronValue.week.last">
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.week"
                   :key="index"
                   :label="item.label"
                   :value="item.value"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
 
-        <Tabs.TabPane key="year">
-          <template #tab>
+        <TabPanel value="year">
+          <template #label>
             <div class="sc-cron-num">
               <h2>年</h2>
               <h4>{{ value_year }}</h4>
             </div>
           </template>
           <Form>
-            <Form.Item label="类型">
+            <FormItem label="类型">
               <RadioGroup v-model="cronValue.year.type">
                 <RadioButton value="-1">忽略</RadioButton>
                 <RadioButton value="0">任意值</RadioButton>
@@ -869,47 +875,41 @@ function inputChange() {
                 <RadioButton value="2">间隔</RadioButton>
                 <RadioButton value="3">指定</RadioButton>
               </RadioGroup>
-            </Form.Item>
-            <Form.Item v-if="cronValue.year.type === '1'" label="范围">
+            </FormItem>
+            <FormItem v-if="cronValue.year.type === '1'" label="范围">
               <InputNumber
                 v-model="cronValue.year.range.start"
-                controls-position="right"
+                theme="column"
               />
               <span style="padding: 0 15px">-</span>
-              <InputNumber
-                v-model="cronValue.year.range.end"
-                controls-position="right"
-              />
-            </Form.Item>
-            <Form.Item v-if="cronValue.year.type === '2'" label="间隔">
-              <InputNumber
-                v-model="cronValue.year.loop.start"
-                controls-position="right"
-              />
+              <InputNumber v-model="cronValue.year.range.end" theme="column" />
+            </FormItem>
+            <FormItem v-if="cronValue.year.type === '2'" label="间隔">
+              <InputNumber v-model="cronValue.year.loop.start" theme="column" />
               年开始，每
               <InputNumber
                 v-model="cronValue.year.loop.end"
                 :min="1"
-                controls-position="right"
+                theme="column"
               />
               年执行一次
-            </Form.Item>
-            <Form.Item v-if="cronValue.year.type === '3'" label="指定">
+            </FormItem>
+            <FormItem v-if="cronValue.year.type === '3'" label="指定">
               <Select
                 v-model="cronValue.year.appoint"
-                mode="multiple"
+                multiple
                 style="width: 100%"
               >
-                <Select.Option
+                <Option
                   v-for="(item, index) in data.year"
                   :key="index"
-                  :label="item"
+                  :label="String(item)"
                   :value="item"
                 />
               </Select>
-            </Form.Item>
+            </FormItem>
           </Form>
-        </Tabs.TabPane>
+        </TabPanel>
       </Tabs>
     </div>
 
@@ -921,7 +921,7 @@ function inputChange() {
 </template>
 
 <style scoped>
-.sc-cron :deep(.ant-tabs-tab) {
+.sc-cron :deep(.t-tabs__nav-item) {
   height: auto;
   padding: 0 7px;
   line-height: 1;

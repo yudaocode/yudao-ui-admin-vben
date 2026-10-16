@@ -86,7 +86,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'DatePicker',
       componentProps: {
         format: 'YYYY-MM-DD',
-        valueFormat: 'x',
+        valueType: 'time-stamp',
         placeholder: '请选择过期时间',
       },
       rules: 'required',
@@ -97,8 +97,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入绑定域名',
-        mode: 'tags',
-        allowClear: true,
+        multiple: true,
+        creatable: true,
+        filterable: true,
+        clearable: true,
       },
     },
     {
@@ -107,8 +109,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -124,7 +126,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入租户名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -133,7 +135,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入联系人',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -142,7 +144,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入联系手机',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -151,7 +153,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请选择状态',
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
       },
     },
@@ -161,7 +163,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -61,7 +61,6 @@ async function customRequest(
   try {
     const url = await httpRequest(file);
     emit('done', name, url);
-    uploadFile.onSuccess?.(url);
     return {
       status: 'success',
       response: {
@@ -70,7 +69,6 @@ async function customRequest(
     };
   } catch (error) {
     emit('error', name);
-    uploadFile.onError?.(error);
     return {
       status: 'fail',
       error: error instanceof Error ? error.message : 'Upload failed',
@@ -84,7 +82,7 @@ async function customRequest(
 <template>
   <div :class="[{ fullscreen }]" class="tinymce-image-upload">
     <Upload
-      :show-upload-list="false"
+      theme="custom"
       accept=".jpg,.jpeg,.gif,.png,.webp"
       multiple
       :request-method="customRequest"

@@ -9,7 +9,7 @@ import { computed, defineComponent, ref, unref, useAttrs } from 'vue';
 
 import { get, getNestedValue, isFunction } from '@vben/utils';
 
-import { Card, Descriptions } from 'tdesign-vue-next';
+import { Card, Descriptions, DescriptionsItem } from 'tdesign-vue-next';
 
 const props = {
   bordered: { default: true, type: Boolean },
@@ -126,24 +126,24 @@ export default defineComponent({
 
           const width = contentMinWidth;
           return (
-            <Descriptions.Item
-              key={field}
-              label={renderLabel(item)}
-              span={span}
-            >
-              {() => {
-                if (item.slot) {
-                  return getSlot(slots, item.slot, data);
-                }
-                if (!contentMinWidth) {
-                  return getContent();
-                }
-                const style: CSSProperties = {
-                  minWidth: `${width}px`,
-                };
-                return <div style={style}>{getContent()}</div>;
+            <DescriptionsItem key={field} span={span}>
+              {{
+                default: () => {
+                  if (item.slot) {
+                    return getSlot(slots, item.slot, data);
+                  }
+                  if (!contentMinWidth) {
+                    return getContent();
+                  }
+                  const style: CSSProperties = {
+                    minWidth: `${width}px`,
+                  };
+                  return <div style={style}>{getContent()}</div>;
+                },
+                // TDesign 的 label 属性不支持直接传 VNode，使用 label 插槽
+                label: () => renderLabel(item),
               }}
-            </Descriptions.Item>
+            </DescriptionsItem>
           );
         })
         .filter((item) => !!item);

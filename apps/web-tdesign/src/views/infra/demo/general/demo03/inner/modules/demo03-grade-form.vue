@@ -5,7 +5,7 @@ import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { nextTick, ref, watch } from 'vue';
 
-import { Form, Input } from 'tdesign-vue-next';
+import { Form, FormItem, Input } from 'tdesign-vue-next';
 
 import { getDemo03GradeByStudentId } from '#/api/infra/demo/demo03/normal';
 
@@ -51,19 +51,18 @@ watch(
   <Form
     ref="formRef"
     class="mx-4"
-    :model="formData"
+    :data="formData"
     :rules="rules"
-    :label-col="{ span: 5 }"
-    :wrapper-col="{ span: 18 }"
+    label-width="80px"
   >
-    <Form.Item label="学生编号" name="studentId">
+    <FormItem label="学生编号" name="studentId">
       <Input v-model="formData.studentId" placeholder="请输入学生编号" />
-    </Form.Item>
-    <Form.Item label="名字" name="name">
+    </FormItem>
+    <FormItem label="名字" name="name">
       <Input v-model="formData.name" placeholder="请输入名字" />
-    </Form.Item>
-    <Form.Item label="班主任" name="teacher">
+    </FormItem>
+    <FormItem label="班主任" name="teacher">
       <Input v-model="formData.teacher" placeholder="请输入班主任" />
-    </Form.Item>
+    </FormItem>
   </Form>
 </template>

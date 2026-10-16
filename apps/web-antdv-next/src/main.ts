@@ -15,7 +15,6 @@ async function initApplication() {
 
   // app偏好设置初始化
   await initPreferences({
-    // extension: preferencesExtension,
     namespace,
     overrides: overridesPreferences,
   });

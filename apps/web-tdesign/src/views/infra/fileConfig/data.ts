@@ -129,8 +129,8 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '主动模式', value: 'Active' },
           { label: '被动模式', value: 'Passive' },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: 'required',
       dependencies: {
@@ -200,8 +200,8 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '启用', value: true },
           { label: '禁用', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: 'required',
       dependencies: {
@@ -219,8 +219,8 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '公开', value: true },
           { label: '私有', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: 'required',
       dependencies: {
@@ -267,7 +267,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入配置名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -277,7 +277,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_FILE_STORAGE, 'number'),
         placeholder: '请选择存储器',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -286,7 +286,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

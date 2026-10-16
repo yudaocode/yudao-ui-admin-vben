@@ -22,6 +22,25 @@ function createDeferred<T>() {
   return { promise, resolve: resolvePromise };
 }
 
+/**
+ * 字段异步校验（onBlurAsync/onChangeAsync/onSubmitAsync）由 TanStack Form
+ * 放进 setTimeout(debounceMs) 排队。用例只模拟 setTimeout/clearTimeout，
+ * flushPromises 依赖的 setImmediate 保持真实
+ */
+function installValidationTimers() {
+  vi.useFakeTimers({ toFake: ['clearTimeout', 'setTimeout'] });
+}
+
+/**
+ * 排空校验队列：先排空微任务让校验进入定时器队列，再执行全部定时器直到队列为空，
+ * 最后排空微任务让校验结果完成渲染
+ */
+async function drainValidation() {
+  await flushPromises();
+  await vi.runAllTimersAsync();
+  await flushPromises();
+}
+
 const TestInput = defineComponent({
   inheritAttrs: false,
   props: {
@@ -78,6 +97,63 @@ afterEach(() => {
 });
 
 describe('useVbenForm integration', () => {
+  it('provides empty defaults for native zod string formats', async () => {
+    const [Form, formApi] = useVbenForm({
+      schema: [
+        {
+          component: TestInput,
+          fieldName: 'email',
+          rules: z.email(),
+        },
+        {
+          component: TestInput,
+          fieldName: 'address',
+          rules: z.ipv4(),
+        },
+      ],
+      showDefaultActions: false,
+    });
+    const wrapper = mount(Form);
+    wrappers.push(wrapper);
+    await flushPromises();
+
+    expect(await formApi.getValues()).toEqual({
+      address: '',
+      email: '',
+    });
+  });
+
+  it('filters native zod formats from nested default extraction', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const [Form, formApi] = useVbenForm({
+      schema: [
+        {
+          component: TestInput,
+          fieldName: 'profile',
+          rules: z.object({
+            email: z.email(),
+            address: z.object({
+              ip: z.ipv4(),
+              backup: z.email().default('backup@example.com'),
+            }),
+          }),
+        },
+      ],
+      showDefaultActions: false,
+    });
+    const wrapper = mount(Form);
+    wrappers.push(wrapper);
+    await flushPromises();
+
+    expect(warn).not.toHaveBeenCalled();
+    expect(await formApi.getValues()).toEqual({
+      profile: {
+        address: { backup: 'backup@example.com', ip: '' },
+        email: '',
+      },
+    });
+  });
+
   it('uses model updates as the primary channel and preserves empty strings', async () => {
     const validateValue = vi.fn();
     const [Form, formApi] = useVbenForm({
@@ -883,6 +959,7 @@ describe('useVbenForm integration', () => {
   });
 
   it('respects blur and change validation triggers', async () => {
+    installValidationTimers();
     const [Form] = useVbenForm({
       schema: [
         {
@@ -903,19 +980,19 @@ describe('useVbenForm integration', () => {
     const input = wrapper.get('input');
 
     await input.setValue('');
-    await flushPromises();
+    await drainValidation();
     expect(wrapper.text()).not.toContain('Name is required');
 
     await input.trigger('blur');
-    await flushPromises();
+    await drainValidation();
     expect(wrapper.text()).toContain('Name is required');
 
     await input.setValue('Ada');
-    await flushPromises();
+    await drainValidation();
     expect(wrapper.text()).not.toContain('Name is required');
 
     await input.trigger('blur');
-    await flushPromises();
+    await drainValidation();
     expect(wrapper.text()).not.toContain('Name is required');
   });
 
@@ -995,6 +1072,7 @@ describe('useVbenForm integration', () => {
   });
 
   it('does not expose raw values through native form submit events', async () => {
+    installValidationTimers();
     const onSubmit = vi.fn();
     const [Form, formApi] = useVbenForm({
       schema: [
@@ -1013,7 +1091,7 @@ describe('useVbenForm integration', () => {
 
     await formApi.setFieldValue('name', ' raw ');
     await wrapper.get('form').trigger('submit');
-    await flushPromises();
+    await drainValidation();
 
     expect(onSubmit).toHaveBeenCalledOnce();
     expect(onSubmit).toHaveBeenCalledWith(undefined);
@@ -1078,6 +1156,45 @@ describe('useVbenForm integration', () => {
       first: 'a',
       second: 'b',
       third: 'c',
+    });
+  });
+
+  it('preserves nested defaults during partial setValues updates', async () => {
+    interface NestedFormValues {
+      profile: {
+        email: string;
+        nickname: string;
+      };
+    }
+
+    const [Form, formApi] = useVbenForm<NestedFormValues>({
+      schema: [
+        {
+          component: TestInput,
+          defaultValue: 'old@example.com',
+          fieldName: 'profile.email',
+        },
+        {
+          component: TestInput,
+          defaultValue: 'Ada',
+          fieldName: 'profile.nickname',
+        },
+      ],
+    });
+    const wrapper = mount(Form);
+    wrappers.push(wrapper);
+    await flushPromises();
+
+    await formApi.setValues({
+      profile: { email: 'new@example.com' },
+    });
+    await flushPromises();
+
+    expect(await formApi.getRawValues()).toEqual({
+      profile: {
+        email: 'new@example.com',
+        nickname: 'Ada',
+      },
     });
   });
 

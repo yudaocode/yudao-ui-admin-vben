@@ -59,8 +59,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_BOOLEAN_STRING, 'boolean'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       defaultValue: true,
       rules: 'required',
@@ -85,7 +85,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入参数名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -94,7 +94,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入参数键名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -104,7 +104,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.INFRA_CONFIG_TYPE, 'number'),
         placeholder: '请选择系统内置',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -113,7 +113,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -4,10 +4,12 @@ import type {
   BaseFormComponentType,
   FormActions,
   FormFieldName,
+  FormFieldSchema,
   FormFieldValue,
   FormResetOptions,
   FormResetState,
   FormSchema,
+  FormValuePatch,
   FormValues,
   FormValueSnapshot,
   VbenFormProps,
@@ -19,10 +21,7 @@ import { Store } from '@vben-core/shared/store';
 import {
   bindMethods,
   cloneDeep,
-  isDate,
-  isDayjsObject,
   isFunction,
-  isObject,
   mergeWithArrayOverride,
   StateHandler,
 } from '@vben-core/shared/utils';
@@ -30,7 +29,11 @@ import {
 import { warnDeprecatedOnce } from './deprecation';
 import { resolveFieldNamePath } from './field-name';
 import { decodeFormValues, encodeFormValues } from './form-codec';
-import { updateFormSchemaList } from './form-render/schema';
+import {
+  getFormFieldSchemas,
+  removeFormSchemaByFields,
+  updateFormSchemaList,
+} from './form-render/schema';
 import { formatFormValues } from './form-value-transform';
 
 type FormApiProps<
@@ -45,6 +48,42 @@ type FormApiSchema<
   T extends BaseFormComponentType,
   P extends Record<string, any>,
 > = FormSchema<T, P, TValues>;
+
+type FormApiFieldSchema<
+  TValues extends FormValues,
+  T extends BaseFormComponentType,
+  P extends Record<string, any>,
+> = FormFieldSchema<T, P, TValues>;
+
+function isPlainFormObject(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== 'object') {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === null || prototype === Object.prototype;
+}
+
+function mergeFormValuePatch(
+  currentValue: unknown,
+  nextValue: unknown,
+  visited = new WeakMap<object, Record<string, unknown>>(),
+): unknown {
+  if (!isPlainFormObject(nextValue)) {
+    return cloneDeep(nextValue);
+  }
+
+  const cached = visited.get(nextValue);
+  if (cached) {
+    return cached;
+  }
+
+  const result = isPlainFormObject(currentValue) ? cloneDeep(currentValue) : {};
+  visited.set(nextValue, result);
+  for (const [key, value] of Object.entries(nextValue)) {
+    result[key] = mergeFormValuePatch(result[key], value, visited);
+  }
+  return result;
+}
 
 function getDefaultState<
   TFormValues extends FormValues,
@@ -331,13 +370,10 @@ export class FormApi<
    * @param fields
    */
   async removeSchemaByFields(fields: string[]) {
-    const fieldSet = new Set(fields);
     const schema = this.state?.schema ?? [];
 
-    const filterSchema = schema.filter((item) => !fieldSet.has(item.fieldName));
-
     this.setState({
-      schema: filterSchema,
+      schema: removeFormSchemaByFields(schema, fields),
     });
   }
 
@@ -476,7 +512,11 @@ export class FormApi<
       );
     }
     const formValues = decodeFormValues(codec, values);
-    await this.setValues(formValues, filterFields, shouldValidate);
+    await this.setValues(
+      formValues as FormValuePatch<TFormValues>,
+      filterFields,
+      shouldValidate,
+    );
   }
 
   /**
@@ -486,7 +526,7 @@ export class FormApi<
    * @param shouldValidate
    */
   async setValues(
-    fields: Partial<TFormValues>,
+    fields: FormValuePatch<TFormValues>,
     filterFields: boolean = true,
     shouldValidate: boolean = false,
   ) {
@@ -495,23 +535,26 @@ export class FormApi<
     }
     const form = await this.getForm();
     if (!filterFields) {
-      form.setValues(fields, shouldValidate);
+      form.setValues(fields as Partial<TFormValues>, shouldValidate);
       return;
     }
 
-    const schemaFieldPaths = (this.state?.schema ?? []).map(
+    const currentValues = toRaw(form.values ?? {}) as Record<string, unknown>;
+    const mergedFields = Object.fromEntries(
+      Object.entries(fields).map(([key, value]) => [
+        key,
+        mergeFormValuePatch(currentValues[key], value),
+      ]),
+    );
+
+    const schemaFieldPaths = getFormFieldSchemas(this.state?.schema ?? []).map(
       (schema) => resolveFieldNamePath(schema.fieldName).pathSegments,
     );
     const filterValue = (
       value: unknown,
       parentPath: string[] = [],
     ): unknown => {
-      if (
-        !isObject(value) ||
-        Array.isArray(value) ||
-        isDate(value) ||
-        isDayjsObject(value)
-      ) {
+      if (!isPlainFormObject(value)) {
         return value;
       }
 
@@ -537,8 +580,8 @@ export class FormApi<
       }
       return result;
     };
-    const filteredFields = filterValue(fields) as Partial<TFormValues>;
-    form.setValues(filteredFields as Partial<TFormValues>, shouldValidate);
+    const filteredFields = filterValue(mergedFields) as Partial<TFormValues>;
+    form.setValues(filteredFields, shouldValidate);
   }
 
   async submit(e?: Event) {
@@ -567,7 +610,7 @@ export class FormApi<
     this.stateHandler.reset();
   }
 
-  updateSchema(schema: Partial<FormApiSchema<TFormValues, T, P>>[]) {
+  updateSchema(schema: Partial<FormApiFieldSchema<TFormValues, T, P>>[]) {
     const updated: Partial<FormApiSchema<TFormValues, T, P>>[] = [...schema];
     const hasField = updated.every(
       (item) => Reflect.has(item, 'fieldName') && item.fieldName,
@@ -647,8 +690,8 @@ export class FormApi<
   }
 
   private updateState() {
-    const currentSchema = this.state?.schema ?? [];
-    const prevSchema = this.prevState?.schema ?? [];
+    const currentSchema = getFormFieldSchemas(this.state?.schema ?? []);
+    const prevSchema = getFormFieldSchemas(this.prevState?.schema ?? []);
     // 进行了删除schema操作
     if (currentSchema.length < prevSchema.length) {
       const currentFields = new Set(
@@ -686,7 +729,7 @@ export class FormApi<
     this.legacyTransformWarningState = warningState;
 
     const hasValueFormat = (
-      items: FormApiSchema<TFormValues, T, P>[],
+      items: FormApiFieldSchema<TFormValues, T, P>[],
     ): boolean => {
       return items.some((schema) => {
         if (schema.valueFormat) {
@@ -696,7 +739,9 @@ export class FormApi<
         return Array.isArray(children) && hasValueFormat(children);
       });
     };
-    const usesValueFormat = hasValueFormat(warningState.schema);
+    const usesValueFormat = hasValueFormat(
+      getFormFieldSchemas(warningState.schema),
+    );
     const usesFieldMappingTime =
       (warningState.fieldMappingTime?.length ?? 0) > 0;
     const usesArrayToStringFields =

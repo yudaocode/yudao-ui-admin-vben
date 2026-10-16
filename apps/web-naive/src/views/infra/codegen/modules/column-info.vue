@@ -54,7 +54,8 @@ watch(
 
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
-  getData: (): InfraCodegenApi.CodegenColumn[] => gridApi.grid.getData(),
+  getData: (): InfraCodegenApi.CodegenColumn[] =>
+    gridApi.grid.getData() as InfraCodegenApi.CodegenColumn[],
 });
 
 /** 初始化 */
@@ -141,8 +142,8 @@ onMounted(async () => {
         v-model:value="row.dictType"
         :options="dictTypeOptions"
         class="w-full"
-        allow-clear
-        show-search
+        clearable
+        filterable
       />
     </template>
 

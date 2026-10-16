@@ -1,11 +1,12 @@
 <script lang="ts" setup>
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { Demo03StudentApi } from '#/api/infra/demo/demo03/normal';
 
 import { nextTick, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { NButton, NInput } from 'naive-ui';
+import { NButton, NInput, NInputNumber } from 'naive-ui';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDemo03CourseListByStudentId } from '#/api/infra/demo/demo03/normal';
@@ -33,7 +34,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     toolbarConfig: {
       enabled: false,
     },
-  },
+  } as VxeTableGridOptions<Demo03StudentApi.Demo03Course>,
 });
 
 /** 添加学生课程 */
@@ -85,7 +86,7 @@ watch(
       <NInput v-model:value="row.name" />
     </template>
     <template #score="{ row }">
-      <NInput v-model:value="row.score" />
+      <NInputNumber v-model:value="row.score" />
     </template>
     <template #actions="{ row }">
       <TableAction

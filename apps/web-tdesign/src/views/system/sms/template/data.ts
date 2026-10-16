@@ -70,8 +70,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -114,7 +114,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_SMS_TEMPLATE_TYPE, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择短信类型',
       },
     },
@@ -124,7 +124,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择开启状态',
       },
     },
@@ -133,7 +133,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板编码',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板编码',
       },
     },
@@ -142,7 +142,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '模板名称',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入模板名称',
       },
     },
@@ -154,7 +154,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
         api: getSimpleSmsChannelList,
         labelField: 'signature',
         valueField: 'id',
-        allowClear: true,
+        clearable: true,
         placeholder: '请选择短信渠道',
       },
     },
@@ -164,7 +164,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

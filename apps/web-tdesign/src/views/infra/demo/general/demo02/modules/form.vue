@@ -8,7 +8,7 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { handleTree } from '@vben/utils';
 
-import { Form, Input, TreeSelect } from 'tdesign-vue-next';
+import { Form, FormItem, Input, TreeSelect } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import {
@@ -47,7 +47,7 @@ function resetForm() {
     name: undefined,
     parentId: undefined,
   };
-  formRef.value?.resetFields();
+  formRef.value?.clearValidate();
 }
 
 /** 获得示例分类树 */
@@ -63,7 +63,10 @@ async function getDemo02CategoryTree() {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const valid = await formRef.value?.validate();
+    if (valid !== true) {
+      return;
+    }
     modalApi.lock();
     // 提交表单
     const data = formData.value as Demo02CategoryApi.Demo02Category;
@@ -84,6 +87,8 @@ const [Modal, modalApi] = useVbenModal({
       resetForm();
       return;
     }
+    // 加载树数据（新增时 data 为空，也需要加载）
+    await getDemo02CategoryTree();
     // 加载数据
     let data = modalApi.getData() as Demo02CategoryApi.Demo02Category;
     if (!data) {
@@ -98,38 +103,29 @@ const [Modal, modalApi] = useVbenModal({
       }
     }
     formData.value = data;
-    // 加载树数据
-    await getDemo02CategoryTree();
   },
 });
 </script>
 
 <template>
   <Modal :title="getTitle">
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="rules"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 18 }"
-    >
-      <Form.Item label="名字" name="name">
+    <Form ref="formRef" :data="formData" :rules="rules" label-width="80px">
+      <FormItem label="名字" name="name">
         <Input v-model="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="父级编号" name="parentId">
+      </FormItem>
+      <FormItem label="父级编号" name="parentId">
         <TreeSelect
           v-model="formData.parentId"
-          :tree-data="demo02CategoryTree"
-          :field-names="{
+          :data="demo02CategoryTree"
+          :keys="{
             label: 'name',
             value: 'id',
             children: 'children',
           }"
-          checkable
-          tree-default-expand-all
+          :tree-props="{ expandAll: true }"
           placeholder="请选择父级编号"
         />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

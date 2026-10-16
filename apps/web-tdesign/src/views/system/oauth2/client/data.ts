@@ -64,8 +64,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -95,7 +95,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_OAUTH2_GRANT_TYPE),
-        mode: 'multiple',
+        multiple: true,
         placeholder: '请输入授权类型',
       },
       rules: 'required',
@@ -106,8 +106,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入授权范围',
-        mode: 'tags',
-        allowClear: true,
+        multiple: true,
+        creatable: true,
+        filterable: true,
+        clearable: true,
       },
     },
     {
@@ -116,7 +118,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入自动授权范围',
-        mode: 'multiple',
+        multiple: true,
       },
       dependencies: {
         triggerFields: ['scopes'],
@@ -136,7 +138,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入可重定向的 URI 地址',
-        mode: 'tags',
+        multiple: true,
+        creatable: true,
+        filterable: true,
       },
       rules: 'required',
     },
@@ -146,7 +150,9 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         placeholder: '请输入权限',
-        mode: 'tags',
+        multiple: true,
+        creatable: true,
+        filterable: true,
       },
     },
     {
@@ -154,7 +160,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '资源',
       component: 'Select',
       componentProps: {
-        mode: 'tags',
+        multiple: true,
+        creatable: true,
+        filterable: true,
         placeholder: '请输入资源',
       },
     },
@@ -178,7 +186,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入应用名',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -187,7 +195,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入状态',
       },
     },

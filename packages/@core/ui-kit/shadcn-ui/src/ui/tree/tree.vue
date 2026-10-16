@@ -184,10 +184,10 @@ watch(
 function updateModelValue(val: Arrayable<Recordable<any>>) {
   if (Array.isArray(val)) {
     const filteredVal = val.filter((v) => !get(v, props.disabledField));
-    // modelValue.value = [
-    //   ...new Set(filteredVal.map((v) => get(v, props.valueField))),
-    // ];
-    const selectedIds = filteredVal.map((v) => get(v, props.valueField));
+    // 点击半选父节点时 Reka UI 会把已选后代再次传入，需要去重
+    const selectedIds = [
+      ...new Set(filteredVal.map((v) => get(v, props.valueField))),
+    ];
     modelValue.value = mergeIndeterminate(selectedIds);
   } else {
     // 单选模式下取消选择时 val 为 null/undefined，需要同步清空

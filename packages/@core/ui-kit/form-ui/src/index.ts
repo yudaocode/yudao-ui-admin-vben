@@ -9,6 +9,7 @@ export type {
   FormActions,
   FormCodec,
   FormContextApi,
+  FormGroupSchema,
   FormLayout,
   FormSchemaContext,
   FormValues,
@@ -17,12 +18,21 @@ export type {
   VbenFormComponent,
   VbenFormDefaultSlotProps,
   VbenFormFieldArrayProps,
+  FormFieldSchema as VbenFormFieldSchema,
   VbenFormFieldSlotProps,
+  FormGroupSchema as VbenFormGroupSchema,
   VbenFormProps,
   VbenFormResolvedComponentProps,
   FormSchema as VbenFormSchema,
   VbenFormSlots,
 } from './types';
+
+export { useCustomFieldValue } from './use-custom-field-value';
+
+export type {
+  UseCustomFieldValueOptions,
+  UseCustomFieldValueReturn,
+} from './use-custom-field-value';
 
 export * from './use-vben-form';
 // export { default as VbenForm } from './vben-form.vue';

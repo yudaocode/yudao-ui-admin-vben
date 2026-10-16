@@ -374,6 +374,220 @@ describe('formApi', () => {
     );
   });
 
+  it('should treat fields inside groups as known fields when filtering', async () => {
+    const setValuesMock = vi.fn();
+    formApi.setState({
+      schema: [
+        { component: 'text', fieldName: 'name' },
+        {
+          children: [{ component: 'text', fieldName: 'email' }],
+          title: 'Contact',
+          type: 'group',
+        },
+      ],
+    });
+    const formActions: any = {
+      meta: {},
+      setValues: setValuesMock,
+      values: {},
+    };
+
+    await formApi.mount(formActions, new Map());
+    await formApi.setValues({
+      email: 'ada@example.com',
+      name: 'Ada',
+      unknown: 'ignored',
+    });
+
+    expect(setValuesMock).toHaveBeenCalledWith(
+      { email: 'ada@example.com', name: 'Ada' },
+      false,
+    );
+  });
+
+  it('should clear values of fields removed from a group', async () => {
+    const setFieldValueMock = vi.fn();
+    formApi.setState({
+      schema: [
+        {
+          children: [
+            { component: 'text', fieldName: 'email' },
+            { component: 'text', fieldName: 'phone' },
+          ],
+          title: 'Contact',
+          type: 'group',
+        },
+      ],
+    });
+    const formActions: any = {
+      meta: {},
+      setFieldValue: setFieldValueMock,
+      values: { email: 'ada@example.com', phone: '123' },
+    };
+
+    await formApi.mount(formActions, new Map());
+    formApi.removeSchemaByFields(['phone']);
+
+    expect(formApi.state?.schema).toEqual([
+      {
+        children: [{ component: 'text', fieldName: 'email' }],
+        title: 'Contact',
+        type: 'group',
+      },
+    ]);
+    expect(setFieldValueMock).toHaveBeenCalledWith('phone', undefined);
+    expect(setFieldValueMock).not.toHaveBeenCalledWith('email', undefined);
+  });
+
+  it('should preserve nested schema siblings in touched branches', async () => {
+    const setValuesMock = vi.fn();
+    formApi.setState({
+      schema: [
+        { component: 'text', fieldName: 'profile.email' },
+        { component: 'text', fieldName: 'profile.nickname' },
+      ],
+    });
+    const formActions: any = {
+      meta: {},
+      setValues: setValuesMock,
+      values: {
+        profile: {
+          email: 'old@example.com',
+          ignored: true,
+          nickname: 'Ada',
+        },
+        untouched: 'keep',
+      },
+    };
+
+    await formApi.mount(formActions, new Map());
+    await formApi.setValues({
+      profile: { email: 'new@example.com' },
+    });
+
+    expect(setValuesMock).toHaveBeenCalledWith(
+      {
+        profile: {
+          email: 'new@example.com',
+          nickname: 'Ada',
+        },
+      },
+      false,
+    );
+  });
+
+  it('should patch object fields while replacing atomic values', async () => {
+    class AtomicValue {
+      constructor(readonly value: string) {}
+    }
+
+    const setValuesMock = vi.fn();
+    const atomicValue = new AtomicValue('new');
+    const updatedAt = new Date('2026-08-27T00:00:00.000Z');
+    const fields = {
+      atomicValue,
+      cleared: undefined,
+      contacts: [{ name: 'Grace' }],
+      nullable: null,
+      profile: { email: 'new@example.com' },
+      updatedAt,
+    };
+    formApi.setState({
+      schema: [
+        { component: 'text', fieldName: 'atomicValue' },
+        { component: 'text', fieldName: 'cleared' },
+        { component: 'text', fieldName: 'contacts' },
+        { component: 'text', fieldName: 'nullable' },
+        { component: 'text', fieldName: 'profile' },
+        { component: 'text', fieldName: 'updatedAt' },
+      ],
+    });
+    const formActions: any = {
+      meta: {},
+      setValues: setValuesMock,
+      values: {
+        atomicValue: new AtomicValue('old'),
+        cleared: 'remove',
+        contacts: [{ name: 'Ada' }],
+        nullable: 'remove',
+        profile: { bio: 'Mathematician', email: 'old@example.com' },
+        updatedAt: new Date('2026-08-26T00:00:00.000Z'),
+      },
+    };
+
+    await formApi.mount(formActions, new Map());
+    await formApi.setValues(fields, true, true);
+
+    expect(fields).toEqual({
+      atomicValue,
+      cleared: undefined,
+      contacts: [{ name: 'Grace' }],
+      nullable: null,
+      profile: { email: 'new@example.com' },
+      updatedAt,
+    });
+    expect(setValuesMock).toHaveBeenCalledWith(
+      {
+        atomicValue,
+        cleared: undefined,
+        contacts: [{ name: 'Grace' }],
+        nullable: null,
+        profile: {
+          bio: 'Mathematician',
+          email: 'new@example.com',
+        },
+        updatedAt,
+      },
+      true,
+    );
+    expect(setValuesMock.mock.calls[0]?.[0]?.atomicValue).toBeInstanceOf(
+      AtomicValue,
+    );
+  });
+
+  it('should handle cyclic plain-object patches without recursion overflow', async () => {
+    const setValuesMock = vi.fn();
+    const profile: Record<string, unknown> = { email: 'new@example.com' };
+    profile.self = profile;
+    formApi.setState({
+      schema: [{ component: 'text', fieldName: 'profile.email' }],
+    });
+    const formActions: any = {
+      meta: {},
+      setValues: setValuesMock,
+      values: { profile: { bio: 'Mathematician' } },
+    };
+
+    await formApi.mount(formActions, new Map());
+    await formApi.setValues({ profile });
+
+    expect(setValuesMock).toHaveBeenCalledTimes(1);
+    expect(setValuesMock).toHaveBeenCalledWith(
+      { profile: { email: 'new@example.com' } },
+      false,
+    );
+  });
+
+  it('should preserve raw-key fields during filtered updates', async () => {
+    const setValuesMock = vi.fn();
+    formApi.setState({
+      schema: [{ component: 'text', fieldName: '[profile.email]' }],
+    });
+    const formActions: any = {
+      meta: {},
+      setValues: setValuesMock,
+      values: { 'profile.email': 'old@example.com' },
+    };
+
+    await formApi.mount(formActions, new Map());
+    await formApi.setValues({ 'profile.email': 'new@example.com' });
+
+    expect(setValuesMock).toHaveBeenCalledWith(
+      { 'profile.email': 'new@example.com' },
+      false,
+    );
+  });
+
   it('should reset form', async () => {
     const resetMock = vi.fn();
     const formActions: any = {
@@ -527,7 +741,7 @@ describe('updateSchema', () => {
     instance.updateSchema(newSchema);
 
     expect(instance.state?.schema?.[0]?.component).toBe('text');
-    expect(instance.state?.schema?.[1]?.label).toBe('Age');
+    expect(instance.state?.schema?.[1]).toMatchObject({ label: 'Age' });
   });
 
   it('should update child schema by parent path', () => {
@@ -557,6 +771,32 @@ describe('updateSchema', () => {
     expect((instance.state?.schema?.[0] as any)?.children?.[1]?.label).toBe(
       'Phone',
     );
+  });
+
+  it('should update fields nested inside groups', () => {
+    instance.state = {
+      schema: [
+        { component: 'text', fieldName: 'name' },
+        {
+          children: [
+            { component: 'text', fieldName: 'email', label: 'Email' },
+            { component: 'text', fieldName: 'phone', label: 'Phone' },
+          ],
+          title: 'Contact',
+          type: 'group',
+        },
+      ],
+    };
+
+    instance.updateSchema([{ fieldName: 'phone', label: 'Mobile' }]);
+
+    expect(instance.state?.schema?.[1]).toMatchObject({
+      children: [
+        { fieldName: 'email', label: 'Email' },
+        { fieldName: 'phone', label: 'Mobile' },
+      ],
+      type: 'group',
+    });
   });
 
   it('should log an error if fieldName is missing in some items', () => {

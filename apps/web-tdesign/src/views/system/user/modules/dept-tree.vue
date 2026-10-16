@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { InputValue, TreeNodeModel } from 'tdesign-vue-next';
+
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { onMounted, ref } from 'vue';
@@ -18,8 +20,8 @@ const loading = ref(false); // 加载状态
 const searchValue = ref(''); // 搜索值
 
 /** 处理搜索逻辑 */
-function handleSearch(e: any) {
-  const value = e.target.value;
+function handleSearch(inputValue: InputValue) {
+  const value = String(inputValue);
   searchValue.value = value;
   const filteredList = value
     ? deptList.value.filter((item) =>
@@ -32,8 +34,8 @@ function handleSearch(e: any) {
 }
 
 /** 选中部门 */
-function handleSelect(_selectedKeys: any[], info: any) {
-  emit('select', info.node.dataRef);
+function handleSelect({ node }: { node: TreeNodeModel }) {
+  emit('select', node.data);
 }
 
 /** 初始化 */
@@ -55,27 +57,28 @@ onMounted(async () => {
   <div>
     <Input
       placeholder="搜索部门"
-      allow-clear
+      clearable
       v-model="searchValue"
       @change="handleSearch"
       class="w-full"
     >
-      <template #prefix>
+      <template #prefix-icon>
         <IconifyIcon icon="lucide:search" class="size-4" />
       </template>
     </Input>
-    <Spin :spinning="loading" wrapper-class-name="w-full">
+    <div v-loading="loading" class="w-full">
       <Tree
-        @select="handleSelect"
+        @click="handleSelect"
         v-if="deptTree.length > 0"
         class="pt-2"
-        :tree-data="deptTree"
-        :default-expand-all="true"
-        :field-names="{ title: 'name', key: 'id', children: 'children' }"
+        :data="deptTree"
+        expand-all
+        activable
+        :keys="{ label: 'name', value: 'id', children: 'children' }"
       />
       <div v-else-if="!loading" class="py-4 text-center text-gray-500">
         暂无数据
       </div>
-    </Spin>
+    </div>
   </div>
 </template>

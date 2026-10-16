@@ -20,8 +20,7 @@ const loading = ref(false); // 加载状态
 const searchValue = ref(''); // 搜索值
 
 /** 处理搜索逻辑 */
-function handleSearch(e: any) {
-  const value = e.target.value;
+function handleSearch(value: string) {
   searchValue.value = value;
   const filteredList = value
     ? deptList.value.filter((item) =>
@@ -62,7 +61,7 @@ onMounted(async () => {
   <div>
     <NInput
       placeholder="搜索部门"
-      allow-clear
+      clearable
       v-model:value="searchValue"
       @change="handleSearch"
       class="w-full"

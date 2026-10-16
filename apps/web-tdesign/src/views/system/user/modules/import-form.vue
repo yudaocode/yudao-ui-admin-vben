@@ -48,8 +48,13 @@ const [Modal, modalApi] = useVbenModal({
 
 /** 上传前 */
 function beforeUpload(file: UploadFile) {
-  formApi.setFieldValue('file', file);
-  return false;
+  formApi.setFieldValue('file', file.raw);
+  return true;
+}
+
+/** 移除文件 */
+function handleRemove() {
+  formApi.setFieldValue('file', undefined);
 }
 
 /** 下载模版 */
@@ -65,9 +70,11 @@ async function handleDownload() {
       <template #file>
         <div class="w-full">
           <Upload
-            :max-count="1"
+            :max="1"
             accept=".xls,.xlsx"
+            :auto-upload="false"
             :before-upload="beforeUpload"
+            @remove="handleRemove"
           >
             <Button theme="primary"> 选择 Excel 文件 </Button>
           </Upload>

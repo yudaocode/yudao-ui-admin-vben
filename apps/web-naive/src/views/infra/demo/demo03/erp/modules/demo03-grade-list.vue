@@ -47,10 +47,10 @@ function handleEdit(row: Demo03StudentApi.Demo03Grade) {
 
 /** 删除学生班级 */
 async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.id]),
-    duration: 0,
-  });
+  const hideLoading = message.loading(
+    $t('ui.actionMessage.deleting', [row.id]),
+    { duration: 0 },
+  );
   try {
     await deleteDemo03Grade(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.id]));
@@ -63,8 +63,7 @@ async function handleDelete(row: Demo03StudentApi.Demo03Grade) {
 /** 批量删除学生班级 */
 async function handleDeleteBatch() {
   await confirm($t('ui.actionMessage.deleteBatchConfirm'));
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deletingBatch'),
+  const hideLoading = message.loading($t('ui.actionMessage.deletingBatch'), {
     duration: 0,
   });
   try {
@@ -182,8 +181,7 @@ watch(
           },
           {
             label: $t('common.delete'),
-            danger: true,
-            type: 'primary',
+            type: 'error',
             text: true,
             icon: ACTION_ICON.DELETE,
             auth: ['infra:demo03-student:delete'],

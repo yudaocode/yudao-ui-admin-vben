@@ -86,11 +86,25 @@ setupVbenVxeTable({
       renderTableDefault(_renderOpts, params) {
         const { column, row } = params;
         if (column && column.field && row[column.field]) {
-          return h(ImageViewer, {}, () => {
-            return row[column.field].map((item: any) =>
-              h(Image, { src: item }),
-            );
-          });
+          const images: string[] = row[column.field];
+          return h(
+            ImageViewer,
+            { images },
+            {
+              trigger: ({ open }: { open: (index?: number) => void }) =>
+                h(
+                  'div',
+                  { class: 'flex items-center justify-center gap-1' },
+                  images.map((item, index) =>
+                    h(Image, {
+                      src: item,
+                      class: 'cursor-pointer',
+                      onClick: () => open(index),
+                    }),
+                  ),
+                ),
+            },
+          );
         }
         return '';
       },
@@ -159,14 +173,12 @@ setupVbenVxeTable({
       renderTableDefault({ attrs, props }, { column, row }) {
         const loadingKey = `__loading_${column.field}`;
         const finallyProps = {
-          checkedChildren: $t('common.enabled'),
-          checkedValue: 1,
-          unCheckedChildren: $t('common.disabled'),
-          unCheckedValue: 0,
+          customValue: [1, 0],
+          label: [$t('common.enabled'), $t('common.disabled')],
           ...props,
-          checked: row[column.field],
+          value: row[column.field],
           loading: row[loadingKey] ?? false,
-          'onUpdate:checked': onChange,
+          'onUpdate:value': onChange,
         };
 
         async function onChange(newVal: any) {

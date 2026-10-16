@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue';
 
-import { computed, onUnmounted, shallowRef, useSlots, watchEffect } from 'vue';
+import { computed, onUnmounted, shallowRef, useSlots } from 'vue';
 
 import { useScrollLock } from '@vben-core/composables';
 import { VbenScrollbar } from '@vben-core/shadcn-ui';
@@ -161,8 +161,22 @@ const dragBarStyle = computed((): CSSProperties => {
   };
 });
 
+/**
+ * 二级面板是否展开。可见性、占位宽度必须由同一判定驱动：
+ * 二者不一致时面板会浮在正文上（vben-layout 的 header 偏移只看 extraVisible）。
+ * fixedExtra 与 expandOnHover 在 vben-layout 里绑同一个偏好，但作为组件 API 不能假设调用方总是成对传。
+ */
+const extraPanelExpanded = computed(
+  () =>
+    props.isSidebarMixed &&
+    props.show &&
+    !collapse.value &&
+    !!extraVisible.value &&
+    (props.fixedExtra || expandOnHover.value || expandOnHovering.value),
+);
+
 const style = computed((): CSSProperties => {
-  const { isSidebarMixed, marginTop, paddingTop, zIndex } = props;
+  const { marginTop, paddingTop, zIndex } = props;
 
   return {
     '--scroll-shadow': 'var(--sidebar)',
@@ -171,16 +185,16 @@ const style = computed((): CSSProperties => {
     marginTop: `${marginTop}px`,
     paddingTop: `${paddingTop}px`,
     zIndex,
-    ...(isSidebarMixed && extraVisible.value ? { transition: 'none' } : {}),
+    ...(extraPanelExpanded.value ? { transition: 'none' } : {}),
   };
 });
 
 const extraStyle = computed((): CSSProperties => {
-  const { extraWidth, show, width, zIndex } = props;
+  const { extraWidth, width, zIndex } = props;
 
   return {
     left: `${width}px`,
-    width: extraVisible.value && show ? `${extraWidth}px` : 0,
+    width: extraPanelExpanded.value ? `${extraWidth}px` : 0,
     zIndex,
   };
 });
@@ -235,24 +249,14 @@ const collapseStyle = computed((): CSSProperties => {
   };
 });
 
-watchEffect(() => {
-  extraVisible.value = props.fixedExtra ? true : extraVisible.value;
-});
-
 function getMenuWidthValue(isHiddenDom: boolean) {
-  const {
-    collapseWidth,
-    extraWidth,
-    mixedWidth,
-    fixedExtra,
-    isSidebarMixed,
-    width,
-  } = props;
+  const { collapseWidth, extraWidth, mixedWidth, isSidebarMixed, width } =
+    props;
 
   let widthValue =
     width === 0
       ? '0px'
-      : `${width + (isSidebarMixed && fixedExtra && extraVisible.value ? extraWidth : 0)}px`;
+      : `${width + (extraPanelExpanded.value ? extraWidth : 0)}px`;
 
   if (isHiddenDom && expandOnHovering.value && !expandOnHover.value) {
     widthValue = isSidebarMixed ? `${mixedWidth}px` : `${collapseWidth}px`;
@@ -283,12 +287,18 @@ function calcMenuWidthStyle(): CSSProperties {
 }
 
 function handleMouseenter(e: MouseEvent) {
+  // 移动端抽屉模式不存在 hover 语义：合成 mouse 事件不得改写折叠状态
+  if (props.isMobile) {
+    return;
+  }
   if (e?.offsetX < 10) {
     return;
   }
 
-  // 未开启和未折叠状态不生效
   if (expandOnHover.value) {
+    if (props.isSidebarMixed) {
+      extraVisible.value = true;
+    }
     return;
   }
   if (!expandOnHovering.value) {
@@ -296,6 +306,7 @@ function handleMouseenter(e: MouseEvent) {
   }
   if (props.isSidebarMixed) {
     isLocked.value = true;
+    extraVisible.value = true;
   }
   expandOnHovering.value = true;
 }
@@ -305,7 +316,7 @@ function handleMouseleave() {
   if (props.isSidebarMixed) {
     isLocked.value = false;
   }
-  if (expandOnHover.value) {
+  if (expandOnHover.value || props.isMobile) {
     return;
   }
 
@@ -388,7 +399,10 @@ onUnmounted(() => {
       >
         <SidebarFixedButton
           v-if="!collapse && !isSidebarMixed && showFixedButton"
+          v-model:collapse="collapse"
           v-model:expand-on-hover="expandOnHover"
+          v-model:expand-on-hovering="expandOnHovering"
+          v-model:extra-visible="extraVisible"
         />
         <div v-if="slots.logo" :style="headerStyle">
           <slot name="logo"></slot>
@@ -408,7 +422,7 @@ onUnmounted(() => {
         :class="[
           themeSub,
           {
-            'border-l': extraVisible,
+            'border-l': extraPanelExpanded,
           },
         ]"
         :style="extraStyle"
@@ -421,7 +435,10 @@ onUnmounted(() => {
 
         <SidebarFixedButton
           v-if="!extraCollapse"
+          v-model:collapse="collapse"
           v-model:expand-on-hover="expandOnHover"
+          v-model:expand-on-hovering="expandOnHovering"
+          v-model:extra-visible="extraVisible"
         />
         <div v-if="!extraCollapse" :style="extraTitleStyle" class="pl-2">
           <slot name="extra-title"></slot>

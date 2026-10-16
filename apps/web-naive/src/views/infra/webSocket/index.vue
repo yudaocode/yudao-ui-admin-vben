@@ -248,10 +248,10 @@ onMounted(async () => {
         <NInput
           v-model:value="sendText"
           type="textarea"
-          :auto-size="{ minRows: 3, maxRows: 6 }"
+          :autosize="{ minRows: 3, maxRows: 6 }"
           :disabled="!getIsOpen"
           class="border-1 rounded-lg"
-          allow-clear
+          clearable
           placeholder="请输入你要发送的消息..."
         />
 

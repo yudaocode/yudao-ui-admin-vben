@@ -45,22 +45,25 @@ const modelValue = defineModel<any>({ default: undefined });
 
 const attrs = useAttrs();
 /**
- * 是否以自定义 model 属性（如 value）作为当前模型：
- * modelPropName 不是 modelValue，且父级显式传入了该属性（值为 undefined 也算传入）。
- * 否则沿用 modelValue（如表单适配层映射为 modelValue、内层使用 value 的场景）。
+ * 是否以 modelValue 作为当前模型：
+ * modelPropName 为 modelValue，或父级未显式传入自定义 model 属性
+ * （如表单适配层映射为 modelValue、内层使用 value 的场景）。
+ * 父级显式传入自定义属性（值为 undefined 也算传入）时，以该属性及其 update 事件双向绑定。
  */
-const usesCustomModel = computed(() => {
+const usesDefaultModelValue = computed(() => {
   const { modelPropName } = props;
   if (['model-value', 'modelValue'].includes(modelPropName)) {
-    return false;
+    return true;
   }
   // useAttrs 只在读取属性时收集依赖，先读取再判断是否传入
   return (
-    attrs[modelPropName] !== undefined || Reflect.has(attrs, modelPropName)
+    attrs[modelPropName] === undefined && !Reflect.has(attrs, modelPropName)
   );
 });
 const currentModelValue = computed(() => {
-  return usesCustomModel.value ? attrs[props.modelPropName] : modelValue.value;
+  return usesDefaultModelValue.value
+    ? modelValue.value
+    : attrs[props.modelPropName];
 });
 const innerParams = ref({});
 const refOptions = ref<OptionsItem[]>([]);
@@ -111,7 +114,7 @@ const bindProps = computed(() => {
   return {
     [props.modelPropName]: unref(currentModelValue),
     [props.optionsPropName]: unref(getOptions),
-    [updateEvent]: (val: any) => {
+    [updateEvent]: (val: string) => {
       updateModelValue(val);
     },
     ...objectOmit(attrs, [props.modelPropName, updateEvent]),
@@ -125,14 +128,14 @@ const bindProps = computed(() => {
 
 /** 只回写当前模型对应的事件，避免同时传入 value 与 modelValue 时重复回写 */
 function updateModelValue(value: any) {
-  if (!usesCustomModel.value) {
+  if (usesDefaultModelValue.value) {
     modelValue.value = value;
     return;
   }
-  const handlers = attrs[`onUpdate:${props.modelPropName}`];
-  for (const handler of [handlers].flat()) {
-    if (isFunction(handler)) {
-      handler(value);
+  const updateHandlers = attrs[`onUpdate:${props.modelPropName}`];
+  for (const updateHandler of [updateHandlers].flat()) {
+    if (isFunction(updateHandler)) {
+      updateHandler(value);
     }
   }
 }
@@ -213,9 +216,9 @@ const mergedParams = computed(() => {
 });
 
 watch(
-  mergedParams,
-  (value, oldValue) => {
-    if (isEqual(value, oldValue)) {
+  [() => props.api, mergedParams],
+  ([api, value], [oldApi, oldValue]) => {
+    if (api === oldApi && isEqual(value, oldValue)) {
       return;
     }
     fetchApi();
@@ -227,7 +230,7 @@ function emitChange() {
   const value = unref(currentModelValue);
   // 自定义 model 属性可能由表单以 emptyStateValue（如 Naive 的 null）表示空值
   const isEmptyValue =
-    value === undefined || (usesCustomModel.value && value === null);
+    value === undefined || (!usesDefaultModelValue.value && value === null);
   if (isEmptyValue && props.autoSelect && unref(getOptions).length > 0) {
     let firstOption;
     if (isFunction(props.autoSelect)) {

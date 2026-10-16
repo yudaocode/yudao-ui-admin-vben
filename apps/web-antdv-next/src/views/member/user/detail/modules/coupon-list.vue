@@ -30,7 +30,7 @@ const statusTabs = ref(getStatusTabs());
 function useGridFormSchema() {
   const excludeFields = new Set(['nickname']);
   return useCouponGridFormSchema().filter(
-    (item) => !excludeFields.has(item.fieldName),
+    (item) => !item.fieldName || !excludeFields.has(item.fieldName),
   );
 }
 

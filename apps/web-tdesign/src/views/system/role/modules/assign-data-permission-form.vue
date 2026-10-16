@@ -135,7 +135,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
   <Modal title="数据权限" class="w-2/5">
     <Form class="mx-4">
       <template #dataScopeDeptIds="slotProps">
-        <Spin :spinning="deptLoading" wrapper-class-name="w-full">
+        <div v-loading="deptLoading" class="w-full">
           <Tree
             :tree-data="deptTree"
             multiple
@@ -146,7 +146,7 @@ function getAllNodeIds(nodes: any[], ids: number[] = []): number[] {
             value-field="id"
             label-field="name"
           />
-        </Spin>
+        </div>
       </template>
     </Form>
     <template #prepend-footer>

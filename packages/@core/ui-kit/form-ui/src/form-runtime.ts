@@ -82,6 +82,22 @@ export function useFormRuntime<TValues extends FormValues>(
     for (const invalidator of validationInvalidators.get(fieldName) ?? []) {
       invalidator();
     }
+    // invalidator 只作废已开始执行的校验；仍在 debounce 定时器中排队的校验触发时
+    // 才读取字段值（如 reset 后的值）并写回错误。中止 TanStack 为其保存的
+    // AbortController，定时器触发时即跳过（同 TanStack 字段卸载时的取消方式）
+    const fieldInfo = Reflect.get(rawForm.fieldInfo, fieldName) as
+      | undefined
+      | {
+          validationMetaMap: Record<
+            string,
+            undefined | { lastAbortController: AbortController }
+          >;
+        };
+    for (const validationMeta of Object.values(
+      fieldInfo?.validationMetaMap ?? {},
+    )) {
+      validationMeta?.lastAbortController.abort();
+    }
   }
 
   const RuntimeField = createRuntimeFieldComponent(

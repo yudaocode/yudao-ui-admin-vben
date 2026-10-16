@@ -34,8 +34,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
     },
     {
@@ -44,9 +44,9 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       component: 'DatePicker',
       componentProps: {
-        showTime: true,
+        enableTimePicker: true,
         format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
+        valueType: 'time-stamp',
       },
     },
     {
@@ -66,7 +66,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入名字',
       },
     },
@@ -75,7 +75,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '性别',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
         placeholder: '请选择性别',
       },
@@ -85,7 +85,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '简介',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入简介',
       },
     },
@@ -95,7 +95,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -192,7 +192,7 @@ export function useDemo03CourseGridFormSchema(): VbenFormSchema[] {
       label: '学生编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入学生编号',
       },
     },
@@ -201,7 +201,7 @@ export function useDemo03CourseGridFormSchema(): VbenFormSchema[] {
       label: '名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入名字',
       },
     },
@@ -210,7 +210,7 @@ export function useDemo03CourseGridFormSchema(): VbenFormSchema[] {
       label: '分数',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入分数',
       },
     },
@@ -220,7 +220,7 @@ export function useDemo03CourseGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -307,7 +307,7 @@ export function useDemo03GradeGridFormSchema(): VbenFormSchema[] {
       label: '学生编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入学生编号',
       },
     },
@@ -316,7 +316,7 @@ export function useDemo03GradeGridFormSchema(): VbenFormSchema[] {
       label: '名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入名字',
       },
     },
@@ -325,7 +325,7 @@ export function useDemo03GradeGridFormSchema(): VbenFormSchema[] {
       label: '班主任',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入班主任',
       },
     },
@@ -335,7 +335,7 @@ export function useDemo03GradeGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

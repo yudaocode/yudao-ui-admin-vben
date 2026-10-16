@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 import { useAntdDesignTokens } from '@vben/hooks';
 import { preferences, usePreferences } from '@vben/preferences';
@@ -28,6 +28,14 @@ const tokenTheme = computed(() => {
     token: tokens,
   };
 });
+
+watch(
+  [tokenTheme, antdLocale],
+  ([themeConfig, locale]) => {
+    ConfigProvider.config({ theme: themeConfig, locale });
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

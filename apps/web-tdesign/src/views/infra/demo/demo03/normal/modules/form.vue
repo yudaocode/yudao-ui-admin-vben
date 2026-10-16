@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Tabs } from 'tdesign-vue-next';
+import { TabPanel, Tabs } from 'tdesign-vue-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { message } from '#/adapter/tdesign';
@@ -105,16 +105,16 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle">
     <Form class="mx-4" />
     <!-- 子表的表单 -->
-    <Tabs v-model:active-key="subTabsName">
-      <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+    <Tabs v-model="subTabsName">
+      <TabPanel value="demo03Course" label="学生课程" :destroy-on-hide="false">
         <Demo03CourseForm
           ref="demo03CourseFormRef"
           :student-id="formData?.id"
         />
-      </Tabs.TabPane>
-      <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+      </TabPanel>
+      <TabPanel value="demo03Grade" label="学生班级" :destroy-on-hide="false">
         <Demo03GradeForm ref="demo03GradeFormRef" :student-id="formData?.id" />
-      </Tabs.TabPane>
+      </TabPanel>
     </Tabs>
   </Modal>
 </template>

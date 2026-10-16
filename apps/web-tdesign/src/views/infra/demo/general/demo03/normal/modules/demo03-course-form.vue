@@ -75,7 +75,7 @@ watch(
         <Button
           size="small"
           variant="text"
-          danger
+          theme="danger"
           @click="handleDelete(row)"
           v-access:code="['infra:demo03-student:delete']"
         >

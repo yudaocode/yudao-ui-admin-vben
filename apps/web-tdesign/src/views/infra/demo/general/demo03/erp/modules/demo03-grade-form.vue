@@ -7,7 +7,7 @@ import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import { Form, Input } from 'tdesign-vue-next';
+import { Form, FormItem, Input } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import {
@@ -41,7 +41,10 @@ const rules: Record<string, Rule[]> = {
 
 const [Modal, modalApi] = useVbenModal({
   async onConfirm() {
-    await formRef.value?.validate();
+    const valid = await formRef.value?.validate();
+    if (valid !== true) {
+      return;
+    }
 
     modalApi.lock();
     // 提交表单
@@ -90,28 +93,22 @@ function resetForm() {
     name: undefined,
     teacher: undefined,
   };
-  formRef.value?.resetFields();
+  formRef.value?.clearValidate();
 }
 </script>
 
 <template>
   <Modal :title="getTitle">
-    <Form
-      ref="formRef"
-      :model="formData"
-      :rules="rules"
-      :label-col="{ span: 5 }"
-      :wrapper-col="{ span: 18 }"
-    >
-      <Form.Item label="学生编号" name="studentId">
+    <Form ref="formRef" :data="formData" :rules="rules" label-width="80px">
+      <FormItem label="学生编号" name="studentId">
         <Input v-model="formData.studentId" placeholder="请输入学生编号" />
-      </Form.Item>
-      <Form.Item label="名字" name="name">
+      </FormItem>
+      <FormItem label="名字" name="name">
         <Input v-model="formData.name" placeholder="请输入名字" />
-      </Form.Item>
-      <Form.Item label="班主任" name="teacher">
+      </FormItem>
+      <FormItem label="班主任" name="teacher">
         <Input v-model="formData.teacher" placeholder="请输入班主任" />
-      </Form.Item>
+      </FormItem>
     </Form>
   </Modal>
 </template>

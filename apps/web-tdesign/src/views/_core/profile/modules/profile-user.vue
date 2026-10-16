@@ -45,7 +45,7 @@ async function handelUpload({
 <template>
   <div v-if="profile">
     <div class="flex flex-col items-center">
-      <Tooltip title="点击上传头像">
+      <Tooltip content="点击上传头像">
         <CropperAvatar
           :show-btn="false"
           :upload-api="handelUpload"

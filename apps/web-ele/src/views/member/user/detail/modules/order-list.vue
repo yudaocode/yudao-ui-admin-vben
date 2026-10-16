@@ -28,7 +28,7 @@ const { push } = useRouter();
 function useGridFormSchema() {
   const excludeFields = new Set(['userId', 'userNickname']);
   return useOrderGridFormSchema().filter(
-    (item) => !excludeFields.has(item.fieldName),
+    (item) => !item.fieldName || !excludeFields.has(item.fieldName),
   );
 }
 

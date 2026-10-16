@@ -23,7 +23,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级示例分类',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getDemo02CategoryList({});
           data.unshift({
@@ -36,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择上级示例分类',
-        treeDefaultExpandAll: true,
+        treeProps: { expandAll: true },
       },
       rules: 'selectRequired',
     },
@@ -60,7 +60,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入名字',
       },
     },
@@ -69,7 +69,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '父级编号',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入父级编号',
       },
     },
@@ -79,7 +79,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

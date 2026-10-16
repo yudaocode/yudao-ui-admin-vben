@@ -8,7 +8,7 @@ import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { isEmpty, openWindow } from '@vben/utils';
 
 import { useClipboard } from '@vueuse/core';
-import { Button } from 'tdesign-vue-next';
+import { Button, Image, ImageViewer } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -153,9 +153,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </template>
       <template #file-content="{ row }">
         <ImageViewer
-          v-if="row.type && row.type.includes('image')"
+          v-if="row.url && row.type && row.type.includes('image')"
           :images="[row.url]"
-        />
+        >
+          <template #trigger="{ open }">
+            <Image :src="row.url" class="cursor-pointer" @click="open()" />
+          </template>
+        </ImageViewer>
         <Button v-else variant="text" @click="() => openWindow(row.url!)">
           {{ row.type && row.type.includes('pdf') ? '预览' : '下载' }}
         </Button>

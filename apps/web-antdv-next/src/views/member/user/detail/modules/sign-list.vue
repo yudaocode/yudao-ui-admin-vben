@@ -17,7 +17,7 @@ const props = defineProps<{
 function useGridFormSchema() {
   const excludeFields = new Set(['nickname']);
   return useSignInGridFormSchema().filter(
-    (item) => !excludeFields.has(item.fieldName),
+    (item) => !item.fieldName || !excludeFields.has(item.fieldName),
   );
 }
 

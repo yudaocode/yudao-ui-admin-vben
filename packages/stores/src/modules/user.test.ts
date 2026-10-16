@@ -18,11 +18,11 @@ describe('useUserStore', () => {
   // 测试重置用户信息时的行为
   it('clears userInfo and userRoles when setting null userInfo', () => {
     const store = useUserStore();
-    store.setUserInfo({
-      roles: [{ roleName: 'User', value: 'user' }],
-    } as any);
+    // 角色通过 setUserRoles 单独设置，setUserInfo 不覆盖已有角色
+    store.setUserRoles(['user']);
+    store.setUserInfo({ nickname: 'Jane Doe' } as any);
     expect(store.userInfo).not.toBeNull();
-    expect(store.userRoles.length).toBeGreaterThan(0);
+    expect(store.userRoles).toEqual(['user']);
 
     store.setUserInfo(null as any);
     expect(store.userInfo).toBeNull();

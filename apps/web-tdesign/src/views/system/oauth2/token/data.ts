@@ -13,7 +13,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户编号',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -23,7 +23,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: getDictOptions(DICT_TYPE.USER_TYPE, 'number'),
         placeholder: '请选择用户类型',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -32,7 +32,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入客户端编号',
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

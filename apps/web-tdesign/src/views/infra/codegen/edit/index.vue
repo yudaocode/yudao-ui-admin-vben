@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 
-import { Button, Steps } from 'tdesign-vue-next';
+import { Button, StepItem, Steps } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import { getCodegenTable, updateCodegenTable } from '#/api/infra/codegen';
@@ -122,12 +122,8 @@ getDetail();
 <template>
   <Page auto-content-height v-loading="loading">
     <div class="flex h-[95%] flex-col rounded-md bg-card p-4">
-      <Steps
-        type="navigation"
-        v-model:current="currentStep"
-        class="mb-8 rounded shadow-sm"
-      >
-        <Steps.Step
+      <Steps v-model:current="currentStep" class="mb-8 rounded shadow-sm">
+        <StepItem
           v-for="(step, index) in steps"
           :key="index"
           :title="step.title"

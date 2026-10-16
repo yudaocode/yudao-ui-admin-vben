@@ -31,7 +31,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级部门',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getDeptList();
           if (
@@ -49,7 +49,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择上级部门',
-        treeDefaultExpandAll: true,
+        treeProps: { expandAll: true },
       },
       rules: 'selectRequired',
     },
@@ -81,7 +81,7 @@ export function useFormSchema(): VbenFormSchema[] {
         labelField: 'nickname',
         valueField: 'id',
         placeholder: '请选择负责人',
-        allowClear: true,
+        clearable: true,
       },
       rules: z.number().optional(),
     },
@@ -90,7 +90,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '联系电话',
       component: 'Input',
       componentProps: {
-        maxLength: 11,
+        maxlength: 11,
         placeholder: '请输入联系电话',
       },
       rules: 'mobileRequired',
@@ -110,8 +110,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },

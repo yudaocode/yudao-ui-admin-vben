@@ -59,7 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择归属部门',
-        treeDefaultExpandAll: true,
+        treeProps: { expandAll: true },
       },
     },
     {
@@ -70,7 +70,7 @@ export function useFormSchema(): VbenFormSchema[] {
         api: getSimplePostList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
         placeholder: '请选择岗位',
       },
     },
@@ -97,8 +97,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(1),
     },
@@ -108,8 +108,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -216,7 +216,7 @@ export function useAssignRoleFormSchema(): VbenFormSchema[] {
         api: getSimpleRoleList,
         labelField: 'name',
         valueField: 'id',
-        mode: 'multiple',
+        multiple: true,
         placeholder: '请选择角色',
       },
     },
@@ -238,8 +238,7 @@ export function useImportFormSchema(): VbenFormSchema[] {
       label: '是否覆盖',
       component: 'Switch',
       componentProps: {
-        checkedChildren: '是',
-        unCheckedChildren: '否',
+        label: ['是', '否'],
       },
       rules: z.boolean().default(false),
       help: '是否更新已经存在的用户数据',
@@ -256,7 +255,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入用户名称',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -265,7 +264,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Input',
       componentProps: {
         placeholder: '请输入手机号码',
-        allowClear: true,
+        clearable: true,
       },
     },
     {
@@ -274,7 +273,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];
@@ -323,8 +322,7 @@ export function useGridColumns(
         attrs: { beforeChange: onStatusChange },
         name: 'CellSwitch',
         props: {
-          checkedValue: CommonStatusEnum.ENABLE,
-          unCheckedValue: CommonStatusEnum.DISABLE,
+          customValue: [CommonStatusEnum.ENABLE, CommonStatusEnum.DISABLE],
         },
       },
     },

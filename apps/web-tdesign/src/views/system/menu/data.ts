@@ -1,4 +1,4 @@
-import type { Recordable } from '@vben/types';
+import type { TreeNodeModel, TreeOptionData } from 'tdesign-vue-next';
 
 import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
@@ -36,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '上级菜单',
       component: 'ApiTreeSelect',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         api: async () => {
           const data = await getMenuList();
           data.unshift({
@@ -49,22 +49,22 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         childrenField: 'children',
         placeholder: '请选择上级菜单',
-        filterTreeNode(input: string, node: Recordable<any>) {
+        filter(input: string, node: TreeOptionData) {
           if (!input || input.length === 0) {
             return true;
           }
-          const name: string = node.label ?? '';
+          const name = typeof node.label === 'string' ? node.label : '';
           if (!name) return false;
           return name.includes(input) || $t(name).includes(input);
         },
-        showSearch: true,
-        treeDefaultExpandedKeys: [0],
-      },
-      rules: 'selectRequired',
-      renderComponentContent() {
-        return {
-          title({ label, icon }: { icon: string; label: string }) {
+        filterable: true,
+        treeProps: {
+          // 只展开第一层（即“顶级菜单”节点）
+          expandLevel: 1,
+          label: (_h: unknown, node: TreeNodeModel) => {
             const components = [];
+            const label = node.label;
+            const icon = node.data.icon;
             if (!label) return '';
             if (icon) {
               components.push(h(IconifyIcon, { class: 'size-4', icon }));
@@ -72,8 +72,9 @@ export function useFormSchema(): VbenFormSchema[] {
             components.push(h('span', { class: '' }, $t(label || '')));
             return h('div', { class: 'flex items-center gap-1' }, components);
           },
-        };
+        },
       },
+      rules: 'selectRequired',
     },
     {
       fieldName: 'name',
@@ -90,8 +91,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_MENU_TYPE, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(SystemMenuTypeEnum.DIR),
     },
@@ -166,12 +167,9 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '组件名称',
       component: 'AutoComplete',
       componentProps: {
-        allowClear: true,
-        filterOption(input: string, option: { value: string }) {
-          return option.value.toLowerCase().includes(input.toLowerCase());
-        },
+        clearable: true,
         placeholder: '请选择组件名称',
-        options: componentKeys.map((v) => ({ value: v })),
+        options: componentKeys,
       },
       dependencies: {
         triggerFields: ['type'],
@@ -212,8 +210,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.COMMON_STATUS, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: z.number().default(CommonStatusEnum.ENABLE),
     },
@@ -226,8 +224,8 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '总是', value: true },
           { label: '不是', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: 'required',
       defaultValue: true,
@@ -248,8 +246,8 @@ export function useFormSchema(): VbenFormSchema[] {
           { label: '缓存', value: true },
           { label: '不缓存', value: false },
         ],
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
       rules: 'required',
       defaultValue: true,

@@ -151,10 +151,10 @@ async function handleOk() {
         <div class="mt-4 flex items-center justify-between">
           <Upload
             :before-upload="handleBeforeUpload"
-            :file-list="[]"
+            :files="[]"
             accept="image/*"
           >
-            <Tooltip :title="$t('ui.cropper.selectImage')" placement="bottom">
+            <Tooltip :content="$t('ui.cropper.selectImage')" placement="bottom">
               <Button size="small" theme="primary">
                 <template #icon>
                   <div class="flex items-center justify-center">
@@ -165,7 +165,7 @@ async function handleOk() {
             </Tooltip>
           </Upload>
           <Space>
-            <Tooltip :title="$t('ui.cropper.btn_reset')" placement="bottom">
+            <Tooltip :content="$t('ui.cropper.btn_reset')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -180,7 +180,7 @@ async function handleOk() {
               </Button>
             </Tooltip>
             <Tooltip
-              :title="$t('ui.cropper.btn_rotate_left')"
+              :content="$t('ui.cropper.btn_rotate_left')"
               placement="bottom"
             >
               <Button
@@ -197,7 +197,7 @@ async function handleOk() {
               </Button>
             </Tooltip>
             <Tooltip
-              :title="$t('ui.cropper.btn_rotate_right')"
+              :content="$t('ui.cropper.btn_rotate_right')"
               placement="bottom"
             >
               <Button
@@ -213,7 +213,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="$t('ui.cropper.btn_scale_x')" placement="bottom">
+            <Tooltip :content="$t('ui.cropper.btn_scale_x')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -227,7 +227,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="$t('ui.cropper.btn_scale_y')" placement="bottom">
+            <Tooltip :content="$t('ui.cropper.btn_scale_y')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -241,7 +241,7 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="$t('ui.cropper.btn_zoom_in')" placement="bottom">
+            <Tooltip :content="$t('ui.cropper.btn_zoom_in')" placement="bottom">
               <Button
                 :disabled="!src"
                 size="small"
@@ -255,7 +255,10 @@ async function handleOk() {
                 </template>
               </Button>
             </Tooltip>
-            <Tooltip :title="$t('ui.cropper.btn_zoom_out')" placement="bottom">
+            <Tooltip
+              :content="$t('ui.cropper.btn_zoom_out')"
+              placement="bottom"
+            >
               <Button
                 :disabled="!src"
                 size="small"

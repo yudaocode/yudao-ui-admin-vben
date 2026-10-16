@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
-import { Tabs } from 'tdesign-vue-next';
+import { TabPanel, Tabs } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -197,13 +197,17 @@ const [Grid, gridApi] = useVbenVxeGrid({
       </Grid>
 
       <!-- 子表的表单 -->
-      <Tabs v-model:active-key="subTabsName" class="mt-2">
-        <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+      <Tabs v-model="subTabsName" class="mt-2">
+        <TabPanel
+          value="demo03Course"
+          label="学生课程"
+          :destroy-on-hide="false"
+        >
           <Demo03CourseList :student-id="selectDemo03Student?.id" />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+        </TabPanel>
+        <TabPanel value="demo03Grade" label="学生班级" :destroy-on-hide="false">
           <Demo03GradeList :student-id="selectDemo03Student?.id" />
-        </Tabs.TabPane>
+        </TabPanel>
       </Tabs>
     </div>
   </Page>

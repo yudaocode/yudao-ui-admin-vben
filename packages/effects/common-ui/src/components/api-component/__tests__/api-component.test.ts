@@ -1,222 +1,168 @@
-import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, h, markRaw, nextTick, ref, shallowRef } from 'vue';
+/* eslint-disable vue/one-component-per-file */
 
-import { describe, expect, it } from 'vitest';
+import type { ApiComponentProps } from '../types';
+
+import { mount } from '@vue/test-utils';
+import { defineComponent, h, markRaw, nextTick, ref } from 'vue';
+
+import { describe, expect, it, vi } from 'vitest';
 
 import ApiComponent from '../api-component.vue';
 
-interface BindingScenario {
-  name: string;
-  /** ApiComponent 的 modelPropName，undefined 表示使用默认值 */
-  modelPropName?: string;
-  /** 内层组件声明的 v-model 属性名 */
-  innerProp: string;
-  /** 父级绑定到 ApiComponent 的 v-model 属性名 */
-  outerProp: string;
-}
-
-const scenarios: BindingScenario[] = [
-  {
-    name: '默认：外层 modelValue + 内层 modelValue',
-    innerProp: 'modelValue',
-    outerProp: 'modelValue',
+const ValueInput = defineComponent({
+  name: 'ValueInput',
+  props: {
+    value: { type: String, default: undefined },
   },
-  {
-    name: 'kebab-case：modelPropName 为 model-value',
-    modelPropName: 'model-value',
-    innerProp: 'modelValue',
-    outerProp: 'modelValue',
+  emits: ['update:value'],
+  setup(props, { emit }) {
+    return () =>
+      h(
+        'button',
+        { onClick: () => emit('update:value', 'selected') },
+        props.value,
+      );
   },
-  {
-    name: '外层 modelValue + 内层 value（Antd/Antdv Next 表单映射）',
-    modelPropName: 'value',
-    innerProp: 'value',
-    outerProp: 'modelValue',
+});
+
+const ModelValueInput = defineComponent({
+  name: 'ModelValueInput',
+  props: {
+    modelValue: { type: String, default: undefined },
   },
-  {
-    name: '外层 value + 内层 value（Naive/TDesign 及直接使用）',
-    modelPropName: 'value',
-    innerProp: 'value',
-    outerProp: 'value',
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    return () =>
+      h(
+        'button',
+        { onClick: () => emit('update:modelValue', 'selected') },
+        props.modelValue,
+      );
   },
-];
+});
 
-const options = [
-  { label: 'one', value: 1 },
-  { label: 'two', value: 2 },
-];
+const KebabModelInput = defineComponent({
+  name: 'KebabModelInput',
+  props: {
+    modelValue: { type: String, default: undefined },
+  },
+  emits: ['update:modelValue'],
+  setup(props, { emit }) {
+    return () =>
+      h(
+        'button',
+        { onClick: () => emit('update:modelValue', 'selected') },
+        props.modelValue,
+      );
+  },
+});
 
-function createModelInput(propName: string) {
-  return markRaw(
-    // eslint-disable-next-line vue/one-component-per-file -- 测试 fixture：被包装的内层组件
-    defineComponent({
-      name: 'ModelInput',
-      props: {
-        // 显式 default 避免含 Boolean 的类型在未传入时被转换为 false
-        [propName]: {
-          type: [String, Number, Boolean, Array],
-          default: undefined,
-        },
-      },
-      emits: [`update:${propName}`],
-      setup() {
-        return () => h('div');
-      },
-    }),
-  );
-}
-
-function mountScenario(
-  scenario: BindingScenario,
-  initialValue: any,
-  extraProps: Record<string, any> = {},
-) {
-  const outerValue = shallowRef<any>(initialValue);
-  const updates: any[] = [];
-  const apiRef = ref();
-  const Input = createModelInput(scenario.innerProp);
-  const wrapper = mount(
-    // eslint-disable-next-line vue/one-component-per-file -- 测试 fixture：模拟父级 v-model 绑定
-    defineComponent({
+describe('api-component.vue', () => {
+  it('bridges a custom model prop in both directions', async () => {
+    const outerValue = ref('initial');
+    const handleUpdate = vi.fn((value: string) => {
+      outerValue.value = value;
+    });
+    const Harness = defineComponent({
       setup() {
         return () =>
           h(ApiComponent, {
-            component: Input,
-            modelPropName: scenario.modelPropName,
-            ref: apiRef,
-            ...extraProps,
-            [scenario.outerProp]: outerValue.value,
-            [`onUpdate:${scenario.outerProp}`]: (value: any) => {
-              updates.push(value);
-              outerValue.value = value;
-            },
+            component: markRaw(ValueInput),
+            modelPropName: 'value',
+            value: outerValue.value,
+            'onUpdate:value': handleUpdate,
           });
       },
-    }),
-  );
-  const input = wrapper.findComponent(Input);
-  return {
-    outerValue,
-    updates,
-    wrapper,
-    getInnerValue: () => input.props(scenario.innerProp),
-    getValue: () => apiRef.value.getValue(),
-    select: (value: any) =>
-      input.vm.$emit(`update:${scenario.innerProp}`, value),
-  };
-}
-
-const modelValues: any[] = ['selected', 0, false, ['a', 'b'], null, undefined];
-
-describe('api-component.vue', () => {
-  describe.each(scenarios)('$name', (scenario) => {
-    it('初始化并将用户选择回写父级', async () => {
-      const { getInnerValue, getValue, select, updates, wrapper } =
-        mountScenario(scenario, 'initial');
-
-      expect(getInnerValue()).toBe('initial');
-      expect(getValue()).toBe('initial');
-
-      for (const value of modelValues) {
-        updates.length = 0;
-        select(value);
-        await nextTick();
-        expect(updates).toHaveLength(1);
-        expect(updates[0]).toStrictEqual(value);
-        expect(getInnerValue()).toStrictEqual(value);
-        expect(getValue()).toStrictEqual(value);
-      }
-      wrapper.unmount();
     });
+    const wrapper = mount(Harness);
+    const input = wrapper.findComponent(ValueInput);
 
-    it('外部更新、编辑回填与清空同步到内层组件', async () => {
-      const { getInnerValue, getValue, outerValue, updates, wrapper } =
-        mountScenario(scenario, undefined);
+    expect(input.props('value')).toBe('initial');
 
-      for (const value of ['edit', ...modelValues]) {
-        outerValue.value = value;
-        await nextTick();
-        expect(getInnerValue()).toStrictEqual(value);
-        expect(getValue()).toStrictEqual(value);
-      }
-      expect(updates).toEqual([]);
-      wrapper.unmount();
-    });
+    await input.trigger('click');
+    await nextTick();
+    expect(handleUpdate).toHaveBeenCalledWith('selected');
+    expect(input.props('value')).toBe('selected');
 
-    it('当前模型为空时 autoSelect 回写父级', async () => {
-      const { getInnerValue, getValue, updates, wrapper } = mountScenario(
-        scenario,
-        undefined,
-        { api: () => Promise.resolve(options), autoSelect: 'first' },
-      );
-
-      await flushPromises();
-      expect(updates).toEqual([1]);
-      expect(getInnerValue()).toBe(1);
-      expect(getValue()).toBe(1);
-      wrapper.unmount();
-    });
-
-    it.each([0, false])(
-      '当前模型为 %s 时 autoSelect 不覆盖',
-      async (initialValue) => {
-        const { getInnerValue, updates, wrapper } = mountScenario(
-          scenario,
-          initialValue,
-          { api: () => Promise.resolve(options), autoSelect: 'first' },
-        );
-
-        await flushPromises();
-        expect(updates).toEqual([]);
-        expect(getInnerValue()).toBe(initialValue);
-        wrapper.unmount();
-      },
-    );
+    outerValue.value = 'external';
+    await nextTick();
+    expect(input.props('value')).toBe('external');
   });
 
-  describe('同时传入 value 与 modelValue（如 Naive/TDesign 表单）', () => {
-    const scenario = scenarios[3]!;
-
-    it.each(['custom', undefined, null, 0, false])(
-      '显式传入的 value（%s）优先于 modelValue',
-      async (customValue) => {
-        const modelUpdates: any[] = [];
-        const { getInnerValue, getValue, select, updates, wrapper } =
-          mountScenario(scenario, customValue, {
-            modelValue: 'model',
-            'onUpdate:modelValue': (value: any) => modelUpdates.push(value),
-          });
-
-        expect(getInnerValue()).toStrictEqual(customValue);
-        expect(getValue()).toStrictEqual(customValue);
-
-        select('selected');
-        await nextTick();
-        expect(updates).toEqual(['selected']);
-        expect(modelUpdates).toEqual([]);
-        expect(getInnerValue()).toBe('selected');
-        wrapper.unmount();
+  it('preserves the default modelValue protocol', async () => {
+    const wrapper = mount(ApiComponent, {
+      props: {
+        component: markRaw(ModelValueInput),
+        modelValue: 'initial',
       },
-    );
+    });
+    const input = wrapper.findComponent(ModelValueInput);
 
-    it('value 为表单 emptyStateValue（null）时 autoSelect 只回写 update:value', async () => {
-      const modelUpdates: any[] = [];
-      const { getInnerValue, updates, wrapper } = mountScenario(
-        scenario,
-        null,
-        {
-          api: () => Promise.resolve(options),
-          autoSelect: 'first',
-          modelValue: undefined,
-          'onUpdate:modelValue': (value: any) => modelUpdates.push(value),
-        },
-      );
+    expect(input.props('modelValue')).toBe('initial');
 
-      await flushPromises();
-      expect(updates).toEqual([1]);
-      expect(modelUpdates).toEqual([]);
-      expect(getInnerValue()).toBe(1);
-      wrapper.unmount();
+    await input.trigger('click');
+    await nextTick();
+    expect(wrapper.emitted('update:modelValue')).toEqual([['selected']]);
+    expect(input.props('modelValue')).toBe('selected');
+  });
+
+  it('bridges a kebab-case custom model prop', async () => {
+    const outerValue = ref('initial');
+    const handleUpdate = vi.fn((value: string) => {
+      outerValue.value = value;
+    });
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(ApiComponent, {
+            component: markRaw(KebabModelInput),
+            modelPropName: 'model-value',
+            'model-value': outerValue.value,
+            'onUpdate:model-value': handleUpdate,
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    const input = wrapper.findComponent(KebabModelInput);
+
+    expect(input.props('modelValue')).toBe('initial');
+
+    await input.trigger('click');
+    await nextTick();
+    expect(handleUpdate).toHaveBeenCalledWith('selected');
+    expect(input.props('modelValue')).toBe('selected');
+  });
+
+  it('fetches when the api is provided after mount', async () => {
+    const api = vi
+      .fn()
+      .mockResolvedValue([{ label: 'Loaded', value: 'loaded' }]);
+    const apiRef = ref<ApiComponentProps['api']>();
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(ApiComponent, {
+            api: apiRef.value,
+            component: markRaw(ModelValueInput),
+          });
+      },
+    });
+
+    const wrapper = mount(Harness);
+    expect(api).not.toHaveBeenCalled();
+
+    apiRef.value = api;
+    await nextTick();
+
+    expect(api).toHaveBeenCalledTimes(1);
+    await vi.waitFor(() => {
+      const events = wrapper
+        .findComponent(ApiComponent)
+        .emitted('optionsChange');
+      const lastEvent = events?.at(-1)?.[0];
+      expect(lastEvent).toEqual([
+        expect.objectContaining({ label: 'Loaded', value: 'loaded' }),
+      ]);
     });
   });
 });

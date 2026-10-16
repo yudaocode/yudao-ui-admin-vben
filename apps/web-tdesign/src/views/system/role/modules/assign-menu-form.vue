@@ -154,7 +154,7 @@ function getNodeClass(node: Recordable<any>) {
   <Modal title="菜单权限" class="w-2/5">
     <Form class="mx-4">
       <template #menuIds="slotProps">
-        <Spin :spinning="menuLoading" wrapper-class-name="w-full">
+        <div v-loading="menuLoading" class="w-full">
           <Tree
             :tree-data="menuTree"
             multiple
@@ -165,7 +165,7 @@ function getNodeClass(node: Recordable<any>) {
             value-field="id"
             label-field="name"
           />
-        </Spin>
+        </div>
       </template>
     </Form>
     <template #prepend-footer>

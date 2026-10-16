@@ -4,7 +4,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
-import { Checkbox, Input, Select } from 'tdesign-vue-next';
+import { Checkbox, Input, Option, Select } from 'tdesign-vue-next';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getSimpleDictTypeList } from '#/api/system/dict/type';
@@ -53,7 +53,8 @@ watch(
 
 /** 提供获取表格数据的方法供父组件调用 */
 defineExpose({
-  getData: (): InfraCodegenApi.CodegenColumn[] => gridApi.grid.getData(),
+  getData: (): InfraCodegenApi.CodegenColumn[] =>
+    gridApi.grid.getData() as InfraCodegenApi.CodegenColumn[],
 });
 
 /** 初始化 */
@@ -74,13 +75,14 @@ onMounted(async () => {
     <!-- Java 类型 -->
     <template #javaType="{ row, column }">
       <Select v-model="row.javaType" style="width: 100%">
-        <Select.Option
+        <Option
           v-for="option in column.params.options"
           :key="option.value"
           :value="option.value"
+          :label="option.label"
         >
           {{ option.label }}
-        </Select.Option>
+        </Option>
       </Select>
     </template>
     <!-- Java 属性 -->
@@ -108,13 +110,14 @@ onMounted(async () => {
     <!-- 查询方式 -->
     <template #listOperationCondition="{ row, column }">
       <Select v-model="row.listOperationCondition" class="w-full">
-        <Select.Option
+        <Option
           v-for="option in column.params.options"
           :key="option.value"
           :value="option.value"
+          :label="option.label"
         >
           {{ option.label }}
-        </Select.Option>
+        </Option>
       </Select>
     </template>
 
@@ -126,26 +129,28 @@ onMounted(async () => {
     <!-- 显示类型 -->
     <template #htmlType="{ row, column }">
       <Select v-model="row.htmlType" class="w-full">
-        <Select.Option
+        <Option
           v-for="option in column.params.options"
           :key="option.value"
           :value="option.value"
+          :label="option.label"
         >
           {{ option.label }}
-        </Select.Option>
+        </Option>
       </Select>
     </template>
 
     <!-- 字典类型 -->
     <template #dictType="{ row }">
-      <Select v-model="row.dictType" class="w-full" allow-clear show-search>
-        <Select.Option
+      <Select v-model="row.dictType" class="w-full" clearable filterable>
+        <Option
           v-for="option in dictTypeOptions"
           :key="option.type"
           :value="option.type"
+          :label="option.name"
         >
           {{ option.name }}
-        </Select.Option>
+        </Option>
       </Select>
     </template>
 

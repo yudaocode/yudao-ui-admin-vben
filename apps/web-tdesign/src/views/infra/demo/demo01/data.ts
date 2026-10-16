@@ -34,8 +34,8 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
-        buttonStyle: 'solid',
-        optionType: 'button',
+        theme: 'button',
+        variant: 'primary-filled',
       },
     },
     {
@@ -44,9 +44,9 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
       component: 'DatePicker',
       componentProps: {
-        showTime: true,
+        enableTimePicker: true,
         format: 'YYYY-MM-DD HH:mm:ss',
-        valueFormat: 'x',
+        valueType: 'time-stamp',
       },
     },
     {
@@ -71,7 +71,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '名字',
       component: 'Input',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         placeholder: '请输入名字',
       },
     },
@@ -80,7 +80,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       label: '性别',
       component: 'Select',
       componentProps: {
-        allowClear: true,
+        clearable: true,
         options: getDictOptions(DICT_TYPE.SYSTEM_USER_SEX, 'number'),
         placeholder: '请选择性别',
       },
@@ -91,7 +91,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'RangePicker',
       componentProps: {
         ...getRangePickerDefaultProps(),
-        allowClear: true,
+        clearable: true,
       },
     },
   ];

@@ -17,8 +17,11 @@ import {
   Divider,
   Empty,
   Input,
+  InputAdornment,
+  Option,
   Select,
   Tag,
+  Textarea,
 } from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
@@ -34,7 +37,6 @@ const server = ref(
   )}?token=${refreshToken}`, // 使用 refreshToken，而不使用 accessToken 方法的原因：WebSocket 无法方便的刷新访问令牌
 ); // WebSocket 服务地址
 const getIsOpen = computed(() => status.value === 'OPEN'); // WebSocket 连接是否打开
-const getTagColor = computed(() => (getIsOpen.value ? 'success' : 'red')); // WebSocket 连接的展示颜色
 const getStatusText = computed(() => (getIsOpen.value ? '已连接' : '未连接')); // 连接状态文本
 
 /** 发起 WebSocket 连接 */
@@ -144,7 +146,7 @@ function getMessageBadgeColor(type?: string) {
       return 'red';
     }
     default: {
-      return 'default';
+      return 'gray';
     }
   }
 }
@@ -189,23 +191,25 @@ onMounted(async () => {
       <Card :bordered="false" class="w-full md:w-1/2">
         <template #title>
           <div class="flex items-center">
-            <Badge :status="getIsOpen ? 'success' : 'error'" />
+            <Badge dot :count="1" :color="getIsOpen ? 'green' : 'red'" />
             <span class="ml-2 text-lg font-medium">连接管理</span>
           </div>
         </template>
         <div class="mb-4 flex items-center rounded-lg p-3">
           <span class="mr-4 font-medium">连接状态:</span>
-          <Tag :color="getTagColor" class="px-3 py-1">{{ getStatusText }}</Tag>
+          <Tag :theme="getIsOpen ? 'success' : 'danger'" class="px-3 py-1">
+            {{ getStatusText }}
+          </Tag>
         </div>
         <div class="mb-6 flex space-x-2">
-          <Input v-model="server" disabled class="rounded-md" size="large">
-            <template #addonBefore>
+          <InputAdornment class="w-full">
+            <template #prepend>
               <span class="text-gray-600">服务地址</span>
             </template>
-          </Input>
+            <Input v-model="server" disabled class="rounded-md" size="large" />
+          </InputAdornment>
           <Button
-            :theme="getIsOpen ? 'default' : 'primary'"
-            :danger="getIsOpen"
+            :theme="getIsOpen ? 'danger' : 'primary'"
             size="large"
             class="flex-shrink-0"
             @click="toggleConnectStatus"
@@ -225,13 +229,13 @@ onMounted(async () => {
           placeholder="请选择接收人"
           :disabled="!getIsOpen"
         >
-          <Select.Option key="" value="" label="所有人">
+          <Option key="" value="" label="所有人">
             <div class="flex items-center">
               <Avatar size="small" class="mr-2">全</Avatar>
               <span>所有人</span>
             </div>
-          </Select.Option>
-          <Select.Option
+          </Option>
+          <Option
             v-for="user in userList"
             :key="user.id"
             :value="user.id"
@@ -243,15 +247,14 @@ onMounted(async () => {
               </Avatar>
               <span>{{ user.nickname }}</span>
             </div>
-          </Select.Option>
+          </Option>
         </Select>
 
-        <Input.TextArea
+        <Textarea
           v-model="sendText"
-          :auto-size="{ minRows: 3, maxRows: 6 }"
+          :autosize="{ minRows: 3, maxRows: 6 }"
           :disabled="!getIsOpen"
           class="border-1 rounded-lg"
-          allow-clear
           placeholder="请输入你要发送的消息..."
         />
 
@@ -294,7 +297,11 @@ onMounted(async () => {
             >
               <div class="mb-1 flex items-center justify-between">
                 <div class="flex items-center">
-                  <Badge :color="getMessageBadgeColor(msg.type)" />
+                  <Badge
+                    dot
+                    :count="1"
+                    :color="getMessageBadgeColor(msg.type)"
+                  />
                   <span class="ml-1 font-medium text-gray-600">
                     {{ getMessageTypeText(msg.type) }}
                   </span>

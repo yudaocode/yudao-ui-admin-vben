@@ -13,7 +13,13 @@ import {
   isEmpty,
 } from '@vben/utils';
 
-import { Button, DateRangePicker, Form, Input } from 'tdesign-vue-next';
+import {
+  Button,
+  DateRangePicker,
+  Form,
+  FormItem,
+  Input,
+} from 'tdesign-vue-next';
 
 import { message } from '#/adapter/tdesign';
 import { VxeColumn, VxeTable } from '#/adapter/vxe-table';
@@ -59,7 +65,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
-  queryFormRef.value.resetFields();
+  queryFormRef.value.reset({ type: 'initial' });
   handleQuery();
 }
 
@@ -118,6 +124,12 @@ function toggleExpand() {
 
 /** 初始化 */
 const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
+function setTableToolbarRef(el: any) {
+  tableToolbarRef.value = el;
+}
+function setTableRef(el: any) {
+  tableRef.value = el;
+}
 
 onMounted(() => {
   getList();
@@ -130,38 +142,38 @@ onMounted(() => {
 
     <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
-      <Form :model="queryParams" ref="queryFormRef" layout="inline">
-        <Form.Item label="名字" name="name">
+      <Form :data="queryParams" ref="queryFormRef" layout="inline">
+        <FormItem label="名字" name="name">
           <Input
             v-model="queryParams.name"
             placeholder="请输入名字"
-            allow-clear
-            @press-enter="handleQuery"
+            clearable
+            @enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="父级编号" name="parentId">
+        </FormItem>
+        <FormItem label="父级编号" name="parentId">
           <Input
             v-model="queryParams.parentId"
             placeholder="请输入父级编号"
-            allow-clear
-            @press-enter="handleQuery"
+            clearable
+            @enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="创建时间" name="createTime">
+        </FormItem>
+        <FormItem label="创建时间" name="createTime">
           <DateRangePicker
             v-model="queryParams.createTime"
             v-bind="getRangePickerDefaultProps()"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item>
+        </FormItem>
+        <FormItem>
           <Button class="ml-2" @click="resetQuery"> 重置 </Button>
           <Button class="ml-2" @click="handleQuery" theme="primary">
             搜索
           </Button>
-        </Form.Item>
+        </FormItem>
       </Form>
     </ContentWrap>
 
@@ -169,7 +181,7 @@ onMounted(() => {
     <ContentWrap title="示例分类">
       <template #extra>
         <VbenVxeTableToolbar
-          ref="tableToolbarRef"
+          :ref="setTableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
           <Button @click="toggleExpand" class="mr-2">
@@ -197,7 +209,7 @@ onMounted(() => {
         </VbenVxeTableToolbar>
       </template>
       <VxeTable
-        ref="tableRef"
+        :ref="setTableRef"
         :data="list"
         :tree-config="{
           parentField: 'parentId',

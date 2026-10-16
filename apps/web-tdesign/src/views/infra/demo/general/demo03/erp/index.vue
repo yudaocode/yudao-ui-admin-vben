@@ -19,9 +19,12 @@ import {
   Button,
   DateRangePicker,
   Form,
+  FormItem,
   Input,
+  Option,
   Pagination,
   Select,
+  TabPanel,
   Tabs,
 } from 'tdesign-vue-next';
 
@@ -87,7 +90,7 @@ const handleQuery = () => {
 
 /** 重置按钮操作 */
 function resetQuery() {
-  queryFormRef.value.resetFields();
+  queryFormRef.value.reset({ type: 'initial' });
   handleQuery();
 }
 
@@ -161,6 +164,12 @@ async function handleExport() {
 
 /** 初始化 */
 const { hiddenSearchBar, tableToolbarRef, tableRef } = useTableToolbar();
+function setTableToolbarRef(el: any) {
+  tableToolbarRef.value = el;
+}
+function setTableRef(el: any) {
+  tableRef.value = el;
+}
 
 onMounted(() => {
   getList();
@@ -173,48 +182,49 @@ onMounted(() => {
 
     <ContentWrap v-if="!hiddenSearchBar">
       <!-- 搜索工作栏 -->
-      <Form :model="queryParams" ref="queryFormRef" layout="inline">
-        <Form.Item label="名字" name="name">
+      <Form :data="queryParams" ref="queryFormRef" layout="inline">
+        <FormItem label="名字" name="name">
           <Input
             v-model="queryParams.name"
             placeholder="请输入名字"
-            allow-clear
-            @press-enter="handleQuery"
+            clearable
+            @enter="handleQuery"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item label="性别" name="sex">
+        </FormItem>
+        <FormItem label="性别" name="sex">
           <Select
             v-model="queryParams.sex"
             placeholder="请选择性别"
-            allow-clear
+            clearable
             class="w-full"
           >
-            <Select.Option
+            <Option
               v-for="dict in getDictOptions(
                 DICT_TYPE.SYSTEM_USER_SEX,
                 'number',
               )"
               :key="dict.value"
               :value="dict.value"
+              :label="dict.label"
             >
               {{ dict.label }}
-            </Select.Option>
+            </Option>
           </Select>
-        </Form.Item>
-        <Form.Item label="创建时间" name="createTime">
+        </FormItem>
+        <FormItem label="创建时间" name="createTime">
           <DateRangePicker
             v-model="queryParams.createTime"
             v-bind="getRangePickerDefaultProps()"
             class="w-full"
           />
-        </Form.Item>
-        <Form.Item>
+        </FormItem>
+        <FormItem>
           <Button class="ml-2" @click="resetQuery"> 重置 </Button>
           <Button class="ml-2" @click="handleQuery" theme="primary">
             搜索
           </Button>
-        </Form.Item>
+        </FormItem>
       </Form>
     </ContentWrap>
 
@@ -222,7 +232,7 @@ onMounted(() => {
     <ContentWrap title="学生">
       <template #extra>
         <VbenVxeTableToolbar
-          ref="tableToolbarRef"
+          :ref="setTableToolbarRef"
           v-model:hidden-search="hiddenSearchBar"
         >
           <Button
@@ -245,8 +255,7 @@ onMounted(() => {
             {{ $t('ui.actionTitle.export') }}
           </Button>
           <Button
-            theme="primary"
-            danger
+            theme="danger"
             class="ml-2"
             :disabled="isEmpty(checkedIds)"
             @click="handleDeleteBatch"
@@ -258,7 +267,7 @@ onMounted(() => {
         </VbenVxeTableToolbar>
       </template>
       <VxeTable
-        ref="tableRef"
+        :ref="setTableRef"
         :data="list"
         @cell-click="onCellClick"
         :row-config="{
@@ -303,7 +312,7 @@ onMounted(() => {
             <Button
               size="small"
               variant="text"
-              danger
+              theme="danger"
               class="ml-2"
               @click="handleDelete(row)"
               v-access:code="['infra:demo03-student:delete']"
@@ -327,13 +336,17 @@ onMounted(() => {
 
     <ContentWrap>
       <!-- 子表的表单 -->
-      <Tabs v-model:active-key="subTabsName">
-        <Tabs.TabPane key="demo03Course" tab="学生课程" force-render>
+      <Tabs v-model="subTabsName">
+        <TabPanel
+          value="demo03Course"
+          label="学生课程"
+          :destroy-on-hide="false"
+        >
           <Demo03CourseList :student-id="selectDemo03Student?.id" />
-        </Tabs.TabPane>
-        <Tabs.TabPane key="demo03Grade" tab="学生班级" force-render>
+        </TabPanel>
+        <TabPanel value="demo03Grade" label="学生班级" :destroy-on-hide="false">
           <Demo03GradeList :student-id="selectDemo03Student?.id" />
-        </Tabs.TabPane>
+        </TabPanel>
       </Tabs>
     </ContentWrap>
   </Page>

@@ -69,13 +69,13 @@ function extendProxyOption(
 export function extendsDefaultFormatter(vxeUI: VxeUIExport) {
   vxeUI.formats.add('formatDate', {
     tableCellFormatMethod({ cellValue }) {
-      return formatDate(cellValue) as string;
+      return formatDate(cellValue);
     },
   });
 
   vxeUI.formats.add('formatDateTime', {
     tableCellFormatMethod({ cellValue }) {
-      return formatDateTime(cellValue) as string;
+      return formatDateTime(cellValue);
     },
   });
 }

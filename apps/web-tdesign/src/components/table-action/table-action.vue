@@ -14,7 +14,8 @@ import { isBoolean, isFunction } from '@vben/utils';
 import {
   Button,
   Dropdown,
-  Menu,
+  DropdownItem,
+  DropdownMenu,
   Popconfirm,
   Space,
   Tooltip,
@@ -86,12 +87,25 @@ function getPopConfirmProps(popConfirm: PopConfirm) {
 
   const attrs: Record<string, any> = {};
 
-  // 复制基本属性，排除函数
+  // 复制基本属性，排除函数和需要映射的文案属性
+  const excludedKeys = new Set([
+    'cancel',
+    'cancelText',
+    'confirm',
+    'icon',
+    'okText',
+    'title',
+  ]);
   Object.keys(popConfirm).forEach((key) => {
-    if (key !== 'confirm' && key !== 'cancel' && key !== 'icon') {
+    if (!excludedKeys.has(key)) {
       attrs[key] = popConfirm[key as keyof PopConfirm];
     }
   });
+
+  // 文案映射为 TDesign Popconfirm 的属性名
+  attrs.content = popConfirm.title;
+  attrs.confirmBtn = popConfirm.okText;
+  attrs.cancelBtn = popConfirm.cancelText;
 
   // 单独处理事件函数
   if (popConfirm.confirm && isFunction(popConfirm.confirm)) {
@@ -188,7 +202,12 @@ watch(
       </template>
     </Space>
 
-    <Dropdown v-if="getDropdownList.length > 0" trigger="hover">
+    <!-- 菜单项点击后不自动收起，避免确认前卸载其中的 Popconfirm -->
+    <Dropdown
+      v-if="getDropdownList.length > 0"
+      trigger="hover"
+      :hide-after-item-click="false"
+    >
       <slot name="more">
         <Button theme="primary" variant="text">
           <template #icon>
@@ -197,9 +216,9 @@ watch(
           </template>
         </Button>
       </slot>
-      <template #overlay>
-        <Menu>
-          <Menu.Item
+      <template #dropdown>
+        <DropdownMenu>
+          <DropdownItem
             v-for="(action, index) in getDropdownList"
             :key="index"
             :disabled="action.disabled"
@@ -236,8 +255,8 @@ watch(
                 {{ action.label }}
               </div>
             </template>
-          </Menu.Item>
-        </Menu>
+          </DropdownItem>
+        </DropdownMenu>
       </template>
     </Dropdown>
   </div>
