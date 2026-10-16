@@ -46,9 +46,9 @@ const modelValue = defineModel<any>({ default: undefined });
 const attrs = useAttrs();
 /**
  * 是否以 modelValue 作为当前模型：
- * modelPropName 为 modelValue，或父级未显式传入自定义 model 属性
+ * modelPropName 为 modelValue，或父级未显式传入自定义 model 属性及其 update 事件
  * （如表单适配层映射为 modelValue、内层使用 value 的场景）。
- * 父级显式传入自定义属性（值为 undefined 也算传入）时，以该属性及其 update 事件双向绑定。
+ * 父级显式传入自定义属性（值为 undefined 也算传入）或其 update 事件时，以该属性及其 update 事件双向绑定。
  */
 const usesDefaultModelValue = computed(() => {
   const { modelPropName } = props;
@@ -57,7 +57,9 @@ const usesDefaultModelValue = computed(() => {
   }
   // useAttrs 只在读取属性时收集依赖，先读取再判断是否传入
   return (
-    attrs[modelPropName] === undefined && !Reflect.has(attrs, modelPropName)
+    attrs[modelPropName] === undefined &&
+    !Reflect.has(attrs, modelPropName) &&
+    !Reflect.has(attrs, `onUpdate:${modelPropName}`)
   );
 });
 const currentModelValue = computed(() => {

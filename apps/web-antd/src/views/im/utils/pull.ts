@@ -1,5 +1,7 @@
 import type { DbClient } from './db';
 
+import { isUndefined } from '@vben/utils';
+
 /**
  * IM 状态事件补偿（增量拉取）通用编排
  *
@@ -54,17 +56,15 @@ export async function runIncrementalPull<T extends PullRecord>(
 ): Promise<void> {
   const storedCursor = await getPullCursor(db, cursorKey);
   const highWater = { ...storedCursor };
-  let cursor =
-    storedCursor.lastUpdateTime === null ||
-    storedCursor.lastUpdateTime === undefined
-      ? {}
-      : {
-          lastUpdateTime: Math.max(
-            0,
-            storedCursor.lastUpdateTime - PULL_OVERLAP_MS,
-          ),
-          lastId: 0,
-        };
+  let cursor = isUndefined(storedCursor.lastUpdateTime)
+    ? {}
+    : {
+        lastUpdateTime: Math.max(
+          0,
+          storedCursor.lastUpdateTime - PULL_OVERLAP_MS,
+        ),
+        lastId: 0,
+      };
   for (let page = 0; page < PULL_MAX_PAGES; page++) {
     const list = await fetchPage({
       lastUpdateTime: cursor.lastUpdateTime,
@@ -78,13 +78,12 @@ export async function runIncrementalPull<T extends PullRecord>(
       }
       // 推进游标到本页最后一条并持久化：下次从这里接着拉
       const last = list[list.length - 1]!;
-      if (last.updateTime === null || last.updateTime === undefined) {
+      if (isUndefined(last.updateTime)) {
         return;
       }
       cursor = { lastUpdateTime: last.updateTime, lastId: last.id };
       if (
-        highWater.lastUpdateTime === null ||
-        highWater.lastUpdateTime === undefined ||
+        isUndefined(highWater.lastUpdateTime) ||
         cursor.lastUpdateTime > highWater.lastUpdateTime ||
         (cursor.lastUpdateTime === highWater.lastUpdateTime &&
           cursor.lastId > (highWater.lastId ?? 0))
@@ -148,7 +147,7 @@ export async function runMinIdPull<T extends { id?: number }>(options: {
       return;
     }
     // 无有效 id，或游标没前进（后端契约是 id > minId，理论不会出现）：停，防御死翻
-    if (nextMinId === null || nextMinId === undefined || nextMinId <= minId) {
+    if (isUndefined(nextMinId) || nextMinId <= minId) {
       return;
     }
     minId = nextMinId;

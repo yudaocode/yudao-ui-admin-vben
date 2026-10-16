@@ -7,6 +7,7 @@ import {
   erpCountInputFormatter,
   erpPriceInputFormatter,
   erpPriceMultiply,
+  isUndefined,
 } from '@vben/utils';
 
 import { Input, InputNumber, Select } from 'ant-design-vue';
@@ -134,10 +135,9 @@ watch(
       (prev, curr) => prev + (curr.totalPrice || 0),
       0,
     );
-    const discountPrice =
-      props.discountPercent === null || props.discountPercent === undefined
-        ? 0
-        : erpPriceMultiply(totalPrice, props.discountPercent / 100);
+    const discountPrice = isUndefined(props.discountPercent)
+      ? 0
+      : erpPriceMultiply(totalPrice, props.discountPercent / 100);
     const discountedPrice = totalPrice - discountPrice!;
     const finalTotalPrice = discountedPrice + (props.otherPrice || 0);
 

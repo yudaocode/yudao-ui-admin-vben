@@ -101,6 +101,7 @@ export function useAssignDataPermissionFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'dataScopeDeptIds',
+      modelPropName: 'modelValue',
       label: '部门范围',
       component: 'Input',
       formItemClass: 'items-start',
@@ -143,6 +144,7 @@ export function useAssignMenuFormSchema(): VbenFormSchema[] {
     },
     {
       fieldName: 'menuIds',
+      modelPropName: 'modelValue',
       label: '菜单权限',
       component: 'Input',
       formItemClass: 'items-start',
