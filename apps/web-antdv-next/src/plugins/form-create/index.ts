@@ -19,6 +19,8 @@ import {
   ConfigProvider,
   Divider,
   Dropdown,
+  Form,
+  FormItem,
   Image,
   Layout,
   LayoutContent,
@@ -37,6 +39,7 @@ import {
   Tabs,
   Tag,
   Transfer,
+  useFormInstance,
 } from 'antdv-next';
 
 // ======================= 自定义组件 =======================
@@ -75,19 +78,42 @@ const FormItemRest = defineComponent({
     return () => slots.default?.();
   },
 });
-/** antdv-next 的 Dropdown 只接受数组形式的 trigger，设计器传入的是字符串 */
+/**
+ * antdv-next 的 FormItem 未暴露 clearValidate，设计器内置的 ant-design-vue 驱动选中字段时会调用；
+ * 参照 @form-create/antdv-next 驱动，改由所在 Form 按字段 name 清除校验（需同 Form 一起先于 auto-import 注册，避免被 Form.install 覆盖）
+ */
+const FormItemCompat = defineComponent({
+  name: FormItem.name,
+  inheritAttrs: false,
+  setup: (_props, { attrs, slots, expose }) => {
+    const form = useFormInstance();
+    expose({
+      clearValidate: () => {
+        if (form && attrs.name !== undefined) {
+          form.clearValidate([attrs.name as string]);
+        }
+      },
+    });
+    return () => h(FormItem, attrs, pickFunctionSlots(slots));
+  },
+});
+/**
+ * antdv-next 的 Dropdown 只接受数组形式的 trigger，设计器传入的是字符串；
+ * 且不再渲染 overlay 插槽（仅支持 menu.items 或 popupRender），这里将设计器的 overlay 插槽转为 popupRender
+ */
 const DropdownCompat = defineComponent({
   name: Dropdown.name,
   inheritAttrs: false,
   setup: (_props, { attrs, slots }) => {
     return () => {
       const trigger = attrs.trigger as DropdownProps['trigger'] | string;
+      const { overlay, ...restSlots } = pickFunctionSlots(slots);
       return h(
         Dropdown,
         typeof trigger === 'string'
           ? { ...attrs, trigger: [trigger] as DropdownProps['trigger'] }
           : attrs,
-        pickFunctionSlots(slots),
+        overlay ? { ...restSlots, popupRender: overlay } : restSlots,
       );
     };
   },
@@ -124,6 +150,8 @@ const components = [
   ConfigProvider,
   Divider,
   DropdownCompat,
+  Form,
+  FormItemCompat,
   FormItemRest,
   Image,
   Layout,
