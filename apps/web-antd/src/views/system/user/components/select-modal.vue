@@ -395,7 +395,7 @@ function processDeptNode(node: any): DeptTreeNode {
 </script>
 
 <template>
-  <Modal class="w-2/5" key="user-select-modal" :title="title">
+  <Modal class="w-3/5" key="user-select-modal" :title="title">
     <Row :gutter="[16, 16]">
       <Col :span="6">
         <div class="h-[500px] overflow-auto rounded border">
@@ -486,6 +486,7 @@ function processDeptNode(node: any): DeptTreeNode {
   flex: 1;
   flex-direction: column;
   width: 300px !important;
+  min-width: 0;
   height: 100%;
 }
 

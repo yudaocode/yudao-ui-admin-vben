@@ -485,29 +485,31 @@ function processDeptNode(node: any): DeptTreeNode {
           <template #default="{ option }">
             <span>{{ option.label }}</span>
           </template>
+          <template #left-footer>
+            <ElPagination
+              v-model:current-page="leftListState.pagination.current"
+              v-model:page-size="leftListState.pagination.pageSize"
+              :total="leftListState.pagination.total"
+              :page-sizes="[10, 20, 50, 100]"
+              layout="total, sizes, prev, pager, next"
+              small
+              @current-change="handleLeftPaginationChange"
+              @size-change="handleLeftPageSizeChange"
+            />
+          </template>
+          <template #right-footer>
+            <ElPagination
+              v-model:current-page="rightListState.pagination.current"
+              v-model:page-size="rightListState.pagination.pageSize"
+              :total="rightListState.pagination.total"
+              :page-sizes="[10, 20, 50, 100]"
+              layout="total, sizes, prev, pager, next"
+              small
+              @current-change="handleRightPaginationChange"
+              @size-change="handleRightPageSizeChange"
+            />
+          </template>
         </ElTransfer>
-        <div class="mt-2 flex justify-between">
-          <ElPagination
-            v-model:current-page="leftListState.pagination.current"
-            v-model:page-size="leftListState.pagination.pageSize"
-            :total="leftListState.pagination.total"
-            :page-sizes="[10, 20, 50, 100]"
-            layout="total, sizes, prev, pager, next"
-            small
-            @current-change="handleLeftPaginationChange"
-            @size-change="handleLeftPageSizeChange"
-          />
-          <ElPagination
-            v-model:current-page="rightListState.pagination.current"
-            v-model:page-size="rightListState.pagination.pageSize"
-            :total="rightListState.pagination.total"
-            :page-sizes="[10, 20, 50, 100]"
-            layout="total, sizes, prev, pager, next"
-            small
-            @current-change="handleRightPaginationChange"
-            @size-change="handleRightPageSizeChange"
-          />
-        </div>
       </ElCol>
     </ElRow>
     <template #footer>
@@ -528,7 +530,7 @@ function processDeptNode(node: any): DeptTreeNode {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 450px;
+  height: 500px;
 }
 
 :deep(.el-transfer-panel) {
@@ -554,6 +556,25 @@ function processDeptNode(node: any): DeptTreeNode {
 
 :deep(.el-transfer-panel__list) {
   height: auto !important;
+}
+
+:deep(.el-transfer-panel .el-transfer-panel__footer) {
+  flex-shrink: 0;
+  height: auto;
+  padding: 4px 8px;
+}
+
+:deep(.el-transfer-panel .el-transfer-panel__footer::after) {
+  display: none;
+}
+
+:deep(.el-transfer-panel__footer .el-pagination) {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+:deep(.el-transfer-panel__footer .el-pager) {
+  flex-wrap: wrap;
 }
 
 :deep(.el-transfer__buttons) {

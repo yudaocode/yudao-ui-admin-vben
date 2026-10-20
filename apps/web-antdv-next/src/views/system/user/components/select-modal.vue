@@ -397,7 +397,7 @@ function processDeptNode(node: any): DeptTreeNode {
 </script>
 
 <template>
-  <Modal class="w-2/5" key="user-select-modal" :title="title">
+  <Modal class="w-3/5" key="user-select-modal" :title="title">
     <Row :gutter="[16, 16]">
       <Col :span="6">
         <div class="h-[500px] overflow-auto rounded border">
@@ -486,12 +486,13 @@ function processDeptNode(node: any): DeptTreeNode {
   height: 500px;
 }
 
-:deep(.ant-transfer-list) {
+/* antdv-next 的列表外壳为 .ant-transfer-section（默认 180×200），需覆盖为撑满高度 */
+:deep(.ant-transfer-section) {
   display: flex;
   flex: 1;
   flex-direction: column;
-  width: 300px !important;
-  height: 100%;
+  min-width: 0;
+  height: 100% !important;
 }
 
 :deep(.ant-transfer-list-header) {
@@ -525,9 +526,11 @@ function processDeptNode(node: any): DeptTreeNode {
 }
 
 :deep(.ant-pagination) {
+  flex-wrap: wrap;
+  row-gap: 4px;
+  justify-content: flex-end;
   margin: 8px;
   font-size: 12px;
-  text-align: right;
 }
 
 :deep(.ant-pagination-options) {
