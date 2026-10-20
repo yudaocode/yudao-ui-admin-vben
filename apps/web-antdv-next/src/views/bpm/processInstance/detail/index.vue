@@ -403,12 +403,12 @@ onMounted(async () => {
   flex-direction: column;
   height: 100%;
 
-  .ant-tabs-content {
+  .ant-tabs-body {
     height: 100%;
   }
 }
 
-:deep(.ant-tabs-tabpane) {
+:deep(.ant-tabs-content) {
   height: 100%;
   overflow-y: auto;
 }

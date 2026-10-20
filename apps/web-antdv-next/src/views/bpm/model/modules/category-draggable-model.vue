@@ -819,7 +819,8 @@ function handleRenameSuccess() {
 <style scoped>
 /* :deep() 实现样式穿透 */
 .collapse-no-padding :deep(.ant-collapse-header),
-.collapse-no-padding :deep(.ant-collapse-content-box) {
+.collapse-no-padding
+  :deep(.ant-collapse-item > .ant-collapse-panel > .ant-collapse-body) {
   padding: 0;
 }
 </style>
