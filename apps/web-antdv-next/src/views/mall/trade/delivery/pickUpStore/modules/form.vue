@@ -9,12 +9,17 @@ import { Button, message } from 'antdv-next';
 import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
-import { getTradeConfig } from '#/api/mall/trade/config';
 import {
   createDeliveryPickUpStore,
   getDeliveryPickUpStore,
   updateDeliveryPickUpStore,
 } from '#/api/mall/trade/delivery/pickUpStore';
+import {
+  bd09ToGcj02,
+  gcj02ToBd09,
+  MapDialog,
+  toMapCoordinate,
+} from '#/components/map';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -27,48 +32,27 @@ const getTitle = computed(() => {
     : $t('ui.actionTitle.create', ['门店']);
 });
 
-const mapVisible = ref(false); // 是否显示地图弹窗
-const tencentLbsUrl = ref(''); // 腾讯位置服务 url
+const mapDialogRef = ref<InstanceType<typeof MapDialog>>(); // 地图选点弹窗
 
-/** 获取经纬度相关方法 */
-function selectAddress(loc: any) {
-  if (loc.latlng?.lat) {
-    formApi.setFieldValue('latitude', loc.latlng.lat);
-  }
-  if (loc.latlng?.lng) {
-    formApi.setFieldValue('longitude', loc.latlng.lng);
-  }
-  mapVisible.value = false;
+/** 打开地图选点：门店坐标为 GCJ02，百度地图使用 BD09 */
+async function openMapDialog() {
+  const values = await formApi.getValues();
+  const coordinate = toMapCoordinate(values.longitude, values.latitude);
+  const point = coordinate
+    ? gcj02ToBd09(coordinate.longitude, coordinate.latitude)
+    : undefined;
+  mapDialogRef.value?.open(point?.longitude, point?.latitude);
 }
 
-/** 初始化腾讯地图 */
-async function initTencentLbsMap() {
-  // 从配置中获取腾讯地图的 key
-  const data = await getTradeConfig();
-  const key = data.tencentLbsKey;
-  if (!key) {
-    message.warning('请先配置腾讯位置服务的 key');
+/** 地图选点确认：BD09 转回 GCJ02 回填 */
+async function handleMapConfirm(data: { latitude: string; longitude: string }) {
+  const coordinate = toMapCoordinate(data.longitude, data.latitude);
+  if (!coordinate) {
     return;
   }
-
-  // 设置 url
-  if (!window) {
-    return;
-  }
-  (window as any).selectAddress = selectAddress;
-  window.addEventListener(
-    'message',
-    (event) => {
-      // 接收位置信息，用户选择确认位置点后选点组件会触发该事件，回传用户的位置信息
-      const loc = event.data;
-      if (loc && loc.module === 'locationPicker') {
-        // 防止其他应用也会向该页面 post 信息，需判断 module 是否为 'locationPicker'
-        (window.parent as any).selectAddress(loc);
-      }
-    },
-    false,
-  );
-  tencentLbsUrl.value = `https://apis.map.qq.com/tools/locpicker?type=1&key=${key}&referer=myapp`;
+  const point = bd09ToGcj02(coordinate.longitude, coordinate.latitude);
+  await formApi.setFieldValue('longitude', Number(point.longitude.toFixed(6)));
+  await formApi.setFieldValue('latitude', Number(point.latitude.toFixed(6)));
 }
 
 const [Form, formApi] = useVbenForm({
@@ -116,8 +100,6 @@ const [Modal, modalApi] = useVbenModal({
     const data =
       modalApi.getData() as MallDeliveryPickUpStoreApi.DeliveryPickUpStore;
     if (!data || !data.id) {
-      // 初始化地图
-      await initTencentLbsMap();
       return;
     }
     modalApi.lock();
@@ -131,8 +113,6 @@ const [Modal, modalApi] = useVbenModal({
       await formApi.setValues(formData.value);
     } finally {
       modalApi.unlock();
-      // 初始化地图
-      await initTencentLbsMap();
     }
   },
 });
@@ -142,21 +122,10 @@ const [Modal, modalApi] = useVbenModal({
   <Modal :title="getTitle" class="w-2/5">
     <Form class="mx-4" />
     <template #prepend-footer>
-      <Button @click="mapVisible = true"> 获取经纬度 </Button>
+      <Button @click="openMapDialog"> 获取经纬度 </Button>
     </template>
   </Modal>
 
-  <!-- 地图弹窗 -->
-  <a-modal
-    v-model:open="mapVisible"
-    title="获取经纬度"
-    :width="800"
-    :footer="null"
-  >
-    <iframe
-      v-if="mapVisible && tencentLbsUrl"
-      :src="tencentLbsUrl"
-      class="h-[600px] w-full border-0"
-    ></iframe>
-  </a-modal>
+  <!-- 地图选点弹窗 -->
+  <MapDialog ref="mapDialogRef" @confirm="handleMapConfirm" />
 </template>

@@ -1,12 +1,12 @@
 <!-- 地图选择弹窗组件：基于百度地图 GL 实现 -->
 <script setup lang="ts">
-import { nextTick, reactive, ref } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
 import { Button, Form, Input, Select, Space } from 'ant-design-vue';
 
-import { loadBaiduMapSdk } from './utils';
+import { BAIDU_MAP_FRAME_READY, buildBaiduMapFrameHtml } from './utils';
 
 const emit = defineEmits<{
   confirm: [
@@ -18,7 +18,9 @@ const emit = defineEmits<{
   ];
 }>();
 
-const mapContainerRef = ref<HTMLElement>();
+const mapFrameRef = ref<HTMLIFrameElement>(); // 地图 iframe
+const mapFrameHtml = buildBaiduMapFrameHtml(); // 地图 iframe 页面
+let mapApi: any = null; // 当前地图 iframe 中的百度地图 GL 命名空间，所有 SDK 对象都由它创建
 const state = reactive({
   lonLat: '', // 经纬度字符串，格式为 "经度,纬度"
   address: '', // 地址信息
@@ -36,38 +38,49 @@ const state = reactive({
 const initLongitude = ref<number | undefined>();
 const initLatitude = ref<number | undefined>();
 
-/** 弹窗打开动画完成后初始化地图 */
-async function handleDialogOpened() {
-  // 先显示地图容器
+/**
+ * 弹窗打开后显示地图 iframe，iframe 中的 SDK 加载完成后由 handleFrameMessage 初始化地图
+ *
+ * 百度 GL SDK 的 destroy 会延迟清空实例并清理页面级共享样式，仍在排队的回调随后读取已清空的数据而抛错，公开 API 没有可等待的完成时机；
+ * 因此地图与 SDK 运行在独立 iframe 中，关闭弹窗时移除 iframe，由浏览器回收其中的实例、定时器与 Worker，不调用 destroy
+ */
+function handleDialogOpened() {
   state.mapContainerReady = true;
-
-  // 等待下一个 DOM 更新周期，确保地图容器已渲染
-  await nextTick();
-  // 加载百度地图 SDK
-  await loadBaiduMapSdk();
-  initMapInstance();
 }
 
-/** 弹窗关闭后清理地图 */
+/** 弹窗关闭后移除地图 iframe */
 function handleDialogClosed() {
-  // 销毁地图实例
-  if (state.map) {
-    state.map.destroy?.();
-    state.map = null;
-  }
+  state.map = null;
   state.mapMarker = null;
   state.geocoder = null;
+  state.loading = false;
   state.mapContainerReady = false;
+  mapApi = null;
+}
+
+/** 地图 iframe 的 SDK 加载完成后初始化地图，只处理当前 iframe 发出的消息 */
+function handleFrameMessage(event: MessageEvent) {
+  const frameWindow = mapFrameRef.value?.contentWindow as any;
+  if (
+    !frameWindow ||
+    event.source !== frameWindow ||
+    event.data?.type !== BAIDU_MAP_FRAME_READY ||
+    state.map
+  ) {
+    return;
+  }
+  const container = frameWindow.document.querySelector('#map');
+  if (!container) {
+    return;
+  }
+  mapApi = frameWindow.BMapGL;
+  initMapInstance(container);
 }
 
 /** 初始化地图实例 */
-function initMapInstance() {
-  if (!mapContainerRef.value) {
-    return;
-  }
-
+function initMapInstance(container: HTMLElement) {
   // 初始化地图和地理编码器
-  initMap();
+  initMap(container);
   initGeocoder();
 
   // 监听地图点击事件
@@ -88,25 +101,25 @@ function initMapInstance() {
 }
 
 /** 初始化地图 */
-function initMap() {
-  state.map = new window.BMapGL.Map(mapContainerRef.value);
-  state.map.centerAndZoom(new window.BMapGL.Point(116.404, 39.915), 11);
+function initMap(container: HTMLElement) {
+  state.map = new mapApi.Map(container);
+  state.map.centerAndZoom(new mapApi.Point(116.404, 39.915), 11);
   state.map.enableScrollWheelZoom();
   state.map.disableDoubleClickZoom();
 
-  state.map.addControl(new window.BMapGL.NavigationControl());
-  state.map.addControl(new window.BMapGL.ScaleControl());
-  state.map.addControl(new window.BMapGL.ZoomControl());
+  state.map.addControl(new mapApi.NavigationControl());
+  state.map.addControl(new mapApi.ScaleControl());
+  state.map.addControl(new mapApi.ZoomControl());
 }
 
 /** 初始化地理编码器 */
 function initGeocoder() {
-  state.geocoder = new window.BMapGL.Geocoder();
+  state.geocoder = new mapApi.Geocoder();
 }
 
 /** 搜索地址 */
 function autoSearch(queryValue: string) {
-  if (!queryValue) {
+  if (!queryValue || !mapApi) {
     state.mapAddressOptions = [];
     return;
   }
@@ -114,7 +127,7 @@ function autoSearch(queryValue: string) {
   state.loading = true;
 
   // noinspection JSUnusedGlobalSymbols
-  const localSearch = new window.BMapGL.LocalSearch(state.map, {
+  const localSearch = new mapApi.LocalSearch(state.map, {
     onSearchComplete: (results: any) => {
       state.loading = false;
       const temp: any[] = [];
@@ -163,8 +176,8 @@ function setMarker(lnglat: string[]) {
     state.map.removeOverlay(state.mapMarker);
   }
 
-  const point = new window.BMapGL.Point(lnglat[0], lnglat[1]);
-  state.mapMarker = new window.BMapGL.Marker(point);
+  const point = new mapApi.Point(lnglat[0], lnglat[1]);
+  state.mapMarker = new mapApi.Marker(point);
 
   state.map.addOverlay(state.mapMarker);
   state.map.centerAndZoom(point, 16);
@@ -182,7 +195,7 @@ function regeoCode(lonLat: string) {
 
   state.longitude = lnglat[0]!;
   state.latitude = lnglat[1]!;
-  const point = new window.BMapGL.Point(lnglat[0], lnglat[1]);
+  const point = new mapApi.Point(lnglat[0], lnglat[1]);
   state.map.centerAndZoom(point, 16);
 
   setMarker(lnglat);
@@ -191,7 +204,7 @@ function regeoCode(lonLat: string) {
 
 /** 根据经纬度获取地址信息 */
 function getAddress(lnglat: string[]) {
-  const point = new window.BMapGL.Point(lnglat[0], lnglat[1]);
+  const point = new mapApi.Point(lnglat[0], lnglat[1]);
   state.geocoder.getLocation(point, (result: any) => {
     if (result && result.address) {
       state.address = result.address;
@@ -210,6 +223,14 @@ function handleConfirm() {
   }
   modalApi.close();
 }
+
+onMounted(() => {
+  window.addEventListener('message', handleFrameMessage);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handleFrameMessage);
+});
 
 const [Modal, modalApi] = useVbenModal({
   onOpenChange(isOpen: boolean) {
@@ -278,11 +299,13 @@ defineExpose({ open });
         </Form.Item>
       </Form>
       <!-- 第三行：地图 -->
-      <div
-        v-if="state.mapContainerReady"
-        ref="mapContainerRef"
-        class="mt-[10px] h-[400px] w-full"
-      ></div>
+      <iframe
+        v-if="state.mapContainerReady && mapFrameHtml"
+        ref="mapFrameRef"
+        :srcdoc="mapFrameHtml"
+        class="mt-[10px] block h-[400px] w-full border-0"
+        title="百度地图"
+      ></iframe>
       <div
         v-else
         class="mt-[10px] flex h-[400px] w-full items-center justify-center"

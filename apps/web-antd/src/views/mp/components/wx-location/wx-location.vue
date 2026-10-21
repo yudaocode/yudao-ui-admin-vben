@@ -1,66 +1,64 @@
 <script lang="ts" setup>
 import type { WxLocationProps } from './types';
 
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Col, message, Row } from 'ant-design-vue';
+import { Col, Row } from 'ant-design-vue';
 
-import { getTradeConfig } from '#/api/mall/trade/config';
+import { gcj02ToBd09, MapView, toMapCoordinate } from '#/components/map';
 
 /** 微信消息 - 定位 */
 defineOptions({ name: 'WxLocation' });
 
-const props = withDefaults(defineProps<WxLocationProps>(), {
-  qqMapKey: '', // QQ 地图的密钥 https://lbs.qq.com/service/staticV2/staticGuide/staticDoc
-});
+const props = defineProps<WxLocationProps>();
 
-const fetchedQqMapKey = ref('');
-const resolvedQqMapKey = computed(
-  () => props.qqMapKey || fetchedQqMapKey.value || '',
-);
+/** 微信定位为 GCJ02，百度地图展示和外链使用 BD09 */
+const point = computed(() => {
+  const coordinate = toMapCoordinate(props.locationY, props.locationX);
+  return coordinate
+    ? gcj02ToBd09(coordinate.longitude, coordinate.latitude)
+    : undefined;
+});
 
 const mapUrl = computed(() => {
-  return `https://map.qq.com/?type=marker&isopeninfowin=1&markertype=1&pointx=${props.locationY}&pointy=${props.locationX}&name=${props.label}&ref=yudao`;
-});
-
-const mapImageUrl = computed(() => {
-  return `https://apis.map.qq.com/ws/staticmap/v2/?zoom=10&markers=color:blue|label:A|${props.locationX},${props.locationY}&key=${resolvedQqMapKey.value}&size=250*180`;
-});
-
-async function fetchQqMapKey() {
-  try {
-    const data = await getTradeConfig();
-    fetchedQqMapKey.value = data.tencentLbsKey ?? '';
-    if (!fetchedQqMapKey.value) {
-      message.warning('请先配置腾讯位置服务密钥');
-    }
-  } catch {
-    message.error('获取腾讯位置服务密钥失败');
+  if (!point.value) {
+    return undefined;
   }
-}
-
-onMounted(async () => {
-  if (!props.qqMapKey) {
-    await fetchQqMapKey();
-  }
+  const params = new URLSearchParams({
+    location: `${point.value.latitude},${point.value.longitude}`,
+    title: props.label || '位置',
+    content: props.label || '',
+    output: 'html',
+    coord_type: 'bd09ll',
+    src: 'webapp.yudao.admin',
+  });
+  return `https://api.map.baidu.com/marker?${params.toString()}`;
 });
 
 defineExpose({
   locationX: props.locationX,
   locationY: props.locationY,
   label: props.label,
-  qqMapKey: resolvedQqMapKey,
 });
 </script>
 
 <template>
   <div>
-    <a :href="mapUrl" target="_blank" class="text-primary">
+    <a
+      :href="mapUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-primary"
+    >
       <Col>
-        <Row>
-          <img :src="mapImageUrl" alt="地图位置" />
+        <Row v-if="point">
+          <MapView
+            :longitude="point.longitude"
+            :latitude="point.latitude"
+            class="pointer-events-none h-[180px] w-[250px]"
+          />
         </Row>
         <Row class="mt-2">
           <IconifyIcon icon="lucide:map-pin" class="mr-1" />

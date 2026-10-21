@@ -92,3 +92,39 @@ describe('loadBaiduMapSdk', () => {
     expect(getCallback()).toBeUndefined();
   });
 });
+
+describe('buildBaiduMapPreviewHtml', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('returns empty html without key or with invalid parameters', async () => {
+    const { buildBaiduMapPreviewHtml } = await import('../utils');
+    vi.stubEnv('VITE_BAIDU_MAP_KEY', '');
+    expect(buildBaiduMapPreviewHtml(116.404, 39.915, 15)).toBe('');
+
+    vi.stubEnv('VITE_BAIDU_MAP_KEY', 'test-key');
+    expect(buildBaiduMapPreviewHtml(Number.NaN, 39.915, 15)).toBe('');
+    expect(
+      buildBaiduMapPreviewHtml(116.404, 39.915, Number.POSITIVE_INFINITY),
+    ).toBe('');
+  });
+
+  it('loads the same browser SDK inside the preview page', async () => {
+    const { buildBaiduMapPreviewHtml } = await import('../utils');
+    vi.stubEnv('VITE_BAIDU_MAP_KEY', 'a&b"c');
+    const html = buildBaiduMapPreviewHtml(116.404, 39.915, 15);
+    const page = new DOMParser().parseFromString(html, 'text/html');
+    const sdkScript = page.querySelector<HTMLScriptElement>('script[src]');
+    const sdkUrl = new URL(sdkScript?.getAttribute('src') ?? '');
+
+    expect(sdkUrl.origin + sdkUrl.pathname).toBe(
+      'https://api.map.baidu.com/api',
+    );
+    expect(sdkUrl.searchParams.get('v')).toBe('1.0');
+    expect(sdkUrl.searchParams.get('type')).toBe('webgl');
+    expect(sdkUrl.searchParams.get('ak')).toBe('a&b"c');
+    expect(sdkUrl.searchParams.get('callback')).toBe('initMap');
+    expect(html).toContain('116.404, 39.915');
+  });
+});
