@@ -4,12 +4,13 @@ import type { VbenFormSchema } from '@vben/common-ui';
 import type { AuthApi } from '#/api/core/auth';
 
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
 import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
+import { buildSocialRedirectUri } from '@vben/utils';
 
 import {
   checkCaptcha,
@@ -23,6 +24,7 @@ import { useAuthStore } from '#/store';
 defineOptions({ name: 'Login' });
 
 const { query } = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const tenantEnable = isTenantEnable();
@@ -99,11 +101,10 @@ async function handleThirdLogin(type: number) {
   try {
     // 计算 redirectUri
     // tricky: type、redirect 需要先 encode 一次，否则钉钉回调会丢失。配合 social-login.vue#getUrlValue() 使用
-    const redirectUri = `${
-      location.origin
-    }/auth/social-login?${encodeURIComponent(
-      `type=${type}&redirect=${redirect || '/'}`,
-    )}`;
+    const redirectUri = buildSocialRedirectUri(
+      router.resolve('/auth/social-login').href,
+      { type, redirect: (redirect as string) || '/' },
+    );
 
     // 进行跳转
     window.location.href = await socialAuthRedirect(type, redirectUri);

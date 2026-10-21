@@ -56,7 +56,12 @@ onMounted(loadProfile);
           <TabPane key="resetPwd" tab="密码设置">
             <ResetPwd />
           </TabPane>
-          <TabPane key="userSocial" tab="社交绑定" force-render>
+          <!-- antdv-next 的 TabPane 未声明 props，需要使用 camelCase 的 forceRender，才能预挂载以处理社交绑定回调 -->
+          <TabPane
+            key="userSocial"
+            tab="社交绑定"
+            v-bind="{ forceRender: true }"
+          >
             <UserSocial @update:active-name="activeName = $event" />
           </TabPane>
           <!-- TODO @芋艿：在线设备 -->

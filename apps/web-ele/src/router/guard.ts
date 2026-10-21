@@ -133,13 +133,18 @@ function setupAccessGuard(router: Router) {
     accessStore.setAccessRoutes(accessibleRoutes);
     accessStore.setIsAccessChecked(true);
     userStore.setUserRoles(userRoles);
-    const redirectPath = (from.query.redirect ??
-      (to.path === preferences.app.defaultHomePath
+    // 跳转登录页时 redirect 已经 encode 过一次，所以 from.query.redirect 需要 decode 一次；
+    // to.fullPath 是路由编码后的地址，不能再 decode，否则会破坏 query（例如说，社交绑定回调的 code、state）
+    let redirectPath =
+      to.path === preferences.app.defaultHomePath
         ? userInfo?.homePath || preferences.app.defaultHomePath
-        : to.fullPath)) as string;
+        : to.fullPath;
+    if (from.query.redirect != null) {
+      redirectPath = decodeURIComponent(from.query.redirect as string);
+    }
 
     return {
-      ...router.resolve(decodeURIComponent(redirectPath)),
+      ...router.resolve(redirectPath),
       replace: true,
     };
   });

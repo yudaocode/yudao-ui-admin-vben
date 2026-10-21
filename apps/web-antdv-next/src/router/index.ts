@@ -4,11 +4,16 @@ import {
   createWebHistory,
 } from 'vue-router';
 
-import { resetStaticRoutes } from '@vben/utils';
+import { resetStaticRoutes, restoreSocialRoute } from '@vben/utils';
 
 import { createRouterGuard } from './guard';
 import { routes } from './routes';
 import { setupBaiduTongJi } from './tongji';
+
+// hash 路由时，需要先还原第三方登录回调的目标路由，详见 buildSocialRedirectUri() 说明
+if (import.meta.env.VITE_ROUTER_HISTORY === 'hash') {
+  restoreSocialRoute();
+}
 
 /**
  *  @zh_CN 创建vue-router实例

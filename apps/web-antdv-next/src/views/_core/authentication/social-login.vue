@@ -7,10 +7,15 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { AuthenticationLogin, Verification, z } from '@vben/common-ui';
+import { LOGIN_PATH } from '@vben/constants';
 import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
-import { getUrlValue } from '@vben/utils';
+import {
+  clearSocialCallback,
+  getSocialCallback,
+  getUrlValue,
+} from '@vben/utils';
 
 import {
   checkCaptcha,
@@ -24,7 +29,7 @@ defineOptions({ name: 'SocialLogin' });
 
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
-const { query } = useRoute();
+const route = useRoute();
 const router = useRouter();
 const tenantEnable = isTenantEnable();
 const captchaEnable = isCaptchaEnable();
@@ -71,20 +76,9 @@ async function fetchTenantList() {
 
 /** 尝试登录：当账号已经绑定，socialLogin 会直接获得 token */
 const socialType = Number(getUrlValue('type'));
-const redirect = getUrlValue('redirect');
-const socialCode = query?.code as string;
-const socialState = query?.state as string;
+const redirect = (route.query.redirect as string) || getUrlValue('redirect');
+const { code: socialCode, state: socialState } = getSocialCallback();
 async function tryLogin() {
-  // 用于登录后，基于 redirect 的重定向
-  if (redirect) {
-    await router.replace({
-      query: {
-        ...query,
-        redirect: encodeURIComponent(redirect),
-      },
-    });
-  }
-
   // 尝试登录
   await authStore.authLogin('social', {
     type: socialType,
@@ -127,6 +121,24 @@ async function handleVerifySuccess({ captchaVerification }: any) {
 
 /** 组件挂载时获取租户信息 */
 onMounted(async () => {
+  // 缺少回调参数（例如说，清理地址栏后刷新、直接访问），无法社交登录，退回登录页，并保留 redirect
+  if (!socialType || !socialCode || !socialState) {
+    clearSocialCallback(router.options.history);
+    await router.replace({
+      path: LOGIN_PATH,
+      query: redirect ? { redirect } : {},
+    });
+    return;
+  }
+  // 用于登录后，基于 redirect 的重定向：回填到路由的 query，由路由守卫 decode 后跳转
+  // 注意：认证布局以 fullPath 作为组件 key，回填后会重建本组件，由新的组件继续登录
+  if (redirect && route.query.redirect !== redirect) {
+    await router.replace({ query: { ...route.query, redirect } });
+    return;
+  }
+  // 清理地址栏中的回调参数，避免 code 泄露或重复使用
+  clearSocialCallback(router.options.history);
+
   await fetchTenantList();
 
   await tryLogin();

@@ -3,12 +3,17 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemSocialUserApi } from '#/api/system/social/user';
 
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import { confirm } from '@vben/common-ui';
 import { DICT_TYPE, SystemUserSocialTypeEnum } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
-import { getUrlValue } from '@vben/utils';
+import {
+  buildSocialRedirectUri,
+  clearSocialCallback,
+  getSocialCallback,
+  getUrlValue,
+} from '@vben/utils';
 
 import { Button, Card, Image, message } from 'antdv-next';
 
@@ -25,7 +30,7 @@ const emit = defineEmits<{
   (e: 'update:activeName', v: string): void;
 }>();
 
-const route = useRoute();
+const router = useRouter();
 /** 已经绑定的平台 */
 const bindList = ref<SystemSocialUserApi.SocialUser[]>([]);
 const allBindList = computed<any[]>(() => {
@@ -105,7 +110,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 /** 解绑账号 */
 function onUnbind(row: SystemSocialUserApi.SocialUser) {
-  confirm(`确定解绑[${getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, row.type)}]平台的[${row.openid}]账号吗？`).then(async () => {
+  confirm(
+    `确定解绑[${getDictLabel(DICT_TYPE.SYSTEM_SOCIAL_TYPE, row.type)}]平台的[${row.openid}]账号吗？`,
+  ).then(async () => {
     await socialUnbind({ type: row.type, openid: row.openid });
     // 提示成功
     message.success($t('ui.actionMessage.operationSuccess'));
@@ -122,7 +129,8 @@ async function onBind(bind: any) {
   try {
     // 计算 redirectUri
     // tricky: type 需要先 encode 一次，否则钉钉回调会丢失。配合 getUrlValue() 使用
-    const redirectUri = `${location.origin}/profile?${encodeURIComponent(`type=${type}`)}`;
+    const href = router.resolve('/profile').href;
+    const redirectUri = buildSocialRedirectUri(href, { type });
 
     // 进行跳转
     window.location.href = await socialAuthRedirect(type, redirectUri);
@@ -135,18 +143,20 @@ async function onBind(bind: any) {
 async function bindSocial() {
   // 社交绑定
   const type = Number(getUrlValue('type'));
-  const code = route.query.code as string;
-  const state = route.query.state as string;
+  const { code, state } = getSocialCallback();
   if (!code) {
     return;
   }
+  // 清理 URL 参数，避免刷新重复触发
+  clearSocialCallback(router.options.history);
+  // 同步当前路由、标签页：history 路由时，它们仍带有 code 等参数，重新打开标签页会带回 code
+  // 注意：Profile 路由的 fullPathKey 为 false，替换后更新原标签页，不会重建页面
+  await router.replace(router.options.history.location);
   await socialBind({ type, code, state });
   // 提示成功
   message.success('绑定成功');
   emit('update:activeName', 'userSocial');
   await gridApi.reload();
-  // 清理 URL 参数，避免刷新重复触发
-  window.history.replaceState({}, '', location.pathname);
 }
 
 /** 初始化 */

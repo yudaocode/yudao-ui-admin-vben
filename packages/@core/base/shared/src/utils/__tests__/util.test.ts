@@ -1,6 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { bindMethods, getNestedValue } from '../util';
+import {
+  bindMethods,
+  buildSocialRedirectUri,
+  clearSocialCallback,
+  getNestedValue,
+  getSocialCallback,
+  getUrlValue,
+  restoreSocialRoute,
+} from '../util';
 
 class TestClass {
   public value: string;
@@ -154,5 +162,191 @@ describe('getNestedValue', () => {
     const complexData = { list: [{ name: 'Item1' }] };
     const result = getNestedValue(complexData, 'list.2.name');
     expect(result).toBeUndefined();
+  });
+});
+
+/** 模拟第三方平台的回调：直接在回调地址后拼接 code、state */
+function socialCallback(redirectUri: string, params: string) {
+  const url = redirectUri.slice(location.origin.length);
+  window.history.replaceState(null, '', `${url}&${params}`);
+}
+
+describe('social callback', () => {
+  // 登录页 query 中的 redirect，已经被 encode 一次，且包含 ?、&、#
+  const redirect = encodeURIComponent('/system/user?id=1&tab=a#b');
+
+  afterEach(() => {
+    window.history.replaceState(null, '', '/');
+  });
+
+  it('should build history redirect uri with base', () => {
+    const redirectUri = buildSocialRedirectUri('/admin/auth/social-login', {
+      redirect,
+      type: 20,
+    });
+    expect(redirectUri).not.toContain('#');
+    expect(
+      redirectUri.startsWith(`${location.origin}/admin/auth/social-login?`),
+    ).toBe(true);
+
+    socialCallback(redirectUri, 'code=test_code&state=test_state');
+    expect(getUrlValue('type')).toBe('20');
+    expect(getUrlValue('redirect')).toBe(redirect);
+    // 登录成功后，路由守卫会 decode 一次 redirect 再跳转
+    expect(decodeURIComponent(getUrlValue('redirect'))).toBe(
+      '/system/user?id=1&tab=a#b',
+    );
+    expect(getSocialCallback()).toEqual({
+      code: 'test_code',
+      state: 'test_state',
+    });
+  });
+
+  it('should build hash redirect uri before #, and restore route', () => {
+    window.history.replaceState(null, '', '/admin/#/auth/login');
+    const redirectUri = buildSocialRedirectUri('#/auth/social-login', {
+      redirect,
+      type: 20,
+    });
+    expect(redirectUri).not.toContain('#');
+    expect(redirectUri.startsWith(`${location.origin}/admin/?`)).toBe(true);
+
+    // 钉钉新版登录，回调的是 authCode
+    socialCallback(redirectUri, 'authCode=test_code&state=test_state');
+    expect(location.hash).toBe('');
+    restoreSocialRoute();
+    expect(location.pathname).toBe('/admin/');
+    expect(location.hash).toBe('#/auth/social-login');
+    expect(getUrlValue('type')).toBe('20');
+    expect(getUrlValue('redirect')).toBe(redirect);
+    expect(getSocialCallback()).toEqual({
+      code: 'test_code',
+      state: 'test_state',
+    });
+
+    // hash 路由：回调参数不属于路由地址，只清理地址栏，不需要同步 vue-router
+    const routerHistory = {
+      base: '/admin/#',
+      location: '/auth/social-login',
+      replace: vi.fn(),
+    };
+    clearSocialCallback(routerHistory);
+    expect(routerHistory.replace).not.toHaveBeenCalled();
+    expect(location.pathname).toBe('/admin/');
+    expect(location.hash).toBe('#/auth/social-login');
+    expect(location.href).not.toContain('test_code');
+    expect(getSocialCallback()).toEqual({ code: '', state: '' });
+    // 只保留 redirect，且 getUrlValue() 读取结果不变（没有多 decode）
+    expect(getUrlValue('redirect')).toBe(redirect);
+    expect(getUrlValue('type')).toBe('');
+    expect(getUrlValue('socialRoute')).toBe('');
+  });
+
+  it('should sync vue-router history when clearing history callback', () => {
+    // 社交登录页回填 redirect 后的地址：整体 encode 的参数 + 回调参数 + 路由 query 中的 redirect
+    const redirectUri = buildSocialRedirectUri('/admin/auth/social-login', {
+      redirect,
+      type: 20,
+    });
+    socialCallback(
+      redirectUri,
+      `authCode=test_code&state=test_state&redirect=${encodeURIComponent(redirect)}#tab`,
+    );
+    // history 路由：vue-router 记录的当前地址，不含 base
+    const routerHistory = {
+      base: '/admin',
+      location: `${location.pathname.slice('/admin'.length)}${location.search}${location.hash}`,
+      replace: vi.fn(),
+    };
+    clearSocialCallback(routerHistory);
+    // 路由 query 中的 redirect 原样保留，其它参数全部清理，hash 保留
+    expect(routerHistory.replace).toHaveBeenCalledTimes(1);
+    expect(routerHistory.replace).toHaveBeenCalledWith(
+      `/auth/social-login?redirect=${encodeURIComponent(redirect)}#tab`,
+    );
+  });
+
+  it('should keep encoded redirect target when clearing callback', () => {
+    // redirect 目标包含 query、hash、中文、%、&、+
+    const target = '/system/user?name=a%26b&plus=1%2B1+2&text=中文#tab';
+    const redirectUri = buildSocialRedirectUri('/auth/social-login', {
+      redirect: target,
+      type: 20,
+    });
+    socialCallback(
+      redirectUri,
+      'code=test_code&authCode=other&state=test_state',
+    );
+    const routerHistory = {
+      base: '',
+      get location() {
+        return `${location.pathname}${location.search}${location.hash}`;
+      },
+      replace: vi.fn((to: string) => window.history.replaceState(null, '', to)),
+    };
+    clearSocialCallback(routerHistory);
+    expect(routerHistory.replace).toHaveBeenCalledTimes(1);
+    expect(location.pathname).toBe('/auth/social-login');
+    expect(getSocialCallback()).toEqual({ code: '', state: '' });
+    expect(getUrlValue('redirect')).toBe(target);
+    expect(getUrlValue('type')).toBe('');
+    expect(location.href).not.toContain('test_code');
+    expect(location.href).not.toContain('other');
+
+    // 再次清理（例如说，刷新后）：没有需要清理的参数，不再修改地址
+    clearSocialCallback(routerHistory);
+    expect(routerHistory.replace).toHaveBeenCalledTimes(1);
+    expect(getUrlValue('redirect')).toBe(target);
+  });
+
+  it('should clear all callback params without redirect', () => {
+    window.history.replaceState(null, '', '/#/profile');
+    const redirectUri = buildSocialRedirectUri('#/profile', { type: 20 });
+    socialCallback(redirectUri, 'code=test_code&state=test_state');
+    restoreSocialRoute();
+    clearSocialCallback({ base: '/#', location: '/profile', replace: vi.fn() });
+    expect(location.search).toBe('');
+    expect(location.hash).toBe('#/profile');
+
+    // 无法解析的参数（非法的 % 编码）也一并清理
+    window.history.replaceState(null, '', '/?%E0%A4%A&state=test_state');
+    clearSocialCallback({ base: '/#', location: '/', replace: vi.fn() });
+    expect(location.search).toBe('');
+  });
+
+  it('should restore hash route for social bind', () => {
+    window.history.replaceState(null, '', '/#/profile');
+    const redirectUri = buildSocialRedirectUri('#/profile', { type: 20 });
+    socialCallback(redirectUri, 'code=test_code&state=test_state');
+    restoreSocialRoute();
+    expect(location.hash).toBe('#/profile');
+    expect(getUrlValue('type')).toBe('20');
+  });
+
+  it('should not restore route when not needed', () => {
+    window.history.replaceState(
+      null,
+      '',
+      `/?${encodeURIComponent('socialRoute=/profile')}#/dashboard`,
+    );
+    restoreSocialRoute();
+    expect(location.hash).toBe('#/dashboard');
+
+    window.history.replaceState(null, '', '/?code=test_code&state=test_state');
+    restoreSocialRoute();
+    expect(location.hash).toBe('');
+
+    window.history.replaceState(null, '', '/?code=%E0%A4%A&state=test_state');
+    expect(() => restoreSocialRoute()).not.toThrow();
+    expect(location.hash).toBe('');
+  });
+
+  it('should decode code and state only once', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/?code=test_code&authCode=other_code&state=a%252Bb',
+    );
+    expect(getSocialCallback()).toEqual({ code: 'test_code', state: 'a%2Bb' });
   });
 });
