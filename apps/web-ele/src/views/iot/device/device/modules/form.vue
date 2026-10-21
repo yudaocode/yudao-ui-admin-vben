@@ -94,9 +94,10 @@ async function openMapDialog() {
     await nextTick();
   }
   const values = await advancedFormApi.getValues();
+  // 0 是合法经纬度，只把非有限数字视为未填写
   mapDialogRef.value?.open(
-    values.longitude ? Number(values.longitude) : undefined,
-    values.latitude ? Number(values.latitude) : undefined,
+    Number.isFinite(values.longitude) ? values.longitude : undefined,
+    Number.isFinite(values.latitude) ? values.latitude : undefined,
   );
 }
 

@@ -52,6 +52,47 @@ const [AddForm, addFormApi] = useVbenForm({
   showDefaultActions: false,
 });
 
+// 主弹窗须先于内部弹窗声明，才能接收外部 connectedComponent 的 api 和配置
+const [Modal, modalApi] = useVbenModal({
+  async onConfirm() {
+    if (!accountSet.value?.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      await updateAccountUserList({
+        accountSetId: accountSet.value.id,
+        members: memberList.value.map((member) => ({
+          userId: member.userId,
+          level: member.level,
+        })),
+      });
+      message.success('账套授权已保存');
+      await modalApi.close();
+      emit('success');
+    } finally {
+      modalApi.unlock();
+    }
+  },
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      accountSet.value = undefined;
+      memberList.value = [];
+      return;
+    }
+    accountSet.value = modalApi.getData() as FmsAccountSetApi.AccountSet;
+    if (!accountSet.value?.id) {
+      return;
+    }
+    modalApi.lock();
+    try {
+      memberList.value = await getAccountUserList(accountSet.value.id);
+    } finally {
+      modalApi.unlock();
+    }
+  },
+});
+
 const [AddModal, addModalApi] = useVbenModal({
   async onConfirm() {
     const { valid } = await addFormApi.validate();
@@ -103,46 +144,6 @@ const [AddModal, addModalApi] = useVbenModal({
         },
       },
     ]);
-  },
-});
-
-const [Modal, modalApi] = useVbenModal({
-  async onConfirm() {
-    if (!accountSet.value?.id) {
-      return;
-    }
-    modalApi.lock();
-    try {
-      await updateAccountUserList({
-        accountSetId: accountSet.value.id,
-        members: memberList.value.map((member) => ({
-          userId: member.userId,
-          level: member.level,
-        })),
-      });
-      message.success('账套授权已保存');
-      await modalApi.close();
-      emit('success');
-    } finally {
-      modalApi.unlock();
-    }
-  },
-  async onOpenChange(isOpen: boolean) {
-    if (!isOpen) {
-      accountSet.value = undefined;
-      memberList.value = [];
-      return;
-    }
-    accountSet.value = modalApi.getData() as FmsAccountSetApi.AccountSet;
-    if (!accountSet.value?.id) {
-      return;
-    }
-    modalApi.lock();
-    try {
-      memberList.value = await getAccountUserList(accountSet.value.id);
-    } finally {
-      modalApi.unlock();
-    }
   },
 });
 </script>

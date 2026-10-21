@@ -85,7 +85,10 @@ function initMapInstance() {
   });
 
   // 如果有初始经纬度，加载标记点
-  if (initLongitude.value && initLatitude.value) {
+  if (
+    Number.isFinite(initLongitude.value) &&
+    Number.isFinite(initLatitude.value)
+  ) {
     const lonLat = `${initLongitude.value},${initLatitude.value}`;
     regeoCode(lonLat);
   }
@@ -126,7 +129,11 @@ function autoSearch(queryValue: string) {
       if (results && results._pois) {
         results._pois.forEach((p: any) => {
           const point = p.point;
-          if (point && point.lng && point.lat) {
+          if (
+            point &&
+            Number.isFinite(point.lng) &&
+            Number.isFinite(point.lat)
+          ) {
             temp.push({
               name: p.title,
               value: `${point.lng},${point.lat}`,
@@ -221,8 +228,8 @@ const [Modal, modalApi] = useVbenModal({
 function open(longitude?: number, latitude?: number) {
   initLongitude.value = longitude;
   initLatitude.value = latitude;
-  state.longitude = longitude ? String(longitude) : '';
-  state.latitude = latitude ? String(latitude) : '';
+  state.longitude = Number.isFinite(longitude) ? String(longitude) : '';
+  state.latitude = Number.isFinite(latitude) ? String(latitude) : '';
   state.address = '';
   state.mapAddressOptions = [];
   modalApi.open();

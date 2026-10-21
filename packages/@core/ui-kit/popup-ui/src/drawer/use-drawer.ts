@@ -170,7 +170,11 @@ export function useVbenDrawer<
       inheritAttrs: false,
     },
   );
-  injectData.extendApi?.(extendedApi);
+  // 只有首个消费者继承外部配置并绑定外部 api，嵌套抽屉不能重新绑定
+  // 因此 connectedComponent 内的主抽屉须先于同一 setup 中的其他 useVbenDrawer 声明
+  if (!isConsumed) {
+    injectData.extendApi?.(extendedApi);
+  }
   return [Drawer, extendedApi] as const;
 }
 

@@ -191,25 +191,7 @@ async function removeDocument(index: number) {
   await documentGridApi.query();
 }
 
-const [DocumentModal, documentModalApi] = useVbenModal({
-  class: 'w-[900px]',
-  title: '编辑模板文档',
-  async onConfirm() {
-    const { valid } = await documentFormApi.validate();
-    if (!valid) {
-      return;
-    }
-    const document = (await documentFormApi.getValues()) as TemplateDocument;
-    if (editingDocumentIndex.value < 0) {
-      documents.value.push(document);
-    } else {
-      documents.value[editingDocumentIndex.value] = document;
-    }
-    await documentGridApi.query();
-    await documentModalApi.close();
-  },
-});
-
+// 主弹窗须先于内部弹窗声明，才能接收外部 connectedComponent 的 api 和配置
 const [Modal, modalApi] = useVbenModal({
   class: 'w-[900px]',
   async onConfirm() {
@@ -269,6 +251,25 @@ const [Modal, modalApi] = useVbenModal({
       }
     }
     await documentGridApi.query();
+  },
+});
+
+const [DocumentModal, documentModalApi] = useVbenModal({
+  class: 'w-[900px]',
+  title: '编辑模板文档',
+  async onConfirm() {
+    const { valid } = await documentFormApi.validate();
+    if (!valid) {
+      return;
+    }
+    const document = (await documentFormApi.getValues()) as TemplateDocument;
+    if (editingDocumentIndex.value < 0) {
+      documents.value.push(document);
+    } else {
+      documents.value[editingDocumentIndex.value] = document;
+    }
+    await documentGridApi.query();
+    await documentModalApi.close();
   },
 });
 </script>

@@ -181,7 +181,11 @@ export function useVbenModal<
       inheritAttrs: false,
     },
   );
-  injectData.extendApi?.(extendedApi);
+  // 只有首个消费者继承外部配置并绑定外部 api，嵌套弹窗不能重新绑定
+  // 因此 connectedComponent 内的主弹窗须先于同一 setup 中的其他 useVbenModal 声明
+  if (!isConsumed) {
+    injectData.extendApi?.(extendedApi);
+  }
 
   return [Modal, extendedApi] as const;
 }
