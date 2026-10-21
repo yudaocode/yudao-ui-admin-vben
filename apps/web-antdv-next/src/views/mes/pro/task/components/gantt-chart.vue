@@ -38,6 +38,11 @@ const emit = defineEmits<{
 const ganttContainer = ref<HTMLElement>(); // 甘特图挂载容器
 const ganttInited = ref(false); // 甘特图是否已初始化
 
+/** 添加今天标记线 */
+function addTodayMarker() {
+  gantt.addMarker({ start_date: new Date(), css: 'today', text: '今天' });
+}
+
 /** 初始化甘特图配置 */
 function initGantt() {
   if (!ganttContainer.value) {
@@ -108,7 +113,7 @@ function initGantt() {
   ];
 
   gantt.plugins({ marker: true, tooltip: true });
-  gantt.addMarker({ start_date: new Date(), css: 'today', text: '今天' });
+  addTodayMarker();
 
   gantt.templates.task_text = (_start: any, _end: any, task: any) => {
     const percent = Math.round((task.progress || 0) * 100);
@@ -177,6 +182,8 @@ function loadData(tasks: any[]) {
     })),
     links: [],
   });
+  // clearAll 会一并清空标记，需重新添加今天标记线（https://t.zsxq.com/kfb9f）
+  addTodayMarker();
 }
 
 watch(
