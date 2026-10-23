@@ -245,8 +245,10 @@ defineExpose({ toggleOpenState, open, close });
         v-if="total >= pageSize"
         class="flex-center flex justify-end overflow-hidden border-t py-2 pr-3"
       >
+        <!-- 绑定当前页，避免搜索重置页码、重新打开弹层后与列表页码不一致 -->
         <Pagination
-          :items-per-page="36"
+          :page="currentPage"
+          :items-per-page="pageSize"
           :sibling-count="1"
           :total="total"
           show-edges
