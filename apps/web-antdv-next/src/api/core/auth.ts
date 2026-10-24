@@ -22,6 +22,26 @@ export namespace AuthApi {
     expiresTime: number;
   }
 
+  /** 扫码登录二维码 */
+  export interface QrcodeCreateResult {
+    qrcodeId: string;
+    secret: string;
+    qrContent: string;
+    expiresIn: number;
+  }
+
+  /** 扫码登录轮询参数 */
+  export interface QrcodePollParams {
+    qrcodeId: string;
+    secret: string;
+  }
+
+  /** 扫码登录轮询结果 */
+  export interface QrcodePollResult {
+    status: AuthQrcodeStatusEnum;
+    login?: LoginResult;
+  }
+
   /** 租户信息返回值 */
   export interface TenantResult {
     id: number;
@@ -162,5 +182,29 @@ export async function socialLogin(data: AuthApi.SocialLoginParams) {
   return requestClient.post<AuthApi.LoginResult>(
     '/system/auth/social-login',
     data,
+  );
+}
+
+/** 扫码登录状态，与后端 int 枚举一致 */
+export enum AuthQrcodeStatusEnum {
+  WAITING = 0,
+  CONFIRMED = 1,
+}
+
+/** 生成扫码登录二维码 */
+export async function createQrcode() {
+  return requestClient.post<AuthApi.QrcodeCreateResult>(
+    '/system/auth/create-qrcode',
+    undefined,
+    { headers: { isToken: false, isVisitTenant: false } },
+  );
+}
+
+/** 轮询并领取扫码登录结果 */
+export async function pollQrcode(data: AuthApi.QrcodePollParams) {
+  return requestClient.post<AuthApi.QrcodePollResult>(
+    '/system/auth/qrcode-login',
+    data,
+    { headers: { isToken: false, isVisitTenant: false } },
   );
 }

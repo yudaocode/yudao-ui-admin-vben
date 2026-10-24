@@ -176,6 +176,9 @@ const formSchema = computed((): VbenFormSchema[] => {
       ref="loginRef"
       :form-schema="formSchema"
       :loading="authStore.loginLoading"
+      :qr-code-login-path="
+        router.resolve({ path: '/auth/qrcode-login', query }).fullPath
+      "
       @submit="handleLogin"
       @third-login="handleThirdLogin"
     />

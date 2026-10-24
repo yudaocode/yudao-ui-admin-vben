@@ -79,7 +79,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       const isVisitTenant = config.headers.get('isVisitTenant') !== false;
       config.headers.delete('isVisitTenant');
 
-      config.headers.Authorization = formatToken(accessStore.accessToken);
+      const isToken = config.headers.get('isToken') !== false;
+      // 保留 false 供响应拦截器判断匿名请求；Axios 不会发送值为 false 的请求头。
+      config.headers.set('isToken', isToken ? undefined : false);
+      config.headers.Authorization = isToken
+        ? formatToken(accessStore.accessToken)
+        : null;
       config.headers['Accept-Language'] = preferences.app.locale;
       // 添加租户编号
       config.headers['tenant-id'] = tenantEnable
@@ -183,15 +188,22 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   );
 
   // token过期的处理
-  client.addResponseInterceptor(
-    authenticateResponseInterceptor({
-      client,
-      doReAuthenticate,
-      doRefreshToken,
-      enableRefreshToken: preferences.app.enableRefreshToken,
-      formatToken,
-    }),
-  );
+  const authInterceptor = authenticateResponseInterceptor({
+    client,
+    doReAuthenticate,
+    doRefreshToken,
+    enableRefreshToken: preferences.app.enableRefreshToken,
+    formatToken,
+  });
+  client.addResponseInterceptor({
+    rejected: (error) => {
+      // 匿名扫码请求失败时重新扫码，不刷新或重试旧账号的登录态。
+      if (error.config?.headers?.get('isToken') === false) {
+        throw error;
+      }
+      return authInterceptor.rejected?.(error);
+    },
+  });
 
   // 通用的错误处理,如果没有进入上面的错误处理逻辑，就会进入这里
   client.addResponseInterceptor(
