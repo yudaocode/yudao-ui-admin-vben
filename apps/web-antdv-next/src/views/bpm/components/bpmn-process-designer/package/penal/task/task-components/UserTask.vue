@@ -140,7 +140,8 @@ const resetTaskForm = () => {
         .map((item: any) => {
           // 如果数字超出了最大安全整数范围，则将其作为字符串处理
           const num = Number(item);
-          return num > Number.MAX_SAFE_INTEGER || num < -Number.MAX_SAFE_INTEGER
+          return num >= Number.MAX_SAFE_INTEGER ||
+            num <= -Number.MAX_SAFE_INTEGER
             ? item
             : num;
         });
@@ -166,7 +167,8 @@ const resetTaskForm = () => {
         .map((item: any) => {
           // 如果数字超出了最大安全整数范围，则将其作为字符串处理
           const num = Number(item);
-          return num > Number.MAX_SAFE_INTEGER || num < -Number.MAX_SAFE_INTEGER
+          return num >= Number.MAX_SAFE_INTEGER ||
+            num <= -Number.MAX_SAFE_INTEGER
             ? item
             : num;
         });

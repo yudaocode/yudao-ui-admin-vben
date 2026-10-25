@@ -14,6 +14,7 @@ import {
   TradeOrderStatusEnum,
 } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElCard, ElLoading, ElMessage, ElTag } from 'element-plus';
 
@@ -243,7 +244,7 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(async () => {
-  orderId.value = props.id || Number(route.params.id);
+  orderId.value = props.id || (parseId(route.params.id) as number);
   await getDetail();
 });
 </script>

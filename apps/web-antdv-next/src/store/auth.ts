@@ -6,8 +6,10 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
+import { isTenantEnable } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { notification } from 'antdv-next';
 import { defineStore } from 'pinia';
@@ -41,6 +43,15 @@ export const useAuthStore = defineStore('auth', () => {
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ) {
+    if (isTenantEnable()) {
+      const tenantId = parseId(params.tenantId ?? accessStore.tenantId);
+      if (!isPositiveId(tenantId)) {
+        accessStore.setTenantId(null);
+        notification.warning({ title: '请选择有效租户' });
+        return { userInfo: null };
+      }
+      accessStore.setTenantId(tenantId);
+    }
     // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
     try {

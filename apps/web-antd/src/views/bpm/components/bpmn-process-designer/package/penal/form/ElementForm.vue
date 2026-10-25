@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject, nextTick, onMounted, ref, toRaw, watch } from 'vue';
 
-import { cloneDeep } from '@vben/utils';
+import { cloneDeep, parseId } from '@vben/utils';
 
 import { Form, FormItem, Select } from 'ant-design-vue';
 
@@ -99,9 +99,7 @@ const formOptions = computed(() => {
 
 onMounted(async () => {
   formList.value = await getFormSimpleList();
-  formKey.value = formKey.value
-    ? Number.parseInt(formKey.value as string)
-    : undefined;
+  formKey.value = formKey.value ? parseId(formKey.value as string) : undefined;
 });
 
 watch(

@@ -3,6 +3,8 @@ import type { MesProProcessApi } from '#/api/mes/pro/process';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select, Tag, Tooltip } from 'antdv-next';
 
 import { getProcessSimpleList } from '#/api/mes/pro/process';
@@ -66,7 +68,7 @@ function syncSelectedItem(value: number | undefined) {
 
 /** 除 v-model 外，额外抛出完整工序对象给业务表单使用 */
 function handleChange(value: any) {
-  const nextValue = value === undefined ? undefined : Number(value);
+  const nextValue = value === undefined ? undefined : parseId(value);
   syncSelectedItem(nextValue);
   emit('change', selectedItem.value);
 }

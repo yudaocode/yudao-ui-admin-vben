@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElAvatar, ElButton, ElCard, ElMessage } from 'element-plus';
 
@@ -28,7 +29,7 @@ defineOptions({ name: 'HrmPerformanceAssessmentEmployee' });
 const route = useRoute();
 const router = useRouter();
 const { closeCurrentTab } = useTabs();
-const employeeId = computed(() => Number(route.params.employeeId));
+const employeeId = computed(() => parseId(route.params.employeeId) as number);
 
 const employeeInfo = ref<
   Partial<HrmPerformanceAssessmentApi.PerformanceAssessment>

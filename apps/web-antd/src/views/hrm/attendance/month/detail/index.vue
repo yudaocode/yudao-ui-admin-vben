@@ -8,7 +8,7 @@ import { useRoute } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { formatDate } from '@vben/utils';
+import { formatDate, parseId } from '@vben/utils';
 
 import { Card, Descriptions, Radio, Select, Spin, Tag } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -45,7 +45,7 @@ const leaveTypeOptions = getDictOptions(
   'string',
 );
 
-const employeeId = computed(() => Number(route.params.employeeId));
+const employeeId = computed(() => parseId(route.params.employeeId) as number);
 const year = computed(() => Number(route.query.year) || dayjs().year());
 const month = computed(() => Number(route.query.month) || dayjs().month() + 1);
 const yearMonth = computed(

@@ -24,7 +24,13 @@ import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
-import { formatDate, handleTree } from '@vben/utils';
+import {
+  formatDate,
+  handleTree,
+  isIdType,
+  isPositiveId,
+  parseId,
+} from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -183,11 +189,12 @@ const canSaveAndCreate = computed(
 const voucherIds = computed(() =>
   String(route.query.ids || '')
     .split(',')
-    .map(Number)
-    .filter((id) => id > 0),
+    .map(parseId)
+    .filter(isIdType)
+    .filter(isPositiveId),
 ); // 当前列表凭证编号数组
 const currentVoucherIndex = computed(() =>
-  voucherIds.value.indexOf(Number(route.query.id || 0)),
+  voucherIds.value.indexOf(parseId(route.query.id || 0) as number),
 ); // 当前凭证索引
 const previousVoucherId = computed(() =>
   currentVoucherIndex.value > 0
@@ -245,16 +252,17 @@ async function init() {
     subjects.value = handleTree(subjectList);
     auxiliaryTypes.value = auxiliaryTypeList;
     Object.keys(auxiliaryOptions).forEach((key) =>
-      Reflect.deleteProperty(auxiliaryOptions, Number(key)),
+      Reflect.deleteProperty(auxiliaryOptions, key),
     );
     currentMonth.value = accountingMonth || dayjs().format('YYYY-MM');
 
     // 根据路由加载详情、复制来源或空白凭证
-    const voucherId = Number(route.query.id || 0);
+    const voucherId = parseId(route.query.id || 0);
+    const copyFromId = parseId(route.query.copyFrom || 0);
     if (voucherId) {
       await loadDetail(voucherId);
-    } else if (Number(route.query.copyFrom || 0)) {
-      await initializeCopiedVoucher(Number(route.query.copyFrom));
+    } else if (copyFromId) {
+      await initializeCopiedVoucher(copyFromId);
     } else {
       await resetForm(false);
     }
@@ -959,7 +967,7 @@ async function submitForm(saveAndCreate: boolean) {
     // 根据保存方式进入空白凭证或回显当前凭证
     if (saveAndCreate) {
       await resetForm();
-    } else if (Number(route.query.id) === voucherId) {
+    } else if (parseId(route.query.id) === voucherId) {
       await loadDetail(voucherId);
     } else {
       await router.replace({

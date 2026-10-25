@@ -9,6 +9,7 @@ import { LOGIN_PATH } from '@vben/constants';
 import { isTenantEnable } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore } from '@vben/stores';
+import { isPositiveId } from '@vben/utils';
 
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 
@@ -59,6 +60,11 @@ async function createLoginQrcode() {
   error.value = '';
   loading.value = true;
   try {
+    if (isTenantEnable() && !isPositiveId(accessStore.tenantId)) {
+      accessStore.setTenantId(null);
+      await router.replace(loginPath.value);
+      return;
+    }
     const created = await createQrcode();
     if (stopped) return;
     ticket.value = created;
@@ -120,7 +126,7 @@ async function createLoginQrcode() {
 }
 
 onMounted(() => {
-  if (isTenantEnable() && !accessStore.tenantId) {
+  if (isTenantEnable() && !isPositiveId(accessStore.tenantId)) {
     void router.replace(loginPath.value);
     return;
   }

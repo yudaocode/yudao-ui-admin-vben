@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, parseId } from '@vben/utils';
 
 import { Button, Dropdown, Menu, Progress } from 'antdv-next';
 
@@ -49,7 +49,7 @@ const queryParams = reactive({
   iterationIds: [] as number[],
   excludedIterationIds: [] as number[],
   assigneeUserIds: route.query.assigneeUserId
-    ? [Number(route.query.assigneeUserId)]
+    ? [parseId(route.query.assigneeUserId) as number]
     : ([] as number[]),
   labelIds: [] as number[],
   unplannedOnly: false,

@@ -36,7 +36,7 @@ async function getInfo() {
   detailData.value = { fileUrls: [] };
   try {
     // 查询申请详情，BPM 通过业务编号传入 id
-    detailData.value = await getVehicleApply(Number(id));
+    detailData.value = await getVehicleApply(id as number);
   } finally {
     detailLoading.value = false;
   }

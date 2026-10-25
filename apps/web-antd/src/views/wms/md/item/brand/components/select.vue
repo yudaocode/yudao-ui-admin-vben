@@ -5,6 +5,8 @@ import type { WmsItemBrandApi } from '#/api/wms/md/item/brand';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getItemBrandSimpleList } from '#/api/wms/md/item/brand';
@@ -45,7 +47,7 @@ const options = computed(() =>
 
 /** 选中变化 */
 function handleChange(value: SelectValue) {
-  const brandId = typeof value === 'number' ? value : undefined;
+  const brandId = parseId(value);
   emit('update:modelValue', brandId);
   emit(
     'change',

@@ -161,7 +161,7 @@ async function handleVisibleChange(visible: boolean) {
 
 /** 切换账套，并关闭旧账套对应的 FMS 标签页 */
 async function handleChange(value: unknown) {
-  const id = Number(value);
+  const id = value;
   const previousAccountSetId = accountSetId.value;
   if (id === previousAccountSetId) return;
   const accountSet = accountSetList.value.find((item) => item.id === id);

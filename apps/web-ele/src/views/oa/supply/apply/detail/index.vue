@@ -58,7 +58,7 @@ async function getInfo() {
   }
   detailLoading.value = true;
   try {
-    formData.value = await getSupplyApply(Number(id));
+    formData.value = await getSupplyApply(id as number);
     await nextTick(); // 特殊：保证 gridApi 已经初始化
     await gridApi.grid.reloadData(formData.value.items ?? []);
   } finally {

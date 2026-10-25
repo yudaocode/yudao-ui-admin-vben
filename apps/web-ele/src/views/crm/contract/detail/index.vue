@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElCard, ElTabPane, ElTabs } from 'element-plus';
 
@@ -92,7 +93,7 @@ function handleTransfer() {
 
 /** 加载数据 */
 onMounted(() => {
-  contractId.value = Number(props.id || route.params.id);
+  contractId.value = parseId(props.id || route.params.id) as number;
   loadContractDetail();
 });
 </script>

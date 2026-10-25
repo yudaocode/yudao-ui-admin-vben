@@ -4,7 +4,7 @@ import type { AppLink } from './data';
 import { nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { getUrlNumberValue } from '@vben/utils';
+import { getUrlValue, parseId } from '@vben/utils';
 
 import { Button, Form, FormItem, Tooltip } from 'antdv-next';
 
@@ -83,9 +83,8 @@ function handleAppLinkSelected(appLink: AppLink) {
       detailSelectDialog.value.type = appLink.type;
       // 返显
       detailSelectDialog.value.id =
-        getUrlNumberValue(
-          'id',
-          `http://127.0.0.1${activeAppLink.value.path}`,
+        parseId(
+          getUrlValue('id', `http://127.0.0.1${activeAppLink.value.path}`),
         ) || undefined;
       detailSelectModalApi.open();
       break;

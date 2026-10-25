@@ -5,6 +5,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { ContentWrap } from '@vben/common-ui';
+import { parseId } from '@vben/utils';
 
 import { getLeave } from '#/api/bpm/oa/leave';
 import { useDescription } from '#/components/description';
@@ -31,7 +32,9 @@ const [Descriptions] = useDescription({
 async function getDetailData() {
   try {
     loading.value = true;
-    formData.value = await getLeave(Number(props.id || queryId.value));
+    formData.value = await getLeave(
+      parseId(props.id || queryId.value) as number,
+    );
   } finally {
     loading.value = false;
   }

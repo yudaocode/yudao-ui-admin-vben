@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
+import { parseId } from '@vben/utils';
 
 import {
   Avatar,
@@ -56,11 +57,11 @@ const groupId = ref<number>(); // 当前知识库分组
 const moveTargetGroupList = computed(() =>
   groupList.value.filter((group) => group.type !== PmsKnowledgeGroupType.ALL),
 ); // 可移动到的分组
-// antdv-next Tabs 的 activeKey 为字符串，查询参数仍使用数值分组编号
+// antdv-next Tabs 的 activeKey 为字符串，查询参数保留原分组编号
 const activeGroupKey = computed({
   get: () => (groupId.value === undefined ? undefined : String(groupId.value)),
   set: (key?: string) => {
-    groupId.value = key === undefined ? undefined : Number(key);
+    groupId.value = key === undefined ? undefined : parseId(key);
   },
 });
 
@@ -114,7 +115,7 @@ function handleRefresh() {
 
 /** 切换分组 */
 function handleGroupChange(key: number | string) {
-  groupId.value = Number(key);
+  groupId.value = parseId(key);
   handleRefresh();
 }
 
@@ -302,7 +303,10 @@ onMounted(async () => {
             <Button type="link">移动分组</Button>
             <template #popupRender>
               <Menu
-                @click="({ key }: any) => handleMoveGroup(row.id, Number(key))"
+                @click="
+                  ({ key }: any) =>
+                    handleMoveGroup(row.id, parseId(key) as number)
+                "
               >
                 <MenuItem v-for="group in moveTargetGroupList" :key="group.id">
                   {{ group.name }}

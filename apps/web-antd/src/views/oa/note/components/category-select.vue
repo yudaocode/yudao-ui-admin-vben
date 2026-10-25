@@ -5,6 +5,8 @@ import type { OaNoteCategoryApi } from '#/api/oa/note/category';
 
 import { onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getSimpleNoteCategoryList } from '#/api/oa/note/category';
@@ -35,7 +37,7 @@ const loading = ref(false); // 分类加载中
 
 /** 选中变化 */
 function handleChange(value: SelectValue) {
-  emit('update:modelValue', typeof value === 'number' ? value : undefined);
+  emit('update:modelValue', parseId(value));
 }
 
 /** 查询分类列表 */

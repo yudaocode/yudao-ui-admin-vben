@@ -7,7 +7,7 @@ import type { SystemUserApi } from '#/api/system/user';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import { handleTree, isIdType, parseId } from '@vben/utils';
 
 import {
   Button,
@@ -268,9 +268,14 @@ async function handleUserSearch(direction: string, value: string) {
 
 /** 处理用户选择变化 */
 function handleUserChange(targetKeys: string[]) {
+  const ids = targetKeys.map(parseId).filter(isIdType);
+  if (ids.length !== targetKeys.length) {
+    message.warning('请选择有效用户');
+    return;
+  }
   // 使用 Set 来去重选中的用户ID
   selectedUserIds.value = [...new Set(targetKeys)];
-  emit('update:value', selectedUserIds.value.map(Number));
+  emit('update:value', ids);
   updateRightListData();
 }
 

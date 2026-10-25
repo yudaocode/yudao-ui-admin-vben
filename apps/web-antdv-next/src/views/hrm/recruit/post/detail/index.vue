@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { Card, message, TabPane, Tabs } from 'antdv-next';
 
@@ -26,7 +27,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const postId = Number(route.params.id);
+const postId = parseId(route.params.id) as number;
 const loading = ref(true);
 const activeTab = ref('detail');
 const post = ref<HrmRecruitPostApi.RecruitPost>(
@@ -77,7 +78,7 @@ function openForm() {
 }
 
 onMounted(() => {
-  if (!Number.isSafeInteger(postId) || postId <= 0) {
+  if (!isPositiveId(postId)) {
     message.warning('参数错误，招聘职位不能为空！');
     close();
     return;

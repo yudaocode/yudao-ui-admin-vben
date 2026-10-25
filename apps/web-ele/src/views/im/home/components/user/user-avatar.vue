@@ -3,6 +3,8 @@ import type { User } from '../../types';
 
 import { computed } from 'vue';
 
+import { isPositiveId, parseId } from '@vben/utils';
+
 import { ElImage } from 'element-plus';
 
 import { ImFriendAddSource } from '../../../utils/constants';
@@ -81,8 +83,8 @@ function handleClick(e: MouseEvent) {
     return;
   }
   // 情况二：无预传 user 信息：打开名片，传最小必要信息（id + 昵称 + 头像），位置在鼠标右侧
-  const numId = Number(props.id);
-  if (!numId || numId <= 0) {
+  const numId = parseId(props.id);
+  if (!isPositiveId(numId)) {
     return;
   }
   uiStore.openUserInfoCardAtEvent(

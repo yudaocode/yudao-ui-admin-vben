@@ -9,6 +9,7 @@ import { Page } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { Button, Card, Form, message, Steps } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -493,8 +494,8 @@ async function initForm() {
       status: CommonStatusEnum.ENABLE,
     });
     if (route.query.type !== 'update' && !viewMode.value) return;
-    const id = Number(route.query.id);
-    if (!Number.isInteger(id) || id <= 0) {
+    const id = parseId(route.query.id);
+    if (!isPositiveId(id)) {
       message.error('KPI 考核编号不正确');
       close();
       return;

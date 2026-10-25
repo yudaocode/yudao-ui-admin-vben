@@ -2,6 +2,8 @@ import type { DbClient } from '../../utils/db';
 import type { QuoteMessage, TextMessage } from '../../utils/message';
 import type { Conversation, Message, MessageDO } from '../types';
 
+import { compareId } from '@vben/utils';
+
 import { readChannelMessages as apiReadChannelMessages } from '#/api/im/message/channel';
 import {
   readGroupMessages as apiReadGroupMessages,
@@ -14,6 +16,7 @@ import {
   recallPrivateMessage as apiRecallPrivateMessage,
   sendPrivateMessage as apiSendPrivateMessage,
 } from '#/api/im/message/private';
+import { maxImId } from '#/views/im/utils/pull';
 
 import {
   MESSAGE_GROUP_READ_ENABLED,
@@ -304,11 +307,11 @@ export const useMessageSender = () => {
     for (const message of messageStore.getMessages(
       getClientConversationId(conversation.type, conversation.targetId),
     )) {
-      if (message.id && message.id > loadedMaxMessageId) {
+      if (message.id && compareId(message.id, loadedMaxMessageId) > 0) {
         loadedMaxMessageId = message.id;
       }
     }
-    const maxMessageId = Math.max(
+    const maxMessageId = maxImId(
       loadedMaxMessageId,
       conversation.lastMessageId || 0,
     );

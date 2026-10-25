@@ -51,7 +51,7 @@ const [Modal, modalApi] = useVbenModal({
       planId.value = undefined;
       return;
     }
-    planId.value = Number(modalApi.getData());
+    planId.value = modalApi.getData() as number;
     modalApi.lock();
     try {
       const selectableEmployeeIds = new Set(

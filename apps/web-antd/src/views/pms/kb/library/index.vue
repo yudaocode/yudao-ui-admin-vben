@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
+import { parseId } from '@vben/utils';
 
 import {
   Avatar,
@@ -106,7 +107,7 @@ function handleRefresh() {
 
 /** 切换分组 */
 function handleGroupChange(key: number | string) {
-  groupId.value = Number(key);
+  groupId.value = parseId(key);
   handleRefresh();
 }
 
@@ -294,7 +295,10 @@ onMounted(async () => {
             <Button type="link">移动分组</Button>
             <template #overlay>
               <Menu
-                @click="({ key }: any) => handleMoveGroup(row.id, Number(key))"
+                @click="
+                  ({ key }: any) =>
+                    handleMoveGroup(row.id, parseId(key) as number)
+                "
               >
                 <Menu.Item v-for="group in moveTargetGroupList" :key="group.id">
                   {{ group.name }}

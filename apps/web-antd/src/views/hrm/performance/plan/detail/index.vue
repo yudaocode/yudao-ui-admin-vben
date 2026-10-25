@@ -12,6 +12,7 @@ import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions, useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import {
   Button,
@@ -59,7 +60,7 @@ const route = useRoute();
 const router = useRouter();
 const { closeCurrentTab } = useTabs();
 
-const planId = Number(route.params.id);
+const planId = parseId(route.params.id) as number;
 const loading = ref(false);
 const employeeTotal = ref(0);
 const activeTab = ref(
@@ -412,7 +413,7 @@ watch(isEditable, (editable) => {
 });
 
 onMounted(async () => {
-  if (!Number.isSafeInteger(planId) || planId <= 0) {
+  if (!isPositiveId(planId)) {
     message.warning('参数错误，KPI 考核不能为空！');
     close();
     return;

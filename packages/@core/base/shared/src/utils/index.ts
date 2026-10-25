@@ -5,6 +5,7 @@ export * from './dom';
 export * from './download';
 export * from './encrypt';
 export * from './formatNumber';
+export * from './id';
 export * from './inference';
 export * from './letter';
 export * from './merge';

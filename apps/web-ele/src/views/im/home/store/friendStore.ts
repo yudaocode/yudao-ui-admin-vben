@@ -11,6 +11,7 @@ import type { ImFriendApi } from '#/api/im/friend';
 import type { ImFriendRequestApi } from '#/api/im/friend/request';
 
 import { CommonStatusEnum } from '@vben/constants';
+import { compareId } from '@vben/utils';
 
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
@@ -173,8 +174,8 @@ export const useFriendStore = defineStore('imFriendStore', {
           this.friends = friends;
         }
         if (friendRequests.length > 0) {
-          this.friendRequests = friendRequests.toSorted(
-            (requestA, requestB) => requestB.id - requestA.id,
+          this.friendRequests = friendRequests.toSorted((requestA, requestB) =>
+            compareId(requestB.id, requestA.id),
           );
           this.hasMoreFriendRequests =
             friendRequests.length >= FRIEND_REQUEST_PAGE_SIZE;
@@ -413,8 +414,8 @@ export const useFriendStore = defineStore('imFriendStore', {
         const items = (list || []).map((request) =>
           convertFriendRequest(request),
         );
-        this.friendRequests = items.toSorted(
-          (left, right) => right.id - left.id,
+        this.friendRequests = items.toSorted((left, right) =>
+          compareId(right.id, left.id),
         );
         // 不足一页即没有更多；满页可能还有，等 loadMore 拉到 0 条再确定
         this.hasMoreFriendRequests = items.length >= FRIEND_REQUEST_PAGE_SIZE;
@@ -494,12 +495,12 @@ export const useFriendStore = defineStore('imFriendStore', {
       }
       // 比本地最旧 id 还老：不入列表，让 loadMore 自然带回，避免破坏 id 倒序 / 后续 loadMore 重复 push
       const oldest = this.friendRequests[this.friendRequests.length - 1];
-      if (oldest && next.id < oldest.id) {
+      if (oldest && compareId(next.id, oldest.id) < 0) {
         return;
       }
       // 按 id 倒序找首个比自己小的位置插入；找不到则追加末尾
       const insertIndex = this.friendRequests.findIndex(
-        (request) => request.id < next.id,
+        (request) => compareId(request.id, next.id) < 0,
       );
       if (insertIndex === -1) {
         this.friendRequests.push(next);

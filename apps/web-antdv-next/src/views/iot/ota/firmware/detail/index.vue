@@ -5,6 +5,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { parseId } from '@vben/utils';
 
 import { getOtaFirmware } from '#/api/iot/ota/firmware';
 import { getOtaTaskRecordStatusStatistics } from '#/api/iot/ota/task/record';
@@ -15,7 +16,7 @@ import FirmwareInfo from './modules/info.vue';
 
 const route = useRoute();
 
-const firmwareId = ref(Number(route.params.id));
+const firmwareId = ref(parseId(route.params.id) as number);
 const firmwareLoading = ref(false);
 const firmware = ref<IoTOtaFirmwareApi.Firmware>();
 

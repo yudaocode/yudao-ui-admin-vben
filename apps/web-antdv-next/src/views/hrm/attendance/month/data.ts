@@ -4,7 +4,7 @@ import type { HrmAttendanceStatisticsApi } from '#/api/hrm/attendance/statistics
 
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
-import { formatDate, handleTree } from '@vben/utils';
+import { formatDate, handleTree, isIdType, parseId } from '@vben/utils';
 
 import { getSimpleDeptList } from '#/api/system/dept';
 import { formatHrmDays, formatHrmMoney } from '#/views/hrm/utils/format';
@@ -123,7 +123,7 @@ export function buildMonthQueryParams(formValues: Record<string, unknown>) {
     search:
       typeof formValues.search === 'string' ? formValues.search : undefined,
     deptIds: Array.isArray(formValues.deptIds)
-      ? formValues.deptIds.filter((id): id is number => typeof id === 'number')
+      ? formValues.deptIds.map(parseId).filter(isIdType)
       : undefined,
     fullAttendance:
       typeof formValues.fullAttendance === 'boolean'

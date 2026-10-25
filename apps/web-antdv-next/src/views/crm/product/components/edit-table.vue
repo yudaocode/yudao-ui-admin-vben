@@ -5,7 +5,7 @@ import type { CrmProductApi } from '#/api/crm/product';
 
 import { nextTick, onMounted, ref, watch } from 'vue';
 
-import { erpPriceMultiply } from '@vben/utils';
+import { buildShortUUID, erpPriceMultiply } from '@vben/utils';
 
 import { InputNumber, Select } from 'antdv-next';
 
@@ -31,7 +31,7 @@ const tableData = ref<any[]>([]);
 /** 添加产品行 */
 async function handleAdd() {
   const row = {
-    id: Math.max(0, ...tableData.value.map((item) => Number(item.id) || 0)) + 1,
+    id: buildShortUUID('crm-product'),
     count: 1,
   };
   const { row: insertedRow } = await gridApi.grid.insertAt(row, -1);
@@ -79,8 +79,7 @@ function handleUpdateValue(row: any) {
     row.contractPrice = row.sellingPrice;
   }
   if (index === -1) {
-    row.id =
-      Math.max(0, ...tableData.value.map((item) => Number(item.id) || 0)) + 1;
+    row.id = buildShortUUID('crm-product');
     tableData.value.push(row);
   } else {
     tableData.value[index] = row;

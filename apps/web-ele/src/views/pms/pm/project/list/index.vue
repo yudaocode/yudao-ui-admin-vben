@@ -298,7 +298,10 @@ async function handleProjectCommand(
     return;
   }
   if (command.startsWith('group:')) {
-    await handleMoveGroup(project.id, Number(command.slice('group:'.length)));
+    await handleMoveGroup(
+      project.id,
+      command.slice('group:'.length) as unknown as number,
+    );
     return;
   }
   try {

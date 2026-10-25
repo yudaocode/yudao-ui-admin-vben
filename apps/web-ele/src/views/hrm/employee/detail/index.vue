@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useAccess } from '@vben/access';
 import { confirm, Page, prompt, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import {
   ElButton,
@@ -55,7 +56,7 @@ const router = useRouter();
 const tabs = useTabs();
 const { hasAccessByCodes } = useAccess();
 
-const employeeId = Number(route.params.id);
+const employeeId = parseId(route.params.id) as number;
 const loading = ref(true);
 const activeTab = ref('post');
 const postInfoRef = ref<InstanceType<typeof PostInfo>>();
@@ -312,7 +313,7 @@ async function handleDelete() {
 }
 
 onMounted(() => {
-  if (!Number.isSafeInteger(employeeId) || employeeId <= 0) {
+  if (!isPositiveId(employeeId)) {
     ElMessage.warning('参数错误，员工不能为空！');
     close();
     return;

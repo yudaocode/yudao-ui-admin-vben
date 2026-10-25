@@ -3,6 +3,8 @@ import type { GroupRequestDO } from '../types';
 
 import type { ImGroupRequestApi } from '#/api/im/group/request';
 
+import { compareId } from '@vben/utils';
+
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
 import {
@@ -74,7 +76,9 @@ export const useGroupRequestStore = defineStore('imGroupRequestStore', {
             (request) =>
               request.handleResult === ImGroupRequestHandleResult.UNHANDLED,
           )
-          .toSorted((requestA, requestB) => requestB.id - requestA.id);
+          .toSorted((requestA, requestB) =>
+            compareId(requestB.id, requestA.id),
+          );
       } catch (error) {
         console.warn('[IM groupRequestStore] 本地加群申请缓存读取失败', error);
       }

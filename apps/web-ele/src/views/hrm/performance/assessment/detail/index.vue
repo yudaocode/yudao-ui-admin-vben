@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import {
   ElAvatar,
@@ -48,9 +49,9 @@ const route = useRoute();
 const router = useRouter();
 const { closeCurrentTab } = useTabs();
 
-const assessmentId = Number(route.params.id);
-const employeeId = Number(route.query.employeeId);
-const planId = Number(route.query.planId);
+const assessmentId = parseId(route.params.id);
+const employeeId = parseId(route.query.employeeId);
+const planId = parseId(route.query.planId);
 const archived = route.query.archived === 'true';
 
 const loading = ref(false);

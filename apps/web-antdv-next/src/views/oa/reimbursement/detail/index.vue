@@ -5,7 +5,7 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
-import { getFileNameFromUrl, openWindow } from '@vben/utils';
+import { getFileNameFromUrl, openWindow, parseId } from '@vben/utils';
 
 import { Button, Spin, Tag } from 'antdv-next';
 
@@ -32,13 +32,13 @@ const [Descriptions] = useDescription({
 
 /** 查询详情 */
 async function getInfo() {
-  const id = props.id || route.params.id || route.query.id;
+  const id = parseId(props.id || route.params.id || route.query.id);
   if (!id) {
     return;
   }
   detailLoading.value = true;
   try {
-    detailData.value = await getReimbursement(Number(id));
+    detailData.value = await getReimbursement(id);
   } finally {
     detailLoading.value = false;
   }

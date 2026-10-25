@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
+import { parseId } from '@vben/utils';
 
 import {
   ElButton,
@@ -108,7 +109,7 @@ function handleRefresh() {
 
 /** 切换分组 */
 function handleGroupChange(key: number | string) {
-  groupId.value = Number(key);
+  groupId.value = parseId(key);
   handleRefresh();
 }
 

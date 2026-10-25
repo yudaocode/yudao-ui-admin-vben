@@ -71,8 +71,7 @@ const [DetailModal, detailModalApi] = useVbenModal({
 /** 清空展开明细缓存 */
 function clearDetailMap() {
   for (const id of Object.keys(detailMap)) {
-    const key = Number(id);
-    Reflect.deleteProperty(detailMap, key);
+    Reflect.deleteProperty(detailMap, id);
   }
 }
 

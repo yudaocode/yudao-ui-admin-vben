@@ -7,6 +7,8 @@ import type { CallParticipantVM } from './rtc-call-participant-tile.vue';
 
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { useIntervalFn } from '@vueuse/core';
 import { message } from 'antdv-next';
 import { Track } from 'livekit-client';
@@ -290,8 +292,8 @@ const participants = computed<CallParticipantVM[]>(() => {
   // 已加入的远端：实际推流；屏幕共享在网格里独占该成员的格子，无则降级 Camera
   const joined = new Set<number>();
   for (const rp of lk.remoteParticipants.value) {
-    const userId = Number(rp.identity);
-    if (Number.isNaN(userId)) {
+    const userId = parseId(rp.identity);
+    if (userId === undefined) {
       continue;
     }
     joined.add(userId);

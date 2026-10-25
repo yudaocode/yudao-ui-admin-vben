@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { DeviceTypeEnum } from '@vben/constants';
+import { parseId } from '@vben/utils';
 
 import { ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
@@ -27,7 +28,7 @@ import DeviceDetailsThingModel from './modules/thing-model.vue';
 const route = useRoute();
 const router = useRouter();
 
-const id = Number(route.params.id);
+const id = parseId(route.params.id) as number;
 const loading = ref(true);
 const product = ref<IotProductApi.Product>({} as IotProductApi.Product);
 const device = ref<IotDeviceApi.Device>({} as IotDeviceApi.Device);

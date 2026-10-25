@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BarcodeBizTypeEnum } from '@vben/constants';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { Alert, Button, message } from 'ant-design-vue';
 
@@ -39,8 +40,8 @@ const currentLocation = ref<{
   warehouseName: string;
 }>(
   (() => {
-    const id = Number(route.query.locationId);
-    return Number.isInteger(id) && id > 0
+    const id = parseId(route.query.locationId);
+    return isPositiveId(id)
       ? { id, name: '', warehouseId: 0, warehouseName: '' }
       : { id: 0, name: '', warehouseId: 0, warehouseName: '' };
   })(),

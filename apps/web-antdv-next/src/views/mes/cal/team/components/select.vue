@@ -5,6 +5,8 @@ import type { MesCalTeamApi } from '#/api/mes/cal/team';
 
 import { onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Button, Select } from 'antdv-next';
 
 import { getTeamList } from '#/api/mes/cal/team';
@@ -39,7 +41,7 @@ async function loadTeamList() {
 
 /** 处理下拉选择变化 */
 function handleChange(value: SelectValue) {
-  const teamId = typeof value === 'number' ? value : undefined;
+  const teamId = parseId(value);
   emit('update:modelValue', teamId);
   emit(
     'change',

@@ -10,6 +10,7 @@ import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
+import { parseId } from '@vben/utils';
 
 import { message, Tag } from 'antdv-next';
 
@@ -208,7 +209,7 @@ function handleBack() {
 
 /** 初始化 */
 onMounted(() => {
-  afterSaleId.value = Number(route.params.id);
+  afterSaleId.value = parseId(route.params.id) as number;
   getDetail();
 });
 </script>

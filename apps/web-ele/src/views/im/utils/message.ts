@@ -9,6 +9,7 @@ import type {
 import type { ImConversationTypeValue } from './constants';
 
 import { useUserStore } from '@vben/stores';
+import { parseId } from '@vben/utils';
 
 import tipAudioUrl from '#/assets/audio/im/message-tip.mp3';
 import { getCurrentUserId } from '#/views/im/utils/auth';
@@ -635,7 +636,7 @@ export const parseRecallMessageId = (content: string): number => {
     const parsed = JSON.parse(content);
     return parsed?.messageId === null || parsed?.messageId === undefined
       ? 0
-      : Number(parsed.messageId);
+      : (parseId(parsed.messageId) as number);
   } catch {
     return 0;
   }

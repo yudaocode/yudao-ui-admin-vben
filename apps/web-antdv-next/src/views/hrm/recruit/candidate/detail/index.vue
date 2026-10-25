@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { Card, message, TabPane, Tabs } from 'antdv-next';
 
@@ -30,7 +31,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const candidateId = Number(route.params.id);
+const candidateId = parseId(route.params.id) as number;
 const loading = ref(true);
 const activeTab = ref('detail');
 const candidate = ref<HrmRecruitCandidateApi.RecruitCandidate>(
@@ -88,7 +89,7 @@ function openForm() {
 
 /** 初始化 */
 onMounted(() => {
-  if (!Number.isSafeInteger(candidateId) || candidateId <= 0) {
+  if (!isPositiveId(candidateId)) {
     message.warning('参数错误，招聘候选人不能为空！');
     close();
     return;

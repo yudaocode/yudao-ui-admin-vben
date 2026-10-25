@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElCard, ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
@@ -101,7 +102,7 @@ async function handleTransform(): Promise<boolean | undefined> {
 
 /** 加载数据 */
 onMounted(() => {
-  clueId.value = Number(route.params.id);
+  clueId.value = parseId(route.params.id) as number;
   getClueDetail();
 });
 </script>

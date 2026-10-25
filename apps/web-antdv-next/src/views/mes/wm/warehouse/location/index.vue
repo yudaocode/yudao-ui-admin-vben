@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { BarcodeBizTypeEnum } from '@vben/constants';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { Alert, Button, message } from 'antdv-next';
 
@@ -35,10 +36,8 @@ const barcodeDetailRef = ref<InstanceType<typeof BarcodeDetail>>();
 /** 当前仓库上下文（同步从 URL 解析，确保首次查询带得上 warehouseId） */
 const currentWarehouse = ref<{ id: number; name: string }>(
   (() => {
-    const id = Number(route.query.warehouseId);
-    return Number.isInteger(id) && id > 0
-      ? { id, name: '' }
-      : { id: 0, name: '' };
+    const id = parseId(route.query.warehouseId);
+    return isPositiveId(id) ? { id, name: '' } : { id: 0, name: '' };
   })(),
 );
 

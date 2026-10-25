@@ -3,6 +3,8 @@ import type { FmsSubjectApi } from '#/api/fms/config/subject';
 
 import { computed, ref, watch } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { ElOption, ElSelect } from 'element-plus';
 
 import { getSubjectSimpleList } from '#/api/fms/config/subject';
@@ -66,7 +68,7 @@ function formatSubjectOption(subject: FmsSubjectApi.Subject) {
 
 /** 选中变化 */
 function handleChange(value: unknown) {
-  const subjectId = typeof value === 'number' ? value : undefined;
+  const subjectId = parseId(value);
   emit('update:modelValue', subjectId);
   emit('change', subjectId);
 }

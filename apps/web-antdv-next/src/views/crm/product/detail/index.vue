@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { $t } from '@vben/locales';
+import { parseId } from '@vben/utils';
 
 import { Card, TabPane, Tabs } from 'antdv-next';
 
@@ -72,7 +73,7 @@ function handleBack() {
 
 /** 加载数据 */
 onMounted(() => {
-  productId.value = Number(route.params.id);
+  productId.value = parseId(route.params.id) as number;
   getProductDetail();
 });
 </script>

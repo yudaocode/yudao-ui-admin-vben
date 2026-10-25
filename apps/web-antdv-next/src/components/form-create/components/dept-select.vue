@@ -3,7 +3,7 @@
 import { inject, onMounted, ref, watch } from 'vue';
 
 import { useUserStore } from '@vben/stores';
-import { handleTree } from '@vben/utils';
+import { handleTree, isIdType, parseId } from '@vben/utils';
 
 import { TreeSelect } from 'antdv-next';
 
@@ -69,7 +69,7 @@ async function loadDeptTree(): Promise<void> {
 }
 
 /** 根据 ID 获取部门名称 */
-function getDeptNameById(id: number): string | undefined {
+function getDeptNameById(id?: number): string | undefined {
   const dept = deptList.value.find((item: DeptVO) => item.id === id);
   if (!dept) {
     console.warn(`[DeptSelect] 未找到 ID 为 ${id} 的部门`);
@@ -97,8 +97,8 @@ function handleChange(value: number | number[] | undefined): void {
         .map((id) => getDeptNameById(id))
         .filter(Boolean) as string[];
       emit('update:modelValue', names);
-    } else if (!props.multiple && typeof value === 'number') {
-      const name = getDeptNameById(value);
+    } else if (!props.multiple && isIdType(value)) {
+      const name = getDeptNameById(parseId(value));
       emit('update:modelValue', name);
     }
   } else {
@@ -180,7 +180,7 @@ function setDefaultValue(): void {
 
   // 获取当前用户的部门 ID
   const userStore = useUserStore();
-  const deptId = userStore.userInfo?.deptId as number | undefined;
+  const deptId = userStore.userInfo?.deptId;
   // 处理 deptId 为空或 0 的边界情况
   if (!deptId || deptId === 0) {
     return;

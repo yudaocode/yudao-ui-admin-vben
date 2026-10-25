@@ -1,3 +1,4 @@
+import { compareId } from '@vben/utils';
 /** 消息状态优先级；高优先级终态不可被普通消息覆盖 */
 export enum MessageTerminalPriority {
   NORMAL = 0, // 普通消息
@@ -161,7 +162,7 @@ function applyRelationState(
   if (!terminated && current?.localTerminationPending) {
     return false;
   }
-  if (current && messageId <= current.messageId) {
+  if (current && compareId(messageId, current.messageId) <= 0) {
     return false;
   }
   relationStates.set(clientConversationId, {

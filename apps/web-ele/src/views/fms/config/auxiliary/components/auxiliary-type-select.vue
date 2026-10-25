@@ -3,6 +3,8 @@ import type { FmsAuxiliaryTypeApi } from '#/api/fms/config/auxiliary/type';
 
 import { computed, ref, watch } from 'vue';
 
+import { isIdType, parseId } from '@vben/utils';
+
 import { ElOption, ElSelect } from 'element-plus';
 
 import { getAuxiliaryTypeSimpleList } from '#/api/fms/config/auxiliary/type';
@@ -48,14 +50,12 @@ const selectValue = computed({
 /** 选中变化 */
 function handleChange(value: unknown) {
   if (Array.isArray(value)) {
-    const typeIds = value.filter(
-      (item): item is number => typeof item === 'number',
-    );
+    const typeIds = value.map(parseId).filter(isIdType);
     emit('update:modelValue', typeIds);
     emit('change', typeIds);
     return;
   }
-  const typeId = typeof value === 'number' ? value : undefined;
+  const typeId = parseId(value);
   emit('update:modelValue', typeId);
   emit('change', typeId);
 }

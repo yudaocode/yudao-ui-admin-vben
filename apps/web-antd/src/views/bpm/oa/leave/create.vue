@@ -9,6 +9,7 @@ import { confirm, Page, useVbenForm } from '@vben/common-ui';
 import { BpmCandidateStrategyEnum, BpmNodeIdEnum } from '@vben/constants';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { parseId } from '@vben/utils';
 
 import { Button, Card, Col, message, Row, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';
@@ -223,7 +224,7 @@ onMounted(async () => {
 
   // 如果是重新发起，则加载请假数据
   if (query.id) {
-    await getDetail(Number(query.id));
+    await getDetail(parseId(query.id) as number);
   }
 
   await getApprovalDetail();

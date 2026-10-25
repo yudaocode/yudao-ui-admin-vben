@@ -3,7 +3,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 /** 获取当前用户编号 */
 export function getCurrentUserId(): number {
   const userInfo = useUserStore().userInfo;
-  return Number(userInfo?.id ?? userInfo?.userId ?? 0);
+  return userInfo?.id ?? userInfo?.userId ?? 0;
 }
 
 /** 获取刷新令牌 */

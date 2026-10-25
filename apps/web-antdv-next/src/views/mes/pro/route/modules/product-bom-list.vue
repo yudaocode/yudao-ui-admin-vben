@@ -6,6 +6,7 @@ import type { MesProRouteProductBomApi } from '#/api/mes/pro/route/productbom';
 import { ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
+import { parseId } from '@vben/utils';
 
 import { message, TabPane, Tabs } from 'antdv-next';
 
@@ -64,7 +65,7 @@ async function loadProcessList() {
 
 /** 加载当前工序下的 BOM 列表 */
 async function getList() {
-  const processId = Number(activeProcessId.value);
+  const processId = parseId(activeProcessId.value);
   if (!processId) {
     return;
   }
@@ -87,7 +88,7 @@ function handleCreate() {
     message.warning('请先选择工序');
     return;
   }
-  const processId = Number(activeProcessId.value);
+  const processId = parseId(activeProcessId.value);
   bomFormModalApi
     .setData({
       processId,
@@ -102,7 +103,7 @@ function handleEdit(row: MesProRouteProductBomApi.RouteProductBom) {
   bomFormModalApi
     .setData({
       id: row.id,
-      processId: Number(activeProcessId.value),
+      processId: parseId(activeProcessId.value),
       productId: props.productId,
       routeId: props.routeId,
     })

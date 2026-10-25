@@ -13,7 +13,7 @@ import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty, parseId } from '@vben/utils';
 
 import {
   Button,
@@ -294,7 +294,7 @@ onMounted(async () => {
   // 处理 productId 参数
   const { productId } = route.query;
   if (productId) {
-    queryParams.value.productId = Number(productId);
+    queryParams.value.productId = parseId(productId);
     // 自动触发搜索
     handleSearch();
   }

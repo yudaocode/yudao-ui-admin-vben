@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { parseId } from '@vben/utils';
 
 import {
   ElButton,
@@ -81,7 +82,7 @@ async function getProjectDetail() {
   loading.value = true;
   try {
     // 1. 查询项目详情
-    project.value = await getProject(Number(route.params.id));
+    project.value = await getProject(parseId(route.params.id) as number);
     // 2. 初始化当前业务页签
     initActiveTab();
   } finally {
@@ -165,7 +166,7 @@ function close() {
 
 /** 初始化 */
 onMounted(() => {
-  if (!route.params.id || Number.isNaN(Number(route.params.id))) {
+  if (!route.params.id || parseId(route.params.id) === undefined) {
     ElMessage.warning('参数错误，项目不能为空！');
     close();
     return;

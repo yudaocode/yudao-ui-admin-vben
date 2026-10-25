@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { Card, Tabs } from 'ant-design-vue';
 
@@ -87,7 +88,7 @@ function handleTransfer() {
 
 /** 加载数据 */
 onMounted(() => {
-  contactId.value = Number(route.params.id);
+  contactId.value = parseId(route.params.id) as number;
   getContactDetail();
 });
 </script>

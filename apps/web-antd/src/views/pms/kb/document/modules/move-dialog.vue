@@ -83,7 +83,10 @@ const formSchema: VbenFormSchema[] = [
         loadTargetTree();
       },
     },
-    rules: z.number({ message: '请选择目标知识库' }),
+    rules: z.union([
+      z.number({ message: '请选择目标知识库' }),
+      z.string().regex(/^(0|[1-9]\d*)$/, '请选择有效记录'),
+    ]),
   },
   {
     fieldName: 'targetKey',

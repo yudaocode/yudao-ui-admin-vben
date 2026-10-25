@@ -4,7 +4,7 @@ import type { HrmAttendanceLeaveApi } from '#/api/hrm/attendance/leave';
 import { ref, watch } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
-import { formatDate } from '@vben/utils';
+import { formatDate, parseId } from '@vben/utils';
 
 import { Descriptions, DescriptionsItem, Spin } from 'antdv-next';
 
@@ -19,7 +19,7 @@ const loading = ref(false);
 const leave = ref<HrmAttendanceLeaveApi.AttendanceLeave>();
 
 async function loadLeave() {
-  const id = Number(props.id);
+  const id = parseId(props.id);
   if (!id) {
     return;
   }

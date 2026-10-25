@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { Card, TabPane, Tabs } from 'antdv-next';
 
@@ -76,7 +77,7 @@ function handleEdit() {
 
 /** 加载数据 */
 onMounted(() => {
-  receivablePlanId.value = Number(route.params.id);
+  receivablePlanId.value = parseId(route.params.id) as number;
   getReceivablePlanDetail();
 });
 </script>

@@ -3,6 +3,8 @@ import type { OaSealApi } from '#/api/oa/seal';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { ElOption, ElSelect } from 'element-plus';
 
 import { getSealPage } from '#/api/oa/seal/apply';
@@ -51,7 +53,7 @@ const sealOptions = computed(() => {
 /** 选中变化 */
 function handleChange(value: unknown) {
   currentSeal.value = sealOptions.value.find((seal) => seal.id === value);
-  emit('update:modelValue', typeof value === 'number' ? value : undefined);
+  emit('update:modelValue', parseId(value));
 }
 
 /** 查询可申请的印章 */

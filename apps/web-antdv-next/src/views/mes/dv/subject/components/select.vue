@@ -6,6 +6,7 @@ import type { MesDvSubjectApi } from '#/api/mes/dv/subject';
 import { computed, onMounted, ref } from 'vue';
 
 import { CommonStatusEnum } from '@vben/constants';
+import { parseId } from '@vben/utils';
 
 import { Select } from 'antdv-next';
 
@@ -63,7 +64,7 @@ async function getList() {
 
 /** 处理选择变化 */
 function handleChange(value: SelectValue) {
-  const subjectId = typeof value === 'number' ? value : undefined;
+  const subjectId = parseId(value);
   emit('update:modelValue', subjectId);
   emit(
     'change',

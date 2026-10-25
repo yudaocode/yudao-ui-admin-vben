@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { Card, message, Tabs } from 'ant-design-vue';
 
@@ -173,7 +174,7 @@ async function handleUpdateDealStatus(): Promise<boolean | undefined> {
 
 /** 加载数据 */
 onMounted(() => {
-  customerId.value = Number(route.params.id);
+  customerId.value = parseId(route.params.id) as number;
   loadCustomerDetail();
 });
 </script>

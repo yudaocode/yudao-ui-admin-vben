@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { Button, Card, message, TabPane, Tabs } from 'ant-design-vue';
 
@@ -36,7 +37,7 @@ const [FormModal, formModalApi] = useVbenModal({
   destroyOnClose: true,
 });
 
-const userId = Number(route.query.id);
+const userId = parseId(route.query.id) as number;
 const user = ref<MemberUserApi.User>();
 const wallet = ref<PayWalletApi.Wallet>();
 

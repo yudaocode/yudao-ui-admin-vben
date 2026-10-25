@@ -34,7 +34,7 @@ const queryParams = reactive({
 const pageTotal = ref<number>(0); // page size
 const imageList = ref<AiImageApi.Image[]>([]); // image 列表
 
-const inProgressImageMap = ref<{}>({}); // 监听的 image 映射，一般是生成中（需要轮询），key 为 image 编号，value 为 image
+const inProgressImageMap = ref<Record<string, AiImageApi.Image>>({}); // 监听的 image 映射，一般是生成中（需要轮询），key 为 image 编号，value 为 image
 const inProgressTimer = ref<any>(); // 生成中的 image 定时器，轮询生成进展
 const showImageDetailId = ref<number>(0); // 图片详情的图片编号
 
@@ -77,11 +77,13 @@ async function getImageList() {
 const debounceGetImageList = useDebounceFn(getImageList, 80);
 /** 轮询生成中的 image 列表 */
 async function refreshWatchImages() {
-  const imageIds = Object.keys(inProgressImageMap.value).map(Number);
+  const imageIds = Object.values(inProgressImageMap.value).map(
+    (image) => image.id,
+  );
   if (imageIds.length === 0) {
     return;
   }
-  const list = (await getImageListMyByIds(imageIds)) as AiImageApi.Image[];
+  const list = await getImageListMyByIds(imageIds);
   const newWatchImages: any = {};
   list.forEach((image) => {
     if (image.status === AiImageStatusEnum.IN_PROGRESS) {

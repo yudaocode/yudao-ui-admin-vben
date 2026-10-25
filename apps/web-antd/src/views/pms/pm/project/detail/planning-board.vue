@@ -8,7 +8,7 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { getAllPageItems } from '@vben/utils';
+import { getAllPageItems, parseId } from '@vben/utils';
 
 import {
   Avatar,
@@ -250,7 +250,7 @@ async function handleDeleteIteration(iteration: PlanningIteration) {
 /** 记录当前拖拽工作项，支持投放到折叠迭代标题 */
 function handlePlanningDragStart(event: { item?: HTMLElement }) {
   const workItemId = event.item?.dataset.workItemId;
-  draggedWorkItemId.value = workItemId ? Number(workItemId) : undefined;
+  draggedWorkItemId.value = workItemId ? parseId(workItemId) : undefined;
 }
 
 /** 将工作项投放到折叠的迭代标题 */

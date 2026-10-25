@@ -4,7 +4,7 @@ import type { SystemDeptApi } from '#/api/system/dept';
 import { nextTick, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import { handleTree, parseId } from '@vben/utils';
 
 import { ElCard, ElCol, ElRow, ElTree } from 'element-plus';
 
@@ -92,7 +92,7 @@ function handleCheck(
 ) {
   // 确保 checkedKeys 都是 number 类型
   const keys = checkedKeys.map((key) =>
-    typeof key === 'string' ? Number(key) : key,
+    typeof key === 'string' ? (parseId(key) as number) : key,
   );
 
   if (props.multiple) {

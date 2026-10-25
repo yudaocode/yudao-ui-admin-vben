@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { ElCard, ElMessage, ElTabPane, ElTabs } from 'element-plus';
 
@@ -24,7 +25,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const deptId = Number(route.params.id);
+const deptId = parseId(route.params.id) as number;
 const loading = ref(true);
 const dept = ref<SystemDeptApi.Dept>({} as SystemDeptApi.Dept);
 const parentDeptName = ref<string>();
@@ -88,7 +89,7 @@ function openDeptManagement() {
 
 /** 初始化 */
 onMounted(() => {
-  if (!Number.isSafeInteger(deptId) || deptId <= 0) {
+  if (!isPositiveId(deptId)) {
     ElMessage.warning('参数错误，部门不能为空！');
     close();
     return;

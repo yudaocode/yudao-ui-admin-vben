@@ -6,6 +6,7 @@ import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { DocAlert, Page } from '@vben/common-ui';
+import { parseId } from '@vben/utils';
 
 import { Button } from 'antdv-next';
 
@@ -26,10 +27,10 @@ function getRouteQueryValues() {
   return {
     keyword: String(route.query.keyword || ''),
     libraryId: route.query.libraryId
-      ? Number(route.query.libraryId)
+      ? parseId(route.query.libraryId)
       : undefined,
     creatorUserId: route.query.creatorUserId
-      ? Number(route.query.creatorUserId)
+      ? parseId(route.query.creatorUserId)
       : undefined,
     updateTime: route.query.updateTime
       ? String(route.query.updateTime).split(',')

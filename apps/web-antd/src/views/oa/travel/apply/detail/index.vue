@@ -46,7 +46,7 @@ async function getInfo() {
   if (!props.id) return;
   loading.value = true;
   try {
-    detail.value = await getTravelApply(Number(props.id));
+    detail.value = await getTravelApply(props.id as number);
     detail.value.items ||= [];
     detail.value.fileUrls ||= [];
     await reloadItems();

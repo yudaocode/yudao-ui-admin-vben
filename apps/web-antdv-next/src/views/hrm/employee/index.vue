@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page, prompt, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, isPositiveId, parseId } from '@vben/utils';
 
 import {
   Button,
@@ -155,14 +155,13 @@ async function handleRefresh() {
 
 /** 首页来源筛选同时用于列表、统计与导出 */
 function getHomeFilters() {
-  const leaderEmployeeId = Number(route.query.leaderEmployeeId);
+  const leaderEmployeeId = parseId(route.query.leaderEmployeeId);
   const todoType = Number(route.query.todoType);
   const surveyType = Number(route.query.surveyType);
   return {
-    leaderEmployeeId:
-      Number.isSafeInteger(leaderEmployeeId) && leaderEmployeeId > 0
-        ? leaderEmployeeId
-        : undefined,
+    leaderEmployeeId: isPositiveId(leaderEmployeeId)
+      ? leaderEmployeeId
+      : undefined,
     todoType: (Object.values(HrmEmployeeTodoType) as number[]).includes(
       todoType,
     )

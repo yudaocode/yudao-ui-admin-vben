@@ -14,7 +14,7 @@ import {
 } from 'vue';
 
 import { IconifyIcon as Icon } from '@vben/icons';
-import { isOpenableUrl } from '@vben/utils';
+import { isOpenableUrl, parseId } from '@vben/utils';
 
 import {
   Button,
@@ -41,6 +41,7 @@ import {
   MESSAGE_GROUP_READ_ENABLED,
 } from '#/views/im/utils/config';
 import {
+  IM_AT_ALL_USER_ID,
   ImContentType,
   ImConversationType,
   ImGroupMemberRole,
@@ -198,8 +199,11 @@ function collectFromEditor(root: HTMLElement): {
     }
     if (tag === 'span' && el.dataset.id) {
       text += el.textContent || '';
-      const id = Number(el.dataset.id);
-      if (!Number.isNaN(id)) {
+      const id =
+        el.dataset.id === String(IM_AT_ALL_USER_ID)
+          ? IM_AT_ALL_USER_ID
+          : parseId(el.dataset.id);
+      if (id !== undefined) {
         userIds.push(id);
       }
       return;

@@ -8,6 +8,7 @@ import { useRoute } from 'vue-router';
 import { useVbenModal } from '@vben/common-ui';
 import { BpmProcessInstanceStatus } from '@vben/constants';
 import { useUserStore } from '@vben/stores';
+import { parseId } from '@vben/utils';
 
 import { Button, Spin } from 'ant-design-vue';
 
@@ -47,7 +48,7 @@ function handleEdit() {
 
 /** 查询详情 */
 async function getInfo() {
-  const id = Number(props.id || route.query.id);
+  const id = parseId(props.id || route.query.id);
   if (!id) {
     return;
   }

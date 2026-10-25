@@ -85,7 +85,12 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请选择负责人',
         clearable: true,
       },
-      rules: z.number().optional(),
+      rules: z
+        .union([
+          z.number(),
+          z.string().regex(/^(0|[1-9]\d*)$/, '请选择有效记录'),
+        ])
+        .optional(),
     },
     {
       fieldName: 'phone',

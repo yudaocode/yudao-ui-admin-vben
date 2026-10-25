@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { $t } from '@vben/locales';
-import { formatDate, isEmpty } from '@vben/utils';
+import { formatDate, isEmpty, parseId } from '@vben/utils';
 
 import {
   Avatar,
@@ -57,12 +57,12 @@ const [Modal, modalApi] = useVbenModal({
     }
     if (
       !bindUser.value ||
-      Number(bindUser.value.id) !== Number(formData.value.bindUserId)
+      parseId(bindUser.value.id) !== parseId(formData.value.bindUserId)
     ) {
       message.warning('请先查询并确认推广人');
       return;
     }
-    if (Number(formData.value.bindUserId) === Number(formData.value.id)) {
+    if (parseId(formData.value.bindUserId) === parseId(formData.value.id)) {
       message.error('不能绑定自己为推广人');
       return;
     }
@@ -112,12 +112,12 @@ async function handleSearchUser(id: number | string, userType: string) {
     message.warning(`请先输入${userType}编号后重试！！！`);
     return;
   }
-  if (Number(id) === Number(formData.value?.id)) {
+  if (parseId(id) === parseId(formData.value?.id)) {
     message.error('不能绑定自己为推广人');
     return;
   }
 
-  const userData = await getBrokerageUser(Number(id));
+  const userData = await getBrokerageUser(id as number);
   if (!userData) {
     message.warning(`${userType}不存在`);
     return;

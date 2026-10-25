@@ -5,6 +5,7 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { BpmProcessInstanceStatus, DICT_TYPE } from '@vben/constants';
+import { parseId } from '@vben/utils';
 
 import { Spin, Tag } from 'ant-design-vue';
 
@@ -32,7 +33,7 @@ const [Descriptions] = useDescription({
 /** 查询详情 */
 async function getInfo() {
   // 获取弹窗或 BPM 传入的业务编号，兼容路由查询参数
-  const id = Number(props.id || route.query.id);
+  const id = parseId(props.id || route.query.id);
   if (!id) {
     return;
   }

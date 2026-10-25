@@ -9,6 +9,7 @@ import {
   CustomerMerchantTypeList,
   SupplierMerchantTypeList,
 } from '@vben/constants';
+import { parseId } from '@vben/utils';
 
 import { Select } from 'ant-design-vue';
 
@@ -54,7 +55,7 @@ const options = computed(() =>
 
 /** 选中变化 */
 function handleChange(value: SelectValue) {
-  const merchantId = typeof value === 'number' ? value : undefined;
+  const merchantId = parseId(value);
   emit('update:modelValue', merchantId);
   emit(
     'change',

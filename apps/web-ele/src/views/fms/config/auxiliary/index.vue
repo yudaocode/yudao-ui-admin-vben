@@ -9,7 +9,7 @@ import { useRoute } from 'vue-router';
 import { useAccess } from '@vben/access';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
-import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
+import { downloadFileFromBlobPart, isEmpty, parseId } from '@vben/utils';
 
 import { ElCard, ElEmpty, ElMessage, ElSwitch, ElTag } from 'element-plus';
 
@@ -118,7 +118,7 @@ async function getTypeList() {
   try {
     typeList.value = await getAuxiliaryTypeList(accountSetId.value);
     // 优先保持当前类别，其次定位路由参数指定的类别，最后选中第一条
-    const routeAuxiliaryTypeId = Number(route.query.auxiliaryTypeId);
+    const routeAuxiliaryTypeId = parseId(route.query.auxiliaryTypeId);
     const nextType =
       typeList.value.find(
         (item) => item.id === currentAuxiliaryType.value?.id,

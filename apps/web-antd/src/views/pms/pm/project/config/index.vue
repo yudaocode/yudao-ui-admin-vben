@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
+import { parseId } from '@vben/utils';
 
 import { message, Spin, Tabs } from 'ant-design-vue';
 
@@ -26,7 +27,7 @@ const { push, replace } = useRouter(); // 路由操作
 const loading = ref(false); // 项目设置加载中
 const project = ref<PmsProjectApi.Project>({} as PmsProjectApi.Project); // 项目详情
 const activeTab = ref<ProjectConfigTab>('basic'); // 当前配置页签
-const projectId = computed(() => Number(route.params.id)); // 当前项目编号
+const projectId = computed(() => parseId(route.params.id) as number); // 当前项目编号
 const editable = computed(
   () =>
     project.value.writeStatus &&
@@ -65,7 +66,7 @@ function close() {
 
 /** 初始化 */
 onMounted(() => {
-  if (!projectId.value || Number.isNaN(projectId.value)) {
+  if (!projectId.value || parseId(projectId.value) === undefined) {
     message.warning('参数错误，项目不能为空！');
     close();
     return;

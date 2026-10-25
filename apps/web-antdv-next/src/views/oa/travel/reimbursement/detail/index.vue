@@ -45,7 +45,7 @@ async function getInfo() {
   if (!props.id) return;
   loading.value = true;
   try {
-    detail.value = await getTravelReimbursement(Number(props.id));
+    detail.value = await getTravelReimbursement(props.id as number);
     detail.value.items ||= [];
     detail.value.fileUrls ||= [];
     await reloadItems();

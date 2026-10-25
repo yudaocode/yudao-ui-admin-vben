@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { Button, message, Spin, Tabs } from 'ant-design-vue';
 
@@ -25,7 +26,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const employeeId = Number(route.params.id);
+const employeeId = parseId(route.params.id) as number;
 const loading = ref(false);
 const activeTab = ref('salaryEmployee');
 const employee = ref({} as HrmEmployeeApi.Employee);
@@ -70,7 +71,7 @@ async function handleSalaryUpdated() {
 }
 
 async function init() {
-  if (!Number.isSafeInteger(employeeId) || employeeId <= 0) {
+  if (!isPositiveId(employeeId)) {
     message.warning('参数错误，员工不能为空！');
     close();
     return;

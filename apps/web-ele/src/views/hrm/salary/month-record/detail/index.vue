@@ -9,6 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { ElButton, ElCard, ElMessage } from 'element-plus';
 
@@ -33,7 +34,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const recordId = Number(route.params.id);
+const recordId = parseId(route.params.id) as number;
 const recordLoading = ref(true);
 const record = ref<HrmSalaryMonthRecordApi.SalaryMonthRecord>({});
 const summaryList = ref<HrmSalaryOptionApi.OptionValue[]>([]);
@@ -140,7 +141,7 @@ watch(
 );
 
 async function init() {
-  if (!Number.isSafeInteger(recordId) || recordId <= 0) {
+  if (!isPositiveId(recordId)) {
     ElMessage.warning('参数错误，历史工资表不能为空！');
     close();
     return;

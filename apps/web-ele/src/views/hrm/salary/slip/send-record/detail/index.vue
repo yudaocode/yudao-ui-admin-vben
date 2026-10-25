@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElButton } from 'element-plus';
 
@@ -20,7 +21,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const recordId = Number(route.params.id);
+const recordId = parseId(route.params.id) as number;
 const loading = ref(false);
 const record = ref<HrmSalarySlipSendRecordApi.SalarySlipSendRecord>({});
 

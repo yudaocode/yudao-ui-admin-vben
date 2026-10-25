@@ -9,6 +9,7 @@ import { AuthenticationRegister, Verification, z } from '@vben/common-ui';
 import { isCaptchaEnable, isTenantEnable } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { useAccessStore } from '@vben/stores';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import {
   checkCaptcha,
@@ -43,6 +44,10 @@ async function fetchTenantList() {
     const websiteTenantPromise = getTenantByWebsite(window.location.hostname);
     tenantList.value = await getTenantSimpleList();
 
+    if (accessStore.tenantId != null && !isPositiveId(accessStore.tenantId)) {
+      accessStore.setTenantId(null);
+      return;
+    }
     // 选中租户：域名 > store 中的租户 > 首个租户
     let tenantId: null | number = null;
     const websiteTenant = await websiteTenantPromise;
@@ -110,13 +115,16 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'tenantId',
       label: $t('authentication.tenant'),
-      rules: z.string().min(1, { message: $t('authentication.tenantTip') }),
+      rules: z
+        .string()
+        .min(1, { message: $t('authentication.tenantTip') })
+        .refine(isPositiveId, '请选择有效租户'),
       dependencies: {
         triggerFields: ['tenantId'],
         if: tenantEnable,
         trigger(values) {
           if (values.tenantId) {
-            accessStore.setTenantId(Number(values.tenantId));
+            accessStore.setTenantId(parseId(values.tenantId) ?? null);
           }
         },
       },

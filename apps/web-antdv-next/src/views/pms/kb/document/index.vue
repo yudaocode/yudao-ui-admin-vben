@@ -16,6 +16,7 @@ import {
   Spinner,
   useVbenModal,
 } from '@vben/common-ui';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import { message } from 'antdv-next';
 
@@ -64,7 +65,7 @@ defineOptions({ name: 'PmsKnowledgeLibraryDetail' });
 
 const route = useRoute(); // 当前路由
 const router = useRouter(); // 路由
-const libraryId = computed(() => Number(route.params.libraryId)); // 知识库编号
+const libraryId = computed(() => parseId(route.params.libraryId) as number); // 知识库编号
 const loading = ref(false); // 页面加载中
 const activeView = ref<KnowledgeContentView>('home'); // 当前右侧内容
 const library = ref<PmsKnowledgeLibraryApi.KnowledgeLibrary>(); // 知识库详情
@@ -193,16 +194,16 @@ async function getRouteContent() {
     return;
   }
   // 打开指定文档
-  const documentId = Number(route.query.documentId);
-  if (Number.isFinite(documentId) && documentId > 0) {
+  const documentId = parseId(route.query.documentId);
+  if (isPositiveId(documentId)) {
     selectedDocument.value = await getKnowledgeDocument(documentId, true);
     selectedFolder.value = undefined;
     activeView.value = 'document';
     return;
   }
   // 打开指定文件夹
-  const folderId = Number(route.query.folderId);
-  if (Number.isFinite(folderId) && folderId > 0) {
+  const folderId = parseId(route.query.folderId);
+  if (isPositiveId(folderId)) {
     selectedFolder.value = await getKnowledgeFolder(folderId, true);
     selectedDocument.value = undefined;
     activeView.value = 'folder';

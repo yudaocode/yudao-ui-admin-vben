@@ -6,7 +6,7 @@ import type { MallCombinationActivityApi } from '#/api/mall/promotion/combinatio
 
 import { ref, watch } from 'vue';
 
-import { fenToYuan } from '@vben/utils';
+import { fenToYuan, isIdType, parseId } from '@vben/utils';
 
 import { ElImage } from 'element-plus';
 
@@ -40,7 +40,8 @@ watch(
         spuList.value = [];
         spuIdList.value = combinationActivityList.value
           .map((activity) => activity.spuId)
-          .filter((spuId): spuId is number => typeof spuId === 'number');
+          .map(parseId)
+          .filter(isIdType);
         if (spuIdList.value.length > 0) {
           spuList.value = await getSpuDetailList(spuIdList.value);
         }

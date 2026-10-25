@@ -4,6 +4,7 @@ import { computed, onMounted, ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
+import { parseId } from '@vben/utils';
 
 import FcDesigner from '@form-create/antd-designer';
 import { Button, message, Spin } from 'antdv-next';
@@ -104,7 +105,7 @@ async function initializeDesigner() {
     return;
   }
   if (id) {
-    await loadFormConfig(Number(id));
+    await loadFormConfig(parseId(id) as number);
   }
 }
 

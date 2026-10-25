@@ -14,6 +14,7 @@ import { computed, inject, ref, watch } from 'vue';
 
 import { IconifyIcon as Icon } from '@vben/icons';
 import { useUserStore } from '@vben/stores';
+import { compareId, isPositiveId } from '@vben/utils';
 
 import {
   Button,
@@ -361,14 +362,12 @@ async function loadEarlier() {
   try {
     // 算 maxId（不含，作为后端游标）：取当前会话本地缓存里最早一条服务端 id；
     // 本地乐观占位消息没有服务端 id，要剔除
-    // 全是占位 / 列表为空时 reduce 不更新初值（POSITIVE_INFINITY），转成 undefined → 后端从最新拉
-    let earliestId = Number.POSITIVE_INFINITY;
-    for (const message of allMessages.value) {
-      if (message.id && message.id > 0) {
-        earliestId = Math.min(earliestId, message.id);
-      }
-    }
-    const maxId = Number.isFinite(earliestId) ? earliestId : undefined;
+    // 全是占位 / 列表为空时为 undefined → 后端从最新拉
+    const earliestId = allMessages.value
+      .map((message) => message.id)
+      .filter(isPositiveId)
+      .sort(compareId)[0];
+    const maxId = earliestId;
 
     // 私聊 / 群聊的接口分支、字段转换、消息去重与 IndexedDB 落库统一由 puller 处理。
     const pageLength = await loadEarlierMessages(

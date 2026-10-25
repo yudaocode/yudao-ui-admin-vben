@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElCard, ElTabPane, ElTabs } from 'element-plus';
 
@@ -78,7 +79,7 @@ function handleEdit() {
 
 /** 加载数据 */
 onMounted(() => {
-  receivableId.value = Number(props.id || route.params.id);
+  receivableId.value = parseId(props.id || route.params.id) as number;
   loadReceivableDetail();
 });
 </script>

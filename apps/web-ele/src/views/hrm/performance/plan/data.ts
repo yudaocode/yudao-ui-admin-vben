@@ -252,10 +252,15 @@ export function useAssessmentAddFormSchema(
       fieldName: 'employeeIds',
       label: '参评员工',
       rules: z
-        .array(z.number())
+        .array(
+          z.union([
+            z.number(),
+            z.string().regex(/^(0|[1-9]\d*)$/, '请选择有效记录'),
+          ]),
+        )
         .min(1, '请选择参评员工')
         .refine(
-          (ids) => ids.every((id) => selectableEmployeeIds.has(id)),
+          (ids) => ids.every((id) => selectableEmployeeIds.has(id as number)),
           '请选择未加入当前计划的员工',
         ),
     },

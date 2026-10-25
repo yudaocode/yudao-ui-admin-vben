@@ -7,7 +7,7 @@ import { computed, ref, watch } from 'vue';
 import { confirm } from '@vben/common-ui';
 import { CommonStatusEnum } from '@vben/constants';
 import { IconifyIcon as Icon } from '@vben/icons';
-import { isUndefined } from '@vben/utils';
+import { compareId, isUndefined } from '@vben/utils';
 
 import {
   ElButton,
@@ -121,7 +121,7 @@ const visibleMembers = computed(() => {
     .toSorted((a, b) => {
       const roleA = a.role ?? ImGroupMemberRole.NORMAL;
       const roleB = b.role ?? ImGroupMemberRole.NORMAL;
-      return roleA === roleB ? a.userId - b.userId : roleA - roleB;
+      return roleA === roleB ? compareId(a.userId, b.userId) : roleA - roleB;
     });
 });
 

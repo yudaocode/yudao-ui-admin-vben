@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 import { ContentWrap, Page } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
-import { formatDate } from '@vben/utils';
+import { formatDate, parseId } from '@vben/utils';
 
 import { Avatar, Button, Divider, Popover, Spin } from 'ant-design-vue';
 
@@ -30,7 +30,7 @@ const replyRef = ref<InstanceType<typeof Reply>>(); // 回复区域
 
 /** 查询讨论详情，只有进入页面时记录访问 */
 async function getDetail(visit = false) {
-  detail.value = await getDiscussion(Number(route.params.id), visit);
+  detail.value = await getDiscussion(parseId(route.params.id) as number, visit);
 }
 
 /** 点赞或取消点赞 */

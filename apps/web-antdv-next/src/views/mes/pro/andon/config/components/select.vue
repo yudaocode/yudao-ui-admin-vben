@@ -4,6 +4,7 @@ import type { MesProAndonConfigApi } from '#/api/mes/pro/andon/config';
 import { computed, onMounted, ref } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
+import { parseId } from '@vben/utils';
 
 import { Select } from 'antdv-next';
 
@@ -58,7 +59,7 @@ function handleFilter(input: string, option: any) {
 
 /** 选中变化 */
 function handleChange(value: any) {
-  const nextValue = value === undefined ? undefined : Number(value);
+  const nextValue = value === undefined ? undefined : parseId(value);
   const item = allList.value.find((o) => o.id === nextValue);
   emit('change', item);
 }

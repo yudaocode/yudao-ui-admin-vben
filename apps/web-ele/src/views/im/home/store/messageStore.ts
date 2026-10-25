@@ -10,7 +10,11 @@ import type {
   MessageDO,
 } from '../types';
 
+import { compareId } from '@vben/utils';
+
 import { acceptHMRUpdate, defineStore } from 'pinia';
+
+import { maxImId } from '#/views/im/utils/pull';
 
 import {
   IM_AT_ALL_USER_ID,
@@ -113,7 +117,7 @@ function isMessageTerminated(
   terminal: ConversationMessageTerminal,
 ): boolean {
   return (
-    (!!message.id && message.id <= terminal.clearBefore) ||
+    (!!message.id && compareId(message.id, terminal.clearBefore) <= 0) ||
     (!!message.id && terminal.deletedKeys.has(`id:${message.id}`)) ||
     terminal.deletedKeys.has(`client:${message.clientMessageId}`)
   );
@@ -370,7 +374,7 @@ function shouldUpdateConversationSummary(
   message: Message,
 ): boolean {
   if (message.id !== undefined && conversation.lastMessageId !== undefined) {
-    return message.id >= conversation.lastMessageId;
+    return compareId(message.id, conversation.lastMessageId) >= 0;
   }
   return (
     (!!message.clientMessageId &&
@@ -385,7 +389,7 @@ function compareConversationSummaryOrder(
   right: Pick<Message, 'clientMessageId' | 'id' | 'sendTime'>,
 ): number {
   if (left.id && right.id) {
-    return left.id - right.id;
+    return compareId(left.id, right.id);
   }
   return (
     (left.sendTime || 0) - (right.sendTime || 0) ||
@@ -433,13 +437,19 @@ function syncConversationAtFlags(
   }
   if (message.atUserIds.includes(userId)) {
     conversation.atMe = true;
-    if (message.id && message.id > (conversation.atMessageId || 0)) {
+    if (
+      message.id &&
+      compareId(message.id, conversation.atMessageId || 0) > 0
+    ) {
       conversation.atMessageId = message.id;
     }
   }
   if (message.atUserIds.includes(IM_AT_ALL_USER_ID)) {
     conversation.atAll = true;
-    if (message.id && message.id > (conversation.atAllMessageId || 0)) {
+    if (
+      message.id &&
+      compareId(message.id, conversation.atAllMessageId || 0) > 0
+    ) {
       conversation.atAllMessageId = message.id;
     }
   }
@@ -559,17 +569,17 @@ export const useMessageStore = defineStore('imMessageStore', {
       }
       if (
         conversationType === ImConversationType.PRIVATE &&
-        messageId > this.privateMessageMaxId
+        compareId(messageId, this.privateMessageMaxId) > 0
       ) {
         this.privateMessageMaxId = messageId;
       } else if (
         conversationType === ImConversationType.GROUP &&
-        messageId > this.groupMessageMaxId
+        compareId(messageId, this.groupMessageMaxId) > 0
       ) {
         this.groupMessageMaxId = messageId;
       } else if (
         conversationType === ImConversationType.CHANNEL &&
-        messageId > this.channelMessageMaxId
+        compareId(messageId, this.channelMessageMaxId) > 0
       ) {
         this.channelMessageMaxId = messageId;
       }
@@ -587,7 +597,7 @@ export const useMessageStore = defineStore('imMessageStore', {
       }
       const nextMaxReadId = maxReadId || 0;
       const current = this.getPrivateReadMaxId(peerId);
-      if (current !== undefined && nextMaxReadId <= current) {
+      if (current !== undefined && compareId(nextMaxReadId, current) <= 0) {
         return current;
       }
       this.privateReadMaxIds = {
@@ -1066,7 +1076,8 @@ export const useMessageStore = defineStore('imMessageStore', {
           );
           if (storedMessage) {
             existingIndex = messages.findIndex(
-              (existing) => existing.id && messageId < existing.id,
+              (existing) =>
+                existing.id && compareId(messageId, existing.id) < 0,
             );
             if (existingIndex < 0) {
               existingIndex = messages.length;
@@ -1121,7 +1132,7 @@ export const useMessageStore = defineStore('imMessageStore', {
         if (message.id) {
           for (let index = 0; index < messages.length; index++) {
             const existing = messages[index]!;
-            if (existing.id && message.id < existing.id) {
+            if (existing.id && compareId(message.id, existing.id) < 0) {
               insertIndex = index;
               break;
             }
@@ -1316,7 +1327,7 @@ export const useMessageStore = defineStore('imMessageStore', {
         );
         if (storedMessage) {
           existingIndex = messages.findIndex(
-            (existing) => existing.id && messageId < existing.id,
+            (existing) => existing.id && compareId(messageId, existing.id) < 0,
           );
           if (existingIndex < 0) {
             existingIndex = messages.length;
@@ -1417,7 +1428,7 @@ export const useMessageStore = defineStore('imMessageStore', {
       if (message.id) {
         for (let index = 0; index < messages.length; index++) {
           const existing = messages[index]!;
-          if (existing.id && message.id < existing.id) {
+          if (existing.id && compareId(message.id, existing.id) < 0) {
             insertIndex = index;
             break;
           }
@@ -1759,7 +1770,7 @@ export const useMessageStore = defineStore('imMessageStore', {
           if (
             message.selfSend &&
             message.id &&
-            message.id <= options.privateReadMaxId! &&
+            compareId(message.id, options.privateReadMaxId!) <= 0 &&
             message.receiptStatus === ImMessageReceiptStatus.PENDING
           ) {
             changed.push({
@@ -1781,7 +1792,7 @@ export const useMessageStore = defineStore('imMessageStore', {
             (message) =>
               message.selfSend &&
               !!message.id &&
-              message.id <= options.privateReadMaxId! &&
+              compareId(message.id, options.privateReadMaxId!) <= 0 &&
               message.receiptStatus === ImMessageReceiptStatus.PENDING,
           )
           .forEach((message) => {
@@ -1941,8 +1952,8 @@ export const useMessageStore = defineStore('imMessageStore', {
             !isMessageTerminated(message, terminal),
         )
         .map((message) => applyPersistedRecall(message, terminal))
-        .toSorted(
-          (messageA, messageB) => (messageA.id || 0) - (messageB.id || 0),
+        .toSorted((messageA, messageB) =>
+          compareId(messageA.id || 0, messageB.id || 0),
         );
       if (fresh.length === 0) {
         return;
@@ -2108,7 +2119,7 @@ export const useMessageStore = defineStore('imMessageStore', {
               .filter((message) => !message.id && !!message.clientMessageId)
               .map((message) => `client:${message.clientMessageId}`),
           );
-          const clearBefore = Math.max(
+          const clearBefore = maxImId(
             oldClearBefore,
             conversation?.lastMessageId || 0,
             ...storedMessages.map((message) => message.id || 0),

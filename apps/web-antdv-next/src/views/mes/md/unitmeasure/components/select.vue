@@ -3,6 +3,8 @@ import type { MesMdUnitMeasureApi } from '#/api/mes/md/unitmeasure';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select, Tag, Tooltip } from 'antdv-next';
 
 import { getUnitMeasureSimpleList } from '#/api/mes/md/unitmeasure';
@@ -68,7 +70,7 @@ function syncSelectedItem(value: number | undefined) {
 
 /** 除 v-model 外，额外抛出完整计量单位对象给业务表单使用 */
 function handleChange(value: any) {
-  const nextValue = value === undefined ? undefined : Number(value);
+  const nextValue = value === undefined ? undefined : parseId(value);
   syncSelectedItem(nextValue);
   emit('change', selectedItem.value);
 }

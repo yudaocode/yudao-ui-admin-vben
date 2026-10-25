@@ -12,6 +12,7 @@ import {
   formatDate,
   getTreeValuesWithAncestors,
   handleTree,
+  parseId,
   traverseTreeValues,
 } from '@vben/utils';
 
@@ -114,7 +115,7 @@ async function init() {
   queryParams.endMonth = String(
     route.query.endMonth || accountingMonth || currentMonth,
   );
-  queryParams.subjectId = Number(route.query.subjectId) || 0;
+  queryParams.subjectId = parseId(route.query.subjectId) || 0;
   await loadSubjectTree();
   await gridApi.reload();
 }

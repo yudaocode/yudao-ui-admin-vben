@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { isPositiveId, parseId } from '@vben/utils';
 
 import {
   Alert,
@@ -43,7 +44,7 @@ const route = useRoute();
 const router = useRouter();
 const tabs = useTabs();
 
-const monthRecordId = Number(route.params.id);
+const monthRecordId = parseId(route.params.id) as number;
 const recordLoading = ref(true);
 const monthRecord = ref<HrmInsuranceMonthRecordApi.InsuranceMonthRecord>({});
 const checkedIds = ref<number[]>([]);
@@ -194,7 +195,7 @@ async function handleStop(ids: number[]) {
 }
 
 async function init() {
-  if (!Number.isSafeInteger(monthRecordId) || monthRecordId <= 0) {
+  if (!isPositiveId(monthRecordId)) {
     message.warning('参数错误，月度社保表不能为空！');
     close();
     return;

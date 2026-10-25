@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
+import { parseId } from '@vben/utils';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getManagerGroupMessagePage } from '#/api/im/manager/message/group';
@@ -66,7 +67,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 onMounted(async () => {
   await gridApi.formApi.setValues({
-    groupId: route.query.groupId ? Number(route.query.groupId) : undefined,
+    groupId: route.query.groupId ? parseId(route.query.groupId) : undefined,
   });
   await gridApi.formApi.submit();
 });

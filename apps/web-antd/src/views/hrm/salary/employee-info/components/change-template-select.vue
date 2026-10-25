@@ -3,6 +3,8 @@ import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-
 
 import { onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getSalaryChangeTemplateList } from '#/api/hrm/salary/config/change-template';
@@ -37,7 +39,7 @@ async function init() {
 }
 
 function handleChange(value: unknown) {
-  emit('update:modelValue', typeof value === 'number' ? value : undefined);
+  emit('update:modelValue', parseId(value));
   emit('change');
 }
 

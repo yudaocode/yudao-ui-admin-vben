@@ -6,7 +6,7 @@ import { reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useVbenDrawer, useVbenModal } from '@vben/common-ui';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, parseId } from '@vben/utils';
 
 import {
   ElButton,
@@ -52,7 +52,7 @@ const queryParams = reactive({
   iterationIds: [] as number[],
   excludedIterationIds: [] as number[],
   assigneeUserIds: route.query.assigneeUserId
-    ? [Number(route.query.assigneeUserId)]
+    ? [parseId(route.query.assigneeUserId) as number]
     : ([] as number[]),
   labelIds: [] as number[],
   unplannedOnly: false,

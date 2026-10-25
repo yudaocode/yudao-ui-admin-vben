@@ -15,7 +15,7 @@ import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel, getDictOptions } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
-import { formatDateTime, getAllPageItems } from '@vben/utils';
+import { formatDateTime, getAllPageItems, parseId } from '@vben/utils';
 
 import {
   Button,
@@ -296,7 +296,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     // 1. 查询迭代及所属项目
-    iteration.value = await getIteration(Number(route.params.id));
+    iteration.value = await getIteration(parseId(route.params.id) as number);
     project.value = await getProject(iteration.value.projectId);
     // 2. 加载迭代统计和事项
     await loadData();

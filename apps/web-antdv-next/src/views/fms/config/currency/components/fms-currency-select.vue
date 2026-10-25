@@ -3,6 +3,8 @@ import type { FmsCurrencyApi } from '#/api/fms/config/currency';
 
 import { computed, ref, watch } from 'vue';
 
+import { isIdType, parseId } from '@vben/utils';
+
 import { Select } from 'antdv-next';
 
 import { getCurrencySimpleList } from '#/api/fms/config/currency';
@@ -48,13 +50,10 @@ const currencyList = computed(() =>
 /** 选中变化 */
 function handleChange(value: unknown) {
   if (Array.isArray(value)) {
-    emit(
-      'update:modelValue',
-      value.filter((item): item is number => typeof item === 'number'),
-    );
+    emit('update:modelValue', value.map(parseId).filter(isIdType));
     return;
   }
-  emit('update:modelValue', typeof value === 'number' ? value : undefined);
+  emit('update:modelValue', parseId(value));
 }
 
 /** 获得币别列表 */

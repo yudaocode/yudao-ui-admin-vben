@@ -5,6 +5,8 @@ import type { WmsWarehouseApi } from '#/api/wms/md/warehouse';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getWarehouseSimpleList } from '#/api/wms/md/warehouse';
@@ -45,7 +47,7 @@ const options = computed(() =>
 
 /** 选中变化 */
 function handleChange(value: SelectValue) {
-  const warehouseId = typeof value === 'number' ? value : undefined;
+  const warehouseId = parseId(value);
   emit('update:modelValue', warehouseId);
   emit(
     'change',

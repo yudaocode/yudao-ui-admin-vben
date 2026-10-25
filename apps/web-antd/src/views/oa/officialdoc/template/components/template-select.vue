@@ -3,6 +3,8 @@ import type { OaOfficialDocTemplateApi } from '#/api/oa/officialdoc/template';
 
 import { onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getSimpleOfficialDocTemplateList } from '#/api/oa/officialdoc/template';
@@ -36,7 +38,7 @@ const loading = ref(false); // 列表的加载中
 
 /** 选中变化 */
 function handleChange(value: unknown) {
-  const templateId = typeof value === 'number' ? value : undefined;
+  const templateId = parseId(value);
   emit('update:modelValue', templateId);
   emit('change', templateId);
 }

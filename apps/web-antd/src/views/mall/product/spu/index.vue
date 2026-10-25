@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { confirm, DocAlert, Page } from '@vben/common-ui';
 import { ProductSpuStatusEnum } from '@vben/constants';
-import { downloadFileFromBlobPart } from '@vben/utils';
+import { downloadFileFromBlobPart, parseId } from '@vben/utils';
 
 import { message, Tabs } from 'ant-design-vue';
 
@@ -197,7 +197,7 @@ onMounted(async () => {
   // 解析路由的 categoryId
   if (route.query.categoryId) {
     await gridApi.formApi.setValues({
-      categoryId: Number(route.query.categoryId),
+      categoryId: parseId(route.query.categoryId),
     });
     await gridApi.formApi.submit();
   }

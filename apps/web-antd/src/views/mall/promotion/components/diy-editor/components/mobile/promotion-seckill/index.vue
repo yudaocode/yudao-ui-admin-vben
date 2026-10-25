@@ -6,7 +6,7 @@ import type { MallSeckillActivityApi } from '#/api/mall/promotion/seckill/seckil
 
 import { ref, watch } from 'vue';
 
-import { fenToYuan } from '@vben/utils';
+import { fenToYuan, isIdType, parseId } from '@vben/utils';
 
 import { Image } from 'ant-design-vue';
 
@@ -37,7 +37,8 @@ watch(
         spuList.value = [];
         spuIdList.value = seckillActivityList.value
           .map((activity) => activity.spuId)
-          .filter((spuId): spuId is number => typeof spuId === 'number');
+          .map(parseId)
+          .filter(isIdType);
         if (spuIdList.value.length > 0) {
           spuList.value = await getSpuDetailList(spuIdList.value);
         }

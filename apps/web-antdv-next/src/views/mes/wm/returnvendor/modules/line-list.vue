@@ -53,8 +53,7 @@ const [DetailFormModal, detailFormModalApi] = useVbenModal({
 /** 刷新表格 */
 function handleRefresh() {
   for (const id of Object.keys(detailMap)) {
-    const key = Number(id);
-    Reflect.deleteProperty(detailMap, key);
+    Reflect.deleteProperty(detailMap, id);
   }
   gridApi.query();
 }

@@ -166,7 +166,14 @@ export function useProjectMemberFormSchema(
         triggerFields: ['memberId'],
         show: (values) => !values.memberId,
       },
-      rules: z.array(z.number()).min(1, '请选择项目成员'),
+      rules: z
+        .array(
+          z.union([
+            z.number(),
+            z.string().regex(/^(0|[1-9]\d*)$/, '请选择有效记录'),
+          ]),
+        )
+        .min(1, '请选择项目成员'),
     },
     {
       fieldName: 'member',

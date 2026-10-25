@@ -7,6 +7,7 @@ import type { HrmSalaryMonthEmployeeRecordApi } from '#/api/hrm/salary/month-rec
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { parseId } from '@vben/utils';
 
 import {
   Alert,
@@ -167,7 +168,7 @@ async function getEmployeeChangeCount(formValues?: Record<string, unknown>) {
   const values = formValues || (await gridApi.formApi.getValues()) || {};
   // 不传 employeeChangeType，保证各 Tab 数量基于同一筛选集合统计
   const raw = await getSalaryMonthEmployeeChangeCount({
-    deptId: typeof values.deptId === 'number' ? values.deptId : undefined,
+    deptId: parseId(values.deptId),
     employeeName:
       typeof values.employeeName === 'string' ? values.employeeName : undefined,
     jobNumber:

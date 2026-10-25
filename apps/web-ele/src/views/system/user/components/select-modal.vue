@@ -5,7 +5,7 @@ import type { SystemUserApi } from '#/api/system/user';
 import { computed, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { handleTree } from '@vben/utils';
+import { handleTree, isIdType, parseId } from '@vben/utils';
 
 import {
   ElButton,
@@ -293,8 +293,13 @@ function handleUserChange(
   _direction: string,
   _movedKeys: (number | string)[],
 ) {
-  // 使用 Set 来去重选中的用户ID，并确保转换为 number 类型
-  selectedUserIds.value = [...new Set(value.map(Number))];
+  // 使用 Set 来去重选中的用户ID
+  const ids = value.map(parseId).filter(isIdType);
+  if (ids.length !== value.length) {
+    ElMessage.warning('请选择有效用户');
+    return;
+  }
+  selectedUserIds.value = [...new Set(ids)];
   emit('update:value', selectedUserIds.value);
   updateRightListData();
 }
@@ -392,7 +397,7 @@ function handleDeptSearch(value: string) {
 /** 处理部门选择 */
 async function handleDeptSelect(node: any) {
   // 更新选中的部门ID
-  const newDeptId = node.id ? Number(node.id) : undefined;
+  const newDeptId = node.id ? parseId(node.id) : undefined;
   selectedDeptId.value =
     newDeptId === selectedDeptId.value ? undefined : newDeptId;
 

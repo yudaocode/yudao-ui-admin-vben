@@ -3,6 +3,8 @@ import type { FmsVoucherWordApi } from '#/api/fms/config/voucher-word';
 
 import { computed } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'antdv-next';
 
 defineOptions({ name: 'FmsVoucherWordSelect' });
@@ -31,8 +33,7 @@ const emit = defineEmits<{
 
 const selectValue = computed({
   get: () => props.modelValue,
-  set: (value) =>
-    emit('update:modelValue', typeof value === 'number' ? value : undefined),
+  set: (value) => emit('update:modelValue', parseId(value)),
 });
 
 /** 过滤掉缺少编号的凭证字，保证选项 value 稳定 */

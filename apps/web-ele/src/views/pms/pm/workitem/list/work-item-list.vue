@@ -12,7 +12,11 @@ import { confirm, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 import { getDictLabel } from '@vben/hooks';
 import { IconifyIcon } from '@vben/icons';
-import { downloadFileFromBlobPart, getAllPageItems } from '@vben/utils';
+import {
+  downloadFileFromBlobPart,
+  getAllPageItems,
+  parseId,
+} from '@vben/utils';
 
 import dayjs from 'dayjs';
 import {
@@ -104,7 +108,7 @@ const queryParams = reactive({
   iterationIds: [] as number[],
   excludedIterationIds: [] as number[],
   assigneeUserIds: route.query.assigneeUserId
-    ? [Number(route.query.assigneeUserId)]
+    ? [parseId(route.query.assigneeUserId) as number]
     : ([] as number[]),
   labelIds: [] as number[],
   rootOnly: true,

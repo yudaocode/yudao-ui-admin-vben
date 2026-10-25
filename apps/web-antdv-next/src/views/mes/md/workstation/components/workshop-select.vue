@@ -3,6 +3,8 @@ import type { MesMdWorkshopApi } from '#/api/mes/md/workstation/workshop';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select, Tag, Tooltip } from 'antdv-next';
 
 import { getWorkshopSimpleList } from '#/api/mes/md/workstation/workshop';
@@ -65,7 +67,7 @@ function syncSelectedItem(value: number | undefined) {
 
 /** 除 v-model 外，额外抛出完整车间对象给业务表单使用 */
 function handleChange(value: any) {
-  const nextValue = value === undefined ? undefined : Number(value);
+  const nextValue = value === undefined ? undefined : parseId(value);
   syncSelectedItem(nextValue);
   emit('change', selectedItem.value);
 }

@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { useTabs } from '@vben/hooks';
+import { parseId } from '@vben/utils';
 
 import { ElCard, ElTabPane, ElTabs } from 'element-plus';
 
@@ -101,7 +102,7 @@ async function handleUpdateStatus() {
 
 /** 加载数据 */
 onMounted(() => {
-  businessId.value = Number(route.params.id);
+  businessId.value = parseId(route.params.id) as number;
   getBusinessDetail();
 });
 </script>

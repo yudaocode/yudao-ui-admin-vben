@@ -60,7 +60,15 @@ export function useFormSchema(): VbenFormSchema[] {
         valueField: 'id',
         multiple: true,
       },
-      rules: z.array(z.number()).min(1, '请选择成员').default([]),
+      rules: z
+        .array(
+          z.union([
+            z.number(),
+            z.string().regex(/^(0|[1-9]\d*)$/, '请选择有效记录'),
+          ]),
+        )
+        .min(1, '请选择成员')
+        .default([]),
     },
     {
       fieldName: 'status',

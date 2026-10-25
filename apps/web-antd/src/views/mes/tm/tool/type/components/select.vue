@@ -5,6 +5,8 @@ import type { MesTmToolTypeApi } from '#/api/mes/tm/tool/type';
 
 import { onMounted, ref } from 'vue';
 
+import { parseId } from '@vben/utils';
+
 import { Select } from 'ant-design-vue';
 
 import { getToolTypeSimpleList } from '#/api/mes/tm/tool/type';
@@ -36,7 +38,7 @@ async function getList() {
 
 /** 处理工具类型选择变化 */
 function handleChange(value: SelectValue) {
-  const toolTypeId = typeof value === 'number' ? value : undefined;
+  const toolTypeId = parseId(value);
   emit('update:modelValue', toolTypeId);
   emit(
     'change',
