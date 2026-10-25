@@ -14,10 +14,13 @@ import xml from 'highlight.js/lib/languages/java';
 import json from 'highlight.js/lib/languages/json';
 
 import { useFormCreateDesigner } from '#/components/form-create';
+import { useFcDesigner } from '#/plugins/form-create/designer';
 
 import 'highlight.js/styles/github.css';
 
 defineOptions({ name: 'InfraBuild' });
+
+useFcDesigner(); // 按需安装表单设计器，需在渲染设计器之前
 
 const [Modal, modalApi] = useVbenModal();
 

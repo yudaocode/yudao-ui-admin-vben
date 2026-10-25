@@ -25,6 +25,8 @@ import {
   ElCollapse,
   ElCollapseItem,
   ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
   ElLoading,
   ElMessage,
   ElTag,
@@ -575,14 +577,14 @@ function handleRenameSuccess() {
                   分类
                 </ElButton>
                 <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item @click="handleCommand('renameCategory')">
+                  <ElDropdownMenu>
+                    <ElDropdownItem @click="handleCommand('renameCategory')">
                       重命名
-                    </el-dropdown-item>
-                    <el-dropdown-item @click="handleCommand('deleteCategory')">
+                    </ElDropdownItem>
+                    <ElDropdownItem @click="handleCommand('deleteCategory')">
                       删除分类
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
+                    </ElDropdownItem>
+                  </ElDropdownMenu>
                 </template>
               </ElDropdown>
             </template>
@@ -743,35 +745,35 @@ function handleRenameSuccess() {
                 >
                   <ElButton link size="small">更多</ElButton>
                   <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item
+                    <ElDropdownMenu>
+                      <ElDropdownItem
                         v-if="hasPermiCreate"
                         @click="handleModelCommand('handleCopy', row)"
                         :disabled="!isManagerUser(row) && !hasPermiUpdate"
                       >
                         复制
-                      </el-dropdown-item>
-                      <el-dropdown-item
+                      </ElDropdownItem>
+                      <ElDropdownItem
                         v-if="hasPermiPdQuery"
                         @click="handleModelCommand('handleDefinitionList', row)"
                       >
                         历史
-                      </el-dropdown-item>
-                      <el-dropdown-item
+                      </ElDropdownItem>
+                      <ElDropdownItem
                         v-if="hasPermiExport"
                         @click="handleModelCommand('handleExport', row)"
                       >
                         导出
-                      </el-dropdown-item>
+                      </ElDropdownItem>
 
-                      <el-dropdown-item
+                      <ElDropdownItem
                         v-if="hasPermiReport && row.processDefinition"
                         @click="handleModelCommand('handleReport', row)"
                         :disabled="!isManagerUser(row)"
                       >
                         报表
-                      </el-dropdown-item>
-                      <el-dropdown-item
+                      </ElDropdownItem>
+                      <ElDropdownItem
                         v-if="hasPermiUpdate && row.processDefinition"
                         @click="handleModelCommand('handleChangeState', row)"
                         :disabled="!isManagerUser(row)"
@@ -781,22 +783,22 @@ function handleRenameSuccess() {
                             ? '停用'
                             : '启用'
                         }}
-                      </el-dropdown-item>
-                      <el-dropdown-item
+                      </ElDropdownItem>
+                      <ElDropdownItem
                         v-if="hasPermiClean"
                         @click="handleModelCommand('handleClean', row)"
                         :disabled="!isManagerUser(row)"
                       >
                         清理
-                      </el-dropdown-item>
-                      <el-dropdown-item
+                      </ElDropdownItem>
+                      <ElDropdownItem
                         v-if="hasPermiDelete"
                         @click="handleModelCommand('handleDelete', row)"
                         :disabled="!isManagerUser(row)"
                       >
                         删除
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
+                      </ElDropdownItem>
+                    </ElDropdownMenu>
                   </template>
                 </ElDropdown>
               </div>

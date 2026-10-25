@@ -7,7 +7,7 @@ import { computed, nextTick, ref } from 'vue';
 import { confirm, useVbenForm, useVbenModal } from '@vben/common-ui';
 import { getFileNameFromUrl, openWindow } from '@vben/utils';
 
-import { ElMessage as message } from 'element-plus';
+import { ElButton, ElMessage as message } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

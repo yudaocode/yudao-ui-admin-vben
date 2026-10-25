@@ -3,6 +3,8 @@ import type { HrmInsuranceSchemeApi } from '#/api/hrm/insurance/scheme';
 
 import { computed, onMounted, ref, watch } from 'vue';
 
+import { ElSelect } from 'element-plus';
+
 import { getInsuranceSchemeSimpleList } from '#/api/hrm/insurance/scheme';
 
 defineOptions({ name: 'HrmInsuranceSchemeSelect' });

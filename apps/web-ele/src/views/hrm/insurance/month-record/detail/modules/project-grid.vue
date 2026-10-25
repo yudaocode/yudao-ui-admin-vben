@@ -6,6 +6,8 @@ import { nextTick, watch } from 'vue';
 
 import { DICT_TYPE } from '@vben/constants';
 
+import { ElInputNumber } from 'element-plus';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { DictTag } from '#/components/dict-tag';
 import { HrmInsuranceSchemeType } from '#/views/hrm/utils/constants';

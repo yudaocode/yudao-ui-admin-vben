@@ -7,6 +7,9 @@ import FormCreate from '@form-create/ant-design-vue';
 
 import { getForm } from '#/api/bpm/form';
 import { setConfAndFields2 } from '#/components/form-create';
+import { useFormCreate } from '#/plugins/form-create';
+
+useFormCreate(); // 按需安装 form-create，需在渲染表单之前
 
 const formConfig = ref<any>({});
 

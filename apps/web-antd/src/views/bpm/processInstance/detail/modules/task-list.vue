@@ -15,6 +15,7 @@ import { Button } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getTaskListByProcessInstanceId } from '#/api/bpm/task';
 import { setConfAndFields2 } from '#/components/form-create';
+import { useFormCreate } from '#/plugins/form-create';
 
 import TaskEvidence from './task-evidence.vue';
 
@@ -26,6 +27,8 @@ const props = defineProps<{
   id: string;
   loading: boolean;
 }>();
+
+useFormCreate(); // 按需安装 form-create，需在渲染表单之前
 
 /** 表单类型定义 */
 interface TaskForm {

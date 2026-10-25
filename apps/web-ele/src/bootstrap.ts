@@ -12,7 +12,6 @@ import { useTitle } from '@vueuse/core';
 import { ElLoading } from 'element-plus';
 
 import { $t, setupI18n } from '#/locales';
-import { setupFormCreate } from '#/plugins/form-create';
 
 import { initComponentAdapter } from './adapter/component';
 import { initSetupVbenForm } from './adapter/form';
@@ -65,8 +64,12 @@ async function bootstrap(namespace: string) {
   const { MotionPlugin } = await import('@vben/plugins/motion');
   app.use(MotionPlugin);
 
-  // formCreate
-  setupFormCreate(app);
+  // formCreate 改为在使用表单的页面按需安装（见 #/plugins/form-create 的 useFormCreate），
+  // 这里提前声明它全局 mixin 中的 formCreateInject 属性，避免已渲染过的组件将其透传为 DOM 属性
+  // type: null、default: undefined 与原插件 props: ['formCreateInject'] 一致，接受任意类型
+  app.mixin({
+    props: { formCreateInject: { default: undefined, type: null } },
+  });
 
   // 动态更新标题
   watchEffect(() => {

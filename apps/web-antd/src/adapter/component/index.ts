@@ -68,7 +68,6 @@ import { isEmpty } from '@vben/utils';
 
 import { message, Modal, notification } from 'ant-design-vue';
 
-import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 type AdapterUploadProps = UploadProps & {
   aspectRatio?: string;
@@ -134,6 +133,10 @@ const Upload = defineAsyncComponent(() => import('ant-design-vue/es/upload'));
 const Image = defineAsyncComponent(() => import('ant-design-vue/es/image'));
 const PreviewGroup = defineAsyncComponent(() =>
   import('ant-design-vue/es/image').then((res) => res.ImagePreviewGroup),
+);
+// 富文本编辑器按需加载，避免进入登录、普通列表等首屏
+const RichTextarea = defineAsyncComponent(() =>
+  import('#/components/tinymce').then((res) => res.Tinymce),
 );
 
 const withDefaultPlaceholder = (

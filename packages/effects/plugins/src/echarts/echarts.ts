@@ -3,7 +3,6 @@ import {
   FunnelChart,
   GaugeChart,
   LineChart,
-  MapChart,
   PieChart,
   RadarChart,
 } from 'echarts/charts';
@@ -12,7 +11,6 @@ import {
   DataZoomComponent,
   DataZoomInsideComponent,
   DataZoomSliderComponent,
-  GeoComponent,
   GraphicComponent,
   GridComponent,
   LegendComponent,
@@ -30,7 +28,7 @@ import {
 } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 
-// 注册必须的组件
+// 注册必须的组件（地图 MapChart、GeoComponent 见 china-map.ts，按需加载）
 echarts.use([
   TitleComponent,
   PieChart,
@@ -53,8 +51,6 @@ echarts.use([
   LegendComponent,
   ToolboxComponent,
   VisualMapComponent,
-  MapChart,
-  GeoComponent,
   GraphicComponent,
 ]);
 

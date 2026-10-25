@@ -4,7 +4,7 @@ import type { HrmPerformanceResultTemplateApi } from '#/api/hrm/performance/conf
 
 import { nextTick, watch } from 'vue';
 
-import { ElMessage } from 'element-plus';
+import { ElButton, ElInput, ElInputNumber, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

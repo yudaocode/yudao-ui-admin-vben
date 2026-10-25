@@ -59,6 +59,7 @@ import {
 import { setConfAndFields2 } from '#/components/form-create';
 import { FileUpload } from '#/components/upload';
 import { $t } from '#/locales';
+import { useFormCreate } from '#/plugins/form-create';
 
 import Signature from './signature.vue';
 import ProcessInstanceTimeline from './time-line.vue';
@@ -74,6 +75,8 @@ const props = defineProps<{
   writableFields: string[]; // 流程表单可以编辑的字段
 }>(); // 当前登录的编号
 const emit = defineEmits(['success']);
+
+useFormCreate(); // 按需安装 form-create，需在渲染表单之前
 
 const [SignatureModal, signatureModalApi] = useVbenModal({
   connectedComponent: Signature,

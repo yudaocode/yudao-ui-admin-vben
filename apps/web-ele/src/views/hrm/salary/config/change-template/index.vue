@@ -4,7 +4,7 @@ import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-
 
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

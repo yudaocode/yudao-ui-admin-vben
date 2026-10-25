@@ -3,6 +3,8 @@ import type { HrmSalaryTaxRuleApi } from '#/api/hrm/salary/config/tax-rule';
 
 import { computed, onMounted, ref } from 'vue';
 
+import { ElSelect } from 'element-plus';
+
 import { getSalaryTaxRuleList } from '#/api/hrm/salary/config/tax-rule';
 
 defineOptions({ name: 'HrmSalaryTaxRuleSelect' });

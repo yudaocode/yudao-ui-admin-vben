@@ -14,6 +14,7 @@ import {
   setConfAndFields,
   useFormCreateDesigner,
 } from '#/components/form-create';
+import { useFcDesigner } from '#/plugins/form-create/designer';
 import { router } from '#/router';
 
 import Form from './modules/form.vue';
@@ -25,6 +26,8 @@ const props = defineProps<{
   id?: number | string;
   type: 'copy' | 'create' | 'edit';
 }>();
+
+useFcDesigner(); // 按需安装表单设计器，需在渲染设计器之前
 
 const loading = ref(false);
 const tabs = useTabs();

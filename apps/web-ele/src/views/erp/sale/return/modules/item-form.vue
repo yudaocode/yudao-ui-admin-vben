@@ -9,7 +9,7 @@ import {
   erpPriceMultiply,
 } from '@vben/utils';
 
-import { ElInput, ElInputNumber, ElSelect } from 'element-plus';
+import { ElInput, ElInputNumber, ElOption, ElSelect } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';
@@ -243,7 +243,7 @@ onMounted(async () => {
         class="w-full"
         @change="handleWarehouseChange(row)"
       >
-        <el-option
+        <ElOption
           v-for="warehouse in warehouseOptions"
           :key="warehouse.id"
           :label="warehouse.name"
@@ -259,7 +259,7 @@ onMounted(async () => {
         filterable
         class="w-full"
       >
-        <el-option
+        <ElOption
           v-for="product in productOptions"
           :key="product.id"
           :label="product.name"

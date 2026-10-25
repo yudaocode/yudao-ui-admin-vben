@@ -35,7 +35,6 @@ import { $t } from '@vben/locales';
 
 import { ElNotification } from 'element-plus';
 
-import { Tinymce as RichTextarea } from '#/components/tinymce';
 import { FileUpload, ImageUpload } from '#/components/upload';
 
 const ElAutoComplete = defineAsyncComponent(() =>
@@ -166,6 +165,10 @@ const ElRate = defineAsyncComponent(() =>
     import('element-plus/es/components/rate/index'),
     import('element-plus/es/components/rate/style/css'),
   ]).then(([res]) => res.ElRate),
+);
+// 富文本编辑器按需加载，避免进入登录、普通列表等首屏
+const RichTextarea = defineAsyncComponent(() =>
+  import('#/components/tinymce').then((res) => res.Tinymce),
 );
 
 const withDefaultPlaceholder = (

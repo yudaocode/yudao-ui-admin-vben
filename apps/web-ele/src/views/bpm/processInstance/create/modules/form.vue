@@ -31,6 +31,7 @@ import {
   getApprovalDetail as getApprovalDetailApi,
 } from '#/api/bpm/processInstance';
 import { decodeFields, setConfAndFields2 } from '#/components/form-create';
+import { useFormCreate } from '#/plugins/form-create';
 import { router } from '#/router';
 import ProcessInstanceBpmnViewer from '#/views/bpm/processInstance/detail/modules/bpm-viewer.vue';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
@@ -58,6 +59,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['cancel']);
+
+useFormCreate(); // 按需安装 form-create，需在渲染表单之前
+
 const { closeCurrentTab } = useTabs();
 
 const getTitle = computed(() => {

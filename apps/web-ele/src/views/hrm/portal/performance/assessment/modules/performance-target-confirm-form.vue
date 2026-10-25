@@ -6,7 +6,7 @@ import { nextTick, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { ElMessage as message } from 'element-plus';
+import { ElButton, ElInput, ElTag, ElMessage as message } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {

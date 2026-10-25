@@ -9,7 +9,15 @@ import { IconifyIcon } from '@vben/icons';
 import { cloneDeep } from '@vben/utils';
 
 import { useSortable } from '@vueuse/integrations/useSortable';
-import { ElButton, ElCard, ElDropdown, ElInput, ElMessage } from 'element-plus';
+import {
+  ElButton,
+  ElCard,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElInput,
+  ElMessage,
+} from 'element-plus';
 
 import {
   getCategorySimpleList,
@@ -196,22 +204,22 @@ async function handleCategorySortSubmit() {
                 </div>
               </ElButton>
               <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="handleCommand('handleCategoryAdd')">
+                <ElDropdownMenu>
+                  <ElDropdownItem @click="handleCommand('handleCategoryAdd')">
                     <div class="flex items-center gap-1">
                       <IconifyIcon icon="lucide:plus" />
                       新建分类
                     </div>
-                  </el-dropdown-item>
-                  <el-dropdown-item
+                  </ElDropdownItem>
+                  <ElDropdownItem
                     @click="handleCommand('handleCategorySort')"
                   >
                     <div class="flex items-center gap-1">
                       <IconifyIcon icon="lucide:align-start-vertical" />
                       分类排序
                     </div>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
+                  </ElDropdownItem>
+                </ElDropdownMenu>
               </template>
             </ElDropdown>
           </div>

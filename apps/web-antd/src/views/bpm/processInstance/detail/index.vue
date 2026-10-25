@@ -30,6 +30,7 @@ import {
 import { getSimpleUserList } from '#/api/system/user';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
 import { setConfAndFields2 } from '#/components/form-create';
+import { useFormCreate } from '#/plugins/form-create';
 import { registerComponent } from '#/utils';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
@@ -47,6 +48,8 @@ const props = defineProps<{
   id: string; // 流程实例的编号
   taskId?: string; // 任务编号
 }>();
+
+useFormCreate(); // 按需安装 form-create，需在渲染表单之前
 
 const processInstanceLoading = ref(false); // 流程实例的加载中
 const processInstance = ref<BpmProcessInstanceApi.ProcessInstance>(); // 流程实例

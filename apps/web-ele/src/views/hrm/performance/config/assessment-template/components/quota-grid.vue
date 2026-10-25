@@ -4,6 +4,14 @@ import type { HrmPerformanceAssessmentTemplateApi } from '#/api/hrm/performance/
 
 import { nextTick, watch } from 'vue';
 
+import {
+  ElButton,
+  ElInput,
+  ElInputNumber,
+  ElOption,
+  ElSelect,
+} from 'element-plus';
+
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { HrmPerformanceQuotaScoreType } from '#/views/hrm/utils/constants';
 

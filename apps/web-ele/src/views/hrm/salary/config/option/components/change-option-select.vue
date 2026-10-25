@@ -3,6 +3,8 @@ import type { HrmSalaryChangeTemplateApi } from '#/api/hrm/salary/config/change-
 
 import { computed, ref, watch } from 'vue';
 
+import { ElSelect } from 'element-plus';
+
 import { getSalaryOptionSimpleList } from '#/api/hrm/salary/config/option';
 
 defineOptions({ name: 'HrmSalaryChangeOptionSelect' });

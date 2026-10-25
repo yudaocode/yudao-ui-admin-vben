@@ -10,7 +10,7 @@ import {
   erpPriceMultiply,
 } from '@vben/utils';
 
-import { ElInput, ElInputNumber, ElSelect } from 'element-plus';
+import { ElInput, ElInputNumber, ElOption, ElSelect } from 'element-plus';
 
 import { TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getProductSimpleList } from '#/api/erp/product/product';
@@ -234,11 +234,11 @@ onMounted(async () => {
         class="w-full"
         @change="handleProductChange($event, row)"
       >
-        <el-option
+        <ElOption
           v-for="product in productOptions"
           :key="product.id"
           :label="product.name"
-          :value="product.id"
+          :value="product.id!"
         />
       </ElSelect>
     </template>

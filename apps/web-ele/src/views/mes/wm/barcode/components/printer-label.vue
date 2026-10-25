@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ElMessage } from 'element-plus';
+import { ElButton, ElMessage } from 'element-plus';
 
 defineOptions({ name: 'MesWmPrinterLabel' });
 

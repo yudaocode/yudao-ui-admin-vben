@@ -5,7 +5,7 @@ import type { HrmSalaryTaxRuleApi } from '#/api/hrm/salary/config/tax-rule';
 import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 import { DICT_TYPE } from '@vben/constants';
 
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElTag } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
