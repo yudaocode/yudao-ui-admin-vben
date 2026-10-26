@@ -324,6 +324,13 @@ export const IotDeviceMessageMethodEnum = {
     name: 'OTA 升级进度上报',
     upstream: true,
   },
+
+  // ========== 设备影子 ==========
+  SHADOW_UPDATE: {
+    method: 'thing.shadow.update',
+    name: '设备影子更新',
+    upstream: true,
+  },
 } as const;
 
 // ========== IOT - OTA ==========

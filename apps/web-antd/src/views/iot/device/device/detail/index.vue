@@ -6,6 +6,7 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import { useAccess } from '@vben/access';
 import { Page } from '@vben/common-ui';
 import { DeviceTypeEnum } from '@vben/constants';
 import { parseId } from '@vben/utils';
@@ -21,12 +22,14 @@ import DeviceDetailsHeader from './modules/header.vue';
 import DeviceDetailsInfo from './modules/info.vue';
 import DeviceDetailsMessage from './modules/message.vue';
 import DeviceModbusConfig from './modules/modbus-config.vue';
+import DeviceDetailsShadow from './modules/shadow.vue';
 import DeviceDetailsSimulator from './modules/simulator.vue';
 import DeviceDetailsSubDevice from './modules/sub-device.vue';
 import DeviceDetailsThingModel from './modules/thing-model.vue';
 
 const route = useRoute();
 const router = useRouter();
+const { hasAccessByCodes } = useAccess();
 
 const id = parseId(route.params.id) as number;
 const loading = ref(true);
@@ -124,6 +127,17 @@ onMounted(async () => {
         <DeviceDetailsMessage
           v-if="activeTab === 'log' && device.id"
           :device-id="device.id"
+        />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        v-if="hasAccessByCodes(['iot:device:shadow-query'])"
+        key="shadow"
+        tab="设备影子"
+      >
+        <DeviceDetailsShadow
+          v-if="activeTab === 'shadow' && device.id"
+          :device-id="device.id"
+          :thing-model-list="thingModelList"
         />
       </Tabs.TabPane>
       <Tabs.TabPane key="simulator" tab="模拟设备">
