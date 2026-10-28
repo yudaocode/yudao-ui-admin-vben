@@ -1234,7 +1234,8 @@ onMounted(() => {
           </div>
         </div>
       </TabPane>
-      <TabPane tab="监听器" key="listener" :force-render="true">
+      <!-- antdv-next 的 TabPane 未声明 props，需要使用 camelCase 的 forceRender，才能预挂载以校验监听器配置 -->
+      <TabPane tab="监听器" key="listener" v-bind="{ forceRender: true }">
         <UserTaskListener
           ref="userTaskListenerRef"
           v-model="configForm"
