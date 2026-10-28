@@ -97,6 +97,10 @@ export default defineComponent({
 
     function renderItem() {
       const { data, schema } = unref(getProps);
+      // 弹窗关闭等场景会先清空 data，此时不渲染描述项，避免 show、render、slot 访问空数据
+      if (!data) {
+        return [];
+      }
       return unref(schema)
         .map((item) => {
           const { contentMinWidth, field, render, show, span } = item;
@@ -126,11 +130,7 @@ export default defineComponent({
 
           const width = contentMinWidth;
           return (
-            <DescriptionsItem
-              key={field}
-              label={renderLabel(item)}
-              span={span}
-            >
+            <DescriptionsItem key={field} label={renderLabel(item)} span={span}>
               {() => {
                 if (item.slot) {
                   return getSlot(slots, item.slot, data);
