@@ -16,6 +16,7 @@ import IoTProductThingModel from '#/views/iot/thingmodel/index.vue';
 
 import ProductDetailsHeader from './modules/header.vue';
 import ProductDetailsInfo from './modules/info.vue';
+import ProductDetailsScript from './modules/script.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -32,7 +33,11 @@ provide(IOT_PROVIDE_KEY.PRODUCT, product);
 async function getProductData(productId: number) {
   loading.value = true;
   try {
+    const deviceCount = product.value.deviceCount; // 保留已查询的设备数量
     product.value = await getProduct(productId);
+    if (deviceCount !== undefined) {
+      product.value.deviceCount = deviceCount;
+    }
   } catch {
     ElMessage.error('获取产品详情失败');
   } finally {
@@ -84,6 +89,14 @@ onMounted(async () => {
       </ElTabPane>
       <ElTabPane name="thingModel" label="物模型（功能定义）">
         <IoTProductThingModel v-if="activeTab === 'thingModel'" />
+      </ElTabPane>
+      <ElTabPane name="script" label="数据解析">
+        <!-- 不随页签切换销毁，避免丢失未保存的修改 -->
+        <ProductDetailsScript
+          v-if="product.id"
+          :product="product"
+          @refresh="() => getProductData(id)"
+        />
       </ElTabPane>
     </ElTabs>
   </Page>

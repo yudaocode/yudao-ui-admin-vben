@@ -6,7 +6,8 @@ import type { ThingModelApi } from '#/api/iot/thingmodel';
 
 import { computed, ref, watch } from 'vue';
 
-import { ContentWrap } from '@vben/common-ui';
+import { useAccess } from '@vben/access';
+import { confirm, ContentWrap } from '@vben/common-ui';
 import {
   DeviceStateEnum,
   IoTDataSpecsDataTypeEnum,
@@ -16,6 +17,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 
 import {
+  ElAlert,
   ElButton,
   ElCard,
   ElCol,
@@ -32,6 +34,17 @@ import {
 } from 'element-plus';
 
 import { sendDeviceMessage } from '#/api/iot/device/device';
+import {
+  bytesToBase64,
+  hexToBytes,
+  IotRawMessageMethodEnum,
+  isModbusProtocol,
+  isRawPushSupported,
+  MODBUS_PDU_MAX_BYTES,
+  MODBUS_PDU_MIN_BYTES,
+  MODBUS_WRITE_FUNCTION_CODES,
+  RAW_PAYLOAD_MAX_BYTES,
+} from '#/views/iot/utils/raw';
 
 import DataDefinition from '../../../../thingmodel/modules/components/data-definition.vue';
 import DeviceDetailsMessage from './message.vue';
@@ -42,8 +55,10 @@ const props = defineProps<{
   thingModelList: ThingModelApi.ThingModel[];
 }>();
 
+const { hasAccessByCodes } = useAccess();
+
 // 消息弹窗
-const activeTab = ref('upstream'); // 上行upstream、下行downstream
+const activeTab = ref('upstream'); // 上行upstream、下行downstream、透传下发raw
 const upstreamTab = ref(IotDeviceMessageMethodEnum.PROPERTY_POST.method); // 上行子标签
 const downstreamTab = ref(IotDeviceMessageMethodEnum.PROPERTY_SET.method); // 下行子标签
 const deviceMessageRef = ref(); // 设备消息组件引用
@@ -329,6 +344,93 @@ async function handleServiceInvoke(row: ThingModelApi.ThingModel) {
   } catch (error) {
     ElMessage.error('服务调用失败');
     console.error(error);
+  }
+}
+
+// ========== 透传下发 ==========
+const rawHex = ref(''); // 透传下发：载荷 HEX
+const rawSending = ref(false); // 透传下发中
+// 是否有透传下发权限：需要同时拥有消息发送、透传下发权限（hasAccessByCodes 为任一匹配，需分别判断）
+const canRawSend = computed(
+  () =>
+    hasAccessByCodes(['iot:device:message-send']) &&
+    hasAccessByCodes(['iot:device:message-raw-send']),
+);
+// 是否为 Modbus 产品：载荷为 Modbus PDU
+const isModbus = computed(() => isModbusProtocol(props.product.protocolType));
+// 产品协议是否支持透传下发（HTTP、CoAP 不支持）
+const rawPushSupported = computed(() =>
+  isRawPushSupported(props.product.protocolType),
+);
+// 载荷输入提示
+const rawPayloadHint = computed(() =>
+  isModbus.value
+    ? `载荷 HEX：Modbus PDU（功能码 + 数据，不含从站地址、CRC、MBAP），${MODBUS_PDU_MIN_BYTES}~${MODBUS_PDU_MAX_BYTES} 字节`
+    : `载荷 HEX：1~${RAW_PAYLOAD_MAX_BYTES} 字节`,
+);
+
+/** 字节转为两位大写 HEX */
+function toHexByte(value: number) {
+  return value.toString(16).toUpperCase().padStart(2, '0');
+}
+
+/** 透传下发：HEX 转为 Base64 后，以 thing.raw.push 真实发送给设备 */
+async function handleRawPush() {
+  // 1. 校验载荷
+  const bytes = hexToBytes(rawHex.value);
+  if (!bytes) {
+    ElMessage.warning('请输入合法的 HEX，例如 AA 01 00 DC');
+    return;
+  }
+  if (isModbus.value) {
+    if (
+      bytes.length < MODBUS_PDU_MIN_BYTES ||
+      bytes.length > MODBUS_PDU_MAX_BYTES
+    ) {
+      ElMessage.warning(
+        `Modbus PDU 长度需为 ${MODBUS_PDU_MIN_BYTES}~${MODBUS_PDU_MAX_BYTES} 字节`,
+      );
+      return;
+    }
+  } else if (bytes.length > RAW_PAYLOAD_MAX_BYTES) {
+    ElMessage.warning(`载荷不能超过 ${RAW_PAYLOAD_MAX_BYTES} 字节`);
+    return;
+  }
+
+  // 2.1 发送确认
+  try {
+    await confirm(`将真实发送给设备（共 ${bytes.length} 字节），确认发送？`);
+  } catch {
+    return;
+  }
+  // 2.2 Modbus 写操作二次确认：展示功能码和地址
+  const functionCode = bytes[0]!;
+  if (isModbus.value && MODBUS_WRITE_FUNCTION_CODES.has(functionCode)) {
+    const address = (bytes[1]! << 8) | bytes[2]!; // 地址：第 1~2 字节，大端
+    const addressHex = `0x${toHexByte(bytes[1]!)}${toHexByte(bytes[2]!)}`;
+    try {
+      await confirm(
+        `这是 Modbus 写操作：功能码 0x${toHexByte(functionCode)}，地址 ${address}（${addressHex}），会修改设备数据，确认继续？`,
+        '写操作二次确认',
+      );
+    } catch {
+      return;
+    }
+  }
+
+  // 3. 发送
+  rawSending.value = true;
+  try {
+    await sendDeviceMessage({
+      deviceId: props.device.id!,
+      method: IotRawMessageMethodEnum.RAW_PUSH.method,
+      params: { payload: bytesToBase64(bytes) },
+    });
+    ElMessage.success('透传下发成功');
+    // 延迟刷新设备消息列表
+    deviceMessageRef.value?.refresh(deviceMessageRefreshDelay);
+  } finally {
+    rawSending.value = false;
   }
 }
 
@@ -683,6 +785,45 @@ watch([activeTab, upstreamTab, downstreamTab], () => {
                     </ContentWrap>
                   </ElTabPane>
                 </ElTabs>
+              </ElTabPane>
+
+              <!-- 透传下发 -->
+              <ElTabPane v-if="canRawSend" name="raw" label="透传下发">
+                <ContentWrap>
+                  <ElAlert
+                    v-if="!rawPushSupported"
+                    class="!mb-4"
+                    :closable="false"
+                    show-icon
+                    title="HTTP / CoAP 产品不支持透传下发"
+                    type="warning"
+                  />
+                  <div class="mb-2 text-sm text-gray-600">
+                    {{ rawPayloadHint }}
+                  </div>
+                  <ElInput
+                    v-model="rawHex"
+                    :disabled="!rawPushSupported"
+                    :input-style="{ fontFamily: 'monospace' }"
+                    :rows="4"
+                    :spellcheck="false"
+                    placeholder="例如 AA 01 00 DC"
+                    type="textarea"
+                  />
+                  <div class="mt-4 flex items-center justify-between gap-2">
+                    <span class="text-sm text-gray-600">
+                      将真实发送给设备；不提供透传上报的模拟，验证脚本请用产品「数据解析」的调试
+                    </span>
+                    <ElButton
+                      :disabled="!rawPushSupported"
+                      :loading="rawSending"
+                      type="primary"
+                      @click="handleRawPush"
+                    >
+                      发送
+                    </ElButton>
+                  </div>
+                </ContentWrap>
               </ElTabPane>
             </ElTabs>
           </div>

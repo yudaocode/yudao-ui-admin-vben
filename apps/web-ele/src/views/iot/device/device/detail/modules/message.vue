@@ -15,10 +15,21 @@ import { DICT_TYPE, IotDeviceMessageMethodEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 import { formatDateTime } from '@vben/utils';
 
-import { ElButton, ElOption, ElSelect, ElSwitch, ElTag } from 'element-plus';
+import { useClipboard } from '@vueuse/core';
+import {
+  ElButton,
+  ElMessage,
+  ElOption,
+  ElRadioButton,
+  ElRadioGroup,
+  ElSelect,
+  ElSwitch,
+  ElTag,
+} from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDeviceMessagePage } from '#/api/iot/device/device';
+import { base64ToHex, IotRawMessageMethodEnum } from '#/views/iot/utils/raw';
 
 const props = defineProps<{
   deviceId: number;
@@ -27,19 +38,49 @@ const props = defineProps<{
 const queryParams = reactive({
   method: undefined,
   upstream: undefined,
+  rawFilter: 'all' as 'all' | 'withoutRaw' | 'withRaw', // 原始帧筛选：全部、无原始帧、有原始帧
 }); // 查询参数
 
 const autoRefresh = ref(false); // 自动刷新开关
 let autoRefreshTimer: any = null; // 自动刷新定时器
 let refreshTimer: ReturnType<typeof setTimeout> | undefined; // 延迟刷新定时器
 
+const { copy } = useClipboard({ legacy: true });
+
 /** 消息方法选项 */
 const methodOptions = computed(() => {
-  return Object.values(IotDeviceMessageMethodEnum).map((item) => ({
+  return [
+    ...Object.values(IotDeviceMessageMethodEnum),
+    ...Object.values(IotRawMessageMethodEnum),
+  ].map((item) => ({
     label: item.name,
     value: item.method,
   }));
 });
+
+/** 获取消息方法名称 */
+function getMethodLabel(method?: string) {
+  return methodOptions.value.find((item) => item.value === method)?.label;
+}
+
+/** 原始帧筛选转为 raw 参数：有原始帧 true、无原始帧 false、全部不传 */
+function getRawFilter() {
+  if (queryParams.rawFilter === 'all') {
+    return undefined;
+  }
+  return queryParams.rawFilter === 'withRaw';
+}
+
+/** 获取原始帧（Base64）的 HEX；无法解析时原样展示 */
+function getRawHex(row: Record<string, any>) {
+  return base64ToHex(row.raw) ?? row.raw;
+}
+
+/** 复制原始帧的 HEX */
+async function handleCopyRaw(row: Record<string, any>) {
+  await copy(getRawHex(row));
+  ElMessage.success('复制成功');
+}
 
 /** Grid 列定义 */
 function useGridColumns(): VxeTableGridOptions<Record<string, any>>['columns'] {
@@ -84,6 +125,13 @@ function useGridColumns(): VxeTableGridOptions<Record<string, any>>['columns'] {
       showOverflow: 'tooltip',
       slots: { default: 'params' },
     },
+    {
+      field: 'raw',
+      title: '原始帧（HEX）',
+      width: 260,
+      showOverflow: 'tooltip',
+      slots: { default: 'raw' },
+    },
   ];
 }
 
@@ -104,6 +152,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
             deviceId: props.deviceId,
             method: queryParams.method,
             upstream: queryParams.upstream,
+            raw: getRawFilter(),
           });
         },
       },
@@ -212,6 +261,11 @@ defineExpose({
         <ElOption label="上行" value="true" />
         <ElOption label="下行" value="false" />
       </ElSelect>
+      <ElRadioGroup v-model="queryParams.rawFilter" @change="handleQuery">
+        <ElRadioButton value="all">全部</ElRadioButton>
+        <ElRadioButton value="withRaw">有原始帧</ElRadioButton>
+        <ElRadioButton value="withoutRaw">无原始帧</ElRadioButton>
+      </ElRadioGroup>
       <div class="flex gap-1">
         <ElButton type="primary" @click="handleQuery">
           <IconifyIcon icon="ep:search" class="mr-[5px]" /> 搜索
@@ -235,13 +289,33 @@ defineExpose({
         </ElTag>
       </template>
       <template #method="{ row }">
-        {{ methodOptions.find((item) => item.value === row.method)?.label }}
+        {{ getMethodLabel(row.method) }}
       </template>
       <template #params="{ row }">
         <span v-if="row.reply">
           {{ `{"code":${row.code},"msg":"${row.msg}","data":${row.data}\}` }}
         </span>
         <span v-else>{{ row.params }}</span>
+      </template>
+      <template #raw="{ row }">
+        <!-- 与设备实际收发的原始字节；没有原始帧时不展示 -->
+        <div v-if="row.raw" class="flex w-full items-center gap-1">
+          <span
+            :title="getRawHex(row)"
+            class="min-w-0 flex-1 truncate font-mono"
+          >
+            {{ getRawHex(row) }}
+          </span>
+          <ElButton
+            class="shrink-0"
+            link
+            size="small"
+            type="primary"
+            @click="handleCopyRaw(row)"
+          >
+            <IconifyIcon icon="lucide:copy" />
+          </ElButton>
+        </div>
       </template>
     </Grid>
   </Page>

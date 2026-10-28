@@ -22,7 +22,55 @@ export namespace IotProductApi {
     serializeType?: string; // 序列化类型
     registerEnabled?: boolean; // 是否开启动态注册
     deviceCount?: number; // 设备数量
+    scriptContent?: null | string; // 数据解析脚本
+    scriptEnabled?: boolean | null; // 是否启用数据解析脚本
     createTime?: Date; // 创建时间
+  }
+
+  /** 产品数据解析脚本更新 Request VO（只提交需要修改的字段） */
+  export interface ProductScriptUpdateReq {
+    id: number; // 产品编号
+    scriptContent?: string; // 脚本内容
+    scriptEnabled?: boolean; // 是否启用
+  }
+
+  /** 产品数据解析脚本调试 Request VO */
+  export interface ProductScriptDebugReq {
+    id: number; // 产品编号
+    scriptContent: string; // 当前编辑的脚本内容
+    direction: 'decode' | 'encode'; // 调试方向：上行解码、下行编码
+    inputHex?: string; // 上行解码：输入 HEX
+    message?: {
+      method: string;
+      params?: any;
+      requestId?: string;
+    }; // 下行编码：输入消息
+  }
+
+  /** 产品数据解析脚本调试 Response VO */
+  export interface ProductScriptDebugResp {
+    success: boolean; // 是否成功
+    durationMs: number; // 执行耗时（毫秒）
+    message?: null | {
+      code?: number;
+      data?: any;
+      method: string;
+      msg?: string;
+      params?: any;
+      requestId?: string;
+    }; // 解码得到的消息；为空表示没有业务消息
+    standard?: boolean; // 编码：是否使用标准编码
+    outputHex?: string; // 编码得到的 HEX
+    error?: {
+      line?: number;
+      message: string;
+      type:
+        | 'ENCODE_EMPTY'
+        | 'ERROR'
+        | 'OUTPUT_INVALID'
+        | 'REJECTED'
+        | 'TIMEOUT';
+    }; // 错误信息
   }
 }
 
@@ -82,6 +130,21 @@ export function exportProduct(params: any) {
 export function updateProductStatus(id: number, status: number) {
   return requestClient.put(
     `/iot/product/update-status?id=${id}&status=${status}`,
+  );
+}
+
+/** 更新产品数据解析脚本（保存内容或启停） */
+export function updateProductScript(
+  data: IotProductApi.ProductScriptUpdateReq,
+) {
+  return requestClient.put<boolean>('/iot/product/update-script', data);
+}
+
+/** 调试产品数据解析脚本（执行当前编辑内容，不保存、不下发） */
+export function debugProductScript(data: IotProductApi.ProductScriptDebugReq) {
+  return requestClient.post<IotProductApi.ProductScriptDebugResp>(
+    '/iot/product/debug-script',
+    data,
   );
 }
 
