@@ -239,7 +239,7 @@ export function isSameDay(a: dayjs.ConfigType, b: dayjs.ConfigType): boolean {
   return (
     aa.year() === bb.year() &&
     aa.month() === bb.month() &&
-    aa.day() === bb.day()
+    aa.date() === bb.date()
   );
 }
 
