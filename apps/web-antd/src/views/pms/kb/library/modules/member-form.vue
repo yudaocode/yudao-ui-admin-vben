@@ -167,9 +167,12 @@ onMounted(async () => {
 <template>
   <Modal title="知识库成员" class="w-[680px]">
     <div>
-      <Alert class="!mb-4" :closable="false" type="info">
-        创建人固定保留；管理员可维护知识库信息和成员，普通成员可新增内容，具体操作受内容协作权限控制。
-      </Alert>
+      <Alert
+        class="!mb-4"
+        :closable="false"
+        message="创建人固定保留；管理员可维护知识库信息和成员，普通成员可新增内容，具体操作受内容协作权限控制。"
+        type="info"
+      />
       <!-- 成员列表 -->
       <Grid>
         <template #identityType="{ row }">

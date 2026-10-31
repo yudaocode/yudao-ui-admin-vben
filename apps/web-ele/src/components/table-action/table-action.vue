@@ -8,6 +8,7 @@ import type { ActionItem, PopConfirm } from './typing';
 import { computed, toRaw } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isBoolean, isFunction } from '@vben/utils';
@@ -129,8 +130,26 @@ function getButtonProps(action: ActionItem) {
   return res;
 }
 
-function handleMenuClick(command: any) {
+async function handleMenuClick(command: any) {
   const action = getDropdownList.value[command];
+  // 下拉菜单点击后会收起，其中的 ElPopconfirm 会失去定位元素，因此改用确认框
+  if (action.popConfirm) {
+    if (action.popConfirm.disabled) {
+      return;
+    }
+    try {
+      await confirm({
+        content: action.popConfirm.title,
+        confirmText: action.popConfirm.okText,
+        cancelText: action.popConfirm.cancelText,
+      });
+    } catch {
+      action.popConfirm.cancel?.();
+      return;
+    }
+    action.popConfirm.confirm?.();
+    return;
+  }
   if (action.onClick && isFunction(action.onClick)) {
     action.onClick();
   }
@@ -229,19 +248,12 @@ function handleMenuClick(command: any) {
             :disabled="action.disabled"
           >
             <template v-if="action.popConfirm">
-              <ElPopconfirm v-bind="getPopConfirmProps(action.popConfirm)">
-                <template v-if="action.popConfirm.icon" #icon>
-                  <IconifyIcon :icon="action.popConfirm.icon" />
-                </template>
-                <template #reference>
-                  <div>
-                    <IconifyIcon v-if="action.icon" :icon="action.icon" />
-                    <span :class="action.icon ? 'ml-1' : ''">
-                      {{ action.text }}
-                    </span>
-                  </div>
-                </template>
-              </ElPopconfirm>
+              <div>
+                <IconifyIcon v-if="action.icon" :icon="action.icon" />
+                <span :class="action.icon ? 'ml-1' : ''">
+                  {{ action.text }}
+                </span>
+              </div>
             </template>
             <template v-else>
               <div>

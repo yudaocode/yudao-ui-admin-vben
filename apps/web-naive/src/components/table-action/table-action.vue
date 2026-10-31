@@ -9,6 +9,7 @@ import type { ActionItem, PopConfirm } from './typing';
 import { computed, unref, watch } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { isBoolean, isFunction } from '@vben/utils';
 
@@ -65,7 +66,10 @@ const getDropdownList = computed((): DropdownMixedOption[] => {
     .filter((action: ActionItem) => isIfShow(action))
     .map((action: ActionItem, index: number) => ({
       label: action.label || '',
-      onClick: () => action.onClick?.(),
+      onClick: () =>
+        action.popConfirm
+          ? handleDropdownConfirm(action.popConfirm)
+          : action.onClick?.(),
       key: getActionKey(action, index),
       disabled: action.disabled,
       divider: action.divider || false,
@@ -132,6 +136,24 @@ function handleMenuClick(key: number) {
   if (action && action.onClick && isFunction(action.onClick)) {
     action.onClick();
   }
+}
+
+/** 处理下拉菜单中需要二次确认的操作 */
+async function handleDropdownConfirm(popConfirm: PopConfirm) {
+  if (popConfirm.disabled) {
+    return;
+  }
+  try {
+    await confirm({
+      content: popConfirm.title,
+      confirmText: popConfirm.okText,
+      cancelText: popConfirm.cancelText,
+    });
+  } catch {
+    popConfirm.cancel?.();
+    return;
+  }
+  popConfirm.confirm();
 }
 
 /** 生成稳定的 key */

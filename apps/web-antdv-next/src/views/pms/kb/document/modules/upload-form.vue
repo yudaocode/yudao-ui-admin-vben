@@ -62,7 +62,7 @@ const [Form, formApi] = useVbenForm({
     componentProps: {
       class: 'w-full',
     },
-    labelWidth: 'auto',
+    labelWidth: 100,
   },
   wrapperClass: 'grid-cols-1',
   layout: 'horizontal',
@@ -95,7 +95,7 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.unlock();
     }
   },
-  onOpenChange(isOpen: boolean) {
+  async onOpenChange(isOpen: boolean) {
     if (!isOpen) {
       return;
     }
@@ -105,7 +105,7 @@ const [Modal, modalApi] = useVbenModal({
       parentId: number;
     };
     // 重置表单并将文件归入当前目录
-    formApi.setValues({
+    await formApi.setValues({
       ...getDefaultFormData(),
       libraryId: data.libraryId,
       folderId: data.folderId,

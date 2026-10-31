@@ -30,9 +30,11 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useGridColumns(): VxeTableGridOptions<PmsKnowledgeLibraryApi.KnowledgeLibrary>['columns'] {
   return [
     {
+      showOverflow: false,
       field: 'name',
       title: '知识库',
       minWidth: 260,
+      align: 'left',
       slots: { default: 'name' },
     },
     {

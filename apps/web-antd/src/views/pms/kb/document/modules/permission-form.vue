@@ -256,9 +256,12 @@ onMounted(async () => {
 <template>
   <Modal title="内容协作权限">
     <div>
-      <Alert :closable="false" class="!mb-4" type="info">
-        子文件夹和子文档默认继承同一套权限；知识库创建人和管理员始终拥有管理权限。
-      </Alert>
+      <Alert
+        :closable="false"
+        class="!mb-4"
+        message="子文件夹和子文档默认继承同一套权限；知识库创建人和管理员始终拥有管理权限。"
+        type="info"
+      />
 
       <Form />
 

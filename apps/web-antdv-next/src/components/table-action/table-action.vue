@@ -7,6 +7,7 @@ import type { ActionItem, PopConfirm } from './typing';
 import { computed, unref } from 'vue';
 
 import { useAccess } from '@vben/access';
+import { confirm } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 import { $t } from '@vben/locales';
 import { isBoolean, isFunction } from '@vben/utils';
@@ -119,8 +120,26 @@ function getTooltipProps(tooltip: any | string) {
 }
 
 /** 处理菜单点击 */
-function handleMenuClick(e: any) {
+async function handleMenuClick(e: any) {
   const action = getDropdownList.value[e.key];
+  // 下拉菜单点击后会收起，其中的 Popconfirm 会失去定位元素，因此改用确认框
+  if (action?.popConfirm) {
+    if (action.popConfirm.disabled) {
+      return;
+    }
+    try {
+      await confirm({
+        content: action.popConfirm.title,
+        confirmText: action.popConfirm.okText,
+        cancelText: action.popConfirm.cancelText,
+      });
+    } catch {
+      action.popConfirm.cancel?.();
+      return;
+    }
+    action.popConfirm.confirm();
+    return;
+  }
   if (action && action.onClick && isFunction(action.onClick)) {
     action.onClick();
   }
@@ -189,28 +208,23 @@ function handleButtonClick(action: ActionItem) {
         <Menu>
           <MenuItem
             v-for="(action, index) in getDropdownList"
-            :key="index"
+            :key="String(index)"
             :disabled="action.disabled"
-            @click="!action.popConfirm && handleMenuClick({ key: index })"
+            @click="handleMenuClick({ key: index })"
           >
             <template v-if="action.popConfirm">
-              <Popconfirm v-bind="getPopConfirmProps(action.popConfirm)">
-                <template v-if="action.popConfirm.icon" #icon>
-                  <IconifyIcon :icon="action.popConfirm.icon" />
-                </template>
-                <div
-                  :class="
-                    action.disabled === true
-                      ? 'cursor-not-allowed text-gray-300'
-                      : ''
-                  "
-                >
-                  <IconifyIcon v-if="action.icon" :icon="action.icon" />
-                  <span :class="action.icon ? 'ml-1' : ''">
-                    {{ action.label }}
-                  </span>
-                </div>
-              </Popconfirm>
+              <div
+                :class="
+                  action.disabled === true
+                    ? 'cursor-not-allowed text-gray-300'
+                    : ''
+                "
+              >
+                <IconifyIcon v-if="action.icon" :icon="action.icon" />
+                <span :class="action.icon ? 'ml-1' : ''">
+                  {{ action.label }}
+                </span>
+              </div>
             </template>
             <template v-else>
               <div

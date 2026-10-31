@@ -243,7 +243,7 @@ onMounted(() => {
         url="https://doc.iocoder.cn/fms/config/account-set/"
       />
     </template>
-    <Card :loading="loading" class="h-full">
+    <Card v-loading="loading" class="h-full">
       <template v-if="accountSet">
         <Form class="max-w-[960px]">
           <template #subjectCodeRules="slotProps">
