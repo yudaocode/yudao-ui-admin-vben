@@ -1,6 +1,7 @@
 @reference "@vben/tailwind-config/theme";
 
-:root .vxe-grid {
+:root .vxe-grid,
+:root .vxe-table--render-default {
   --vxe-ui-font-color: hsl(var(--foreground));
   --vxe-ui-font-primary-color: hsl(var(--primary));
 
@@ -33,6 +34,9 @@
 
   /* table */
   --vxe-ui-table-header-background-color: hsl(var(--accent));
+  --vxe-ui-table-header-font-color: hsl(var(--foreground));
+  --vxe-ui-table-footer-background-color: hsl(var(--background));
+  --vxe-ui-table-footer-font-color: hsl(var(--foreground));
   --vxe-ui-table-border-color: hsl(var(--border));
   --vxe-ui-table-row-hover-background-color: hsl(var(--accent-hover));
   --vxe-ui-table-row-striped-background-color: hsl(var(--accent) / 60%);
@@ -51,9 +55,11 @@
   --vxe-ui-font-primary-lighten-color: hsl(var(--primary) / 60%);
   --vxe-ui-font-primary-darken-color: hsl(var(--primary));
 
-  height: auto !important;
-
   /* --vxe-ui-table-fixed-scrolling-box-shadow-color: rgb(0 0 0 / 80%); */
+}
+
+:root .vxe-grid {
+  height: auto !important;
 }
 
 .vxe-pager {
