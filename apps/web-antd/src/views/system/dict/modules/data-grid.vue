@@ -5,6 +5,7 @@ import type { SystemDictDataApi } from '#/api/system/dict/data';
 import { ref, watch } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { refreshDicts } from '@vben/hooks';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message, Tag } from 'ant-design-vue';
@@ -38,6 +39,14 @@ function handleRefresh() {
   gridApi.query();
 }
 
+/** 字典数据变更后刷新表格和字典缓存 */
+function handleChanged() {
+  handleRefresh();
+  // 后端已保存成功：同一上下文刷新，加载期间保留当前缓存，供重建的表单 schema 同步取到选项；
+  // 刷新失败只记录日志并保留缓存，不影响本次操作结果
+  void refreshDicts({ preserveCache: true });
+}
+
 /** 导出表格 */
 async function handleExport() {
   const data = await exportDictData({
@@ -66,7 +75,7 @@ async function handleDelete(row: SystemDictDataApi.DictData) {
   try {
     await deleteDictData(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.label]));
-    handleRefresh();
+    handleChanged();
   } finally {
     hideLoading();
   }
@@ -83,7 +92,7 @@ async function handleDeleteBatch() {
     await deleteDictDataList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    handleRefresh();
+    handleChanged();
   } finally {
     hideLoading();
   }
@@ -146,7 +155,7 @@ watch(
 
 <template>
   <div class="flex h-full flex-col">
-    <DataFormModal @success="handleRefresh" />
+    <DataFormModal @success="handleChanged" />
 
     <Grid table-title="字典数据列表">
       <template #toolbar-tools>

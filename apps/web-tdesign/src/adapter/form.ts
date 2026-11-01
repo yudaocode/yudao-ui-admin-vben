@@ -20,6 +20,8 @@ async function initSetupVbenForm() {
       modelPropNameMap: {
         Checkbox: 'checked',
         FileUpload: 'modelValue',
+        // IconPicker uses Vue's standard modelValue/update:modelValue pair.
+        IconPicker: 'modelValue',
         ImageUpload: 'modelValue',
         Radio: 'checked',
         Upload: 'files',

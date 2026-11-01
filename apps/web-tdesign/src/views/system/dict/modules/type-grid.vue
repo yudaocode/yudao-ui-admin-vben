@@ -5,6 +5,7 @@ import type { SystemDictTypeApi } from '#/api/system/dict/type';
 import { ref } from 'vue';
 
 import { confirm, useVbenModal } from '@vben/common-ui';
+import { refreshDicts } from '@vben/hooks';
 import { downloadFileFromBlobPart, isEmpty } from '@vben/utils';
 
 import { message } from '#/adapter/tdesign';
@@ -32,6 +33,14 @@ function handleRefresh() {
   gridApi.query();
 }
 
+/** 字典类型变更后刷新表格和字典缓存 */
+function handleChanged() {
+  handleRefresh();
+  // 后端已保存成功：同一上下文刷新，加载期间保留当前缓存，供重建的表单 schema 同步取到选项；
+  // 刷新失败只记录日志并保留缓存，不影响本次操作结果
+  void refreshDicts({ preserveCache: true });
+}
+
 /** 导出表格 */
 async function handleExport() {
   const data = await exportDictType(await gridApi.formApi.getValues());
@@ -57,7 +66,7 @@ async function handleDelete(row: SystemDictTypeApi.DictType) {
   try {
     await deleteDictType(row.id!);
     message.success($t('ui.actionMessage.deleteSuccess', [row.name]));
-    handleRefresh();
+    handleChanged();
   } finally {
     message.close(hideLoading);
   }
@@ -74,7 +83,7 @@ async function handleDeleteBatch() {
     await deleteDictTypeList(checkedIds.value);
     checkedIds.value = [];
     message.success($t('ui.actionMessage.deleteSuccess'));
-    handleRefresh();
+    handleChanged();
   } finally {
     message.close(hideLoading);
   }
@@ -130,7 +139,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 
 <template>
   <div class="h-full">
-    <TypeFormModal @success="handleRefresh" />
+    <TypeFormModal @success="handleChanged" />
     <Grid table-title="字典类型列表">
       <template #toolbar-tools>
         <TableAction

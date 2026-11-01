@@ -29,5 +29,8 @@
     "vue": "catalog:",
     "vue-router": "catalog:",
     "watermark-js-plus": "catalog:"
+  },
+  "devDependencies": {
+    "pinia": "catalog:"
   }
 }

@@ -4,7 +4,7 @@ import Vue from 'unplugin-vue/rolldown';
 export default defineConfig({
   clean: true,
   deps: {
-    skipNodeModulesBundle: true,
+    neverBundle: true,
   },
   dts: {
     vue: true,

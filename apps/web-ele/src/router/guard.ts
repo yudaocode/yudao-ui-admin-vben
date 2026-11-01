@@ -1,9 +1,10 @@
 import type { Router } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
+import { preloadDicts, setupDictHandler } from '@vben/hooks';
 import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
-import { useAccessStore, useDictStore, useUserStore } from '@vben/stores';
+import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
 import { ElMessage } from 'element-plus';
@@ -53,7 +54,6 @@ function setupAccessGuard(router: Router) {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
-    const dictStore = useDictStore();
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
@@ -95,8 +95,8 @@ function setupAccessGuard(router: Router) {
       return true;
     }
 
-    // 加载字典数据（不阻塞加载）
-    dictStore.setDictCacheByApi(getSimpleDictDataList);
+    // 加载字典数据：与用户、菜单加载并行；无缓存时在放行路由前等待，保证页面 schema 同步取到 options
+    const dictLoading = preloadDicts();
 
     // 生成路由表
     // 当前登录用户拥有的角色标识列表
@@ -129,6 +129,7 @@ function setupAccessGuard(router: Router) {
     });
 
     // 保存菜单信息和路由信息
+    await dictLoading;
     accessStore.setAccessMenus(accessibleMenus);
     accessStore.setAccessRoutes(accessibleRoutes);
     accessStore.setIsAccessChecked(true);
@@ -155,6 +156,8 @@ function setupAccessGuard(router: Router) {
  * @param router
  */
 function createRouterGuard(router: Router) {
+  /** 字典：注入芋道全量字典接口 */
+  setupDictHandler(getSimpleDictDataList);
   /** 通用 */
   setupCommonGuard(router);
   /** 权限访问 */

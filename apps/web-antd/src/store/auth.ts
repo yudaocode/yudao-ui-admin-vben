@@ -6,7 +6,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
-import { isTenantEnable } from '@vben/hooks';
+import { isTenantEnable, refreshDicts } from '@vben/hooks';
 import { preferences } from '@vben/preferences';
 import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { isPositiveId, parseId } from '@vben/utils';
@@ -80,6 +80,8 @@ export const useAuthStore = defineStore('auth', () => {
       if (accessToken) {
         accessStore.setAccessToken(accessToken);
         accessStore.setRefreshToken(refreshToken);
+        // 新登录身份：废弃旧字典缓存与进行中的请求，重新加载（失败不影响登录）
+        void refreshDicts();
 
         // 获取用户信息并存储到 userStore、accessStore 中
         // TODO @芋艿：清理掉 accessCodes 相关的逻辑

@@ -8,7 +8,12 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useAccess } from '@vben/access';
 import { AuthenticationLoginExpiredModal, useVbenModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
-import { isTenantEnable, useTabs, useWatermark } from '@vben/hooks';
+import {
+  isTenantEnable,
+  refreshDicts,
+  useTabs,
+  useWatermark,
+} from '@vben/hooks';
 import {
   AntdProfileOutlined,
   BookOpenText,
@@ -185,6 +190,8 @@ async function handleTenantChange(tenant: SystemTenantApi.Tenant) {
   }
   // 设置访问租户 ID
   accessStore.setVisitTenantId(tenant.id as number);
+  // 租户上下文变化：先刷新字典，保证刷新后的页面初始化取到新数据
+  await refreshDicts();
   // 关闭其他标签页，只保留当前页
   await closeOtherTabs();
   // 刷新当前页面

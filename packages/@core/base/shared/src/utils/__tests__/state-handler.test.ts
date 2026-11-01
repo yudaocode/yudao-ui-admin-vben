@@ -60,3 +60,118 @@ describe('stateHandler', () => {
     expect(handler.isConditionTrue()).toBe(true);
   });
 });
+
+// StateHandler is a public util used as a "gate until ready" primitive:
+// form-api.getForm() and the vxe-table api both `await waitForCondition()`
+// while the component is still mounting. More than one caller can wait at the
+// same time (e.g. two form methods awaited before <VbenForm /> mounts), so a
+// single flip of the condition must settle every pending waiter — not just the
+// one that registered last.
+describe('stateHandler concurrent waiters', () => {
+  it('resolves every waiter registered before the condition turns true', async () => {
+    const handler = new StateHandler();
+
+    const settled: Record<string, string> = {
+      first: 'pending',
+      second: 'pending',
+      third: 'pending',
+    };
+
+    handler.waitForCondition().then(
+      () => (settled.first = 'resolved'),
+      () => (settled.first = 'rejected'),
+    );
+    handler.waitForCondition().then(
+      () => (settled.second = 'resolved'),
+      () => (settled.second = 'rejected'),
+    );
+    handler.waitForCondition().then(
+      () => (settled.third = 'resolved'),
+      () => (settled.third = 'rejected'),
+    );
+
+    handler.setConditionTrue();
+
+    // Flush the resolution microtasks for every pending waiter.
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(settled).toEqual({
+      first: 'resolved',
+      second: 'resolved',
+      third: 'resolved',
+    });
+  });
+
+  it('rejects every waiter registered before the condition turns false', async () => {
+    const handler = new StateHandler();
+
+    const settled: Record<string, string> = {
+      first: 'pending',
+      second: 'pending',
+    };
+
+    handler.waitForCondition().then(
+      () => (settled.first = 'resolved'),
+      () => (settled.first = 'rejected'),
+    );
+    handler.waitForCondition().then(
+      () => (settled.second = 'resolved'),
+      () => (settled.second = 'rejected'),
+    );
+
+    handler.setConditionFalse();
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(settled).toEqual({ first: 'rejected', second: 'rejected' });
+  });
+});
+
+describe('stateHandler reset while callers wait', () => {
+  it('settles a pending waiter instead of dropping it', async () => {
+    const handler = new StateHandler();
+
+    const outcome = handler.waitForCondition().then(
+      () => 'resolved',
+      (error: Error) => error.message,
+    );
+    handler.reset();
+
+    expect(
+      await Promise.race([
+        outcome,
+        new Promise((resolve) => setTimeout(() => resolve('pending'), 50)),
+      ]),
+    ).toBe('Condition was reset');
+  });
+
+  it('settles every waiter registered before the reset', async () => {
+    const handler = new StateHandler();
+
+    const settled: Record<string, string> = {
+      first: 'pending',
+      second: 'pending',
+    };
+
+    handler.waitForCondition().then(
+      () => (settled.first = 'resolved'),
+      () => (settled.first = 'rejected'),
+    );
+    handler.waitForCondition().then(
+      () => (settled.second = 'resolved'),
+      () => (settled.second = 'rejected'),
+    );
+
+    handler.reset();
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(settled).toEqual({ first: 'rejected', second: 'rejected' });
+  });
+});

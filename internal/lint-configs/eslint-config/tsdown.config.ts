@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown';
 export default defineConfig({
   clean: true,
   deps: {
-    skipNodeModulesBundle: true,
+    neverBundle: true,
   },
   dts: {
     resolver: 'tsc',
