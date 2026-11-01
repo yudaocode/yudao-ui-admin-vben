@@ -244,15 +244,14 @@ function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
       <template #description> 今日晴，20℃ - 32℃！ </template>
     </WorkbenchHeader>
 
-    <div class="mt-5 flex flex-col lg:flex-row">
-      <div class="mr-4 w-full lg:w-3/5">
+    <div class="mt-5 grid gap-5 lg:grid-cols-5">
+      <div class="min-w-0 lg:col-span-3">
         <WorkbenchProject :items="projectItems" title="项目" @click="navTo" />
         <WorkbenchTrends :items="trendItems" class="mt-5" title="最新动态" />
       </div>
-      <div class="w-full lg:w-2/5">
+      <div class="min-w-0 lg:col-span-2">
         <WorkbenchQuickNav
           :items="quickNavItems"
-          class="mt-5 lg:mt-0"
           title="快捷导航"
           @click="navTo"
         />

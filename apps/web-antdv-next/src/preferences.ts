@@ -10,6 +10,7 @@ export const overridesPreferences = defineOverridesPreferences({
   app: {
     /** 后端路由模式 */
     accessMode: 'backend',
+    defaultHomePath: '/dashboard/workspace',
     name: import.meta.env.VITE_APP_TITLE,
     enableRefreshToken: true,
   },

@@ -29,6 +29,7 @@ const userStore = useUserStore();
 // url 也可以是内部路由，在 navTo 方法中识别处理，进行内部跳转
 // 例如：url: /dashboard/workspace
 const projectItems: WorkbenchProjectItem[] = [
+  // 后端
   {
     color: '#6DB33F',
     content: 'github.com/YunaiV/ruoyi-vue-pro',
@@ -39,24 +40,6 @@ const projectItems: WorkbenchProjectItem[] = [
     url: 'https://github.com/YunaiV/ruoyi-vue-pro',
   },
   {
-    color: '#409EFF',
-    content: 'github.com/yudaocode/yudao-ui-admin-vue3',
-    date: '2025-02-03',
-    group: 'Vue3 + element-plus 管理后台',
-    icon: 'ep:element-plus',
-    title: 'yudao-ui-admin-vue3',
-    url: 'https://github.com/yudaocode/yudao-ui-admin-vue3',
-  },
-  {
-    color: '#ff4d4f',
-    content: 'github.com/yudaocode/yudao-mall-uniapp',
-    date: '2025-03-04',
-    group: 'Vue3 + uniapp 商城手机端',
-    icon: 'icon-park-outline:mall-bag',
-    title: 'yudao-mall-uniapp',
-    url: 'https://github.com/yudaocode/yudao-mall-uniapp',
-  },
-  {
     color: '#1890ff',
     content: 'github.com/YunaiV/yudao-cloud',
     date: '2025-04-05',
@@ -64,6 +47,16 @@ const projectItems: WorkbenchProjectItem[] = [
     icon: 'material-symbols:cloud-outline',
     title: 'yudao-cloud',
     url: 'https://github.com/YunaiV/yudao-cloud',
+  },
+  // PC 管理端
+  {
+    color: '#409EFF',
+    content: 'github.com/yudaocode/yudao-ui-admin-vue3',
+    date: '2025-02-03',
+    group: 'Vue3 + element-plus 管理后台',
+    icon: 'ep:element-plus',
+    title: 'yudao-ui-admin-vue3',
+    url: 'https://github.com/yudaocode/yudao-ui-admin-vue3',
   },
   {
     color: '#e18525',
@@ -74,6 +67,7 @@ const projectItems: WorkbenchProjectItem[] = [
     title: 'yudao-ui-admin-vben',
     url: 'https://github.com/yudaocode/yudao-ui-admin-vben',
   },
+  // 手机端
   {
     color: '#2979ff',
     content: 'github.com/yudaocode/yudao-ui-admin-uniapp',
@@ -82,6 +76,15 @@ const projectItems: WorkbenchProjectItem[] = [
     icon: 'ant-design:mobile',
     title: 'yudao-ui-admin-uniapp',
     url: 'https://github.com/yudaocode/yudao-ui-admin-uniapp',
+  },
+  {
+    color: '#ff4d4f',
+    content: 'github.com/yudaocode/yudao-mall-uniapp',
+    date: '2025-03-04',
+    group: 'Vue3 + uniapp 商城手机端',
+    icon: 'icon-park-outline:mall-bag',
+    title: 'yudao-mall-uniapp',
+    url: 'https://github.com/yudaocode/yudao-mall-uniapp',
   },
 ];
 
@@ -238,15 +241,14 @@ function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
       <template #description> 今日晴，20℃ - 32℃！ </template>
     </WorkbenchHeader>
 
-    <div class="mt-5 flex flex-col lg:flex-row">
-      <div class="mr-4 w-full lg:w-3/5">
+    <div class="mt-5 grid gap-5 lg:grid-cols-5">
+      <div class="min-w-0 lg:col-span-3">
         <WorkbenchProject :items="projectItems" title="项目" @click="navTo" />
         <WorkbenchTrends :items="trendItems" class="mt-5" title="最新动态" />
       </div>
-      <div class="w-full lg:w-2/5">
+      <div class="min-w-0 lg:col-span-2">
         <WorkbenchQuickNav
           :items="quickNavItems"
-          class="mt-5 lg:mt-0"
           title="快捷导航"
           @click="navTo"
         />

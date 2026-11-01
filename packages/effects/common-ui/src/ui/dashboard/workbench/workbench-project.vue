@@ -26,48 +26,47 @@ defineEmits(['click']);
 </script>
 
 <template>
-  <Card>
-    <CardHeader>
-      <CardTitle class="text-lg">{{ title }}</CardTitle>
+  <Card class="@container gap-4 overflow-hidden pt-4 pb-0">
+    <CardHeader class="px-4">
+      <CardTitle class="text-base">{{ title }}</CardTitle>
     </CardHeader>
-    <CardContent class="flex flex-wrap p-0">
-      <template v-for="(item, index) in items" :key="item.title">
-        <div
-          :class="{
-            'border-r-0': index % 3 === 2,
-            'border-t-0': index > 2,
-            'pb-4': index > 2,
-            'rounded-bl-xl': index >= items.length - 3 && index % 3 === 0,
-            'rounded-br-xl': index === items.length - 1 && index % 3 === 2,
-          }"
-          class="border-border group w-full cursor-pointer border-b border-r border-t p-4 transition-all hover:shadow-xl md:w-1/2 lg:w-1/3"
-          @click="$emit('click', item)"
-        >
-          <div class="flex items-center">
-            <VbenIcon
-              :color="item.color"
-              :icon="item.icon"
-              class="size-8 transition-all duration-300 group-hover:scale-110"
-            />
-            <span class="ml-4 text-lg font-medium">{{ item.title }}</span>
+    <CardContent class="grid grid-cols-1 p-0 @xl:grid-cols-2">
+      <div
+        v-for="(item, index) in items"
+        :key="item.title"
+        class="border-border group min-w-0 cursor-pointer border-t p-4 transition-colors hover:bg-accent/50 @xl:odd:border-r"
+        @click="$emit('click', item)"
+      >
+        <div class="flex items-center gap-3">
+          <VbenIcon
+            :color="item.color"
+            :icon="item.icon"
+            class="size-7 shrink-0 transition-all duration-300 group-hover:scale-110"
+          />
+          <div class="min-w-0 text-base font-semibold break-words">
+            {{ item.title }}
           </div>
-
-          <!-- 内容区域支持插槽自定义 -->
-          <slot name="content" :item="item" :index="index">
-            <div class="text-foreground/80 mt-4 flex h-10">
-              {{ item.content }}
-            </div>
-          </slot>
-
-          <!-- 底部信息区域支持插槽自定义 -->
-          <slot name="footer" :item="item" :index="index">
-            <div class="text-foreground/80 flex justify-between">
-              <span>{{ item.group }}</span>
-              <span>{{ item.date }}</span>
-            </div>
-          </slot>
         </div>
-      </template>
+
+        <!-- 内容区域支持插槽自定义 -->
+        <slot name="content" :item="item" :index="index">
+          <div class="text-muted-foreground mt-2 text-xs break-words">
+            {{ item.content }}
+          </div>
+        </slot>
+
+        <!-- 底部信息区域支持插槽自定义 -->
+        <slot name="footer" :item="item" :index="index">
+          <div
+            class="text-foreground/80 mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm"
+          >
+            <span class="min-w-0 break-words">{{ item.group }}</span>
+            <span class="text-muted-foreground text-xs whitespace-nowrap">
+              {{ item.date }}
+            </span>
+          </div>
+        </slot>
+      </div>
     </CardContent>
   </Card>
 </template>

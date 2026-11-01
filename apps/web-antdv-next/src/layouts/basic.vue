@@ -311,6 +311,16 @@ watch(
         @read="handleNotificationRead"
         @on-click="handleClick"
       />
+      <Tooltip title="IM 聊天">
+        <button
+          class="hover:bg-accent hover:text-accent-foreground mr-1 inline-flex size-8 items-center justify-center rounded-md transition-colors"
+          aria-label="IM 聊天"
+          type="button"
+          @click="handleOpenImHome"
+        >
+          <IconifyIcon class="size-4" icon="lucide:message-circle" />
+        </button>
+      </Tooltip>
     </template>
     <template #header-right-1>
       <FmsAccountSetSwitch />
@@ -322,17 +332,6 @@ watch(
           @success="handleTenantChange"
         />
       </div>
-    </template>
-    <template #header-right-900>
-      <Tooltip title="IM 聊天">
-        <button
-          class="hover:bg-accent hover:text-accent-foreground mr-1 inline-flex size-8 items-center justify-center rounded-md transition-colors"
-          type="button"
-          @click="handleOpenImHome"
-        >
-          <IconifyIcon class="size-4" icon="lucide:message-circle" />
-        </button>
-      </Tooltip>
     </template>
     <template #extra>
       <AuthenticationLoginExpiredModal
