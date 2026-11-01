@@ -2,7 +2,13 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiModelApiKeyApi } from '#/api/ai/model/apiKey';
 
-import { AiModelTypeEnum, CommonStatusEnum, DICT_TYPE } from '@vben/constants';
+import {
+  AI_MODEL_INPUT_MODALITY_OPTIONS,
+  AiModelInputModalityEnum,
+  AiModelTypeEnum,
+  CommonStatusEnum,
+  DICT_TYPE,
+} from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
 
 import { z } from '#/adapter/form';
@@ -159,6 +165,21 @@ export function useFormSchema(): VbenFormSchema[] {
         },
       },
       rules: 'required',
+    },
+    {
+      fieldName: 'inputModalities',
+      label: '输入能力',
+      component: 'CheckboxGroup',
+      defaultValue: [AiModelInputModalityEnum.TEXT],
+      componentProps: {
+        options: AI_MODEL_INPUT_MODALITY_OPTIONS,
+      },
+      dependencies: {
+        triggerFields: ['type'],
+        show: (values) => {
+          return [AiModelTypeEnum.CHAT].includes(values.type);
+        },
+      },
     },
   ];
 }

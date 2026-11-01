@@ -4,7 +4,7 @@ import type { AiModelModelApi } from '#/api/ai/model/model';
 import { computed, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { AiModelTypeEnum } from '@vben/constants';
+import { AiModelInputModalityEnum, AiModelTypeEnum } from '@vben/constants';
 
 import { ElMessage } from 'element-plus';
 
@@ -48,6 +48,7 @@ const [Modal, modalApi] = useVbenModal({
       delete data.temperature;
       delete data.maxTokens;
       delete data.maxContexts;
+      delete data.inputModalities;
     }
     try {
       await (formData.value?.id ? updateModel(data) : createModel(data));
@@ -72,6 +73,13 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await getModel(data.id);
+      // 输入模态：text 必选，保留已配置的 image、video
+      formData.value.inputModalities = [
+        AiModelInputModalityEnum.TEXT,
+        ...(formData.value.inputModalities || []).filter(
+          (item) => item !== AiModelInputModalityEnum.TEXT,
+        ),
+      ];
       // 设置到 values
       await formApi.setValues(formData.value);
     } finally {

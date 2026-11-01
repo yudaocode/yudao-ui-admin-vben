@@ -24,6 +24,20 @@ export const AiModelTypeEnum = {
   RERANK: 6, // 重排
 };
 
+/** AI 模型输入模态的枚举 */
+export const AiModelInputModalityEnum = {
+  TEXT: 'text', // 文本
+  IMAGE: 'image', // 图片
+  VIDEO: 'video', // 视频
+};
+
+/** AI 模型输入模态的选项：text 必选，不允许取消 */
+export const AI_MODEL_INPUT_MODALITY_OPTIONS = [
+  { label: '文本', value: AiModelInputModalityEnum.TEXT, disabled: true },
+  { label: '图片', value: AiModelInputModalityEnum.IMAGE },
+  { label: '视频', value: AiModelInputModalityEnum.VIDEO },
+];
+
 export interface ImageModel {
   image?: string;
   key: string;
