@@ -4,6 +4,7 @@ import type { SystemUserApi } from '#/api/system/user';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
+import { formatTokenCount } from '#/views/ai/utils/format';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
@@ -79,6 +80,24 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
       field: 'model',
       title: '模型',
       minWidth: 180,
+    },
+    {
+      field: 'inputTokens',
+      title: '输入 Token',
+      minWidth: 100,
+      formatter: ({ cellValue }) => formatTokenCount(cellValue),
+    },
+    {
+      field: 'outputTokens',
+      title: '输出 Token',
+      minWidth: 100,
+      formatter: ({ cellValue }) => formatTokenCount(cellValue),
+    },
+    {
+      field: 'totalTokens',
+      title: '合计 Token',
+      minWidth: 100,
+      formatter: ({ cellValue }) => formatTokenCount(cellValue),
     },
     {
       field: 'createTime',

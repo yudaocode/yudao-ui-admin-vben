@@ -2,10 +2,11 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
-import { DICT_TYPE } from '@vben/constants';
+import { AiChatMessageTypeEnum, DICT_TYPE } from '@vben/constants';
 
 import { getSimpleUserList } from '#/api/system/user';
 import { getRangePickerDefaultProps } from '#/utils';
+import { formatTokenCount } from '#/views/ai/utils/format';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
@@ -219,6 +220,34 @@ export function useGridColumnsMessage(): VxeTableGridOptions['columns'] {
         props: { type: DICT_TYPE.INFRA_BOOLEAN_STRING },
       },
       minWidth: 100,
+    },
+    {
+      field: 'inputTokens',
+      title: '输入 Token',
+      minWidth: 100,
+      // 仅 assistant 消息有业务快照，user、system 消息不展示
+      formatter: ({ cellValue, row }) =>
+        row.type === AiChatMessageTypeEnum.ASSISTANT
+          ? formatTokenCount(cellValue)
+          : '',
+    },
+    {
+      field: 'outputTokens',
+      title: '输出 Token',
+      minWidth: 100,
+      formatter: ({ cellValue, row }) =>
+        row.type === AiChatMessageTypeEnum.ASSISTANT
+          ? formatTokenCount(cellValue)
+          : '',
+    },
+    {
+      field: 'totalTokens',
+      title: '合计 Token',
+      minWidth: 100,
+      formatter: ({ cellValue, row }) =>
+        row.type === AiChatMessageTypeEnum.ASSISTANT
+          ? formatTokenCount(cellValue)
+          : '',
     },
     {
       title: '操作',

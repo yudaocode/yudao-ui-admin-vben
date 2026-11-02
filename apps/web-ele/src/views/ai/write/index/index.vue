@@ -16,6 +16,7 @@ import Right from './modules/right.vue';
 const writeResult = ref(''); // 写作结果
 const isWriting = ref(false); // 是否正在写作中
 const abortController = ref<AbortController>(); // // 写作进行中 abort 控制器(控制 stream 写作)
+const writeResp = ref<AiWriteApi.WriteGenerateResp>(); // 最近一帧的生成结果，用于展示 Token 用量
 
 const rightRef = ref<InstanceType<typeof Right>>(); // 写作面板
 
@@ -23,6 +24,7 @@ const rightRef = ref<InstanceType<typeof Right>>(); // 写作面板
 function handleSubmit(data: Partial<AiWriteApi.Write>) {
   abortController.value = new AbortController();
   writeResult.value = '';
+  writeResp.value = undefined;
   isWriting.value = true;
   writeStream({
     data,
@@ -33,7 +35,9 @@ function handleSubmit(data: Partial<AiWriteApi.Write>) {
         handleStopStream();
         return;
       }
-      writeResult.value = writeResult.value + data;
+      // 追加本次增量内容；Token 取最新一帧的快照，usage 尾帧 content 为空也需更新
+      writeResult.value = writeResult.value + data.content;
+      writeResp.value = data;
       // 滚动到底部
       await nextTick();
       rightRef.value?.scrollToBottom();
@@ -57,11 +61,13 @@ function handleStopStream() {
 
 /** 点击示例触发 */
 function handleExampleClick(type: keyof typeof WriteExample) {
+  writeResp.value = undefined;
   writeResult.value = WriteExample[type].data;
 }
 
 /** 点击重置的时候清空写作的结果*/
 function handleReset() {
+  writeResp.value = undefined;
   writeResult.value = '';
 }
 </script>
@@ -78,6 +84,7 @@ function handleReset() {
       />
       <Right
         :is-writing="isWriting"
+        :usage="writeResp"
         @stop-stream="handleStopStream"
         ref="rightRef"
         class="flex-grow"

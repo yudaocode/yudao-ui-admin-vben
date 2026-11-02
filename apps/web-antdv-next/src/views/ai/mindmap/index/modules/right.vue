@@ -12,11 +12,18 @@ import { downloadImageByCanvas } from '@vben/utils';
 
 import { Button, Card, message } from 'antdv-next';
 
+import { TokenUsage } from '#/views/ai/components';
+
 const props = defineProps<{
   generatedContent: string; // 生成结果
   isEnd: boolean; // 是否结束
   isGenerating: boolean; // 是否正在生成
   isStart: boolean; // 开始状态，开始时需要清除 html
+  usage?: {
+    inputTokens?: null | number;
+    outputTokens?: null | number;
+    totalTokens?: null | number;
+  }; // 本次生成的 Token 用量，未调用模型时为空
 }>();
 
 const md = MarkdownIt();
@@ -133,14 +140,27 @@ defineExpose({
     <template #title>
       <div class="m-0 flex shrink-0 items-center justify-between px-7">
         <h3>思维导图预览</h3>
-        <Button type="primary" size="small" class="flex" @click="downloadImage">
-          <template #icon>
-            <div class="flex items-center justify-center">
-              <IconifyIcon icon="lucide:copy" />
-            </div>
-          </template>
-          下载图片
-        </Button>
+        <div class="flex items-center gap-3">
+          <TokenUsage
+            v-if="usage && !isGenerating"
+            :input-tokens="usage.inputTokens"
+            :output-tokens="usage.outputTokens"
+            :total-tokens="usage.totalTokens"
+          />
+          <Button
+            type="primary"
+            size="small"
+            class="flex"
+            @click="downloadImage"
+          >
+            <template #icon>
+              <div class="flex items-center justify-center">
+                <IconifyIcon icon="lucide:copy" />
+              </div>
+            </template>
+            下载图片
+          </Button>
+        </div>
       </div>
     </template>
     <div ref="contentRef" class="hide-scroll-bar box-border h-full">

@@ -1,5 +1,7 @@
 import type { PageResult } from '@vben/request';
 
+import type { AiModelModelApi } from '#/api/ai/model/model';
+
 import { requestClient } from '#/api/request';
 
 export namespace AiChatConversationApi {
@@ -20,6 +22,7 @@ export namespace AiChatConversationApi {
     roleAvatar?: string; // 角色头像
     modelMaxTokens?: string; // 模型的单条回复的最大 Token 数量
     modelMaxContexts?: string; // 模型的上下文的最大 Message 数量
+    readonly modelReasoningConfig?: AiModelModelApi.ModelReasoningConfig; // 模型的思考配置；为空表示未配置
   }
 }
 

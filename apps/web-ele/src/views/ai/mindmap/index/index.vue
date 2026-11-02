@@ -18,6 +18,7 @@ const isGenerating = ref(false); // 是否正在生成思维导图
 const isStart = ref(false); // 开始生成，用来清空思维导图
 const isEnd = ref(true); // 用来判断结束的时候渲染思维导图
 const generatedContent = ref(''); // 生成思维导图结果
+const generateResp = ref<AiMindmapApi.MindMapGenerateResp>(); // 最近一帧的生成结果，用于展示 Token 用量
 
 const leftRef = ref<InstanceType<typeof Left>>(); // 左边组件
 const rightRef = ref(); // 右边组件
@@ -25,6 +26,7 @@ const rightRef = ref(); // 右边组件
 /** 使用已有内容直接生成 */
 function directGenerate(existPrompt: string) {
   isEnd.value = false; // 先设置为 false 再设置为 true，让子组建的 watch 能够监听到
+  generateResp.value = undefined;
   generatedContent.value = existPrompt;
   isEnd.value = true;
 }
@@ -36,6 +38,7 @@ function handleSubmit(data: AiMindmapApi.AiMindMapGenerateReqVO) {
   isEnd.value = false;
   ctrl.value = new AbortController(); // 请求控制赋值
   generatedContent.value = ''; // 清空生成数据
+  generateResp.value = undefined;
   generateMindMap({
     data,
     onMessage: async (res: any) => {
@@ -45,7 +48,9 @@ function handleSubmit(data: AiMindmapApi.AiMindMapGenerateReqVO) {
         handleStopStream();
         return;
       }
-      generatedContent.value = generatedContent.value + data;
+      // 追加本次增量内容；Token 取最新一帧的快照，usage 尾帧 content 为空也需更新
+      generatedContent.value = generatedContent.value + data.content;
+      generateResp.value = data;
       await nextTick();
       rightRef.value?.scrollBottom();
     },
@@ -93,6 +98,7 @@ onMounted(() => {
         :is-end="isEnd"
         :is-generating="isGenerating"
         :is-start="isStart"
+        :usage="generateResp"
       />
     </div>
   </Page>

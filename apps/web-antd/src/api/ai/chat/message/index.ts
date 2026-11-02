@@ -21,6 +21,10 @@ export namespace AiChatMessageApi {
     content: string; // 聊天内容
     reasoningContent?: string; // 推理内容（深度思考）
     tokens: number; // 消耗 Token 数量
+    requestId?: null | string; // 请求编号，用于查询本次用量
+    inputTokens?: null | number; // 输入 Token，未知为 null
+    outputTokens?: null | number; // 输出 Token，未知为 null
+    totalTokens?: null | number; // 合计 Token，未知为 null
     segmentIds?: number[]; // 段落编号
     segments?: {
       content: string; // 段落内容
@@ -66,6 +70,7 @@ export function sendChatMessageStream(
   onError: any,
   onClose: any,
   attachmentUrls?: string[],
+  reasoningLevel?: string,
 ) {
   const token = accessStore.accessToken;
   return fetchEventSource(`${apiURL}/ai/chat/message/send-stream`, {
@@ -81,6 +86,7 @@ export function sendChatMessageStream(
       useContext: enableContext,
       useSearch: enableWebSearch,
       attachmentUrls: attachmentUrls || [],
+      reasoningLevel, // 本次思考档位；模型未配置档位时为 undefined，不会序列化
     }),
     onmessage: onMessage,
     onerror: onError,

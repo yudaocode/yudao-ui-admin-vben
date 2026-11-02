@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiMindmapApi } from '#/api/ai/mindmap';
 
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
 
@@ -44,9 +44,12 @@ async function handleDelete(row: AiMindmapApi.MindMap) {
   }
 }
 
+const previewData = ref<AiMindmapApi.MindMap>(); // 预览的思维导图
+
 /** 预览思维导图 */
 async function openPreview(row: AiMindmapApi.MindMap) {
-  drawerApi.setData(row.generatedContent).open();
+  previewData.value = row;
+  drawerApi.open();
 }
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -95,10 +98,11 @@ onMounted(async () => {
 
     <Drawer class="w-3/5">
       <Right
-        :generated-content="drawerApi.getData() as any"
+        :generated-content="previewData?.generatedContent ?? ''"
         :is-end="true"
         :is-generating="false"
         :is-start="false"
+        :usage="previewData"
       />
     </Drawer>
     <Grid table-title="思维导图管理列表">

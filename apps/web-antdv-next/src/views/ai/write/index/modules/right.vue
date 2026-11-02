@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import type { PropType } from 'vue';
+
 import { computed, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
 import { useClipboard } from '@vueuse/core';
 import { Button, Card, message, TextArea } from 'antdv-next';
+
+import { TokenUsage } from '#/views/ai/components';
 
 const props = defineProps({
   content: {
@@ -15,6 +19,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   }, // 是否正在生成文章
+  usage: {
+    type: Object as PropType<{
+      inputTokens?: null | number;
+      outputTokens?: null | number;
+      totalTokens?: null | number;
+    }>,
+    default: undefined,
+  }, // 本次生成的 Token 用量，未调用模型时为空
 });
 
 const emits = defineEmits(['update:content', 'stopStream']);
@@ -56,15 +68,23 @@ watch(copied, (val) => {
     <template #title>
       <h3 class="m-0 flex shrink-0 items-center justify-between px-7">
         <span>预览</span>
-        <Button
-          type="primary"
-          v-show="showCopy"
-          @click="copyContent"
-          size="small"
-        >
-          <IconifyIcon icon="lucide:copy" />
-          复制
-        </Button>
+        <div class="flex items-center gap-3">
+          <TokenUsage
+            v-if="usage && !isWriting"
+            :input-tokens="usage.inputTokens"
+            :output-tokens="usage.outputTokens"
+            :total-tokens="usage.totalTokens"
+          />
+          <Button
+            type="primary"
+            v-show="showCopy"
+            @click="copyContent"
+            size="small"
+          >
+            <IconifyIcon icon="lucide:copy" />
+            复制
+          </Button>
+        </div>
       </h3>
     </template>
     <div

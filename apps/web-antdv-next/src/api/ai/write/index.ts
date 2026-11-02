@@ -25,6 +25,9 @@ export namespace AiWriteApi {
     model?: string; // 模型
     generatedContent?: string; // 生成的内容
     errorMessage?: string; // 错误信息
+    inputTokens?: null | number; // 输入 Token，未知为 null
+    outputTokens?: null | number; // 输出 Token，未知为 null
+    totalTokens?: null | number; // 合计 Token，未知为 null
     createTime?: Date; // 创建时间
   }
 
@@ -33,6 +36,15 @@ export namespace AiWriteApi {
     type?: AiWriteTypeEnum; //  写作类型
     platform?: string; // 平台
     createTime?: [string, string]; // 创建时间
+  }
+
+  /** 写作生成的 Stream 响应 */
+  export interface WriteGenerateResp {
+    id: number; // 写作编号
+    content: string; // 本次增量内容
+    inputTokens: null | number; // 输入 Token，未知为 null
+    outputTokens: null | number; // 输出 Token，未知为 null
+    totalTokens: null | number; // 合计 Token，未知为 null
   }
 }
 

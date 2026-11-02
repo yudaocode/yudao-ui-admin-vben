@@ -381,9 +381,9 @@ onMounted(async () => {
                 v-show="hoverConversationId === conversation.id"
                 class="relative right-0.5 flex items-center text-gray-400"
               >
-                <!-- TODO @AI：三个按钮之间，间隙太大了。 -->
+                <!-- DONE @AI：三个按钮之间，间隙太大了。间隙来自 Element Plus 的 .el-button+.el-button{margin-left:12px}，原 mr-0 不生效；改为 !ml-0，只保留 px-1 内边距 -->
                 <ElButton
-                  class="mr-0 px-1"
+                  class="!ml-0 px-1"
                   link
                   @click.stop="handleTop(conversation)"
                 >
@@ -397,14 +397,14 @@ onMounted(async () => {
                   />
                 </ElButton>
                 <ElButton
-                  class="mr-0 px-1"
+                  class="!ml-0 px-1"
                   link
                   @click.stop="updateConversationTitle(conversation)"
                 >
                   <IconifyIcon icon="lucide:edit" />
                 </ElButton>
                 <ElButton
-                  class="mr-0 px-1"
+                  class="!ml-0 px-1"
                   link
                   @click.stop="deleteChatConversation(conversation)"
                 >

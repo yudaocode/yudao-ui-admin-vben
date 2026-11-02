@@ -6,6 +6,7 @@ import type { AiChatMessageApi } from '#/api/ai/chat/message';
 
 import { computed, nextTick, onMounted, ref, toRefs } from 'vue';
 
+import { AiChatMessageTypeEnum } from '@vben/constants';
 import { IconifyIcon, SvgGptIcon } from '@vben/icons';
 import { preferences } from '@vben/preferences';
 import { useUserStore } from '@vben/stores';
@@ -16,6 +17,7 @@ import { Avatar, Button, message } from 'ant-design-vue';
 
 import { deleteChatMessage } from '#/api/ai/chat/message';
 import { MarkdownView } from '#/components/markdown-view';
+import { TokenUsage } from '#/views/ai/components';
 
 import MessageFiles from './files.vue';
 import MessageKnowledge from './knowledge.vue';
@@ -31,6 +33,10 @@ const props = defineProps({
     type: Array as PropType<AiChatMessageApi.ChatMessage[]>,
     required: true,
   },
+  inProgress: {
+    type: Boolean,
+    default: false,
+  }, // 对话是否正在生成，生成中的最后一条消息不展示用量
 });
 
 const emits = defineEmits(['onDeleteSuccess', 'onRefresh', 'onEdit']);
@@ -121,7 +127,10 @@ onMounted(async () => {
       class="mt-12 flex flex-col overflow-y-hidden px-5"
     >
       <!-- 左侧消息：system、assistant -->
-      <div v-if="item.type !== 'user'" class="flex flex-row">
+      <div
+        v-if="item.type !== AiChatMessageTypeEnum.USER"
+        class="flex flex-row"
+      >
         <div class="avatar">
           <Avatar
             v-if="conversation.roleAvatar"
@@ -168,6 +177,18 @@ onMounted(async () => {
             >
               <IconifyIcon icon="lucide:trash" />
             </Button>
+            <!-- 生成中的最后一条消息不展示用量，与写作、思维导图一致 -->
+            <TokenUsage
+              v-if="
+                item.type === AiChatMessageTypeEnum.ASSISTANT &&
+                item.id > 0 &&
+                !(inProgress && index === list.length - 1)
+              "
+              class="ml-2"
+              :input-tokens="item.inputTokens"
+              :output-tokens="item.outputTokens"
+              :total-tokens="item.totalTokens"
+            />
           </div>
         </div>
       </div>

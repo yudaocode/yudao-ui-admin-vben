@@ -166,6 +166,8 @@ const AI_DICT = {
   AI_WRITE_TONE: 'ai_write_tone', // AI 写作语气
   AI_WRITE_TYPE: 'ai_write_type', // AI 写作类型
   AI_MCP_CLIENT_NAME: 'ai_mcp_client_name', // AI MCP Client 名字
+  AI_REQUEST_LOG_BIZ_TYPE: 'ai_request_log_biz_type', // AI 请求日志业务类型
+  AI_REQUEST_LOG_STATUS: 'ai_request_log_status', // AI 请求日志状态
 } as const;
 
 /** ========== IOT - 物联网模块 ========== */

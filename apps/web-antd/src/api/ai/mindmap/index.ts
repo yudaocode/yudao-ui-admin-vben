@@ -16,10 +16,22 @@ export namespace AiMindmapApi {
     platform: string; // 平台
     model: string; // 模型
     errorMessage: string; // 错误信息
+    inputTokens?: null | number; // 输入 Token，未知为 null
+    outputTokens?: null | number; // 输出 Token，未知为 null
+    totalTokens?: null | number; // 合计 Token，未知为 null
   }
 
   export interface AiMindMapGenerateReqVO {
     prompt: string;
+  }
+
+  /** 思维导图生成的 Stream 响应 */
+  export interface MindMapGenerateResp {
+    id: number; // 思维导图编号
+    content: string; // 本次增量内容
+    inputTokens: null | number; // 输入 Token，未知为 null
+    outputTokens: null | number; // 输出 Token，未知为 null
+    totalTokens: null | number; // 合计 Token，未知为 null
   }
 }
 

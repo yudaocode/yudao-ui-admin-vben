@@ -14,6 +14,8 @@ import { getDictOptions } from '@vben/hooks';
 import { z } from '#/adapter/form';
 import { getApiKeySimpleList } from '#/api/ai/model/apiKey';
 
+import { buildReasoningFormValue } from './reasoning';
+
 /** 关联数据 */
 let apiKeyList: AiModelApiKeyApi.ApiKey[] = [];
 export async function loadApiKeyList() {
@@ -172,6 +174,19 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         options: AI_MODEL_INPUT_MODALITY_OPTIONS,
       },
+      dependencies: {
+        triggerFields: ['type'],
+        show: (values) => {
+          return [AiModelTypeEnum.CHAT].includes(values.type);
+        },
+      },
+    },
+    {
+      // 思考配置：通过 form.vue 的 #reasoningConfig 插槽渲染，提交时转换为 reasoningConfig
+      fieldName: 'reasoningConfig',
+      label: '思考配置',
+      component: 'Input',
+      defaultValue: buildReasoningFormValue(),
       dependencies: {
         triggerFields: ['type'],
         show: (values) => {

@@ -13,6 +13,12 @@ import { createModel, getModel, updateModel } from '#/api/ai/model/model';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
+import {
+  buildReasoningFormValue,
+  buildReasoningSaveData,
+  validateReasoningFormValue,
+} from '../reasoning';
+import ReasoningConfig from './reasoning-config.vue';
 
 const emit = defineEmits(['success']);
 const formData = ref<AiModelModelApi.Model>();
@@ -43,12 +49,24 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     // 提交表单
-    const data = (await formApi.getValues()) as AiModelModelApi.Model;
-    if (data.type !== AiModelTypeEnum.CHAT) {
+    const values = await formApi.getValues();
+    const { reasoningConfig, ...rest } = values;
+    const data = rest as AiModelModelApi.Model;
+    if (data.type === AiModelTypeEnum.CHAT) {
+      // 思考配置：校验后转换为 reasoningConfig 整体提交
+      const reasoningError = validateReasoningFormValue(reasoningConfig);
+      if (reasoningError) {
+        ElMessage.error(reasoningError);
+        modalApi.unlock();
+        return;
+      }
+      Object.assign(data, buildReasoningSaveData(reasoningConfig));
+    } else {
       delete data.temperature;
       delete data.maxTokens;
       delete data.maxContexts;
       delete data.inputModalities;
+      // 非对话模型不提交思考配置（已从 values 中取出），后端按未配置清空
     }
     try {
       await (formData.value?.id ? updateModel(data) : createModel(data));
@@ -80,8 +98,11 @@ const [Modal, modalApi] = useVbenModal({
           (item) => item !== AiModelInputModalityEnum.TEXT,
         ),
       ];
-      // 设置到 values
-      await formApi.setValues(formData.value);
+      // 设置到 values：思考配置转换为表单值
+      await formApi.setValues({
+        ...formData.value,
+        reasoningConfig: buildReasoningFormValue(formData.value),
+      });
     } finally {
       modalApi.unlock();
     }
@@ -91,6 +112,16 @@ const [Modal, modalApi] = useVbenModal({
 
 <template>
   <Modal :title="getTitle" class="w-2/5">
-    <Form class="mx-4" />
+    <Form class="mx-4">
+      <template #reasoningConfig="slotProps">
+        <ReasoningConfig
+          :model-value="slotProps.componentField.modelValue"
+          :disabled="slotProps.disabled"
+          @update:model-value="
+            slotProps.componentField['onUpdate:modelValue']($event)
+          "
+        />
+      </template>
+    </Form>
   </Modal>
 </template>

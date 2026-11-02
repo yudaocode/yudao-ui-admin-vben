@@ -2,20 +2,25 @@
 import type { AiChatConversationApi } from '#/api/ai/chat/conversation';
 import type { AiChatMessageApi } from '#/api/ai/chat/message';
 
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { alert, confirm, Page, useVbenModal } from '@vben/common-ui';
+import { AiChatMessageTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
   ElButton,
   ElContainer,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
   ElFooter,
   ElHeader,
   ElMain,
   ElMessage,
   ElSwitch,
+  ElTag,
 } from 'element-plus';
 
 import { getChatConversationMy } from '#/api/ai/chat/conversation';
@@ -24,6 +29,11 @@ import {
   getChatMessageListByConversationId,
   sendChatMessageStream,
 } from '#/api/ai/chat/message';
+import {
+  getReasoningLevelLabel,
+  getReasoningLevels,
+  resolveReasoningLevel,
+} from '#/views/ai/utils/reasoning';
 
 import ConversationList from './modules/conversation/list.vue';
 import ConversationUpdateForm from './modules/conversation/update-form.vue';
@@ -70,6 +80,12 @@ const uploadFiles = ref<string[]>([]); // 上传的文件 URL 列表
 // 接收 Stream 消息
 const receiveMessageFullText = ref('');
 const receiveMessageDisplayedText = ref('');
+
+// 思考档位：只存在于本次页面，不持久化
+const reasoningSelectedLevel = ref<string>(); // 选中的思考档位
+const reasoningLevels = computed(() =>
+  getReasoningLevels(activeConversation.value?.modelReasoningConfig),
+); // 当前对话模型配置的思考档位，按配置顺序；未配置时为空数组
 
 // =========== 【聊天对话】相关 ===========
 
@@ -165,6 +181,23 @@ async function handleConversationCreateSuccess() {
   uploadFiles.value = [];
 }
 
+// =========== 【思考档位】相关 ===========
+
+/** 重置思考选择为模型默认档位：切换对话、切换模型时触发 */
+function resetReasoningSelection() {
+  reasoningSelectedLevel.value = resolveReasoningLevel(
+    activeConversation.value?.modelReasoningConfig,
+  );
+}
+watch(
+  [
+    () => activeConversation.value?.id,
+    () => activeConversation.value?.modelId,
+  ],
+  resetReasoningSelection,
+  { immediate: true },
+);
+
 // =========== 【消息列表】相关 ===========
 
 /** 获取消息 message 列表 */
@@ -210,7 +243,7 @@ const messageList = computed(() => {
     return [
       {
         id: 0,
-        type: 'system',
+        type: AiChatMessageTypeEnum.SYSTEM,
         content: activeConversation.value.systemMessage,
       },
     ];
@@ -344,6 +377,11 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
   conversationInProgress.value = true;
   // 设置为空
   receiveMessageFullText.value = '';
+  // 本次思考档位：发送、重新生成都使用当前选择
+  const reasoningLevel = resolveReasoningLevel(
+    activeConversation.value?.modelReasoningConfig,
+    reasoningSelectedLevel.value,
+  );
 
   try {
     // 1.1 先添加两个假数据，等 stream 返回再替换
@@ -351,7 +389,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
       {
         id: -1,
         conversationId: activeConversationId.value,
-        type: 'user',
+        type: AiChatMessageTypeEnum.USER,
         content: userMessage.content,
         attachmentUrls: userMessage.attachmentUrls || [],
         createTime: new Date(),
@@ -359,7 +397,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
       {
         id: -2,
         conversationId: activeConversationId.value,
-        type: 'assistant',
+        type: AiChatMessageTypeEnum.ASSISTANT,
         content: '思考中...',
         reasoningContent: '',
         createTime: new Date(),
@@ -390,34 +428,40 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
           return;
         }
 
-        // 如果内容和推理内容都为空，就不处理
-        if (data.receive.content === '' && !data.receive.reasoningContent) {
-          return;
-        }
-
-        // 首次返回需要添加一个 message 到页面，后面的都是更新
+        // 首个成功帧：替换两个假数据，只有用量时也替换；正文、思考统一在下面追加，避免首帧重复
         if (isFirstChunk) {
           isFirstChunk = false;
           // 弹出两个假数据
           activeMessageList.value.pop();
           activeMessageList.value.pop();
           // 更新返回的数据
-          activeMessageList.value.push(data.send, data.receive);
           data.send.attachmentUrls = userMessage.attachmentUrls;
+          activeMessageList.value.push(data.send, {
+            ...data.receive,
+            content: '',
+            reasoningContent: '',
+          });
         }
+        const lastMessage =
+          activeMessageList.value[activeMessageList.value.length - 1]!;
+
+        // 同步 Token 用量：最新快照替换，未知保持 null
+        Object.assign(lastMessage, {
+          inputTokens: data.receive.inputTokens,
+          outputTokens: data.receive.outputTokens,
+          totalTokens: data.receive.totalTokens,
+        });
 
         // 处理 reasoningContent
         if (data.receive.reasoningContent) {
-          const lastMessage =
-            activeMessageList.value[activeMessageList.value.length - 1];
           // 累加推理内容
-          lastMessage!.reasoningContent =
-            (lastMessage!.reasoningContent || '') +
+          lastMessage.reasoningContent =
+            (lastMessage.reasoningContent || '') +
             data.receive.reasoningContent;
         }
 
         // 处理正常内容
-        if (data.receive.content !== '') {
+        if (data.receive.content) {
           receiveMessageFullText.value =
             receiveMessageFullText.value + data.receive.content;
         }
@@ -436,6 +480,7 @@ async function doSendMessageStream(userMessage: AiChatMessageApi.ChatMessage) {
         stopStream();
       },
       userMessage.attachmentUrls,
+      reasoningLevel,
     );
   } catch {}
 }
@@ -625,6 +670,7 @@ onMounted(async () => {
               ref="messageRef"
               :conversation="activeConversation as any"
               :list="messageList as any"
+              :in-progress="conversationInProgress"
               @on-delete-success="handleMessageDelete"
               @on-edit="handleMessageEdit"
               @on-refresh="handleMessageRefresh"
@@ -659,6 +705,41 @@ onMounted(async () => {
                   <ElSwitch v-model="enableWebSearch" size="small" />
                   <span class="ml-1 text-sm text-gray-400">联网搜索</span>
                 </div>
+                <!-- 思考等级：只有模型配置了档位才展示；只有一档时固定展示，不可点击 -->
+                <ElTag
+                  v-if="reasoningLevels.length === 1"
+                  type="info"
+                  size="small"
+                >
+                  思考等级：{{ getReasoningLevelLabel(reasoningLevels[0]) }}
+                </ElTag>
+                <ElDropdown
+                  v-else-if="reasoningLevels.length > 1"
+                  trigger="click"
+                  @command="reasoningSelectedLevel = $event"
+                >
+                  <ElButton size="small">
+                    思考等级：{{
+                      getReasoningLevelLabel(reasoningSelectedLevel)
+                    }}
+                  </ElButton>
+                  <template #dropdown>
+                    <ElDropdownMenu>
+                      <ElDropdownItem
+                        v-for="level in reasoningLevels"
+                        :key="level"
+                        :command="level"
+                        :style="
+                          level === reasoningSelectedLevel
+                            ? { color: 'var(--el-color-primary)' }
+                            : undefined
+                        "
+                      >
+                        {{ getReasoningLevelLabel(level) }}
+                      </ElDropdownItem>
+                    </ElDropdownMenu>
+                  </template>
+                </ElDropdown>
               </div>
               <ElButton
                 type="primary"

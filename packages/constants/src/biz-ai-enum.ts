@@ -24,6 +24,13 @@ export const AiModelTypeEnum = {
   RERANK: 6, // 重排
 };
 
+/** AI 聊天消息类型的枚举 */
+export const AiChatMessageTypeEnum = {
+  USER: 'user', // 用户
+  ASSISTANT: 'assistant', // 助手
+  SYSTEM: 'system', // 系统
+};
+
 /** AI 模型输入模态的枚举 */
 export const AiModelInputModalityEnum = {
   TEXT: 'text', // 文本
@@ -36,6 +43,109 @@ export const AI_MODEL_INPUT_MODALITY_OPTIONS = [
   { label: '文本', value: AiModelInputModalityEnum.TEXT, disabled: true },
   { label: '图片', value: AiModelInputModalityEnum.IMAGE },
   { label: '视频', value: AiModelInputModalityEnum.VIDEO },
+];
+
+/** AI 思考档位的展示名，未列出的档位直接展示档位值 */
+export const AI_REASONING_LEVEL_LABELS: Record<string, string> = {
+  off: '关闭',
+  on: '开启',
+  minimal: '最低',
+  low: '低',
+  medium: '中',
+  high: '高',
+  xhigh: '很高',
+  max: '最高',
+};
+
+/** AI 思考配置预设 */
+export interface AiReasoningPreset {
+  key: string; // 预设标识
+  name: string; // 预设名称
+  note: string; // 说明
+  defaultLevel: string; // 默认档位
+  levels: [string, Record<string, unknown>][]; // 档位及思考参数，从低到高
+}
+
+const DEEP_SEEK_LEVELS: [string, Record<string, unknown>][] = [
+  ['off', { thinking: { type: 'disabled' } }],
+  ['low', { thinking: { type: 'enabled' }, reasoning_effort: 'low' }],
+  ['high', { thinking: { type: 'enabled' }, reasoning_effort: 'high' }],
+  ['max', { thinking: { type: 'enabled' }, reasoning_effort: 'max' }],
+];
+
+/**
+ * AI 思考配置预设
+ *
+ * 只覆盖方案中已核对过官方文档的厂商和型号；预设只是示例，保存前仍需按厂商文档核对
+ */
+export const AI_REASONING_PRESETS: AiReasoningPreset[] = [
+  {
+    key: 'deepseek',
+    name: 'DeepSeek · 默认 high',
+    note: '思考模式下 temperature 被厂商忽略。',
+    defaultLevel: 'high',
+    levels: DEEP_SEEK_LEVELS,
+  },
+  {
+    key: 'glm53',
+    name: 'GLM-5.3 · 只有一个非 off 档',
+    note: '官方文档：GLM-5.3 不能关闭思考。',
+    defaultLevel: 'on',
+    levels: [['on', { thinking: { type: 'enabled' } }]],
+  },
+  {
+    key: 'kimi3',
+    name: 'Kimi k3（没有 off 档）',
+    note: 'k3 系列只支持 reasoning_effort。没有 off 只表示没提供关闭选项，不代表厂商一定在思考。',
+    defaultLevel: 'max',
+    levels: [
+      ['low', { reasoning_effort: 'low' }],
+      ['high', { reasoning_effort: 'high' }],
+      ['max', { reasoning_effort: 'max' }],
+    ],
+  },
+  {
+    key: 'minimax',
+    name: 'MiniMax · MiniMax-M3',
+    note: 'M3.1-Flash 传 disabled 返回 400，该型号不要配 off；M2.x 的 off 不生效。',
+    defaultLevel: 'on',
+    levels: [
+      ['off', { thinking: { type: 'disabled' } }],
+      ['on', { thinking: { type: 'adaptive' } }],
+    ],
+  },
+  {
+    key: 'qwen',
+    name: '通义 · 混合思考模型',
+    note: '未配置时仍是 enableThinking(true)。配置后每档必须写 enable_thinking；「仅思考」模型无法关闭。',
+    defaultLevel: 'on',
+    levels: [
+      ['off', { enable_thinking: false }],
+      ['on', { enable_thinking: true }],
+    ],
+  },
+  {
+    key: 'openai',
+    name: 'OpenAI · 推理模型（Chat）',
+    note: 'reasoning_effort 写强类型字段；temperature、max_tokens 仍会发送，需要去掉它们的型号暂不支持。',
+    defaultLevel: 'medium',
+    levels: [
+      ['low', { reasoning_effort: 'low' }],
+      ['medium', { reasoning_effort: 'medium' }],
+      ['high', { reasoning_effort: 'high' }],
+    ],
+  },
+  {
+    key: 'openrouter',
+    name: 'OpenRouter（OpenAI 平台 + 自定义 URL）',
+    note: 'reasoning 通过 extraBody 追加到请求顶层。exclude 只隐藏返回内容，不能当关闭用。',
+    defaultLevel: 'high',
+    levels: [
+      ['off', { reasoning: { enabled: false } }],
+      ['low', { reasoning: { effort: 'low' } }],
+      ['high', { reasoning: { effort: 'high' } }],
+    ],
+  },
 ];
 
 export interface ImageModel {
