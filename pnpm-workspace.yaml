@@ -119,7 +119,7 @@ catalog:
   bpmn-js-token-simulation: ^0.39.4
   cac: ^7.0.0
   camunda-bpmn-moddle: ^7.0.2
-  chalk: ^5.6.2
+  chalk: ^6.0.1
   cheerio: ^1.2.0
   circular-dependency-scanner: ^3.0.1
   class-variance-authority: ^0.7.1
