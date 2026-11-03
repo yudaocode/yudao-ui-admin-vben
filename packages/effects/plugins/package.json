@@ -75,6 +75,7 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/motion": "catalog:",
+    "@vxe-ui/core": "catalog:",
     "codemirror": "catalog:",
     "echarts": "catalog:",
     "markdown-it": "catalog:",

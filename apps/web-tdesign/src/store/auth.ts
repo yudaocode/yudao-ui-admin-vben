@@ -95,8 +95,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
 
         if (userInfo?.nickname) {
-          // oxlint-disable-next-line typescript/no-floating-promises
-          notification.success({
+          void notification.success({
             title: $t('authentication.loginSuccess'),
             content: `${$t('authentication.loginSuccessDesc')}:${userInfo?.nickname}`,
             duration: 3000,

@@ -1,20 +1,26 @@
 import type { OxlintConfig } from 'oxlint';
 
+// 原生 extends 不向根配置投递 env/globals（1.90 实测），这两个对象由
+// javascript 配置与根 oxlint.config.ts 同时消费，须从包导出共享。
+const env = {
+  browser: true,
+  es2021: true,
+  node: true,
+};
+
+const globals = {
+  document: 'readonly',
+  navigator: 'readonly',
+  window: 'readonly',
+} as const;
+
 const javascript: OxlintConfig = {
   categories: {
     correctness: 'error',
     suspicious: 'warn',
   },
-  env: {
-    browser: true,
-    es2021: true,
-    node: true,
-  },
-  globals: {
-    document: 'readonly',
-    navigator: 'readonly',
-    window: 'readonly',
-  },
+  env,
+  globals,
   rules: {
     'accessor-pairs': [
       'error',
@@ -42,20 +48,15 @@ const javascript: OxlintConfig = {
     ],
     'no-alert': 'error',
     'no-array-constructor': 'error',
-    'no-caller': 'error',
     'no-case-declarations': 'error',
     'no-console': ['error', { allow: ['warn', 'error'] }],
-    'no-control-regex': 'error',
-    'no-debugger': 'error',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'no-fallthrough': 'error',
     'no-new-func': 'error',
     'no-object-constructor': 'error',
-    'no-new-native-nonconstructor': 'error',
     'no-labels': ['error', { allowLoop: false, allowSwitch: false }],
     'no-lone-blocks': 'error',
     'no-multi-str': 'error',
-    'no-nonoctal-decimal-escape': 'error',
     'no-proto': 'error',
     'no-prototype-builtins': 'error',
     'no-redeclare': ['error', { builtinGlobals: false }],
@@ -63,7 +64,6 @@ const javascript: OxlintConfig = {
     'no-self-compare': 'error',
     'no-sequences': 'error',
     'no-shadow': 'off',
-    'no-shadow-restricted-names': 'error',
     'eslint/no-empty-function': [
       'error',
       {
@@ -72,7 +72,6 @@ const javascript: OxlintConfig = {
     ],
     'no-template-curly-in-string': 'error',
     'no-throw-literal': 'error',
-    'no-unassigned-vars': 'error',
     'no-unexpected-multiline': 'error',
     'no-unused-expressions': [
       'error',
@@ -90,8 +89,6 @@ const javascript: OxlintConfig = {
       },
     ],
     'no-var': 'error',
-    'no-eval': 'error',
-    'no-iterator': 'error',
     'no-new-wrappers': 'error',
     'no-restricted-globals': [
       'error',
@@ -139,5 +136,7 @@ const javascript: OxlintConfig = {
     yoda: ['error', 'never'],
   },
 };
+
+export { env as oxlintEnv, globals as oxlintGlobals };
 
 export { javascript };

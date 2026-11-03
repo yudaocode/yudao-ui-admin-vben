@@ -42,7 +42,7 @@ interface MenuRecordBadgeRaw {
   /**
    * 徽标颜色
    */
-  badgeVariants?: 'destructive' | 'primary' | string;
+  badgeVariants?: 'destructive' | 'primary' | (string & {});
 }
 
 /**

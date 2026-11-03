@@ -205,8 +205,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
         return;
       }
       // 如果没有错误信息，则会根据状态码进行提示
-      // oxlint-disable-next-line typescript/no-floating-promises
-      message.error(errorMessage || msg);
+      void message.error(errorMessage || msg);
     }),
   );
 

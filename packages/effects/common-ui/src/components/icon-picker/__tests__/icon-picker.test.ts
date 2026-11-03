@@ -218,7 +218,7 @@ describe('icon-picker.vue', () => {
 
     const firstIcon = document.body.querySelector('.grid-cols-6 > button');
     expect(firstIcon).toBeTruthy();
-    await new DOMWrapper(firstIcon as Element).trigger('click');
+    await new DOMWrapper(firstIcon).trigger('click');
 
     expect(onUpdateModelValue).toHaveBeenCalledWith('home');
     expect(wrapper.find('input').element.value).toBe('home');
@@ -257,7 +257,7 @@ describe('icon-picker.vue', () => {
     await openIconPicker(host);
     const firstIcon = document.body.querySelector('.grid-cols-6 > button');
     expect(firstIcon).toBeTruthy();
-    await new DOMWrapper(firstIcon as Element).trigger('click');
+    await new DOMWrapper(firstIcon).trigger('click');
 
     expect(host.find('input').element.value).toBe('home');
 
@@ -363,7 +363,7 @@ describe('icon-picker.vue', () => {
 
     const firstIcon = document.body.querySelector('.grid-cols-6 > button');
     expect(firstIcon).toBeTruthy();
-    await new DOMWrapper(firstIcon as Element).trigger('click');
+    await new DOMWrapper(firstIcon).trigger('click');
 
     expect(onUpdateModelValue).toHaveBeenCalledWith('home');
     expect(wrapper.find('input').element.value).toBe('home');
@@ -389,7 +389,7 @@ describe('icon-picker.vue', () => {
 
     const firstIcon = document.body.querySelector('.grid-cols-6 > button');
     expect(firstIcon).toBeTruthy();
-    await new DOMWrapper(firstIcon as Element).trigger('click');
+    await new DOMWrapper(firstIcon).trigger('click');
 
     expect(onKebabUpdate).toHaveBeenCalledTimes(1);
     expect(onKebabUpdate).toHaveBeenCalledWith('home');

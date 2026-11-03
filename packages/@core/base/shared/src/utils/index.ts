@@ -4,6 +4,7 @@ export * from './diff';
 export * from './dom';
 export * from './download';
 export * from './encrypt';
+export * from './error';
 export * from './formatNumber';
 export * from './id';
 export * from './inference';

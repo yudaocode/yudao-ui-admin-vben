@@ -108,6 +108,7 @@ catalog:
   '@vueuse/core': ^15.0.0
   '@vueuse/integrations': ^15.0.0
   '@vueuse/motion': ^3.0.3
+  '@vxe-ui/core': ^4.5.2
   ant-design-vue: ^4.2.6
   antdv-next: ^1.4.5
   archiver: ^8.0.0
@@ -146,6 +147,7 @@ catalog:
   eslint-plugin-command: ^3.5.3
   eslint-plugin-jsonc: ^3.4.2
   eslint-plugin-n: ^18.2.2
+  eslint-plugin-oxlint: ^1.90.0
   eslint-plugin-perfectionist: ^5.10.0
   eslint-plugin-pnpm: ^1.7.0
   eslint-plugin-unused-imports: ^4.4.1
@@ -177,9 +179,9 @@ catalog:
   nitropack: ^2.13.4
   nprogress: ^0.2.0
   ora: ^9.4.1
-  oxfmt: ^0.65.0
-  oxlint: ^1.83.0
-  oxlint-tsgolint: ^7.0.2004
+  oxfmt: ^0.75.0
+  oxlint: ^1.90.0
+  oxlint-tsgolint: ^7.0.2005
   pinia: ^4.0.2
   pinia-plugin-persistedstate: ^4.7.1
   pkg-types: ^2.3.1
@@ -241,8 +243,8 @@ catalog:
   vue3-print-nb: ^0.1.4
   vue3-signature: ^0.4.4
   vuedraggable: ^4.1.0
-  vxe-pc-ui: ^4.17.18
-  vxe-table: ^4.21.2
+  vxe-pc-ui: ^4.20.33
+  vxe-table: ^4.23.12
   watermark-js-plus: ^1.6.6
   yaml-eslint-parser: ^2.1.0
   zod: ^4.4.3
