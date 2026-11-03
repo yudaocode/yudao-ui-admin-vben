@@ -17,7 +17,7 @@ const src = ref(
   <Page auto-content-height>
     <template #doc>
       <DocAlert
-        title="大屏设计器"
+        title="GoView 大屏"
         url="https://doc.iocoder.cn/report/screen/"
       />
     </template>

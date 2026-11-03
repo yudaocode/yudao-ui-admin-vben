@@ -74,9 +74,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
-      // 是否需要设置访问租户；该配置仅供前端请求拦截器使用，不作为请求头发送
+      // 是否需要设置访问租户；该配置仅供前端请求拦截器使用，Axios 不会发送值为 false 的请求头
+      // 保留 false，刷新令牌后重新发起的请求，仍不设置访问租户
       const isVisitTenant = config.headers.get('isVisitTenant') !== false;
-      config.headers.delete('isVisitTenant');
+      config.headers.set('isVisitTenant', isVisitTenant ? undefined : false);
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
