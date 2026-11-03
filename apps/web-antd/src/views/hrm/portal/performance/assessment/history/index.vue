@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/performance/assessment';
 
-import { onActivated, ref } from 'vue';
+import { nextTick, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenDrawer } from '@vben/common-ui';
@@ -20,6 +20,7 @@ defineOptions({ name: 'HrmPortalPerformanceHistory' });
 
 const router = useRouter();
 const accessible = ref(false);
+const initialized = ref(false);
 
 const [DetailDrawer, detailDrawerApi] = useVbenDrawer({
   connectedComponent: PerformanceAssessmentDetail,
@@ -54,9 +55,28 @@ function openDetail(row: HrmPortalPerformanceAssessmentApi.AssessmentSummary) {
   detailDrawerApi.setData({ row }).open();
 }
 
-onActivated(async () => {
+/** 初始化绩效档案 */
+onMounted(async () => {
   accessible.value = await checkHrmPortalAccess(router);
-  if (accessible.value) await gridApi.query();
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await gridApi.query();
+});
+
+/** 页面激活时刷新绩效档案 */
+onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
+  accessible.value = await checkHrmPortalAccess(router);
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await gridApi.query();
 });
 </script>
 

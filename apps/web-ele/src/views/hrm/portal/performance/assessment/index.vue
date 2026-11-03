@@ -3,7 +3,7 @@ import type { PageParam } from '@vben/request';
 
 import type { HrmPortalPerformanceAssessmentApi } from '#/api/hrm/portal/performance/assessment';
 
-import { computed, onActivated, reactive, ref } from 'vue';
+import { computed, nextTick, onActivated, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import {
@@ -45,6 +45,7 @@ defineOptions({ name: 'HrmPortalPerformanceAssessment' });
 
 const router = useRouter();
 const accessible = ref(false);
+const initialized = ref(false);
 const loading = ref(false);
 const activeTab = ref<number>(HrmPerformanceStageType.FILL_QUOTA);
 const activeStatus = ref<number>(HrmPerformanceAssessmentStageStatus.PENDING);
@@ -312,12 +313,27 @@ function openResultAudit(assessmentId?: number, stageId?: number) {
   resultAuditModalApi.setData({ assessmentId, stageId }).open();
 }
 
+/** 初始化绩效任务 */
+onMounted(async () => {
+  accessible.value = await checkHrmPortalAccess(router);
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await loadData();
+});
+
 /** 页面激活时刷新绩效任务 */
 onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
   accessible.value = await checkHrmPortalAccess(router);
   if (!accessible.value) {
     return;
   }
+  await nextTick();
   await loadData();
 });
 </script>

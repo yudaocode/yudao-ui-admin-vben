@@ -24,9 +24,8 @@ export function useInsuranceBaseFormSchema(
       component: markRaw(AreaCascader),
       componentProps: {
         clearable: true,
-        changeOnSelect: true,
+        maxLevel: 2,
         placeholder: '请选择参保城市',
-        selectableLevels: [2, 3],
       },
       fieldName: 'areaId',
       label: '参保城市',

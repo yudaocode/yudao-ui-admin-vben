@@ -2,7 +2,7 @@
 import type { HrmEmployeeConfigApi } from '#/api/hrm/employee/config';
 import type { HrmPortalEmployeeApi } from '#/api/hrm/portal/employee';
 
-import { onActivated, ref } from 'vue';
+import { nextTick, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -22,6 +22,7 @@ defineOptions({ name: 'HrmPortalEmployee' });
 
 const router = useRouter();
 const accessible = ref(false);
+const initialized = ref(false);
 const loading = ref(false);
 const activeTab = ref('base');
 const employee = ref<HrmPortalEmployeeApi.PortalEmployee>(
@@ -65,12 +66,27 @@ function openEmployeeForm() {
     .open();
 }
 
+/** 初始化员工档案 */
+onMounted(async () => {
+  accessible.value = await checkHrmPortalAccess(router);
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await loadEmployee();
+});
+
 /** 页面激活时刷新员工档案 */
 onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
   accessible.value = await checkHrmPortalAccess(router);
   if (!accessible.value) {
     return;
   }
+  await nextTick();
   await loadEmployee();
 });
 </script>

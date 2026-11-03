@@ -2,6 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmAttendanceLeaveApi } from '#/api/hrm/attendance/leave';
 
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
@@ -90,7 +91,10 @@ function openProcessDetail(processInstanceId?: string) {
 
 defineExpose({ refresh: getList, openCreate });
 
-getList();
+/** 初始化（等待表格挂载后再加载） */
+onMounted(() => {
+  getList();
+});
 </script>
 
 <template>

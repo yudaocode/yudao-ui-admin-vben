@@ -2,7 +2,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { HrmPortalInsuranceRecordApi } from '#/api/hrm/portal/insurance/record';
 
-import { nextTick, onActivated, ref } from 'vue';
+import { nextTick, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
@@ -22,6 +22,7 @@ defineOptions({ name: 'HrmPortalInsurance' });
 
 const router = useRouter();
 const accessible = ref(false);
+const initialized = ref(false);
 const firstYear = ref<number>();
 
 function isYearDisabled(value: unknown) {
@@ -61,11 +62,8 @@ function openDetail(record: any) {
   detailModalApi.setData({ id: record.id, month: record.month }).open();
 }
 
-/** 页面激活时刷新参保记录 */
-onActivated(async () => {
-  accessible.value = await checkHrmPortalAccess(router);
-  if (!accessible.value) return;
-
+/** 加载参保记录，默认选中最近的参保年份 */
+async function loadRecords() {
   gridApi.setLoading(true);
   try {
     const records = (await getInsuranceRecordList()) || [];
@@ -80,6 +78,30 @@ onActivated(async () => {
   } finally {
     gridApi.setLoading(false);
   }
+}
+
+/** 初始化参保记录 */
+onMounted(async () => {
+  accessible.value = await checkHrmPortalAccess(router);
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await loadRecords();
+});
+
+/** 页面激活时刷新参保记录 */
+onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
+  accessible.value = await checkHrmPortalAccess(router);
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await loadRecords();
 });
 </script>
 

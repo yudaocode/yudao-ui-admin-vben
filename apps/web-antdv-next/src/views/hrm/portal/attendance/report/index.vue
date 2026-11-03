@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { AttendanceMonthDetail } from '#/api/hrm/portal/attendance/statistics';
 
-import { computed, onActivated, ref } from 'vue';
+import { computed, nextTick, onActivated, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
@@ -28,6 +28,7 @@ const route = useRoute();
 const { hasAccessByCodes } = useAccess();
 
 const accessible = ref(false);
+const initialized = ref(false);
 const loading = ref(false);
 const exportLoading = ref(false);
 const selectedMonth = ref(
@@ -127,12 +128,27 @@ async function handleExport() {
   }
 }
 
+/** 初始化考勤报告（请假列表挂载时会自行加载） */
+onMounted(async () => {
+  accessible.value = await checkHrmPortalAccess(router);
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await loadData();
+});
+
 /** 页面激活时刷新考勤报告 */
 onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
   accessible.value = await checkHrmPortalAccess(router);
   if (!accessible.value) {
     return;
   }
+  await nextTick();
   await Promise.all([loadData(), leaveListRef.value?.refresh()]);
 });
 </script>

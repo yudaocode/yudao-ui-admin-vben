@@ -3,7 +3,7 @@ import type { SalarySlipFilterValues } from './data';
 
 import type { HrmPortalSalarySlipApi } from '#/api/hrm/portal/salary/slip';
 
-import { onActivated, ref } from 'vue';
+import { nextTick, onActivated, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { DocAlert, Page } from '@vben/common-ui';
@@ -25,6 +25,7 @@ defineOptions({ name: 'HrmPortalSalarySlip' });
 
 const router = useRouter();
 const accessible = ref(false);
+const initialized = ref(false);
 const loading = ref(false);
 const slips = ref<HrmPortalSalarySlipApi.PortalSalarySlip[]>([]);
 
@@ -62,10 +63,28 @@ const [FilterForm, filterFormApi] = useVbenForm({
   handleReset: () => loadSlips({ sort: HrmSalarySlipSort.RECENT_SEND }),
 });
 
+/** 初始化工资条 */
+onMounted(async () => {
+  accessible.value = await checkHrmPortalAccess(router);
+  initialized.value = true;
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await filterFormApi.submitForm();
+});
+
 /** 页面激活时刷新工资条 */
 onActivated(async () => {
+  if (!initialized.value) {
+    return;
+  }
   accessible.value = await checkHrmPortalAccess(router);
-  if (accessible.value) await filterFormApi.submitForm();
+  if (!accessible.value) {
+    return;
+  }
+  await nextTick();
+  await filterFormApi.submitForm();
 });
 </script>
 

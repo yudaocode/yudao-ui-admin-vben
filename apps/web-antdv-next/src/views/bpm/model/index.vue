@@ -1,7 +1,14 @@
 <script lang="ts" setup>
 import type { ModelCategoryInfo } from '#/api/bpm/model';
 
-import { onActivated, reactive, ref, useTemplateRef, watch } from 'vue';
+import {
+  onActivated,
+  onMounted,
+  reactive,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue';
 
 import { useAccess } from '@vben/access';
 import { Page, useVbenModal } from '@vben/common-ui';
@@ -44,6 +51,7 @@ const { hasAccessByCodes } = useAccess();
 const hasImportPermission = hasAccessByCodes(['bpm:model:import']);
 
 const modelListSpinning = ref(false); // 模型列表加载状态
+const initialized = ref(false); // 是否已完成首次加载，完成前 onActivated 不重复加载
 
 const saveSortLoading = ref(false); // 保存排序状态
 const categoryGroup = ref<ModelCategoryInfo[]>([]); // 按照 category 分组的数据
@@ -94,7 +102,19 @@ async function getList() {
 }
 
 /** 初始化 */
+onMounted(async () => {
+  try {
+    await getList();
+  } finally {
+    initialized.value = true;
+  }
+});
+
+/** 页面激活时刷新 */
 onActivated(() => {
+  if (!initialized.value) {
+    return;
+  }
   getList();
 });
 

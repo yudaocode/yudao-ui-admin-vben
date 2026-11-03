@@ -110,9 +110,17 @@ async function handleOk() {
       return;
     }
     const blob = dataURLtoBlob(previewSource.value);
+    // 裁剪结果固定为 PNG（见 cropper.vue 中 canvas.toBlob 的 image/png），文件名后缀必须与内容一致，
+    // 否则后端会报不支持的文件类型；直接裁剪已有图片（未重新选择文件）时 filename 为空，使用默认名
+    const dotIndex = filename.lastIndexOf('.');
+    const baseName = dotIndex > 0 ? filename.slice(0, dotIndex) : filename;
     try {
       modalLoading(true);
-      const url = await uploadApi({ file: blob, filename, name: 'file' });
+      const url = await uploadApi({
+        file: blob,
+        filename: `${baseName || 'image'}.png`,
+        name: 'file',
+      });
       emit('uploadSuccess', { data: url, source: previewSource.value });
       await modalApi.close();
     } finally {

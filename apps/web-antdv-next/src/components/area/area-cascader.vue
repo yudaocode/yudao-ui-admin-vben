@@ -14,9 +14,9 @@ defineOptions({ name: 'AreaCascader' });
 const props = withDefaults(defineProps<Props>(), {
   allowClear: false,
   changeOnSelect: false,
+  maxLevel: undefined,
   modelValue: undefined,
   placeholder: '请选择省市区',
-  selectableLevels: undefined,
   showSearch: false,
 });
 
@@ -27,38 +27,42 @@ const emit = defineEmits<{
 interface Props {
   allowClear?: boolean;
   changeOnSelect?: boolean;
+  maxLevel?: number;
   modelValue?: number;
   placeholder?: string;
-  selectableLevels?: number[];
   showSearch?: boolean;
 }
 
 type AreaTreeNode = SystemAreaApi.Area & {
   children?: AreaTreeNode[];
-  disabled?: boolean;
 };
 
 const areaTree = ref<AreaTreeNode[]>([]); // 地区树
 const loading = ref(false); // 加载状态
 const selectedPath = ref<number[]>(); // 选中的地区路径
 const displayTree = computed(() =>
-  applySelectableLevels(areaTree.value, props.selectableLevels),
+  limitAreaLevel(areaTree.value, props.maxLevel),
 );
 
-/** 按层级限制可选节点 */
-function applySelectableLevels(
+/**
+ * 按层级裁剪地区树（1 省、2 市、3 区）
+ *
+ * 不使用 disabled 限制层级：级联选择器不会展开被禁用的节点，其下级也就选不到
+ */
+function limitAreaLevel(
   tree: AreaTreeNode[],
-  selectableLevels?: number[],
+  maxLevel?: number,
   depth = 1,
 ): AreaTreeNode[] {
+  if (!maxLevel) {
+    return tree;
+  }
   return tree.map((node) => ({
     ...node,
-    disabled: selectableLevels?.length
-      ? !selectableLevels.includes(depth)
-      : node.disabled,
-    children: node.children?.length
-      ? applySelectableLevels(node.children, selectableLevels, depth + 1)
-      : undefined,
+    children:
+      depth < maxLevel && node.children?.length
+        ? limitAreaLevel(node.children, maxLevel, depth + 1)
+        : undefined,
   }));
 }
 
