@@ -150,12 +150,13 @@ export default defineComponent({
     }
 
     function renderDesc() {
+      // 使用函数插槽：antdv-next 在 computed 中解析默认插槽，需在其中读取 data 才能随异步数据更新
       return (
         <Descriptions
           class={`${prefixCls}`}
           {...(unref(getDescriptionsProps) as any)}
         >
-          {renderItem()}
+          {{ default: () => renderItem() }}
         </Descriptions>
       );
     }
