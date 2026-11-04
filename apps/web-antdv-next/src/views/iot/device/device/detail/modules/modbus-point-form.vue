@@ -12,7 +12,9 @@ import {
   DICT_TYPE,
   getByteOrderOptions,
   IoTThingModelTypeEnum,
+  ModbusFunctionCodeEnum,
   ModbusFunctionCodeOptions,
+  ModbusRawDataTypeEnum,
   ModbusRawDataTypeOptions,
 } from '@vben/constants';
 import { getDictOptions } from '@vben/hooks';
@@ -42,6 +44,18 @@ const propertyList = computed(() => {
     (item) => Number(item.type) === IoTThingModelTypeEnum.PROPERTY,
   );
 });
+
+/** 是否显示位索引：仅 FC03/FC04、BOOLEAN、1 个寄存器的点位，可以取寄存器中的某一位（需求来源：https://t.zsxq.com/Qg5LP） */
+function isBitIndexVisible(
+  values: Partial<IotDeviceModbusPointApi.ModbusPoint>,
+) {
+  return (
+    (values.functionCode === ModbusFunctionCodeEnum.READ_HOLDING_REGISTERS ||
+      values.functionCode === ModbusFunctionCodeEnum.READ_INPUT_REGISTERS) &&
+    values.rawDataType === ModbusRawDataTypeEnum.BOOLEAN &&
+    values.registerCount === 1
+  );
+}
 
 /** 表单 Schema */
 function useFormSchema(): VbenFormSchema[] {
@@ -139,6 +153,23 @@ function useFormSchema(): VbenFormSchema[] {
         max: 125,
       },
       rules: 'required',
+    },
+    {
+      fieldName: 'bitIndex',
+      label: '位索引',
+      component: 'InputNumber',
+      componentProps: {
+        class: '!w-full',
+        placeholder: '留空表示整个寄存器非 0 即 true',
+        min: 0,
+        max: 15,
+        precision: 0,
+      },
+      description: '0 为最低位；位点位忽略缩放因子和字节序',
+      dependencies: {
+        triggerFields: ['functionCode', 'rawDataType', 'registerCount'],
+        show: (values) => isBitIndexVisible(values),
+      },
     },
     {
       fieldName: 'rawDataType',
@@ -278,6 +309,10 @@ const [Modal, modalApi] = useVbenModal({
       (await formApi.getValues()) as IotDeviceModbusPointApi.ModbusPoint;
     try {
       data.deviceId = deviceId.value;
+      // 位索引隐藏时（例如改了功能码、数据类型）不提交，后端会清空
+      if (!isBitIndexVisible(data)) {
+        data.bitIndex = undefined;
+      }
       await (formData.value?.id
         ? updateModbusPoint(data)
         : createModbusPoint(data));

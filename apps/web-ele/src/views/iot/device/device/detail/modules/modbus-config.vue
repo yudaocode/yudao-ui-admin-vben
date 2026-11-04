@@ -141,9 +141,12 @@ function formatFunctionCode(code: number) {
   return option ? option.label : `${code}`;
 }
 
-/** 格式化寄存器地址为十六进制 */
-function formatRegisterAddress(address: number) {
-  return `0x${address.toString(16).toUpperCase().padStart(4, '0')}`;
+/** 格式化寄存器地址为十六进制；位点位追加位索引，例如 0x0010.8 */
+function formatRegisterAddress(address: number, bitIndex?: number) {
+  const hex = `0x${address.toString(16).toUpperCase().padStart(4, '0')}`;
+  return bitIndex === null || bitIndex === undefined
+    ? hex
+    : `${hex}.${bitIndex}`;
 }
 
 /** 点位搜索表单 Schema */
@@ -190,7 +193,8 @@ function usePointColumns(): VxeTableGridOptions<IotDeviceModbusPointApi.ModbusPo
       field: 'registerAddress',
       title: '寄存器地址',
       minWidth: 100,
-      formatter: ({ cellValue }) => formatRegisterAddress(cellValue),
+      formatter: ({ cellValue, row }) =>
+        formatRegisterAddress(cellValue, row.bitIndex),
     },
     { field: 'registerCount', title: '寄存器数量', minWidth: 90 },
     {
