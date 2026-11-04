@@ -226,12 +226,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'readTime',
       label: '阅读时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
   ];
 }

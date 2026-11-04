@@ -17,17 +17,17 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '合同金额（元）',
-      render: (val) => erpPriceInputFormatter(val) as string,
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'orderDate',
       label: '下单时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'totalReceivablePrice',
       label: '回款金额（元）',
-      render: (val) => erpPriceInputFormatter(val) as string,
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'ownerUserName',
@@ -58,22 +58,22 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'totalPrice',
       label: '合同金额（元）',
-      render: (val) => erpPriceInputFormatter(val) as string,
+      render: (val) => erpPriceInputFormatter(val),
     },
     {
       field: 'orderDate',
       label: '下单时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'startTime',
       label: '合同开始时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'endTime',
       label: '合同结束时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'signContactName',

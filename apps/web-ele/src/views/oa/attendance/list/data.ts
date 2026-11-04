@@ -29,7 +29,7 @@ export function getAttendanceStatusOptions(type?: number) {
       [OA_ATTENDANCE_TYPE.TRAVEL]: [OA_ATTENDANCE_STATUS.TRAVEL],
     }[type ?? 0] ?? [];
   return getDictOptions(DICT_TYPE.OA_ATTENDANCE_STATUS, 'number').filter(
-    (item) => allowedStatusValues.includes(item.value as number),
+    (item) => allowedStatusValues.includes(item.value),
   );
 }
 

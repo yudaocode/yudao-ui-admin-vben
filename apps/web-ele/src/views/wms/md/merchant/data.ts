@@ -36,7 +36,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
           {
             type: 'default',
             onClick: () => {
-              formApi?.setFieldValue('code', generateWmsCode('M'));
+              void formApi?.setFieldValue('code', generateWmsCode('M'));
             },
           },
           { default: () => '生成' },

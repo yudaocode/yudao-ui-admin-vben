@@ -439,7 +439,7 @@ export function useBalanceFormSchema(): VbenFormSchema[] {
         triggerFields: ['balance', 'changeBalance', 'changeType'],
         disabled: true,
         trigger(values, form) {
-          form.setFieldValue(
+          void form.setFieldValue(
             'balanceResult',
             formatToFraction(
               convertToInteger(values.balance) +
@@ -516,7 +516,7 @@ export function usePointFormSchema(): VbenFormSchema[] {
         triggerFields: ['point', 'changePoint', 'changeType'],
         disabled: true,
         trigger(values, form) {
-          form.setFieldValue(
+          void form.setFieldValue(
             'pointResult',
             Number(values.point || 0) +
               Number(values.changePoint || 0) * values.changeType,

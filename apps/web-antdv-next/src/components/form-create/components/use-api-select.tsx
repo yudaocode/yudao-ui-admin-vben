@@ -78,7 +78,7 @@ export function useApiSelect(option: ApiSelectProps) {
       const attrs = useAttrs();
       const options = ref<any[]>([]); // 下拉数据
       const loading = ref(false); // 是否正在从远程获取数据
-      const queryParam = ref<any>(); // 当前输入的值
+      const queryParam = ref(); // 当前输入的值
 
       // 检查是否有有效的预设值
       function hasValidPresetValue(): boolean {
@@ -247,7 +247,7 @@ export function useApiSelect(option: ApiSelectProps) {
               loading={loading.value}
               mode="multiple"
               onUpdate:value={onUpdateModelValue as any}
-              value={modelValue as any}
+              value={modelValue}
               {...restAttrs}
               options={options.value}
               // TODO @xingyu remote 对等实现, 还是说没作用
@@ -261,7 +261,7 @@ export function useApiSelect(option: ApiSelectProps) {
             class="w-full"
             loading={loading.value}
             onUpdate:value={onUpdateModelValue as any}
-            value={modelValue as any}
+            value={modelValue}
             {...restAttrs}
             options={options.value}
             // TODO: @xingyu remote 对等实现, 还是说没作用
@@ -315,7 +315,7 @@ export function useApiSelect(option: ApiSelectProps) {
           <RadioGroup
             class="w-full"
             onUpdate:value={onUpdateModelValue as any}
-            value={modelValue as any}
+            value={modelValue}
             {...restAttrs}
           >
             {options.value.map(

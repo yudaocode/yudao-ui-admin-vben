@@ -228,17 +228,17 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'successTime',
       label: '退款时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     // 渠道信息部分
     {

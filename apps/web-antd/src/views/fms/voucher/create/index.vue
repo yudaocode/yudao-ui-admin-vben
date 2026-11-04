@@ -191,9 +191,9 @@ const canSaveAndCreate = computed(
 const voucherIds = computed(() =>
   String(route.query.ids || '')
     .split(',')
-    .map(parseId)
-    .filter(isIdType)
-    .filter(isPositiveId),
+    .map((id) => parseId(id))
+    .filter((id) => isIdType(id))
+    .filter((id) => isPositiveId(id)),
 ); // 当前列表凭证编号数组
 const currentVoucherIndex = computed(() =>
   voucherIds.value.indexOf(parseId(route.query.id || 0) as number),

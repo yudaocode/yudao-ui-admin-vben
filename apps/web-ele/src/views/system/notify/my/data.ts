@@ -102,7 +102,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '发送时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'templateType',
@@ -127,7 +127,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'readTime',
       label: '阅读时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'templateContent',

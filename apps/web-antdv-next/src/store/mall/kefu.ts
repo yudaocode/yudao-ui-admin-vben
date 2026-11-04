@@ -71,10 +71,7 @@ export const useMallKefuStore = defineStore('mall-kefu', {
       if (conversation && this.conversationList) {
         const conversationList = this
           .conversationList as MallKefuConversationApi.Conversation[];
-        this.conversationList = [
-          ...conversationList,
-          conversation as MallKefuConversationApi.Conversation,
-        ];
+        this.conversationList = [...conversationList, conversation];
       }
       this.conversationSort();
     },

@@ -195,7 +195,7 @@ export function useDeliveryInfoSchema(
     {
       field: 'deliveryTime',
       label: '发货时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
   ];
 }

@@ -302,7 +302,7 @@ export function useChangeRecordGridColumns(): VxeTableGridOptions<HrmSalaryChang
 }
 
 /** 薪资明细列表字段 */
-export function useSalaryOptionGridColumns(): VxeTableGridOptions<any>['columns'] {
+export function useSalaryOptionGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { field: 'name', title: '薪资项', minWidth: 160, showOverflow: true },
     { field: 'code', title: '编码', width: 110 },

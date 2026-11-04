@@ -156,7 +156,7 @@ export function useFormSchema(customerLocked: Ref<boolean>): VbenFormSchema[] {
               values.totalProductPrice,
               values.discountPercent / 100,
             ) ?? 0;
-          form.setFieldValue(
+          void form.setFieldValue(
             'totalPrice',
             values.totalProductPrice - discountPrice,
           );

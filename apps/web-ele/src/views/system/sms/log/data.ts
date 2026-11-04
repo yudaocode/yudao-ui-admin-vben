@@ -210,7 +210,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'mobile',
@@ -253,7 +253,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendTime',
       label: '发送时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'apiSendCode',
@@ -276,7 +276,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'receiveTime',
       label: '接收时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'apiReceiveCode',

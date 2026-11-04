@@ -34,6 +34,7 @@ function xml2json(xml) {
     return obj;
   } catch (error) {
     console.warn(error.message);
+    return undefined;
   }
 }
 

@@ -1,7 +1,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 /** 列表字段 */
-export function useGridColumns(): VxeTableGridOptions<any>['columns'] {
+export function useGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { type: 'seq', title: '序号', width: 80, align: 'center' },
     {

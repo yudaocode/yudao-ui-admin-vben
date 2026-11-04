@@ -38,6 +38,9 @@ CamundaModdleExtension.prototype.canCopyProperty = function (property, parent) {
   if (is(property, 'camunda:In') && !this.canHostIn(parent)) {
     return false;
   }
+
+  // 其余情况不干预，交由 moddleCopy 默认规则判断
+  return undefined;
 };
 
 CamundaModdleExtension.prototype.canHostInputOutput = function (parent) {
@@ -125,7 +128,7 @@ function getParent(element, type) {
   }
 
   if (!element.$parent) {
-    return;
+    return undefined;
   }
 
   return getParent(element.$parent, type);

@@ -73,6 +73,6 @@ export function getCouponTemplatePage(params: PageParam) {
 /** 获得优惠劵模板列表 */
 export function getCouponTemplateList(ids: number[]) {
   return requestClient.get<MallCouponTemplateApi.CouponTemplate[]>(
-    `/promotion/coupon-template/list?ids=${ids}`,
+    `/promotion/coupon-template/list?ids=${ids.join(',')}`,
   );
 }

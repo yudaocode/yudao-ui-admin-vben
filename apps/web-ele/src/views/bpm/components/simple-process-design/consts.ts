@@ -653,70 +653,70 @@ NODE_DEFAULT_NAME.set(BpmNodeTypeEnum.CHILD_PROCESS_NODE, '子流程');
 
 // 候选人策略。暂时不从字典中取。 后续可能调整。控制显示顺序
 export const CANDIDATE_STRATEGY: DictDataType[] = [
-  { label: '指定成员', value: CandidateStrategy.USER as any },
-  { label: '指定角色', value: CandidateStrategy.ROLE as any },
-  { label: '指定岗位', value: CandidateStrategy.POST as any },
-  { label: '部门成员', value: CandidateStrategy.DEPT_MEMBER as any },
-  { label: '部门负责人', value: CandidateStrategy.DEPT_LEADER as any },
+  { label: '指定成员', value: CandidateStrategy.USER },
+  { label: '指定角色', value: CandidateStrategy.ROLE },
+  { label: '指定岗位', value: CandidateStrategy.POST },
+  { label: '部门成员', value: CandidateStrategy.DEPT_MEMBER },
+  { label: '部门负责人', value: CandidateStrategy.DEPT_LEADER },
   {
     label: '连续多级部门负责人',
-    value: CandidateStrategy.MULTI_LEVEL_DEPT_LEADER as any,
+    value: CandidateStrategy.MULTI_LEVEL_DEPT_LEADER,
   },
-  { label: '发起人自选', value: CandidateStrategy.START_USER_SELECT as any },
-  { label: '审批人自选', value: CandidateStrategy.APPROVE_USER_SELECT as any },
-  { label: '发起人本人', value: CandidateStrategy.START_USER as any },
+  { label: '发起人自选', value: CandidateStrategy.START_USER_SELECT },
+  { label: '审批人自选', value: CandidateStrategy.APPROVE_USER_SELECT },
+  { label: '发起人本人', value: CandidateStrategy.START_USER },
   {
     label: '发起人部门负责人',
-    value: CandidateStrategy.START_USER_DEPT_LEADER as any,
+    value: CandidateStrategy.START_USER_DEPT_LEADER,
   },
   {
     label: '发起人连续部门负责人',
-    value: CandidateStrategy.START_USER_MULTI_LEVEL_DEPT_LEADER as any,
+    value: CandidateStrategy.START_USER_MULTI_LEVEL_DEPT_LEADER,
   },
-  { label: '用户组', value: CandidateStrategy.USER_GROUP as any },
-  { label: '表单内用户字段', value: CandidateStrategy.FORM_USER as any },
+  { label: '用户组', value: CandidateStrategy.USER_GROUP },
+  { label: '表单内用户字段', value: CandidateStrategy.FORM_USER },
   {
     label: '表单内部门负责人',
-    value: CandidateStrategy.FORM_DEPT_LEADER as any,
+    value: CandidateStrategy.FORM_DEPT_LEADER,
   },
-  { label: '流程表达式', value: CandidateStrategy.EXPRESSION as any },
+  { label: '流程表达式', value: CandidateStrategy.EXPRESSION },
 ];
 // 审批节点 的审批类型
 export const APPROVE_TYPE: DictDataType[] = [
-  { label: '人工审批', value: ApproveType.USER as any },
-  { label: '自动通过', value: ApproveType.AUTO_APPROVE as any },
-  { label: '自动拒绝', value: ApproveType.AUTO_REJECT as any },
+  { label: '人工审批', value: ApproveType.USER },
+  { label: '自动通过', value: ApproveType.AUTO_APPROVE },
+  { label: '自动拒绝', value: ApproveType.AUTO_REJECT },
 ];
 
 export const APPROVE_METHODS: DictDataType[] = [
   {
     label: '按顺序依次审批',
-    value: ApproveMethodType.SEQUENTIAL_APPROVE as any,
+    value: ApproveMethodType.SEQUENTIAL_APPROVE,
   },
   {
     label: '会签（可同时审批，至少 % 人必须审批通过）',
-    value: ApproveMethodType.APPROVE_BY_RATIO as any,
+    value: ApproveMethodType.APPROVE_BY_RATIO,
   },
   {
     label: '或签(可同时审批，有一人通过即可)',
-    value: ApproveMethodType.ANY_APPROVE as any,
+    value: ApproveMethodType.ANY_APPROVE,
   },
   {
     label: '随机挑选一人审批',
-    value: ApproveMethodType.RANDOM_SELECT_ONE_APPROVE as any,
+    value: ApproveMethodType.RANDOM_SELECT_ONE_APPROVE,
   },
 ];
 
 export const CONDITION_CONFIG_TYPES: DictDataType[] = [
-  { label: '条件规则', value: ConditionType.RULE as any },
-  { label: '条件表达式', value: ConditionType.EXPRESSION as any },
+  { label: '条件规则', value: ConditionType.RULE },
+  { label: '条件表达式', value: ConditionType.EXPRESSION },
 ];
 
 // 时间单位类型
 export const TIME_UNIT_TYPES: DictDataType[] = [
-  { label: '分钟', value: TimeUnitType.MINUTE as any },
-  { label: '小时', value: TimeUnitType.HOUR as any },
-  { label: '天', value: TimeUnitType.DAY as any },
+  { label: '分钟', value: TimeUnitType.MINUTE },
+  { label: '小时', value: TimeUnitType.HOUR },
+  { label: '天', value: TimeUnitType.DAY },
 ];
 // 超时处理执行动作类型
 export const TIMEOUT_HANDLER_TYPES: DictDataType[] = [
@@ -725,8 +725,8 @@ export const TIMEOUT_HANDLER_TYPES: DictDataType[] = [
   { label: '自动拒绝', value: 3 },
 ];
 export const REJECT_HANDLER_TYPES: DictDataType[] = [
-  { label: '终止流程', value: RejectHandlerType.FINISH_PROCESS as any },
-  { label: '驳回到指定节点', value: RejectHandlerType.RETURN_USER_TASK as any },
+  { label: '终止流程', value: RejectHandlerType.FINISH_PROCESS },
+  { label: '驳回到指定节点', value: RejectHandlerType.RETURN_USER_TASK },
   // { label: '结束任务', value: RejectHandlerType.FINISH_TASK }
 ];
 export const ASSIGN_EMPTY_HANDLER_TYPES: DictDataType[] = [
@@ -851,10 +851,10 @@ export const BPM_HTTP_REQUEST_PARAM_TYPES = [
 ];
 
 export const TRIGGER_TYPES: DictDataType[] = [
-  { label: '发送 HTTP 请求', value: TriggerTypeEnum.HTTP_REQUEST as any },
-  { label: '接收 HTTP 回调', value: TriggerTypeEnum.HTTP_CALLBACK as any },
-  { label: '修改表单数据', value: TriggerTypeEnum.FORM_UPDATE as any },
-  { label: '删除表单数据', value: TriggerTypeEnum.FORM_DELETE as any },
+  { label: '发送 HTTP 请求', value: TriggerTypeEnum.HTTP_REQUEST },
+  { label: '接收 HTTP 回调', value: TriggerTypeEnum.HTTP_CALLBACK },
+  { label: '修改表单数据', value: TriggerTypeEnum.FORM_UPDATE },
+  { label: '删除表单数据', value: TriggerTypeEnum.FORM_DELETE },
 ];
 
 export const CHILD_PROCESS_START_USER_TYPE = [

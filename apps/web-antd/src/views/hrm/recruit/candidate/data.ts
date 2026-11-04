@@ -638,7 +638,7 @@ export function useStatusBatchFormSchema(
   const statusOptions = getDictOptions(
     DICT_TYPE.HRM_RECRUIT_CANDIDATE_STATUS,
     'number',
-  ).filter((item) => statusValues.includes(Number(item.value)));
+  ).filter((item) => statusValues.includes(item.value));
   return [
     {
       fieldName: 'candidateCount',
@@ -767,7 +767,7 @@ export function useCleanFormSchema(): VbenFormSchema[] {
   const cleanStatusOptions = getDictOptions(
     DICT_TYPE.HRM_RECRUIT_CANDIDATE_STATUS,
     'number',
-  ).filter((item) => cleanStatuses.includes(Number(item.value)));
+  ).filter((item) => cleanStatuses.includes(item.value));
   return [
     {
       fieldName: 'statuses',

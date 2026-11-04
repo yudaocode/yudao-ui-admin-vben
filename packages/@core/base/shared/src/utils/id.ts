@@ -37,11 +37,7 @@ export function compareId(
   if (left === undefined || right === undefined) throw new Error('无效的 ID');
   const x = String(left);
   const y = String(right);
-  return x.length !== y.length
-    ? x.length - y.length
-    : x === y
-      ? 0
-      : x < y
-        ? -1
-        : 1;
+  if (x.length !== y.length) return x.length - y.length;
+  if (x === y) return 0;
+  return x < y ? -1 : 1;
 }

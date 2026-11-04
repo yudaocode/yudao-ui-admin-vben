@@ -137,7 +137,7 @@ export function useFormSchema(
 
 /** 列表的字段 */
 export function useGridColumns(
-  bizType: number,
+  bizType: BizTypeEnum,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -228,7 +228,7 @@ export function useFollowUpDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'contactLastTime',
       label: '最后跟进时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'creatorName',
@@ -237,12 +237,12 @@ export function useFollowUpDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
   ];
 }

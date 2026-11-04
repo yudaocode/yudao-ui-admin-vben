@@ -19,8 +19,12 @@ export const RAW_PAYLOAD_MAX_BYTES = 4096;
 /** Modbus PDU 最小、最大字节数 */
 export const MODBUS_PDU_MIN_BYTES = 5;
 export const MODBUS_PDU_MAX_BYTES = 253;
-/** Modbus 写操作功能码：05 写单个线圈、06 写单个寄存器、0F 写多个线圈、10 写多个寄存器 */
-export const MODBUS_WRITE_FUNCTION_CODES = new Set([0x05, 0x06, 0x0f, 0x10]);
+/**
+ * Modbus 写操作功能码：0x05 写单个线圈、0x06 写单个寄存器、0x0F 写多个线圈、0x10 写多个寄存器
+ *
+ * 以十进制书写：oxfmt 会把十六进制数字转为小写，与 unicorn/number-literal-case 要求的大写互相冲突
+ */
+export const MODBUS_WRITE_FUNCTION_CODES = new Set([5, 6, 15, 16]);
 
 /** 判断是否为 Modbus 协议 */
 export function isModbusProtocol(protocolType?: string) {
@@ -63,7 +67,8 @@ export function hexToBytes(hex: string): Uint8Array | undefined {
 export function bytesToHex(bytes: ArrayLike<number>) {
   const parts: string[] = [];
   for (let i = 0; i < bytes.length; i++) {
-    parts.push((bytes[i]! & 0xff).toString(16).toUpperCase().padStart(2, '0'));
+    // 255 即 0xFF 单字节掩码
+    parts.push((bytes[i]! & 255).toString(16).toUpperCase().padStart(2, '0'));
   }
   return parts.join(' ');
 }

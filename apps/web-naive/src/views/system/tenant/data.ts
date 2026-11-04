@@ -15,7 +15,7 @@ async function getTenantPackageData() {
   tenantPackageList = await getTenantPackageList();
 }
 
-getTenantPackageData();
+void getTenantPackageData();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

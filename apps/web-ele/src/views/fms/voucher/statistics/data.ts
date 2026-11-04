@@ -120,8 +120,7 @@ export function buildFooterMethod(getMinLevel: () => number | undefined) {
         }
         const total = totalRows.reduce(
           (sum, item) =>
-            sum +
-            Number(item[column.field as 'creditAmount' | 'debitAmount'] || 0),
+            sum + (item[column.field as 'creditAmount' | 'debitAmount'] || 0),
           0,
         );
         return formatMoney(total);

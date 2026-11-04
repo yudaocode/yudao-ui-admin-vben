@@ -95,7 +95,7 @@ export function useFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
             onChange: (value: number) => {
               const contract = res.find((item) => item.id === value);
               if (contract) {
-                formApi?.setFieldValue(
+                void formApi?.setFieldValue(
                   'price',
                   contract.totalPrice - contract.totalReceivablePrice,
                 );

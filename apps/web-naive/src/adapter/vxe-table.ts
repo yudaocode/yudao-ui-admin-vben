@@ -201,13 +201,13 @@ setupVbenVxeTable({
     // add by 星语：数量格式化，保留 2 位
     vxeUI.formats.add('formatAmount2', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
-        return `${erpNumberFormatter(cellValue, digits)}`;
+        return erpNumberFormatter(cellValue, digits);
       },
     });
 
     vxeUI.formats.add('formatFenToYuanAmount', {
       tableCellFormatMethod({ cellValue }, digits = 2) {
-        return `${erpNumberFormatter(fenToYuan(cellValue), digits)}`;
+        return erpNumberFormatter(fenToYuan(cellValue), digits);
       },
     });
 

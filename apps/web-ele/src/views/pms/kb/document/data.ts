@@ -226,7 +226,7 @@ export function usePermissionFormSchema(): VbenFormSchema[] {
           'number',
         ),
       },
-      defaultValue: PmsKnowledgeContentLevel.PREVIEW as number,
+      defaultValue: PmsKnowledgeContentLevel.PREVIEW,
       dependencies: {
         triggerFields: ['openStatus'],
         show: (values) => !!values.openStatus,

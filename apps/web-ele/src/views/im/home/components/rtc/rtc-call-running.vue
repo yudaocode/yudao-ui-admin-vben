@@ -52,15 +52,9 @@ const gridColsClass = computed(() => {
   return 'grid-cols-3';
 });
 
-const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(
-  () => props.localStream,
-);
-const setRemoteVideoRef = useMediaStreamElement<HTMLVideoElement>(
-  () => props.remoteVideoStream,
-);
-const setRemoteAudioRef = useMediaStreamElement<HTMLAudioElement>(
-  () => props.remoteAudioStream,
-);
+const setLocalVideoRef = useMediaStreamElement(() => props.localStream);
+const setRemoteVideoRef = useMediaStreamElement(() => props.remoteVideoStream);
+const setRemoteAudioRef = useMediaStreamElement(() => props.remoteAudioStream);
 
 /** 1v1 视频：是否有远端视频流 */
 const hasRemoteVideo = computed(

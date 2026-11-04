@@ -19,7 +19,7 @@ export const CouponValidTerm = defineComponent({
     },
   },
   setup(props) {
-    const coupon = props.coupon as MallCouponTemplateApi.CouponTemplate;
+    const coupon = props.coupon;
     const text =
       coupon.validityType === CouponTemplateValidityTypeEnum.DATE.type
         ? `有效期：${formatDate(coupon.validStartTime, 'YYYY-MM-DD')} 至 ${formatDate(
@@ -41,7 +41,7 @@ export const CouponDiscount = defineComponent({
     },
   },
   setup(props) {
-    const coupon = props.coupon as MallCouponTemplateApi.CouponTemplate;
+    const coupon = props.coupon;
     // 折扣
     let value = `${(coupon.discountPercent ?? 0) / 10}`;
     let suffix = ' 折';
@@ -69,7 +69,7 @@ export const CouponDiscountDesc = defineComponent({
     },
   },
   setup(props) {
-    const coupon = props.coupon as MallCouponTemplateApi.CouponTemplate;
+    const coupon = props.coupon;
     // 使用条件
     const useCondition =
       coupon.usePrice > 0 ? `满${floatToFixed2(coupon.usePrice)}元，` : '';

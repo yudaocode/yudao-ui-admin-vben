@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'pm/iteration/detail/:id(\\d+)',
+        path: String.raw`pm/iteration/detail/:id(\d+)`,
         name: 'PmsIterationDetail',
         component: () => import('#/views/pms/pm/iteration/detail/index.vue'),
         meta: {
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'pm/project/detail/:id(\\d+)',
+        path: String.raw`pm/project/detail/:id(\d+)`,
         name: 'PmsProjectDetail',
         component: () => import('#/views/pms/pm/project/detail/index.vue'),
         meta: {
@@ -31,7 +31,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'pm/project/config/:id(\\d+)',
+        path: String.raw`pm/project/config/:id(\d+)`,
         name: 'PmsProjectConfig',
         component: () => import('#/views/pms/pm/project/config/index.vue'),
         meta: {
@@ -41,7 +41,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'kb/library/:libraryId(\\d+)',
+        path: String.raw`kb/library/:libraryId(\d+)`,
         name: 'PmsKnowledgeLibraryDetail',
         component: () => import('#/views/pms/kb/document/index.vue'),
         meta: {

@@ -1,5 +1,3 @@
-import type { Dayjs } from 'dayjs';
-
 import type { VbenFormSchema } from '#/adapter/form';
 import type { FmsSubjectApi } from '#/api/fms/config/subject';
 import type { FmsVoucherWordApi } from '#/api/fms/config/voucher-word';
@@ -186,8 +184,7 @@ export function useProfitLossSettingsFormSchema(
       rules: 'required',
       componentProps: {
         clearable: false,
-        disabledDate: (date: Date) =>
-          dayjs(date as unknown as Dayjs).format('YYYY-MM') !== month,
+        disabledDate: (date: Date) => dayjs(date).format('YYYY-MM') !== month,
         format: 'YYYY年MM月DD日',
         type: 'date',
         valueFormat: 'YYYY-MM-DD',

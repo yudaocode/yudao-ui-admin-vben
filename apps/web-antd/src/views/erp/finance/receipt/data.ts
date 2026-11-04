@@ -168,7 +168,10 @@ export function useFormSchema(formType: FormType): VbenFormSchema[] {
           const totalPrice = values.totalPrice || 0;
           const discountPrice = values.discountPrice || 0;
 
-          actions.setFieldValue('receiptPrice', totalPrice - discountPrice);
+          void actions.setFieldValue(
+            'receiptPrice',
+            totalPrice - discountPrice,
+          );
           return {};
         },
       },

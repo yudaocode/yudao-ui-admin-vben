@@ -37,8 +37,8 @@ watch(
         spuList.value = [];
         spuIdList.value = seckillActivityList.value
           .map((activity) => activity.spuId)
-          .map(parseId)
-          .filter(isIdType);
+          .map((spuId) => parseId(spuId))
+          .filter((spuId) => isIdType(spuId));
         if (spuIdList.value.length > 0) {
           spuList.value = await getSpuDetailList(spuIdList.value);
         }

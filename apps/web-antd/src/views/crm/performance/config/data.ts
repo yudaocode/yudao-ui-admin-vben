@@ -252,11 +252,11 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
 }
 
 /** 获取目标类型名称 */
-export function getBizTypeLabel(value: number) {
+export function getBizTypeLabel(value: BizTypeEnum) {
   return bizTypeOptions.find((item) => item.value === value)?.label || '';
 }
 
 /** 获取对象类型名称 */
-export function getObjectTypeLabel(value: number) {
+export function getObjectTypeLabel(value: PerformanceConfigObjectTypeEnum) {
   return objectTypeOptions.find((item) => item.value === value)?.label || '';
 }

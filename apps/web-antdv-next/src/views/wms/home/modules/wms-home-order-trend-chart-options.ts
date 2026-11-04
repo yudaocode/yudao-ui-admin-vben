@@ -58,9 +58,7 @@ const orderDefinitions: OrderDefinition[] = [
 /** 格式化趋势接口返回的时间戳为图表横轴日期 */
 function formatTrendTime(time: number | string) {
   const date = new Date(time);
-  return Number.isNaN(date.getTime())
-    ? `${time}`
-    : (formatDate(date, 'MM-DD') as string);
+  return Number.isNaN(date.getTime()) ? `${time}` : formatDate(date, 'MM-DD');
 }
 
 /** 单据趋势图表配置 */
@@ -74,7 +72,7 @@ export function getOrderTrendChartOptions(
     legend: { itemHeight: 10, itemWidth: 10, top: 6 },
     series: orderDefinitions.map((item) => ({
       barMaxWidth: 18,
-      data: list.map((row) => Number(row[item.trendField] || 0)),
+      data: list.map((row) => row[item.trendField] || 0),
       emphasis: { focus: 'series' },
       name: item.title,
       type: 'bar',

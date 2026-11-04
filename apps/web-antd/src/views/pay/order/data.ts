@@ -207,22 +207,22 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'successTime',
       label: '支付时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'expireTime',
       label: '失效时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'subject',

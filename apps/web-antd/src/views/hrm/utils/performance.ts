@@ -79,6 +79,7 @@ export function validateAssessmentConfig(config?: AssessmentConfigVO) {
   if (!isHundred(dimensionTotalWeight)) {
     return '维度权重总和必须等于 100%';
   }
+  return undefined;
 }
 
 /** 复制考核配置 */
@@ -100,7 +101,7 @@ export function cloneAssessmentConfig(
 /** 获得指标权重合计 */
 export function getQuotaWeightTotal(dimension: AssessmentDimensionVO) {
   return (dimension.quotas || []).reduce(
-    (total, quota) => total + Number(quota.weight || 0),
+    (total, quota) => total + (quota.weight || 0),
     0,
   );
 }

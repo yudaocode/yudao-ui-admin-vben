@@ -75,7 +75,7 @@ export function useFormSchema(): VbenFormSchema[] {
             values.event &&
             !options.some((opt) => opt.value === values.event)
           ) {
-            actions.setFieldValue('event', undefined);
+            void actions.setFieldValue('event', undefined);
           }
         },
         componentProps: (values) => ({
@@ -113,7 +113,7 @@ export function useFormSchema(): VbenFormSchema[] {
             values.valueType &&
             prevValueType !== values.valueType
           ) {
-            actions.setFieldValue('value', undefined);
+            void actions.setFieldValue('value', undefined);
           }
           prevValueType = values.valueType;
         },

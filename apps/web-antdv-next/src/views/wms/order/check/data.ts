@@ -70,9 +70,7 @@ export function getOrderDifferencePrice(order: {
   actualPrice?: number;
   totalPrice?: number;
 }) {
-  return roundPrice(
-    Number(order.actualPrice || 0) - Number(order.totalPrice || 0),
-  );
+  return roundPrice((order.actualPrice || 0) - (order.totalPrice || 0));
 }
 
 /** 计算明细盈亏数量 */
@@ -80,7 +78,7 @@ export function getDetailDifferenceQuantity(detail: {
   checkQuantity?: number;
   quantity?: number;
 }) {
-  return Number(detail.checkQuantity || 0) - Number(detail.quantity || 0);
+  return (detail.checkQuantity || 0) - (detail.quantity || 0);
 }
 
 /** 计算明细实际金额 */
@@ -96,7 +94,7 @@ export function getDetailActualPrice(detail: {
   ) {
     return undefined;
   }
-  return roundPrice(Number(detail.checkQuantity) * Number(detail.price));
+  return roundPrice(detail.checkQuantity * detail.price);
 }
 
 /** 计算明细盈亏金额 */
@@ -108,7 +106,7 @@ export function getDetailDifferencePrice(detail: {
   if (detail.price === undefined || detail.price === null) {
     return undefined;
   }
-  return roundPrice(getDetailDifferenceQuantity(detail) * Number(detail.price));
+  return roundPrice(getDetailDifferenceQuantity(detail) * detail.price);
 }
 
 /** 列表的搜索表单 */

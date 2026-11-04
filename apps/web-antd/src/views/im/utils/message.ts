@@ -527,6 +527,7 @@ export function extractAddableFace(
 }
 
 /** 解析消息 content（JSON 字符串）为指定 payload，非法 JSON 返回 null */
+// oxlint-disable-next-line typescript/no-unnecessary-type-parameters -- 消息协议集中解码断言边界，保留现有泛型 API 以免调用方扩散断言
 export const parseMessage = <T>(content: string): null | T => {
   try {
     return JSON.parse(content) as T;
@@ -536,7 +537,7 @@ export const parseMessage = <T>(content: string): null | T => {
 };
 
 /** 序列化消息 payload 为 content JSON 字符串；与 parseMessage 对称 */
-export const serializeMessage = <T>(payload: T): string =>
+export const serializeMessage = (payload: unknown): string =>
   JSON.stringify(payload);
 
 /** `URL.createObjectURL(file)` 生成的 URL 前缀；占位 / revoke / 重传旧值识别共用 */

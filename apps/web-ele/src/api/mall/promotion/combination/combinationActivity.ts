@@ -50,7 +50,7 @@ export function getCombinationActivity(id: number) {
 /** 获得拼团活动列表，基于活动编号数组 */
 export function getCombinationActivityListByIds(ids: number[]) {
   return requestClient.get<MallCombinationActivityApi.CombinationActivity[]>(
-    `/promotion/combination-activity/list-by-ids?ids=${ids}`,
+    `/promotion/combination-activity/list-by-ids?ids=${ids.join(',')}`,
   );
 }
 

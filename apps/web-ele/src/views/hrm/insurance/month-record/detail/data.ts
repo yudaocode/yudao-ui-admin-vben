@@ -263,9 +263,7 @@ export function useProjectDetailGridColumns(
       width: 130,
       align: 'right',
       formatter: ({ row }) =>
-        formatHrmMoney(
-          Number(row.personalAmount || 0) + Number(row.corporateAmount || 0),
-        ),
+        formatHrmMoney((row.personalAmount || 0) + (row.corporateAmount || 0)),
     },
   ];
 }
@@ -291,12 +289,8 @@ export function buildProjectFooterMethod() {
       for (const project of data) {
         total +=
           column.field === 'totalAmount'
-            ? Number(project.personalAmount || 0) +
-              Number(project.corporateAmount || 0)
-            : Number(
-                project[column.field as 'corporateAmount' | 'personalAmount'] ||
-                  0,
-              );
+            ? (project.personalAmount || 0) + (project.corporateAmount || 0)
+            : project[column.field] || 0;
       }
       return formatHrmMoney(total);
     }),

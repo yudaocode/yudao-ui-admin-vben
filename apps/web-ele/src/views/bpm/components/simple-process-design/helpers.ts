@@ -229,7 +229,7 @@ export function useNodeForm(nodeType: BpmNodeTypeEnum) {
     ref([]),
   ); // 部门树
   const formFields = inject<Ref<string[]>>('formFields', ref([])); // 流程表单字段
-  const configForm = ref<any | CopyTaskFormType | UserTaskFormType>();
+  const configForm = ref();
 
   if (
     nodeType === BpmNodeTypeEnum.USER_TASK_NODE ||
@@ -500,7 +500,7 @@ export function useNodeForm(nodeType: BpmNodeTypeEnum) {
       // 指定连续多级部门的负责人
       case CandidateStrategy.MULTI_LEVEL_DEPT_LEADER: {
         // 候选人参数格式: | 分隔 。左边为部门（多个部门用 , 分隔）。 右边为部门层级
-        const paramArray = candidateParam.split('|') as string[];
+        const paramArray = candidateParam.split('|');
         if (paramArray.length > 1) {
           configForm.value.deptIds = paramArray[0]
             ?.split(',')
@@ -601,7 +601,7 @@ export function useNodeName(nodeType: BpmNodeTypeEnum) {
   // 监听 showInput 的变化，当变为 true 时自动聚焦
   watch(showInput, (value) => {
     if (value) {
-      nextTick(() => {
+      void nextTick(() => {
         inputRef.value?.focus();
       });
     }
@@ -628,7 +628,7 @@ export function useNodeName2(
   // 监听 showInput 的变化，当变为 true 时自动聚焦
   watch(showInput, (value) => {
     if (value) {
-      nextTick(() => {
+      void nextTick(() => {
         inputRef.value?.focus();
       });
     }

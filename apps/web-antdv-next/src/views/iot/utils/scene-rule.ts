@@ -171,7 +171,7 @@ export function validateTriggerCondition(
       condition.operator ===
       IotRuleSceneTriggerTimeOperatorEnum.BETWEEN_TIME.value
     ) {
-      const parts = String(condition.param).split(',');
+      const parts = condition.param.split(',');
       if (!parts[0]?.trim() || !parts[1]?.trim()) {
         return `${path}：开始和结束时间不能为空`;
       }

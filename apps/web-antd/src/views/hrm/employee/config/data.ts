@@ -1,7 +1,7 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 /** 新建员工字段配置列表 */
-export function useCreateFieldGridColumns(): VxeTableGridOptions<any>['columns'] {
+export function useCreateFieldGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { field: 'groupName', title: '字段分组', width: 180 },
     { field: 'title', title: '字段名称', minWidth: 200 },
@@ -19,7 +19,7 @@ export function useCreateFieldGridColumns(): VxeTableGridOptions<any>['columns']
 }
 
 /** 员工档案字段配置列表 */
-export function useArchiveFieldGridColumns(): VxeTableGridOptions<any>['columns'] {
+export function useArchiveFieldGridColumns(): VxeTableGridOptions['columns'] {
   return [
     { field: 'groupName', title: '字段分组', width: 180 },
     { field: 'title', title: '字段名称', minWidth: 200 },

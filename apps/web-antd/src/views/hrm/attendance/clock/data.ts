@@ -350,8 +350,11 @@ export function useClockFormSchema(): VbenFormSchema[] {
 
 /** 构建概况查询参数 */
 export function buildOverviewQueryParams(formValues: Record<string, unknown>) {
+  // 月份选择器 valueFormat 为 YYYY-MM；未选择时默认当前月
   const month = dayjs(
-    String(formValues.month || formatDate(new Date(), 'YYYY-MM')),
+    typeof formValues.month === 'string' && formValues.month
+      ? formValues.month
+      : formatDate(new Date(), 'YYYY-MM'),
   );
   return {
     ...formValues,
@@ -362,7 +365,11 @@ export function buildOverviewQueryParams(formValues: Record<string, unknown>) {
 
 /** 构建明细查询参数 */
 export function buildRecordQueryParams(formValues: Record<string, unknown>) {
-  const month = String(formValues.month || formatDate(new Date(), 'YYYY-MM'));
+  // 月份选择器 valueFormat 为 YYYY-MM；未选择时默认当前月
+  const month =
+    typeof formValues.month === 'string' && formValues.month
+      ? formValues.month
+      : formatDate(new Date(), 'YYYY-MM');
   const { search, deptIds, type, address, sourceTypes } = formValues;
   return {
     search,

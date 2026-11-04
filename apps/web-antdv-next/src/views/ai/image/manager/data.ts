@@ -14,7 +14,7 @@ async function getUserData() {
   userList = await getSimpleUserList();
 }
 
-getUserData();
+void getUserData();
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {

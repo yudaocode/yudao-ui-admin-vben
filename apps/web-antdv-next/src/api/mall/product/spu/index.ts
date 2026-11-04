@@ -105,7 +105,9 @@ export function getSpu(id: number) {
 
 /** 获得商品 SPU 详情列表 */
 export function getSpuDetailList(ids: number[]) {
-  return requestClient.get<MallSpuApi.Spu[]>(`/product/spu/list?spuIds=${ids}`);
+  return requestClient.get<MallSpuApi.Spu[]>(
+    `/product/spu/list?spuIds=${ids.join(',')}`,
+  );
 }
 
 /** 删除商品 SPU */

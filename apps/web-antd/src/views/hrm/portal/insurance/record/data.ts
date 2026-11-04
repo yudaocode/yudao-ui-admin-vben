@@ -33,10 +33,10 @@ export function getInsuranceRecordTotal(
   record?: Partial<HrmPortalInsuranceRecordApi.PortalInsuranceRecord>,
 ) {
   return (
-    Number(record?.personalInsuranceAmount || 0) +
-    Number(record?.corporateInsuranceAmount || 0) +
-    Number(record?.personalProvidentFundAmount || 0) +
-    Number(record?.corporateProvidentFundAmount || 0)
+    (record?.personalInsuranceAmount || 0) +
+    (record?.corporateInsuranceAmount || 0) +
+    (record?.personalProvidentFundAmount || 0) +
+    (record?.corporateProvidentFundAmount || 0)
   );
 }
 
@@ -156,7 +156,7 @@ export function useProjectGridColumns(
       width: 130,
       align: 'right',
       formatter: ({ row }) =>
-        `¥ ${formatHrmMoney(Number(row.personalAmount || 0) + Number(row.corporateAmount || 0))}`,
+        `¥ ${formatHrmMoney((row.personalAmount || 0) + (row.corporateAmount || 0))}`,
     },
   ];
 }
@@ -180,11 +180,9 @@ export function buildProjectFooterMethod() {
           data.reduce(
             (sum, item) =>
               sum +
-              Number(
-                column.field === 'personalAmount'
-                  ? (item.personalAmount ?? 0)
-                  : (item.corporateAmount ?? 0),
-              ),
+              (column.field === 'personalAmount'
+                ? (item.personalAmount ?? 0)
+                : (item.corporateAmount ?? 0)),
             0,
           ),
         )}`;
@@ -193,9 +191,7 @@ export function buildProjectFooterMethod() {
         return `¥ ${formatHrmMoney(
           data.reduce(
             (sum, item) =>
-              sum +
-              Number(item.personalAmount || 0) +
-              Number(item.corporateAmount || 0),
+              sum + (item.personalAmount || 0) + (item.corporateAmount || 0),
             0,
           ),
         )}`;

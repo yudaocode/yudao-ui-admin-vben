@@ -16,7 +16,7 @@ async function getUserData() {
   userList = await getSimpleUserList();
 }
 
-getUserData();
+void getUserData();
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

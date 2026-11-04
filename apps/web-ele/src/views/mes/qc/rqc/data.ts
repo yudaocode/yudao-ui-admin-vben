@@ -28,7 +28,7 @@ function getRqcSourceDocTypeOptions() {
     MesQcSourceDocTypeEnum.RETURN_SALES,
   ]);
   return getDictOptions(DICT_TYPE.MES_QC_SOURCE_DOC_TYPE, 'number').filter(
-    (item) => allowed.has(Number(item.value)),
+    (item) => allowed.has(item.value),
   );
 }
 

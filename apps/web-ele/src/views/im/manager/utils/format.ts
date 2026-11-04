@@ -24,7 +24,7 @@ export function formatGroupLabel(
 
 /** 展示日期时间 */
 export function formatDateTimeText(value?: Date | number | string) {
-  return value ? (formatDateTime(value) as string) : '-';
+  return value ? formatDateTime(value) : '-';
 }
 
 /** 格式化 JSON */

@@ -50,7 +50,7 @@ const selectValue = computed({
 /** 选中变化 */
 function handleChange(value: unknown) {
   if (Array.isArray(value)) {
-    const typeIds = value.map(parseId).filter(isIdType);
+    const typeIds = value.map((id) => parseId(id)).filter((id) => isIdType(id));
     emit('update:modelValue', typeIds);
     emit('change', typeIds);
     return;

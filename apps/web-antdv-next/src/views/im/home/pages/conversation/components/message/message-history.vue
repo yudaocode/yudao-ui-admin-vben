@@ -365,8 +365,8 @@ async function loadEarlier() {
     // 全是占位 / 列表为空时为 undefined → 后端从最新拉
     const earliestId = allMessages.value
       .map((message) => message.id)
-      .filter(isPositiveId)
-      .sort(compareId)[0];
+      .filter((id) => isPositiveId(id))
+      .toSorted(compareId)[0];
     const maxId = earliestId;
 
     // 私聊 / 群聊的接口分支、字段转换、消息去重与 IndexedDB 落库统一由 puller 处理。

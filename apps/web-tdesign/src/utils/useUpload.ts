@@ -45,12 +45,12 @@ const useBeforeUpload = (type: UploadType, maxSizeMB: number) => {
     }
     // 格式不正确
     if (!allowTypes.includes(file.type)) {
-      message.error(`上传${name}格式不对!`);
+      void message.error(`上传${name}格式不对!`);
       return false;
     }
     // 大小不正确
     if (file.size / 1024 / 1024 > maxSizeMB) {
-      message.error(`上传${name}大小不能超过${maxSizeMB}M!`);
+      void message.error(`上传${name}大小不能超过${maxSizeMB}M!`);
       return false;
     }
 

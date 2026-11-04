@@ -15,7 +15,7 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let channelList: SystemSmsChannelApi.SmsChannel[] = [];
-getSimpleSmsChannelList().then((data) => (channelList = data));
+void getSimpleSmsChannelList().then((data) => (channelList = data));
 
 /** 列表的搜索表单 */
 export function useGridFormSchema(): VbenFormSchema[] {
@@ -184,7 +184,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'mobile',
@@ -225,7 +225,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendTime',
       label: '发送时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'apiSendCode',
@@ -248,7 +248,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'receiveTime',
       label: '接收时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'apiReceiveCode',

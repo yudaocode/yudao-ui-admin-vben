@@ -35,7 +35,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+      render: (val) => (val ? formatDateTime(val) : '-'),
     },
     { field: 'description', label: '固件描述', span: 2 },
   ];

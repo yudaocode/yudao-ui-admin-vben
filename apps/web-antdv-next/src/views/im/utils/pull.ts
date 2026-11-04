@@ -79,7 +79,7 @@ export async function runIncrementalPull<T extends PullRecord>(
     });
     if (list.length > 0) {
       // apply 未完全落地（返回 false）时直接终止：游标只能跟着已落地的数据走，否则会跳过本页记录
-      if ((await apply(list)) === false) {
+      if (!(await apply(list))) {
         return;
       }
       // 推进游标到本页最后一条并持久化：下次从这里接着拉
@@ -168,10 +168,12 @@ export async function runMinIdPull<T extends { id?: number }>(options: {
 export function maxImId(
   ...ids: (null | number | string | undefined)[]
 ): number {
-  return ids.reduce<number>((max, id) => {
-    if (id == null) return max;
+  let max = 0;
+  for (const id of ids) {
+    if (id == null) continue;
     const current = parseId(id);
     if (current === undefined) throw new Error('无效的消息 ID');
-    return compareId(current, max) > 0 ? current : max;
-  }, 0);
+    if (compareId(current, max) > 0) max = current;
+  }
+  return max;
 }

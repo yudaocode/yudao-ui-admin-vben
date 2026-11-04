@@ -49,7 +49,7 @@ export function useBasicFormSchema(
           {
             onClick: () => {
               if (generateProductKey) {
-                formApi?.setFieldValue('productKey', generateProductKey());
+                void formApi?.setFieldValue('productKey', generateProductKey());
               }
             },
           },

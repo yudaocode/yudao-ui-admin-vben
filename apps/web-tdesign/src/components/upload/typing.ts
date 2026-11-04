@@ -17,7 +17,7 @@ export interface FileUploadProps {
   api?: (
     file: File,
     onUploadProgress?: AxiosProgressEvent,
-  ) => Promise<AxiosResponse<any>>;
+  ) => Promise<AxiosResponse>;
   // 上传的目录
   directory?: string;
   disabled?: boolean;

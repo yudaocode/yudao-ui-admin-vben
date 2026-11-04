@@ -1,5 +1,3 @@
-import type { NumberDictDataType } from '@vben/hooks';
-
 import type { VbenFormApi, VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { MesWmStockTakingPlanApi } from '#/api/mes/wm/stocktaking/plan';
@@ -310,7 +308,7 @@ export function useParamFormSchema(formApi?: VbenFormApi): VbenFormSchema[] {
         options: getDictOptions(
           DICT_TYPE.MES_WM_STOCK_TAKING_PLAN_PARAM_TYPE,
           'number',
-        ) as NumberDictDataType[],
+        ),
         placeholder: '请选择条件类型',
         // 条件类型变化：清空已选条件值，避免残留旧类型的条件值
         onChange: async () => {

@@ -90,7 +90,7 @@ export function useFormSchema(msgType: AutoReplyMsgType): VbenFormSchema[] {
       componentProps: {
         placeholder: '请选择',
         options: getDictOptions(DICT_TYPE.MP_MESSAGE_TYPE).filter((d) =>
-          RequestMessageTypes.has(d.value as string),
+          RequestMessageTypes.has(d.value),
         ),
       },
     });

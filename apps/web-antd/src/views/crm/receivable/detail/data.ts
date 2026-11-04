@@ -23,7 +23,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'returnTime',
       label: '回款日期',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'price',
@@ -57,7 +57,7 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'returnTime',
       label: '回款日期',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'price',
@@ -94,12 +94,12 @@ export function useDetailSystemSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
   ];
 }

@@ -81,7 +81,7 @@ export function multiplyPrice(quantity?: number, price?: number) {
   ) {
     return undefined;
   }
-  return roundPrice(Number(quantity) * Number(price));
+  return roundPrice(quantity * price);
 }
 
 /** 金额 / 数量，反算单价 */
@@ -89,7 +89,7 @@ export function dividePrice(totalPrice?: number, quantity?: number) {
   if (totalPrice === undefined || totalPrice === null || !quantity) {
     return undefined;
   }
-  return roundPrice(Number(totalPrice) / Number(quantity));
+  return roundPrice(totalPrice / quantity);
 }
 
 /** 汇总数量 */

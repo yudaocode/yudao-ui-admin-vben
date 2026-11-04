@@ -126,7 +126,7 @@ function useConnectionFormSchema(
         componentProps: (_values, formApi) => ({
           onChange: (e: any) => {
             // SSL 与 STARTTLS 互斥，切换时同步另一开关
-            formApi.setFieldValue(
+            void formApi.setFieldValue(
               `${protocol}.starttlsEnable`,
               !e.target.value,
             );

@@ -206,12 +206,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'lastExecuteTime',
       label: '最后通知时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'nextNotifyTime',
       label: '下次通知时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'notifyTimes',
@@ -224,12 +224,12 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'updateTime',
       label: '更新时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
   ];
 }

@@ -6,6 +6,15 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 
 import { ImFriendAddSource } from '../../utils/constants';
 
+/** 用户名片浮层状态；addSource 承接后端 ImFriendAddSourceEnum 的任意取值 */
+interface UserInfoCardState {
+  show: boolean;
+  user: null | User;
+  position: { x: number; y: number };
+  addSource: number;
+  addSourceExtra: string;
+}
+
 /**
  * IM 全局 UI store
  *
@@ -17,13 +26,13 @@ export const useImUiStore = defineStore('imUiStore', () => {
   // ==================== 用户名片 UserInfoCard ====================
   // 用户名片悬浮卡
 
-  const userInfoCard = reactive({
+  const userInfoCard = reactive<UserInfoCardState>({
     show: false,
-    user: null as null | User,
+    user: null,
     position: { x: 0, y: 0 },
     // addSource / addSourceExtra 跟随触发点带入「加好友」来源（群成员入口 = GROUP + 群名；其余默认搜索）
-    addSource: ImFriendAddSource.SEARCH as number,
-    addSourceExtra: '' as string,
+    addSource: ImFriendAddSource.SEARCH,
+    addSourceExtra: '',
   });
 
   /** 打开用户名片 */

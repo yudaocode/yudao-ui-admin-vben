@@ -72,7 +72,7 @@ export function useInfoSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+      render: (val) => (val ? formatDateTime(val) : '-'),
     },
   ];
 }

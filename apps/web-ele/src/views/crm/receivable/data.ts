@@ -68,11 +68,11 @@ export function useFormSchema(): VbenFormSchema[] {
         disabled: (values) => values.id,
         componentProps: (_values, form) => ({
           onChange: () => {
-            form.setFieldValue('contractId', undefined);
-            form.setFieldValue('planId', undefined);
-            form.setFieldValue('price', undefined);
-            form.setFieldValue('returnTime', undefined);
-            form.setFieldValue('returnType', undefined);
+            void form.setFieldValue('contractId', undefined);
+            void form.setFieldValue('planId', undefined);
+            void form.setFieldValue('price', undefined);
+            void form.setFieldValue('returnTime', undefined);
+            void form.setFieldValue('returnType', undefined);
           },
         }),
       },
@@ -101,18 +101,18 @@ export function useFormSchema(): VbenFormSchema[] {
             })),
             placeholder: '请选择合同',
             onChange: (value: number) => {
-              form.setFieldValue('planId', undefined);
-              form.setFieldValue('returnTime', undefined);
-              form.setFieldValue('returnType', undefined);
+              void form.setFieldValue('planId', undefined);
+              void form.setFieldValue('returnTime', undefined);
+              void form.setFieldValue('returnType', undefined);
               const contract = contracts.find((item) => item.id === value);
-              form.setFieldValue(
+              void form.setFieldValue(
                 'price',
                 contract
                   ? contract.totalPrice - contract.totalReceivablePrice
                   : undefined,
               );
             },
-          } as any;
+          };
         },
       },
     },
@@ -143,17 +143,17 @@ export function useFormSchema(): VbenFormSchema[] {
             placeholder: '请选择回款期数',
             onChange: async (value: any) => {
               if (!value) {
-                form.setFieldValue('returnTime', undefined);
-                form.setFieldValue('price', undefined);
-                form.setFieldValue('returnType', undefined);
+                void form.setFieldValue('returnTime', undefined);
+                void form.setFieldValue('price', undefined);
+                void form.setFieldValue('returnType', undefined);
                 return;
               }
               const plan = await getReceivablePlan(value);
-              form.setFieldValue('returnTime', plan?.returnTime);
-              form.setFieldValue('price', plan?.price);
-              form.setFieldValue('returnType', plan?.returnType);
+              void form.setFieldValue('returnTime', plan?.returnTime);
+              void form.setFieldValue('price', plan?.price);
+              void form.setFieldValue('returnType', plan?.returnType);
             },
-          } as any;
+          };
         },
       },
     },

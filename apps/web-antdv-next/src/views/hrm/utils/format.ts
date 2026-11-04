@@ -105,14 +105,12 @@ function getTimeRangeMinutes(startTime?: string, endTime?: string): number {
 
 /** 格式化 HRM 金额 */
 export function formatHrmMoney(value?: null | number): string {
-  return Number(value || 0).toFixed(2);
+  return (value || 0).toFixed(2);
 }
 
 /** 格式化 HRM 比例 */
 export function formatHrmRate(value?: null | number): string {
-  return value === undefined || value === null
-    ? '-'
-    : `${Number(value).toFixed(2)}%`;
+  return value === undefined || value === null ? '-' : `${value.toFixed(2)}%`;
 }
 
 /** 格式化 HRM 参保项目名称 */
@@ -132,12 +130,12 @@ export function formatHrmInsuranceProjectName(
 
 /** 格式化 HRM 绩效分数 */
 export function formatHrmScore(value?: null | number): string {
-  return value === undefined || value === null ? '-' : Number(value).toFixed(2);
+  return value === undefined || value === null ? '-' : value.toFixed(2);
 }
 
 /** 格式化 HRM 天数 */
 export function formatHrmDays(value?: null | number): string {
-  return Number(value || 0)
+  return (value || 0)
     .toFixed(2)
     .replace(/\.00$/, '')
     .replace(/(\.\d)0$/, '$1');
@@ -150,7 +148,7 @@ export function formatHrmDateTime(
   if (value === undefined || value === null || value === '') {
     return '-';
   }
-  return String(formatDateTime(value));
+  return formatDateTime(value);
 }
 
 /** 格式化 HRM 日期 */
@@ -192,7 +190,7 @@ export function formatHrmMonth(value?: Date | null | number | string): string {
   if (value === undefined || value === null || value === '') {
     return '-';
   }
-  const text = String(formatDateTime(value));
+  const text = formatDateTime(value);
   return text.length >= 7 ? text.slice(0, 7) : text;
 }
 
@@ -261,7 +259,7 @@ export function formatHrmEmployeeTeachingMethod(value?: null | number): string {
 
 /** 格式化带千分位的 HRM 金额 */
 export function formatHrmMoneyWithThousands(value?: null | number): string {
-  return Number(value || 0).toLocaleString('zh-CN', {
+  return (value || 0).toLocaleString('zh-CN', {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2,
   });

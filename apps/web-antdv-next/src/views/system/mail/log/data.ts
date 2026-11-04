@@ -173,7 +173,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
       field: 'createTime',
       label: '创建时间',
       render: (val) => {
-        return formatDateTime(val) as string;
+        return formatDateTime(val);
       },
     },
     {
@@ -254,7 +254,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'sendTime',
       label: '发送时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'sendMessageId',

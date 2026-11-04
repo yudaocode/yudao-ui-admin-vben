@@ -30,7 +30,7 @@ export function useDetailSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
   ];
 }
@@ -101,7 +101,7 @@ export function useDetailBaseSchema(): DescriptionItemSchema[] {
     {
       field: 'contactNextTime',
       label: '下次联系时间',
-      render: (val) => formatDateTime(val) as string,
+      render: (val) => formatDateTime(val),
     },
     {
       field: 'remark',

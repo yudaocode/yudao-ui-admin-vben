@@ -119,7 +119,7 @@ export function formatCallDuration(seconds: number | undefined): string {
 
 /** 秒数格式化为 mm:ss */
 export function formatSeconds(seconds?: number): string {
-  const value = Math.max(0, Number(seconds || 0));
+  const value = Math.max(0, seconds || 0);
   const minute = Math.floor(value / 60);
   const second = Math.floor(value % 60);
   return `${minute.toString().padStart(2, '0')}:${second.toString().padStart(2, '0')}`;

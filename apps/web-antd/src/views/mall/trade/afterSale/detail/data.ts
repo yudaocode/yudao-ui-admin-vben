@@ -89,7 +89,7 @@ export function useAfterSaleInfoSchema(): DescriptionItemSchema[] {
     {
       field: 'auditTime',
       label: '申请时间',
-      render: (val) => formatDate(val) as string,
+      render: (val) => formatDate(val),
     },
     {
       field: 'type',

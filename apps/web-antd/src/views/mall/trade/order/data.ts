@@ -343,7 +343,7 @@ export function usePriceFormSchema(): VbenFormSchema[] {
           const originalPrice = convertToInteger(values.payPrice);
           const adjustPrice = convertToInteger(values.adjustPrice);
           const newPrice = originalPrice + adjustPrice;
-          form.setFieldValue('newPayPrice', formatToFraction(newPrice));
+          void form.setFieldValue('newPayPrice', formatToFraction(newPrice));
         },
       },
     },

@@ -294,7 +294,7 @@ function handleUserChange(
   _movedKeys: (number | string)[],
 ) {
   // 使用 Set 来去重选中的用户ID
-  const ids = value.map(parseId).filter(isIdType);
+  const ids = value.map((id) => parseId(id)).filter((id) => isIdType(id));
   if (ids.length !== value.length) {
     ElMessage.warning('请选择有效用户');
     return;

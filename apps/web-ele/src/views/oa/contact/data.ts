@@ -13,7 +13,7 @@ import { OA_CONTACT_SCENE_TYPE } from '#/views/oa/utils/constants';
 /** 姓名拼音首字母选项 */
 const ALPHABET_OPTIONS = [
   { label: '全部', value: '' },
-  ...[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((value) => ({
+  ...Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ', (value) => ({
     label: value,
     value,
   })),

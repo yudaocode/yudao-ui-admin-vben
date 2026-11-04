@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'reimbursement/detail/:id(\\d+)',
+        path: String.raw`reimbursement/detail/:id(\d+)`,
         name: 'OaReimbursementDetail',
         component: () => import('#/views/oa/reimbursement/detail/index.vue'),
         meta: {
@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'overtime/detail/:id(\\d+)',
+        path: String.raw`overtime/detail/:id(\d+)`,
         name: 'OaOvertimeApplyDetail',
         component: () => import('#/views/oa/overtime/detail/index.vue'),
         meta: {
@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'leave/detail/:id(\\d+)',
+        path: String.raw`leave/detail/:id(\d+)`,
         name: 'OaLeaveApplyDetail',
         component: () => import('#/views/oa/leave/detail/index.vue'),
         meta: {
@@ -37,7 +37,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'regular/detail/:id(\\d+)',
+        path: String.raw`regular/detail/:id(\d+)`,
         name: 'OaRegularApplyDetail',
         component: () => import('#/views/oa/regular/detail/index.vue'),
         meta: {
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'resign/detail/:id(\\d+)',
+        path: String.raw`resign/detail/:id(\d+)`,
         name: 'OaResignApplyDetail',
         component: () => import('#/views/oa/resign/detail/index.vue'),
         meta: {
@@ -55,7 +55,7 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'discussion/detail/:id(\\d+)',
+        path: String.raw`discussion/detail/:id(\d+)`,
         name: 'OaDiscussionDetail',
         component: () => import('#/views/oa/discussion/detail/index.vue'),
         meta: {

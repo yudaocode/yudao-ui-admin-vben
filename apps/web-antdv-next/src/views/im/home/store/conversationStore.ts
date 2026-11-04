@@ -1342,7 +1342,7 @@ export const useConversationStore = defineStore('imConversationStore', {
     /** 调度草稿保存 */
     scheduleConversationDraftSave(conversation: Conversation): void {
       pendingDraftConversations.set(conversation, getDb());
-      saveDraftConversationListDebounced();
+      void saveDraftConversationListDebounced();
     },
 
     /** 立即保存草稿 */

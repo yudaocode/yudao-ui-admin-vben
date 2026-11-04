@@ -48,7 +48,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         // 笔记优先级只开放一般和重要
         options: getDictOptions(DICT_TYPE.OA_PRIORITY, 'number').filter(
-          (item) => Number(item.value) <= OA_PRIORITY.IMPORTANT,
+          (item) => item.value <= OA_PRIORITY.IMPORTANT,
         ),
         placeholder: '请选择优先级',
       },
@@ -226,7 +226,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         // 笔记优先级只开放一般和重要
         options: getDictOptions(DICT_TYPE.OA_PRIORITY, 'number').filter(
-          (item) => Number(item.value) <= OA_PRIORITY.IMPORTANT,
+          (item) => item.value <= OA_PRIORITY.IMPORTANT,
         ),
         allowClear: true,
         placeholder: '请选择优先级',

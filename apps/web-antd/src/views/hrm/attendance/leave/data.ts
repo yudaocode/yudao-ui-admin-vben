@@ -136,7 +136,11 @@ export function useGridColumns(): VxeTableGridOptions<HrmAttendanceLeaveApi.Atte
 
 /** 构建列表查询参数 */
 export function buildLeaveQueryParams(formValues: Record<string, unknown>) {
-  const month = String(formValues.month || formatDate(new Date(), 'YYYY-MM'));
+  // 月份选择器 valueFormat 为 YYYY-MM；未选择时默认当前月
+  const month =
+    typeof formValues.month === 'string' && formValues.month
+      ? formValues.month
+      : formatDate(new Date(), 'YYYY-MM');
   const { employeeKeyword, deptIds, types, approvalStatus } = formValues;
   return {
     employeeKeyword,

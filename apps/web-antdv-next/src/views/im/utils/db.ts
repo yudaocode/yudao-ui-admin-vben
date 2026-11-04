@@ -474,10 +474,10 @@ export class DbClient {
     return item?.value;
   }
 
-  /** 写入记录 */
-  async put<T>(
+  /** 写入记录；写入前统一转为 IndexedDB 可克隆对象 */
+  async put(
     storeName: DbStoreName,
-    value: T,
+    value: unknown,
     tx?: DbTransaction,
   ): Promise<void> {
     if (tx) {
@@ -490,16 +490,13 @@ export class DbClient {
   }
 
   /** 写入设置 */
-  async setSetting<T>(
+  async setSetting(
     key: string,
-    value: T,
+    value: unknown,
     tx?: DbTransaction,
   ): Promise<void> {
-    await this.put<SettingDO<T>>(
-      'settings',
-      { key, value, updateTime: Date.now() },
-      tx,
-    );
+    const setting: SettingDO = { key, value, updateTime: Date.now() };
+    await this.put('settings', setting, tx);
   }
 
   /** 执行事务 */

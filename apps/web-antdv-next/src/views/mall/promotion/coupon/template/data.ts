@@ -278,11 +278,14 @@ export function useFormSchema(): VbenFormSchema[] {
               const categoryIds = Array.isArray(values.productCategoryIds)
                 ? values.productCategoryIds
                 : [values.productCategoryIds];
-              form.setFieldValue('productScopeValues', categoryIds);
+              void form.setFieldValue('productScopeValues', categoryIds);
               break;
             }
             case PromotionProductScopeEnum.SPU.scope: {
-              form.setFieldValue('productScopeValues', values.productSpuIds);
+              void form.setFieldValue(
+                'productScopeValues',
+                values.productSpuIds,
+              );
               break;
             }
           }

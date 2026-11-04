@@ -13,7 +13,7 @@ import { getSimpleUserList } from '#/api/system/user';
 
 /** 关联数据 */
 let userList: SystemUserApi.User[] = [];
-getSimpleUserList().then((data) => (userList = data));
+void getSimpleUserList().then((data) => (userList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {

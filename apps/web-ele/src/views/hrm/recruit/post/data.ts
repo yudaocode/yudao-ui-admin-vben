@@ -178,8 +178,7 @@ export function useGridColumns(): VxeTableGridOptions<HrmRecruitPostApi.RecruitP
       field: 'latestEntryTime',
       title: '最迟到岗时间',
       width: 120,
-      formatter: ({ cellValue }) =>
-        cellValue ? (formatDate(cellValue) as string) : '-',
+      formatter: ({ cellValue }) => (cellValue ? formatDate(cellValue) : '-'),
     },
     { field: 'ownerEmployeeName', title: '招聘负责人', minWidth: 120 },
     { field: 'postTypeName', title: '职位类型', minWidth: 120 },
@@ -546,7 +545,7 @@ export function useBasicInfoSchema(): DescriptionItemSchema[] {
     {
       field: 'latestEntryTime',
       label: '最迟到岗时间',
-      render: (val) => (val ? (formatDate(val) as string) : '-'),
+      render: (val) => (val ? formatDate(val) : '-'),
     },
     {
       field: 'emergencyLevel',
@@ -585,7 +584,7 @@ export function useBasicInfoSchema(): DescriptionItemSchema[] {
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => (val ? (formatDate(val) as string) : '-'),
+      render: (val) => (val ? formatDate(val) : '-'),
     },
   ];
 }

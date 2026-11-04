@@ -37,7 +37,7 @@ export const schema: VbenFormSchema[] = [
       show: (values) => values.notifyEnabled,
       trigger(values, actions) {
         if (!values.notifyEnabled) {
-          actions.setFieldValue('notifyDays', undefined);
+          void actions.setFieldValue('notifyDays', undefined);
         }
       },
     },

@@ -86,7 +86,7 @@ export function filterSalaryOptions(
     (item) =>
       !item.systemFlag &&
       (isSalaryOptionCategory(item) ||
-        (!!item.enabled && enabledCategoryCodes.has(item.parentCode!))),
+        (item.enabled && enabledCategoryCodes.has(item.parentCode))),
   );
 }
 

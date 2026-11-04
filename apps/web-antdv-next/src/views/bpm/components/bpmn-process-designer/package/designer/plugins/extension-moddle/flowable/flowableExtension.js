@@ -88,6 +88,9 @@ FlowableModdleExtension.prototype.canCloneProperty = function (
       'bpmn:MessageEventDefinition',
     );
   }
+
+  // 其余属性不干预，交由 moddleCopy 默认规则判断
+  return undefined;
 };
 
 // module.exports = FlowableModdleExtension;

@@ -22,9 +22,7 @@ defineEmits<{
   toggleSpeaker: [];
 }>();
 
-const setLocalVideoRef = useMediaStreamElement<HTMLVideoElement>(
-  () => props.localStream,
-);
+const setLocalVideoRef = useMediaStreamElement(() => props.localStream);
 </script>
 
 <template>

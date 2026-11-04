@@ -65,19 +65,20 @@ interface MediaTypeHandler {
 export const mediaTypeHandlers: Partial<Record<number, MediaTypeHandler>> = {
   [ImContentType.IMAGE]: {
     kind: '图片',
-    build: (_file, url) => ({ url }) as ImageMessage,
+    build: (_file, url) => ({ url }),
     extractResendContext: () => ({}),
   },
   [ImContentType.FILE]: {
     kind: '文件',
-    build: (file, url) =>
-      ({ url, name: file.name, size: file.size }) as FileMessage,
+    build: (file, url) => ({ url, name: file.name, size: file.size }),
     extractResendContext: () => ({}),
   },
   [ImContentType.VOICE]: {
     kind: '语音',
-    build: (_file, url, context) =>
-      ({ url, duration: context.voiceDuration ?? 0 }) as AudioMessage,
+    build: (_file, url, context) => ({
+      url,
+      duration: context.voiceDuration ?? 0,
+    }),
     extractResendContext: (oldContent) => {
       const old = parseMessage<AudioMessage>(oldContent);
       return { voiceDuration: old?.duration ?? 0 };
@@ -85,15 +86,14 @@ export const mediaTypeHandlers: Partial<Record<number, MediaTypeHandler>> = {
   },
   [ImContentType.VIDEO]: {
     kind: '视频',
-    build: (file, url, context) =>
-      ({
-        url,
-        coverUrl: context.videoCoverUrl,
-        duration: context.videoProbe?.duration,
-        width: context.videoProbe?.width,
-        height: context.videoProbe?.height,
-        size: file.size,
-      }) as VideoMessage,
+    build: (file, url, context) => ({
+      url,
+      coverUrl: context.videoCoverUrl,
+      duration: context.videoProbe?.duration,
+      width: context.videoProbe?.width,
+      height: context.videoProbe?.height,
+      size: file.size,
+    }),
     extractResendContext: (oldContent) => {
       const old = parseMessage<VideoMessage>(oldContent);
       // 旧 coverUrl 是 blob 说明上传期失败（cover 没传成功），不复用；真实 URL 直接复用，省一次封面上传
@@ -369,7 +369,11 @@ export const useMediaUploader = () => {
       return '';
     }
     // 体积上限拦截：大文件浏览器内截帧 / 解码可致 OOM；超限直接 warning，不进入占位 / 上传链路
-    if (!ensureMediaSizeWithinLimit(opts.file, opts.type, message.warning)) {
+    if (
+      !ensureMediaSizeWithinLimit(opts.file, opts.type, (text) =>
+        message.warning(text),
+      )
+    ) {
       return '';
     }
     const context = opts.context ?? {};

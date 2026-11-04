@@ -50,7 +50,10 @@ const currencyList = computed(() =>
 /** 选中变化 */
 function handleChange(value: unknown) {
   if (Array.isArray(value)) {
-    emit('update:modelValue', value.map(parseId).filter(isIdType));
+    emit(
+      'update:modelValue',
+      value.map((id) => parseId(id)).filter((id) => isIdType(id)),
+    );
     return;
   }
   emit('update:modelValue', parseId(value));

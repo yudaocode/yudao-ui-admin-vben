@@ -19,12 +19,8 @@ const props = defineProps<{
   speakerEnabled: boolean;
 }>();
 
-const setVideoRef = useMediaStreamElement<HTMLVideoElement>(
-  () => props.participant.videoStream,
-);
-const setAudioRef = useMediaStreamElement<HTMLAudioElement>(
-  () => props.participant.audioStream,
-);
+const setVideoRef = useMediaStreamElement(() => props.participant.videoStream);
+const setAudioRef = useMediaStreamElement(() => props.participant.audioStream);
 </script>
 
 <template>

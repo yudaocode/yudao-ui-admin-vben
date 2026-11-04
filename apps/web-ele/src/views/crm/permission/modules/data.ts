@@ -7,6 +7,11 @@ import { getDictOptions } from '@vben/hooks';
 import { BizTypeEnum, PermissionLevelEnum } from '#/api/crm/permission';
 import { getSimpleUserList } from '#/api/system/user';
 
+/** 是否为非负责人的权限级别（负责人级别不可在此选择） */
+function isNonOwnerLevel(level: PermissionLevelEnum) {
+  return level !== PermissionLevelEnum.OWNER;
+}
+
 /** 新增/修改的表单 */
 export function useTransferFormSchema(): VbenFormSchema[] {
   return [
@@ -55,14 +60,14 @@ export function useTransferFormSchema(): VbenFormSchema[] {
         options: getDictOptions(
           DICT_TYPE.CRM_PERMISSION_LEVEL,
           'number',
-        ).filter((dict) => dict.value !== PermissionLevelEnum.OWNER),
+        ).filter((dict) => isNonOwnerLevel(dict.value)),
       },
       dependencies: {
         triggerFields: ['oldOwnerHandler'],
         show: (values) => values.oldOwnerHandler,
         trigger(values, actions) {
           if (!values.oldOwnerHandler) {
-            actions.setFieldValue('oldOwnerPermissionLevel', undefined);
+            void actions.setFieldValue('oldOwnerPermissionLevel', undefined);
           }
         },
       },
@@ -135,7 +140,7 @@ export function useFormSchema(): VbenFormSchema[] {
         options: getDictOptions(
           DICT_TYPE.CRM_PERMISSION_LEVEL,
           'number',
-        ).filter((dict) => dict.value !== PermissionLevelEnum.OWNER),
+        ).filter((dict) => isNonOwnerLevel(dict.value)),
       },
       rules: 'required',
     },

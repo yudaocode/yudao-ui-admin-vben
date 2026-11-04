@@ -268,7 +268,7 @@ async function handleUserSearch(direction: string, value: string) {
 
 /** 处理用户选择变化 */
 function handleUserChange(targetKeys: string[]) {
-  const ids = targetKeys.map(parseId).filter(isIdType);
+  const ids = targetKeys.map((id) => parseId(id)).filter((id) => isIdType(id));
   if (ids.length !== targetKeys.length) {
     message.warning('请选择有效用户');
     return;

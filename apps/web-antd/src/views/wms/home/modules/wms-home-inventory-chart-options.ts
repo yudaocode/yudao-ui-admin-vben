@@ -22,7 +22,7 @@ export function buildInventoryChartItemList(
   return (list || [])
     .map((item) => ({
       name: item.name || emptyName,
-      value: Number(item.quantity || 0),
+      value: item.quantity || 0,
     }))
     .filter((item) => item.value > 0);
 }

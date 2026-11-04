@@ -161,7 +161,7 @@ function buildVoucherPageHtml(companyName: string, page: VoucherPrintPage) {
       <table class="voucher-table">
         <thead><tr><th>摘要</th><th>会计科目</th><th>借方金额</th><th>贷方金额</th></tr></thead>
         <tbody>${entryRows}</tbody>
-        <tfoot><tr><td colspan="2">合计：${escapeHtml(formatUppercaseMoney(Number(voucher.debitAmount)))}</td><td class="money">${escapeHtml(formatMoney(voucher.debitAmount))}</td><td class="money">${escapeHtml(formatMoney(voucher.creditAmount))}</td></tr></tfoot>
+        <tfoot><tr><td colspan="2">合计：${escapeHtml(formatUppercaseMoney(voucher.debitAmount))}</td><td class="money">${escapeHtml(formatMoney(voucher.debitAmount))}</td><td class="money">${escapeHtml(formatMoney(voucher.creditAmount))}</td></tr></tfoot>
       </table>
       <div class="voucher-footer"><span>财务主管：</span><span>审核：${escapeHtml(voucher.reviewerUserName)}</span><span>出纳：</span><span>制单：${escapeHtml(voucher.creatorUserName)}</span></div>
     </section>

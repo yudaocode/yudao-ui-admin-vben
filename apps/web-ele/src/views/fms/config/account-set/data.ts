@@ -386,7 +386,7 @@ export function useAddMemberFormSchema(): VbenFormSchema[] {
       rules: 'required',
       componentProps: {
         options: getDictOptions(DICT_TYPE.FMS_ACCOUNT_USER_LEVEL, 'number').map(
-          ({ label, value }) => ({ label, value: Number(value) }),
+          ({ label, value }) => ({ label, value }),
         ),
         placeholder: '请选择权限级别',
       },

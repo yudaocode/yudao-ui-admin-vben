@@ -815,7 +815,7 @@ export const useMessageStore = defineStore('imMessageStore', {
       tx: DbTransaction,
       staged: undefined | { conversation: Conversation; messages: Message[] },
       db: DbClient,
-    ) {
+    ): Promise<null | RecallMessageProjection> {
       // 1. 定位被撤回的原消息和会话
       const messageId = parseRecallMessageId(recallSignalContent);
       if (!messageId) {
@@ -889,7 +889,7 @@ export const useMessageStore = defineStore('imMessageStore', {
         conversation,
         message: recalledMessage,
         cachedMessage,
-      } as RecallMessageProjection;
+      };
     },
 
     /** 把拉取批次投入涉及会话的串行写 lane */
@@ -1770,7 +1770,7 @@ export const useMessageStore = defineStore('imMessageStore', {
           if (
             message.selfSend &&
             message.id &&
-            compareId(message.id, options.privateReadMaxId!) <= 0 &&
+            compareId(message.id, options.privateReadMaxId) <= 0 &&
             message.receiptStatus === ImMessageReceiptStatus.PENDING
           ) {
             changed.push({
@@ -1792,7 +1792,7 @@ export const useMessageStore = defineStore('imMessageStore', {
             (message) =>
               message.selfSend &&
               !!message.id &&
-              compareId(message.id, options.privateReadMaxId!) <= 0 &&
+              compareId(message.id, options.privateReadMaxId) <= 0 &&
               message.receiptStatus === ImMessageReceiptStatus.PENDING,
           )
           .forEach((message) => {

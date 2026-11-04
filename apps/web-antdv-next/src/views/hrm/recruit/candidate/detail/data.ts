@@ -19,7 +19,7 @@ export function useHeaderSchema(): DescriptionItemSchema[] {
     {
       field: 'interviewTime',
       label: '当前面试',
-      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+      render: (val) => (val ? formatDateTime(val) : '-'),
     },
   ];
 }
@@ -91,19 +91,19 @@ export function useRecruitInfoSchema(): DescriptionItemSchema[] {
     {
       field: 'statusUpdateTime',
       label: '状态更新时间',
-      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+      render: (val) => (val ? formatDateTime(val) : '-'),
     },
     {
       field: 'entryTime',
       label: '入职时间',
-      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+      render: (val) => (val ? formatDateTime(val) : '-'),
     },
     { field: 'eliminate', label: '淘汰原因', span: 2 },
     { field: 'creatorName', label: '创建人' },
     {
       field: 'createTime',
       label: '创建时间',
-      render: (val) => (val ? (formatDateTime(val) as string) : '-'),
+      render: (val) => (val ? formatDateTime(val) : '-'),
     },
   ];
 }

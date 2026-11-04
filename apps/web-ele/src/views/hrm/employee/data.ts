@@ -39,7 +39,7 @@ import {
 } from '#/views/hrm/utils/constants';
 
 /** 从后台用户批量建档字段 */
-export function useCreateFromUserGridColumns(): VxeTableGridOptions<any>['columns'] {
+export function useCreateFromUserGridColumns(): VxeTableGridOptions['columns'] {
   return [
     {
       showOverflow: false,
@@ -902,16 +902,14 @@ export function useEmployeeEntryFormSchema(
   ).filter((item) =>
     formType === 'update'
       ? true
-      : HRM_EMPLOYEE_CREATE_ENTRY_STATUSES.includes(
-          Number(item.value) as 1 | 2,
-        ),
+      : HRM_EMPLOYEE_CREATE_ENTRY_STATUSES.includes(item.value as 1 | 2),
   );
   const nonFormalStatusOptions = getDictOptions(
     DICT_TYPE.HRM_EMPLOYEE_STATUS,
     'number',
   ).filter((item) =>
     HRM_EMPLOYEE_NON_FORMAL_STATUSES.includes(
-      Number(item.value) as 3 | 4 | 5 | 6 | 7 | 8,
+      item.value as 3 | 4 | 5 | 6 | 7 | 8,
     ),
   );
   const allFields: VbenFormSchema[] = [

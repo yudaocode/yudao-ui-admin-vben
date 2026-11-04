@@ -114,7 +114,7 @@ export function formatPast(
       typeof param === 'string' || typeof param === 'object'
         ? new Date(param)
         : param;
-    return formatDate(date, format) as string;
+    return formatDate(date, format);
   }
 }
 
@@ -158,7 +158,7 @@ export function formatPast2(ms: number): string {
   if (minute > 0) {
     return `${minute} 分钟`;
   }
-  return second > 0 ? `${second} 秒` : `${0} 秒`;
+  return second > 0 ? `${second} 秒` : `0 秒`;
 }
 
 /**

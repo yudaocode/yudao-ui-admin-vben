@@ -131,10 +131,10 @@ function buildDeptList(
       ...dept,
       directStatistics,
       totalStatistics: { ...directStatistics },
-    } as HrmDeptRow;
+    };
   });
 
-  const tree = handleTree(withDirect) as HrmDeptRow[];
+  const tree = handleTree(withDirect);
   const totalMap = new Map<number, EmployeeStatistics>();
 
   function computeTotal(node: HrmDeptRow): EmployeeStatistics {

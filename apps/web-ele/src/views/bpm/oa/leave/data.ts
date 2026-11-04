@@ -190,12 +190,12 @@ export function useDetailFormSchema(): DescriptionItemSchema[] {
     {
       label: '开始时间',
       field: 'startTime',
-      render: (val) => formatDate(val) as string,
+      render: (val) => formatDate(val),
     },
     {
       label: '结束时间',
       field: 'endTime',
-      render: (val) => formatDate(val) as string,
+      render: (val) => formatDate(val),
     },
     {
       label: '原因',

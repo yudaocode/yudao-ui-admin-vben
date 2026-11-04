@@ -79,7 +79,7 @@ export function formatUppercaseMoney(value: number) {
 /** 格式化非空金额 */
 export function formatMoney(value?: number) {
   if (!value) return '';
-  return Number(value).toLocaleString('zh-CN', {
+  return value.toLocaleString('zh-CN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -87,7 +87,7 @@ export function formatMoney(value?: number) {
 
 /** 格式化金额，空值按 0 展示 */
 export function formatAmount(value?: number) {
-  return Number(value || 0).toLocaleString('zh-CN', {
+  return (value || 0).toLocaleString('zh-CN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -96,13 +96,13 @@ export function formatAmount(value?: number) {
 /** 格式化数量 */
 export function formatQuantity(value?: number, enabled = true) {
   return enabled
-    ? Number(value || 0).toLocaleString('zh-CN', { maximumFractionDigits: 4 })
+    ? (value || 0).toLocaleString('zh-CN', { maximumFractionDigits: 4 })
     : '-';
 }
 
 /** 格式化汇率 */
 export function formatExchangeRate(value?: number) {
-  return Number(value || 0).toLocaleString('zh-CN', {
+  return (value || 0).toLocaleString('zh-CN', {
     useGrouping: false,
     minimumFractionDigits: 2,
     maximumFractionDigits: 6,
@@ -111,7 +111,7 @@ export function formatExchangeRate(value?: number) {
 
 /** 格式化科目余额 */
 export function formatSubjectBalance(value?: number, direction?: string) {
-  return `${direction ? `${direction} ` : ''}${Number(value || 0).toFixed(2)}`;
+  return `${direction ? `${direction} ` : ''}${(value || 0).toFixed(2)}`;
 }
 
 /** 格式化科目展示名称 */

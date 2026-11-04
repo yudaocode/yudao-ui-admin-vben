@@ -63,7 +63,7 @@ export function getPointActivity(id: number) {
 /** 查询积分商城活动列表，基于活动编号数组 */
 export function getPointActivityListByIds(ids: number[]) {
   return requestClient.get<MallPointActivityApi.PointActivity[]>(
-    `/promotion/point-activity/list-by-ids?ids=${ids}`,
+    `/promotion/point-activity/list-by-ids?ids=${ids.join(',')}`,
   );
 }
 

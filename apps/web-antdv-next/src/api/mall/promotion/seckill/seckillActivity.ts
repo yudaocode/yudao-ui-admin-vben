@@ -46,7 +46,7 @@ export function getSeckillActivityPage(params: PageParam) {
 /** 查询秒杀活动列表，基于活动编号数组 */
 export function getSeckillActivityListByIds(ids: number[]) {
   return requestClient.get<MallSeckillActivityApi.SeckillActivity[]>(
-    `/promotion/seckill-activity/list-by-ids?ids=${ids}`,
+    `/promotion/seckill-activity/list-by-ids?ids=${ids.join(',')}`,
   );
 }
 

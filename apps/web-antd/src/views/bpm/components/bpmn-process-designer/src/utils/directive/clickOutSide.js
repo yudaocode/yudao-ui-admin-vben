@@ -6,8 +6,9 @@ export default {
   bind(el, binding, vnode) {
     const ele = el;
     const documentHandler = (e) => {
+      // 作为 addEventListener 监听器，返回值不生效，提前结束即可
       if (!vnode.context || ele.contains(e.target)) {
-        return false;
+        return;
       }
       // 调用指令回调
       if (binding.expression) {

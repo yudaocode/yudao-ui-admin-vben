@@ -106,7 +106,7 @@ export function useEmoji() {
     return emojiList.map((item) => ({
       url: getEmojiFileByName(item.name),
       name: item.name,
-    })) as Emoji[];
+    }));
   }
 
   function getEmojiFileByName(name: string) {

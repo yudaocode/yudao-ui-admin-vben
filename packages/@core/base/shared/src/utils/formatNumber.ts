@@ -32,19 +32,19 @@ export function floatToFixed2(num: number | string | undefined): string {
   let str = '0.00';
   if (isUndefined(num)) return str;
   const f = formatToFraction(num);
-  const decimalPart = f.toString().split('.')[1];
+  const decimalPart = f.split('.')[1];
   const len = decimalPart ? decimalPart.length : 0;
   switch (len) {
     case 0: {
-      str = `${f.toString()}.00`;
+      str = `${f}.00`;
       break;
     }
     case 1: {
-      str = `${f.toString()}0`;
+      str = `${f}0`;
       break;
     }
     case 2: {
-      str = f.toString();
+      str = f;
       break;
     }
   }

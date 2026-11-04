@@ -110,7 +110,7 @@ export async function preloadDicts(): Promise<void> {
   if (hasDictCache()) {
     // 有缓存不阻塞；刚刚加载过（例如登录成功时）不重复请求
     if (!inflightLoad && Date.now() - lastLoadedAt >= DICT_RETRY_INTERVAL) {
-      startDictLoad();
+      void startDictLoad();
     }
     return;
   }
@@ -118,10 +118,13 @@ export async function preloadDicts(): Promise<void> {
   // 等待中的请求可能被 refreshDict()/$reset 废弃（如切换租户），此时继续等待更新的请求；
   // 加载失败时直接放行，之后由同步读取按间隔重试
   if (!inflightLoad) {
-    startDictLoad();
+    void startDictLoad();
   }
-  while (inflightLoad && !hasDictCache()) {
-    await inflightLoad;
+  // 每次 await 后重新读取模块级 inflightLoad：等待期间它可能被替代或结束置空
+  let pending = inflightLoad;
+  while (pending && !hasDictCache()) {
+    await pending;
+    pending = inflightLoad;
   }
   // 等到的请求成功但结果被 $reset 废弃（如登出后扫码登录），缓存仍为空：重新加载一次
   // 若此时已登出，startDictLoad 不会发请求
@@ -164,9 +167,11 @@ export async function refreshDicts(
   // 本次加载结束前可能被更新的刷新废弃（结果被丢弃），此时 inflightLoad 是替代它的加载：
   // 缓存仍为空时继续等待，避免调用方（如租户切换后 refreshTab）在缓存为空时重建 schema。
   // 只等待已发起的请求，不额外发起加载；替代加载结束（含空结果、失败）即放行
-  while (!hasDictCache() && inflightLoad && inflightLoad !== current) {
-    current = inflightLoad;
+  let next = inflightLoad;
+  while (!hasDictCache() && next && next !== current) {
+    current = next;
     await current;
+    next = inflightLoad;
   }
 }
 
@@ -179,7 +184,7 @@ function ensureDictsLoaded() {
     return;
   }
   // 未登录时 startDictLoad 不发请求
-  startDictLoad();
+  void startDictLoad();
 }
 
 function getDictItems(dictType: string): DictItem[] {

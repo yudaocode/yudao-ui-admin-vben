@@ -23,9 +23,9 @@ export function getSalaryOptionNumberValue(
   employeeRecord: HrmSalaryMonthEmployeeRecordApi.SalaryMonthEmployeeRecord,
   optionCode: number,
 ) {
-  return Number(
+  return (
     employeeRecord.optionValues?.find((option) => option.code === optionCode)
-      ?.value || 0,
+      ?.value || 0
   );
 }
 
@@ -39,11 +39,11 @@ export function updateSalaryOptionValue(
     (option) => option.code === optionCode,
   );
   if (optionValue) {
-    optionValue.value = Number(value || 0);
+    optionValue.value = value || 0;
     return;
   }
   employeeRecord.optionValues = [
     ...(employeeRecord.optionValues || []),
-    { code: optionCode, value: Number(value || 0) },
+    { code: optionCode, value: value || 0 },
   ];
 }

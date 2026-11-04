@@ -51,7 +51,7 @@ const auxiliaryItemList = ref<FmsAuxiliaryItemApi.AuxiliaryItemOption[]>([]); //
 /** 选中变化 */
 function handleChange(value: unknown) {
   if (Array.isArray(value)) {
-    const itemIds = value.map(parseId).filter(isIdType);
+    const itemIds = value.map((id) => parseId(id)).filter((id) => isIdType(id));
     emit('update:modelValue', itemIds);
     emit(
       'change',

@@ -17,6 +17,7 @@ export function registerComponent(componentPath: string) {
       return defineAsyncComponent(modules[item] as any);
     }
   }
+  return undefined;
 }
 
 export const getRawRoute = (

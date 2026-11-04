@@ -11,7 +11,7 @@ import { getRangePickerDefaultProps } from '#/utils';
 
 /** 关联数据 */
 let tenantPackageList: SystemTenantPackageApi.TenantPackage[] = [];
-getTenantPackageList().then((data) => (tenantPackageList = data));
+void getTenantPackageList().then((data) => (tenantPackageList = data));
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
