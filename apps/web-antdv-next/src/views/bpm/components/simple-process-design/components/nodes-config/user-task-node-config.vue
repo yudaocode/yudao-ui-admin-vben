@@ -66,6 +66,7 @@ import {
   useNodeName,
   useWatchNode,
 } from '../../helpers';
+import FieldsPermissionSetting from './modules/fields-permission-setting.vue';
 import UserTaskListener from './modules/user-task-listener.vue';
 import { convertTimeUnit, getApproveTypeText } from './utils';
 
@@ -135,6 +136,7 @@ const {
   fieldsPermissionConfig,
   formFieldOptions,
   getNodeConfigFormFields,
+  getFieldsPermission,
 } = useFormFieldsPermission(FieldPermissionType.READ);
 
 // 表单内用户字段选项, 必须是必填和用户选择器
@@ -363,7 +365,7 @@ async function saveConfig() {
   currentNode.value.assignStartUserHandlerType =
     configForm.value.assignStartUserHandlerType;
   // 设置表单权限
-  currentNode.value.fieldsPermission = fieldsPermissionConfig.value;
+  currentNode.value.fieldsPermission = getFieldsPermission();
   // 设置按钮权限
   currentNode.value.buttonsSetting = buttonsSetting.value;
   // 创建任务监听器
@@ -608,19 +610,6 @@ function useTimeoutHandler() {
     isoTimeDuration,
     cTimeoutMaxRemindCount,
   };
-}
-
-/** 批量更新权限 */
-function updatePermission(type: string) {
-  fieldsPermissionConfig.value.forEach((field) => {
-    if (type === 'READ') {
-      field.permission = FieldPermissionType.READ;
-    } else if (type === 'WRITE') {
-      field.permission = FieldPermissionType.WRITE;
-    } else {
-      field.permission = FieldPermissionType.NONE;
-    }
-  });
 }
 
 // 在组件初始化时记录初始位置
@@ -1161,78 +1150,10 @@ onMounted(() => {
         key="fields"
         v-if="formType === BpmModelFormType.NORMAL"
       >
-        <div class="p-1">
-          <div class="mb-4 text-base font-bold">字段权限</div>
-
-          <!-- 表头 -->
-          <Row class="border border-gray-200 px-4 py-3">
-            <Col :span="8" class="font-bold">字段名称</Col>
-            <Col :span="16">
-              <Row>
-                <Col :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('READ')"
-                  >
-                    只读
-                  </span>
-                </Col>
-                <Col :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('WRITE')"
-                  >
-                    可编辑
-                  </span>
-                </Col>
-                <Col :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('NONE')"
-                  >
-                    隐藏
-                  </span>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-
-          <!-- 表格内容 -->
-          <div v-for="(item, index) in fieldsPermissionConfig" :key="index">
-            <Row class="border border-t-0 border-gray-200 px-4 py-2">
-              <Col :span="8" class="flex items-center truncate">
-                {{ item.title }}
-              </Col>
-              <Col :span="16">
-                <RadioGroup v-model:value="item.permission" class="w-full">
-                  <Row>
-                    <Col :span="8" class="flex items-center justify-center">
-                      <Radio
-                        :value="FieldPermissionType.READ"
-                        size="large"
-                        :label="FieldPermissionType.READ"
-                      />
-                    </Col>
-                    <Col :span="8" class="flex items-center justify-center">
-                      <Radio
-                        :value="FieldPermissionType.WRITE"
-                        size="large"
-                        :label="FieldPermissionType.WRITE"
-                      />
-                    </Col>
-                    <Col :span="8" class="flex items-center justify-center">
-                      <Radio
-                        :value="FieldPermissionType.NONE"
-                        size="large"
-                        :label="FieldPermissionType.NONE"
-                      />
-                    </Col>
-                  </Row>
-                </RadioGroup>
-              </Col>
-            </Row>
-          </div>
-        </div>
+        <FieldsPermissionSetting
+          v-model="fieldsPermissionConfig"
+          title="字段权限"
+        />
       </TabPane>
       <!-- antdv-next 的 TabPane 未声明 props，需要使用 camelCase 的 forceRender，才能预挂载以校验监听器配置 -->
       <TabPane tab="监听器" key="listener" v-bind="{ forceRender: true }">

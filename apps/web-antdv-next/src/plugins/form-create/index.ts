@@ -141,6 +141,18 @@ const ModalCompat = defineComponent({
   },
 });
 
+/**
+ * @form-create/antd-designer 的扩展组件（表格表单等）只注册在其内置的 ant-design-vue 驱动上，
+ * 这里同步注册到 antdv-next 驱动，设计器生成的规则才能在运行时表单中渲染
+ */
+const DESIGNER_COMPONENTS = [
+  'FcEditor',
+  'FcTable',
+  'FcTitle',
+  'SignaturePad',
+  'TableForm',
+];
+
 const components = [
   Alert,
   Badge,
@@ -188,6 +200,9 @@ export function setupFormCreate(app: App) {
     app.component(component.name as string, component);
   });
   app.component('AMessage', message);
+  DESIGNER_COMPONENTS.forEach((name) => {
+    formCreate.component(name, FcDesigner.formCreate.component(name));
+  });
   formCreate.use(install);
   app.use(formCreate);
   app.use(FcDesigner);

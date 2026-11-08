@@ -30,6 +30,7 @@ import {
 } from 'element-plus';
 
 import { getSimpleUserList } from '#/api/system/user';
+import { FieldsPermissionSetting } from '#/views/bpm/components/simple-process-design';
 import {
   APPROVE_TYPE,
   ApproveType,
@@ -130,8 +131,12 @@ function useButtonsSetting() {
 
 // 字段权限
 const fieldsPermissionEl = ref<any[]>([]);
-const { formType, fieldsPermissionConfig, getNodeConfigFormFields } =
-  useFormFieldsPermission(FieldPermissionType.READ);
+const {
+  formType,
+  fieldsPermissionConfig,
+  getNodeConfigFormFields,
+  getFieldsPermission,
+} = useFormFieldsPermission(FieldPermissionType.READ);
 
 // 审批类型
 const approveType = ref({ value: ApproveType.USER });
@@ -242,16 +247,8 @@ const resetCustomConfigList = () => {
     const fieldsPermissionList = elExtensionElements.value.values?.filter(
       (ex: any) => ex.$type === `${prefix}:FieldsPermission`,
     );
-    fieldsPermissionEl.value = [];
-    getNodeConfigFormFields();
-    fieldsPermissionConfig.value.forEach((element: any) => {
-      element.permission =
-        fieldsPermissionList?.find((obj: any) => obj.field === element.field)
-          ?.permission ?? '1';
-      fieldsPermissionEl.value.push(
-        bpmnInstances().moddle.create(`${prefix}:FieldsPermission`, element),
-      );
-    });
+    getNodeConfigFormFields(fieldsPermissionList);
+    setFieldsPermissionEl();
   }
 
   // 是否需要签名
@@ -318,6 +315,18 @@ const updateAssignEmptyHandlerType = () => {
 const updateAssignEmptyUserIds = () => {
   assignEmptyUserIdsEl.value.value = assignEmptyUserIds.value.toString();
 
+  updateElementExtensions();
+};
+
+/** 设置字段权限的扩展元素：子表单的子字段，仅保存单独设置的权限 */
+const setFieldsPermissionEl = () => {
+  fieldsPermissionEl.value = getFieldsPermission().map((item) =>
+    bpmnInstances().moddle.create(`${prefix}:FieldsPermission`, item),
+  );
+};
+
+const updateFieldsPermission = () => {
+  setFieldsPermissionEl();
   updateElementExtensions();
 };
 
@@ -400,19 +409,6 @@ function findAllPredecessorsExcludingStart(elementId: string, modeler: any) {
 
   return [...predecessors]; // 返回前置节点数组
 }
-
-/** 批量更新权限 */
-const updatePermission = (type: string) => {
-  fieldsPermissionEl.value.forEach((field: any) => {
-    if (type === 'READ') {
-      field.permission = FieldPermissionType.READ;
-    } else if (type === 'WRITE') {
-      field.permission = FieldPermissionType.WRITE;
-    } else {
-      field.permission = FieldPermissionType.NONE;
-    }
-  });
-};
 
 const userOptions = ref<SystemUserApi.User[]>([]); // 用户列表
 
@@ -572,74 +568,11 @@ onMounted(async () => {
     </div>
 
     <ElDivider content-position="left">字段权限</ElDivider>
-    <div v-if="formType === BpmModelFormType.NORMAL" class="mt-2 text-sm">
-      <!-- 头部标题行 -->
-      <div
-        class="flex items-center justify-between border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-900"
-      >
-        <div class="w-28 text-left">字段名称</div>
-        <div class="flex flex-1 justify-between">
-          <span
-            class="inline-block w-24 cursor-pointer text-center hover:text-blue-500"
-            @click="updatePermission('READ')"
-          >
-            只读
-          </span>
-          <span
-            class="inline-block w-24 cursor-pointer text-center hover:text-blue-500"
-            @click="updatePermission('WRITE')"
-          >
-            可编辑
-          </span>
-          <span
-            class="inline-block w-24 cursor-pointer text-center hover:text-blue-500"
-            @click="updatePermission('NONE')"
-          >
-            隐藏
-          </span>
-        </div>
-      </div>
-
-      <!-- 字段权限行 -->
-      <div
-        v-for="(item, index) in fieldsPermissionEl"
-        :key="index"
-        class="flex items-center justify-between border border-t-0 border-slate-200 px-3 py-2 text-sm"
-      >
-        <div class="w-28 truncate text-left" :title="item.title">
-          {{ item.title }}
-        </div>
-        <ElRadioGroup v-model="item.permission" class="ml-7 w-full">
-          <div class="flex flex-1 items-center justify-center">
-            <ElRadio
-              :value="FieldPermissionType.READ"
-              size="large"
-              @change="updateElementExtensions"
-            >
-              <span></span>
-            </ElRadio>
-          </div>
-          <div class="flex flex-1 items-center justify-center">
-            <ElRadio
-              :value="FieldPermissionType.WRITE"
-              size="large"
-              @change="updateElementExtensions"
-            >
-              <span></span>
-            </ElRadio>
-          </div>
-          <div class="flex flex-1 items-center justify-center">
-            <ElRadio
-              :value="FieldPermissionType.NONE"
-              size="large"
-              @change="updateElementExtensions"
-            >
-              <span></span>
-            </ElRadio>
-          </div>
-        </ElRadioGroup>
-      </div>
-    </div>
+    <FieldsPermissionSetting
+      v-if="formType === BpmModelFormType.NORMAL"
+      v-model="fieldsPermissionConfig"
+      @change="updateFieldsPermission"
+    />
 
     <ElDivider content-position="left">是否需要签名</ElDivider>
     <ElFormItem prop="signEnable">

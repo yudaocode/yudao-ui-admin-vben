@@ -13,11 +13,7 @@ import { BpmModelFormType, BpmNodeTypeEnum } from '@vben/constants';
 import { IconifyIcon } from '@vben/icons';
 
 import {
-  Col,
   Input,
-  Radio,
-  RadioGroup,
-  Row,
   TabPane,
   Tabs,
   Tooltip,
@@ -30,6 +26,7 @@ import {
   useNodeName,
   useWatchNode,
 } from '../../helpers';
+import FieldsPermissionSetting from './modules/fields-permission-setting.vue';
 
 defineOptions({ name: 'StartUserNodeConfig' });
 
@@ -60,8 +57,12 @@ function setInputRef(el: unknown) {
 const activeTabName = ref('user');
 
 // 表单字段权限配置
-const { formType, fieldsPermissionConfig, getNodeConfigFormFields } =
-  useFormFieldsPermission(FieldPermissionType.WRITE);
+const {
+  formType,
+  fieldsPermissionConfig,
+  getNodeConfigFormFields,
+  getFieldsPermission,
+} = useFormFieldsPermission(FieldPermissionType.WRITE);
 
 function getUserNicknames(userIds: number[]): string {
   if (!userIds || userIds.length === 0) {
@@ -109,7 +110,7 @@ async function saveConfig() {
   currentNode.value.name = nodeName.value!;
   currentNode.value.showText = '已设置';
   // 设置表单权限
-  currentNode.value.fieldsPermission = fieldsPermissionConfig.value;
+  currentNode.value.fieldsPermission = getFieldsPermission();
   // 设置发起人的按钮权限
   currentNode.value.buttonsSetting = START_USER_BUTTON_SETTING;
   drawerApi.setState({ isOpen: false });
@@ -122,19 +123,6 @@ function showStartUserNodeConfig(node: SimpleFlowNode) {
   // 表单字段权限
   getNodeConfigFormFields(node.fieldsPermission);
   drawerApi.open();
-}
-
-/** 批量更新权限 */
-function updatePermission(type: string) {
-  fieldsPermissionConfig.value.forEach((field) => {
-    if (type === 'READ') {
-      field.permission = FieldPermissionType.READ;
-    } else if (type === 'WRITE') {
-      field.permission = FieldPermissionType.WRITE;
-    } else {
-      field.permission = FieldPermissionType.NONE;
-    }
-  });
 }
 
 /**
@@ -215,78 +203,10 @@ defineExpose({ showStartUserNodeConfig });
         key="fields"
         v-if="formType === BpmModelFormType.NORMAL"
       >
-        <div class="p-1">
-          <div class="mb-4 text-base font-bold">字段权限</div>
-
-          <!-- 表头 -->
-          <Row class="border border-gray-200 px-4 py-3">
-            <Col :span="8" class="font-bold">字段名称</Col>
-            <Col :span="16">
-              <Row>
-                <Col :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('READ')"
-                  >
-                    只读
-                  </span>
-                </Col>
-                <Col :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('WRITE')"
-                  >
-                    可编辑
-                  </span>
-                </Col>
-                <Col :span="8" class="flex items-center justify-center">
-                  <span
-                    class="cursor-pointer font-bold"
-                    @click="updatePermission('NONE')"
-                  >
-                    隐藏
-                  </span>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-
-          <!-- 表格内容 -->
-          <div v-for="(item, index) in fieldsPermissionConfig" :key="index">
-            <Row class="border border-t-0 border-gray-200 px-4 py-2">
-              <Col :span="8" class="flex items-center truncate">
-                {{ item.title }}
-              </Col>
-              <Col :span="16">
-                <RadioGroup v-model:value="item.permission" class="w-full">
-                  <Row>
-                    <Col :span="8" class="flex items-center justify-center">
-                      <Radio
-                        :value="FieldPermissionType.READ"
-                        size="large"
-                        :label="FieldPermissionType.READ"
-                      />
-                    </Col>
-                    <Col :span="8" class="flex items-center justify-center">
-                      <Radio
-                        :value="FieldPermissionType.WRITE"
-                        size="large"
-                        :label="FieldPermissionType.WRITE"
-                      />
-                    </Col>
-                    <Col :span="8" class="flex items-center justify-center">
-                      <Radio
-                        :value="FieldPermissionType.NONE"
-                        size="large"
-                        :label="FieldPermissionType.NONE"
-                      />
-                    </Col>
-                  </Row>
-                </RadioGroup>
-              </Col>
-            </Row>
-          </div>
-        </div>
+        <FieldsPermissionSetting
+          v-model="fieldsPermissionConfig"
+          title="字段权限"
+        />
       </TabPane>
     </Tabs>
   </Drawer>
