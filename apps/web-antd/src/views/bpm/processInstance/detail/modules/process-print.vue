@@ -21,6 +21,7 @@ import { getSimpleUserList } from '#/api/system/user';
 import {
   collectFieldRules,
   decodeFields,
+  getApiSelectOptions,
   isSubForm,
   parseSubFormFields,
 } from '#/components/form-create';
@@ -54,6 +55,7 @@ type FormFieldRule = Record<string, unknown> & {
 type PrintableRecord = Record<string, unknown>;
 
 interface PrintLookupMaps {
+  apiSelectOptionsMap: Map<string, FormFieldOption[]>;
   areaMap: Map<string, string>;
   deptMap: Map<string, string>;
   userMap: Map<string, string>;
@@ -361,7 +363,37 @@ async function loadPrintLookupMaps(formFieldsObj: FormFieldRule[]) {
     hasDeptSelect ? getSimpleDeptList() : Promise.resolve([]),
   ]);
 
+  // 接口选择器：按组件配置请求选项，用于打印选项名称；请求失败时，打印原值
+  const apiSelectOptionsMap = new Map<string, FormFieldOption[]>();
+  await Promise.all(
+    formFieldsObj
+      .filter(
+        (item) =>
+          item.type === 'ApiSelect' &&
+          getRuleProp(item, 'returnType') !== 'name',
+      )
+      .map(async (item) => {
+        const key = getApiSelectKey(item);
+        if (apiSelectOptionsMap.has(key)) {
+          return;
+        }
+        apiSelectOptionsMap.set(key, []);
+        try {
+          apiSelectOptionsMap.set(
+            key,
+            (await getApiSelectOptions(getApiSelectProps(item))) ?? [],
+          );
+        } catch (error) {
+          console.warn(
+            `[loadPrintLookupMaps][接口选择器(${item.field}) 加载选项失败]`,
+            error,
+          );
+        }
+      }),
+  );
+
   return {
+    apiSelectOptionsMap,
     areaMap: flattenAreaTree(areaList as Array<SystemAreaApi.Area>),
     deptMap: new Map(
       (deptList ?? []).map((item) => [String(item.id), item.name] as const),
@@ -372,6 +404,22 @@ async function loadPrintLookupMaps(formFieldsObj: FormFieldRule[]) {
       ),
     ),
   } satisfies PrintLookupMaps;
+}
+
+/** 接口选择器的配置：未设置的属性，使用组件的默认值 */
+function getApiSelectProps(rule: FormFieldRule): Record<string, any> {
+  return {
+    method: 'GET',
+    labelField: 'label',
+    valueField: 'value',
+    remoteField: 'label',
+    ...rule.props,
+  };
+}
+
+/** 接口选择器的选项缓存 key：相同配置的接口选择器，只请求一次 */
+function getApiSelectKey(rule: FormFieldRule) {
+  return JSON.stringify(getApiSelectProps(rule));
 }
 
 /**
@@ -390,6 +438,13 @@ function formatPrintField(
   const type = String(rule.type ?? '');
 
   switch (type) {
+    case 'ApiSelect': {
+      // 未匹配到选项时（例如远程搜索、分页接口未返回该值），打印原值
+      return mapValuesWithOptions(
+        value,
+        lookupMaps.apiSelectOptionsMap.get(getApiSelectKey(rule)),
+      );
+    }
     case 'AreaSelect': {
       const separator = String(getRuleProp(rule, 'separator') || '/');
       return mapValueWithLabelMap(value, lookupMaps.areaMap, separator);

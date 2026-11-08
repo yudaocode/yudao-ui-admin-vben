@@ -17,6 +17,7 @@ import UserTaskListeners from './listeners/UserTaskListeners.vue';
 import ElementMultiInstance from './multi-instance/ElementMultiInstance.vue';
 import ElementOtherConfig from './other/ElementOtherConfig.vue';
 import ElementProperties from './properties/ElementProperties.vue';
+import EventDefinitionRef from './signal-message/EventDefinitionRef.vue';
 import SignalAndMassage from './signal-message/SignalAndMessage.vue';
 import { getTaskCollapseItemName, isTaskCollapseItemShow } from './task/data';
 import ElementTask from './task/ElementTask.vue';
@@ -63,6 +64,8 @@ const elementType = ref<any>('');
 const elementBusinessObject = ref<any>({}); // 元素 businessObject 镜像，提供给需要做判断的组件使用
 const conditionFormVisible = ref(false); // 流转条件设置
 const formVisible = ref(false); // 表单配置
+const eventRefVisible = ref(false); // 消息、信号事件的引用配置
+const timeEventVisible = ref(false); // 时间事件配置
 const bpmnElement = ref();
 const isReady = ref(false);
 
@@ -192,6 +195,20 @@ const initFormOnChanged = (element: any) => {
       !(activatedElement.source.type as string).includes('StartEvent');
     formVisible.value =
       elementType.value === 'UserTask' || elementType.value === 'StartEvent';
+    // 中间事件：消息、信号事件配置引用的消息/信号；时间事件配置，只用于定时器事件
+    const eventDefinitionType =
+      activatedElement.businessObject.eventDefinitions?.[0]?.$type;
+    eventRefVisible.value =
+      ['IntermediateCatchEvent', 'IntermediateThrowEvent'].includes(
+        elementType.value,
+      ) &&
+      ['bpmn:MessageEventDefinition', 'bpmn:SignalEventDefinition'].includes(
+        eventDefinitionType,
+      );
+    timeEventVisible.value =
+      elementType.value === 'IntermediateCatchEvent' &&
+      (!eventDefinitionType ||
+        eventDefinitionType === 'bpmn:TimerEventDefinition');
   } catch (error) {
     console.error('初始化表单数据失败:', error);
   }
@@ -381,12 +398,19 @@ watch(() => props.businessObject, syncFromBusinessObject, { deep: true });
           :business-object="elementBusinessObject"
         />
       </ElCollapseItem>
+      <ElCollapseItem name="eventRef" title="消息与信号" v-if="eventRefVisible">
+        <template #icon>
+          <IconifyIcon icon="ep:comment" />
+        </template>
+        <!-- 相关 issue：https://github.com/YunaiV/yudao-cloud/issues/271 -->
+        <EventDefinitionRef
+          :business-object="elementBusinessObject"
+          :type="elementType"
+          :key="elementId"
+        />
+      </ElCollapseItem>
       <!-- 新增的时间事件配置项 -->
-      <ElCollapseItem
-        name="timeEvent"
-        title="时间事件"
-        v-if="elementType === 'IntermediateCatchEvent'"
-      >
+      <ElCollapseItem name="timeEvent" title="时间事件" v-if="timeEventVisible">
         <template #icon>
           <IconifyIcon icon="ep:timer" />
         </template>
