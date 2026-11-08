@@ -20,7 +20,13 @@ import {
   ProcessVariableEnum,
 } from '@vben/constants';
 
-import { parseFormFields } from '#/components/form-create';
+import {
+  collectFieldRules,
+  isSubForm,
+  parseFormFields,
+  parseSubFormFields,
+  TABLE_FORM_TYPE,
+} from '#/components/form-create';
 
 import {
   ApproveMethodType,
@@ -64,68 +70,61 @@ function parseFormCreateFields(formFields?: string[]) {
 export function useFormFieldsPermission(
   defaultPermission: FieldPermissionType,
 ) {
-  // 字段权限配置. 需要有 field, title,  permissioin 属性
+  // 字段权限配置. 需要有 field, title,  permissioin 属性；子表单还有 children 子字段权限
   const fieldsPermissionConfig = ref<Array<Record<string, any>>>([]);
 
   const formType = inject<Ref<number | undefined>>('formType', ref()); // 表单类型
 
   const formFields = inject<Ref<string[]>>('formFields', ref([])); // 流程表单字段
 
+  // 合并已经设置的表单字段权限，当前流程表单字段 (可能新增，或删除了字段)
+  // 未设置的字段使用默认权限；未设置的子字段，权限为空，表示继承子表单
   function getNodeConfigFormFields(
     nodeFormFields?: Array<Record<string, string>>,
   ) {
-    nodeFormFields = toRaw(nodeFormFields);
-    fieldsPermissionConfig.value =
-      !nodeFormFields || nodeFormFields.length === 0
-        ? getDefaultFieldsPermission(unref(formFields))
-        : mergeFieldsPermission(nodeFormFields, unref(formFields));
-  }
-  // 合并已经设置的表单字段权限，当前流程表单字段 (可能新增，或删除了字段)
-  function mergeFieldsPermission(
-    formFieldsPermisson: Array<Record<string, string>>,
-    formFields?: string[],
-  ) {
-    let mergedFieldsPermission: Array<Record<string, any>> = [];
-    if (formFields) {
-      mergedFieldsPermission = parseFormCreateFields(formFields).map((item) => {
-        const found = formFieldsPermisson.find(
-          (fieldPermission) => fieldPermission.field === item.field,
-        );
-        return {
-          field: item.field,
-          title: item.title,
-          permission: found ? found.permission : defaultPermission,
-        };
-      });
-    }
-    return mergedFieldsPermission;
+    const fieldsPermission = toRaw(nodeFormFields) ?? [];
+    const getPermission = (field: string) => {
+      return fieldsPermission.find((item) => item.field === field)?.permission;
+    };
+    fieldsPermissionConfig.value = parseFormCreateFields(unref(formFields)).map(
+      (item) => ({
+        field: item.field,
+        title: item.title,
+        permission: getPermission(item.field) ?? defaultPermission,
+        children: item.children?.map((child: Record<string, any>) => ({
+          field: child.field,
+          title: child.title,
+          permission: getPermission(
+            getSubFieldPermissionField(item.field, child.field),
+          ),
+        })),
+      }),
+    );
   }
 
-  // 默认的表单权限： 获取表单的所有字段，设置字段默认权限为只读
-  function getDefaultFieldsPermission(formFields?: string[]) {
-    let defaultFieldsPermission: Array<Record<string, any>> = [];
-    if (formFields) {
-      defaultFieldsPermission = parseFormCreateFields(formFields).map(
-        (item) => {
-          return {
-            field: item.field,
-            title: item.title,
-            permission: defaultPermission,
-          };
-        },
-      );
-    }
-    return defaultFieldsPermission;
+  // 获得需要保存的表单字段权限：子表单的子字段，仅保存单独设置的权限，其余继承子表单
+  function getFieldsPermission() {
+    return fieldsPermissionConfig.value.flatMap((item) => [
+      { field: item.field, title: item.title, permission: item.permission },
+      ...(item.children ?? [])
+        .filter((child: Record<string, any>) => child.permission)
+        .map((child: Record<string, any>) => ({
+          field: getSubFieldPermissionField(item.field, child.field),
+          title: `${item.title}.${child.title}`,
+          permission: child.permission,
+        })),
+    ]);
   }
 
   // 获取表单的所有字段，作为下拉框选项
-  const formFieldOptions = parseFormCreateFields(unref(formFields));
+  const formFieldOptions = useFormFields();
 
   return {
     formType,
     fieldsPermissionConfig,
     formFieldOptions,
     getNodeConfigFormFields,
+    getFieldsPermission,
   };
 }
 
@@ -137,13 +136,12 @@ export function useFormFields() {
   return parseFormCreateFields(unref(formFields));
 }
 
-// TODO @芋艿：后续需要把各种类似 useFormFieldsPermission 的逻辑，抽成一个通用方法。
+// DONE @芋艿：后续需要把各种类似 useFormFieldsPermission 的逻辑，抽成一个通用方法。
 /**
  * @description 获取流程表单的字段和发起人字段
  */
 export function useFormFieldsAndStartUser() {
-  const injectFormFields = inject<Ref<string[]>>('formFields', ref([])); // 流程表单字段
-  const formFields = parseFormCreateFields(unref(injectFormFields));
+  const formFields = useFormFields();
   // 添加发起人
   formFields.unshift({
     field: ProcessVariableEnum.START_USER_ID,
@@ -151,6 +149,145 @@ export function useFormFieldsAndStartUser() {
     required: true,
   });
   return formFields;
+}
+
+/** 子表单子字段的权限标识：子表单字段.子字段，区分不同子表单中的同名字段 */
+export function getSubFieldPermissionField(
+  subFormField: string,
+  field: string,
+) {
+  return `${subFormField}.${field}`;
+}
+
+/** 是否为子表单子字段的权限标识 */
+export function isSubFieldPermissionField(field: string) {
+  return field.includes('.');
+}
+
+/**
+ * 获得子表单子字段的实际权限：未单独设置时继承子表单，子表单的权限是上限
+ *
+ * @param subFormPermission 子表单的权限
+ * @param permission 子字段的权限，未单独设置时为空
+ */
+export function getSubFieldPermission(
+  subFormPermission?: string,
+  permission?: string,
+) {
+  if (subFormPermission === FieldPermissionType.NONE) {
+    return FieldPermissionType.NONE;
+  }
+  if (
+    subFormPermission === FieldPermissionType.READ &&
+    permission === FieldPermissionType.WRITE
+  ) {
+    return FieldPermissionType.READ;
+  }
+  return permission ?? subFormPermission;
+}
+
+/** 表单规则中，是否包含子表单 */
+export function hasSubForm(rules: Array<Record<string, any>>): boolean {
+  return rules.some(
+    (rule) =>
+      isSubForm(rule) ||
+      (Array.isArray(rule?.children) && hasSubForm(rule.children)),
+  );
+}
+
+/**
+ * 将子表单的子字段权限写入表单规则。需要在 form-create 渲染前调用，新增的行沿用同一份规则
+ *
+ * 1. 只读：禁用，并去掉校验，避免阻断提交
+ * 2. 隐藏：组件隐藏，但仍保留在每一行中，避免提交、删行时丢失或错位已有的值
+ * 3. 子字段都隐藏时，隐藏整个子表单
+ *
+ * @param rules 表单规则
+ * @param fieldsPermission 表单字段权限
+ */
+export function applySubFormsPermission(
+  rules: Array<Record<string, any>>,
+  fieldsPermission?: Record<string, string>,
+) {
+  if (!fieldsPermission) {
+    return;
+  }
+  rules.forEach((rule) => {
+    if (isSubForm(rule) && rule.field) {
+      applySubFormPermission(rule, fieldsPermission);
+    }
+    if (Array.isArray(rule?.children)) {
+      applySubFormsPermission(rule.children, fieldsPermission);
+    }
+  });
+}
+
+function applySubFormPermission(
+  rule: Record<string, any>,
+  fieldsPermission: Record<string, string>,
+) {
+  const subFormPermission = fieldsPermission[rule.field];
+  const subFields = parseSubFormFields(rule);
+  // 子表单隐藏时，由表单字段权限隐藏整个子表单；
+  // 没有子字段时（如表格表单未配置列），无需处理
+  if (
+    subFormPermission === FieldPermissionType.NONE ||
+    subFields.length === 0
+  ) {
+    return;
+  }
+  let hiddenCount = 0;
+  subFields.forEach(({ field, rule: item }) => {
+    const permission = getSubFieldPermission(
+      subFormPermission,
+      fieldsPermission[getSubFieldPermissionField(rule.field, field)],
+    );
+    if (permission === FieldPermissionType.READ) {
+      item.props = { ...item.props, disabled: true };
+    } else if (permission === FieldPermissionType.NONE) {
+      item.hidden = true;
+      hiddenCount++;
+    }
+    if (
+      permission === FieldPermissionType.READ ||
+      permission === FieldPermissionType.NONE
+    ) {
+      item.$required = false;
+      item.validate = [];
+    }
+  });
+  if (hiddenCount > 0 && hiddenCount === subFields.length) {
+    rule.hidden = true;
+    return;
+  }
+  if (rule.type === TABLE_FORM_TYPE) {
+    updateTableFormColumns(rule);
+  }
+}
+
+/**
+ * 表格表单：字段都隐藏的列移出表头，字段放到首列中隐藏保留；字段都不可编辑的列，去掉表头必填标记
+ */
+function updateTableFormColumns(rule: Record<string, any>) {
+  const hiddenRules: Array<Record<string, any>> = [];
+  const columns = rule.props.columns.filter((column: Record<string, any>) => {
+    const items = collectFieldRules(column.rule);
+    if (items.length === 0) {
+      return true;
+    }
+    if (items.every((item) => item.hidden)) {
+      hiddenRules.push(...items);
+      return false;
+    }
+    if (items.every((item) => item.hidden || item.props?.disabled)) {
+      column.required = false;
+    }
+    return true;
+  });
+  if (hiddenRules.length > 0 && columns.length > 0) {
+    columns[0].rule = [...(columns[0].rule ?? []), ...hiddenRules];
+    rule.props.columns = columns;
+  }
 }
 
 export type UserTaskFormType = {

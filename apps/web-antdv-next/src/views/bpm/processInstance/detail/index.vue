@@ -31,6 +31,11 @@ import { getSimpleUserList } from '#/api/system/user';
 import DictTag from '#/components/dict-tag/dict-tag.vue';
 import { setConfAndFields2 } from '#/components/form-create';
 import { registerComponent } from '#/utils';
+import {
+  applySubFormsPermission,
+  hasSubForm,
+  isSubFieldPermissionField,
+} from '#/views/bpm/components/simple-process-design/helpers';
 
 import ProcessInstanceBpmnViewer from './modules/bpm-viewer.vue';
 import BpmProcessInstanceCommentList from './modules/comment-list.vue';
@@ -81,6 +86,7 @@ const detailForm = ref({
   value: {},
 }); // 流程实例的表单详情
 const writableFields: Array<string> = []; // 表单可以编辑的字段
+const fieldsPermission = ref<Record<string, string>>(); // 表单字段权限，打印时沿用
 
 const BusinessFormComponent = shallowRef<any>(null); // 异步组件(业务表单）
 
@@ -118,9 +124,14 @@ async function getApprovalDetail() {
     if (processDefinition.value.formType === BpmModelFormType.NORMAL) {
       // 获取表单字段权限
       const formFieldsPermission = data.formFieldsPermission;
+      fieldsPermission.value = formFieldsPermission;
       // 清空可编辑字段为空
       writableFields.splice(0);
-      if (detailForm.value.rule?.length > 0) {
+      // 子表单的子字段权限需要在渲染前写入规则，所以包含子表单时，重新设置表单
+      if (
+        detailForm.value.rule?.length > 0 &&
+        !hasSubForm(detailForm.value.rule)
+      ) {
         // 避免刷新 form-create 显示不了
         detailForm.value.value = processInstance.value.formVariables;
       } else {
@@ -130,6 +141,7 @@ async function getApprovalDetail() {
           processDefinition.value.formFields,
           processInstance.value.formVariables,
         );
+        applySubFormsPermission(detailForm.value.rule, formFieldsPermission);
       }
       await nextTick();
       fApi.value?.btn.show(false);
@@ -137,9 +149,11 @@ async function getApprovalDetail() {
       fApi.value?.disabled(true);
       // 设置表单字段权限
       if (formFieldsPermission) {
-        Object.keys(data.formFieldsPermission).forEach((item) => {
-          setFieldPermission(item, formFieldsPermission[item]);
-        });
+        Object.keys(data.formFieldsPermission)
+          .filter((item) => !isSubFieldPermissionField(item)) // 子表单的子字段权限，已写入规则
+          .forEach((item) => {
+            setFieldPermission(item, formFieldsPermission[item]);
+          });
       }
     } else {
       // 注意：data.processDefinition.formCustomViewPath 是组件的全路径，例如说：/crm/contract/detail/index.vue
@@ -204,7 +218,12 @@ const [PrintModal, printModalApi] = useVbenModal({
 
 /** 打开打印对话框 */
 function handlePrint() {
-  printModalApi.setData({ processInstanceId: props.id }).open();
+  printModalApi
+    .setData({
+      processInstanceId: props.id,
+      fieldsPermission: fieldsPermission.value,
+    })
+    .open();
 }
 
 /** 监听 Tab 切换，当切换到 "record" 标签时刷新任务列表 */

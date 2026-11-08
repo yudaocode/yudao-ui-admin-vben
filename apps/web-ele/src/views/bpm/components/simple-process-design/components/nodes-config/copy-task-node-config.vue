@@ -39,6 +39,7 @@ import {
   useNodeName,
   useWatchNode,
 } from '../../helpers';
+import FieldsPermissionSetting from './modules/fields-permission-setting.vue';
 
 defineOptions({ name: 'CopyTaskNodeConfig' });
 
@@ -93,6 +94,7 @@ const {
   fieldsPermissionConfig,
   formFieldOptions,
   getNodeConfigFormFields,
+  getFieldsPermission,
 } = useFormFieldsPermission(FieldPermissionType.READ);
 
 // 表单内用户字段选项, 必须是必填和用户选择器
@@ -175,7 +177,7 @@ async function saveConfig() {
   currentNode.value.candidateParam = handleCandidateParam();
   currentNode.value.candidateStrategy = configForm.value.candidateStrategy;
   currentNode.value.showText = showText;
-  currentNode.value.fieldsPermission = fieldsPermissionConfig.value;
+  currentNode.value.fieldsPermission = getFieldsPermission();
   drawerApi.close();
   return true;
 }
@@ -190,19 +192,6 @@ function showCopyTaskNodeConfig(node: SimpleFlowNode) {
   getNodeConfigFormFields(node.fieldsPermission);
 
   drawerApi.open();
-}
-
-/** 批量更新权限 */
-function updatePermission(type: string) {
-  fieldsPermissionConfig.value.forEach((field) => {
-    if (type === 'READ') {
-      field.permission = FieldPermissionType.READ;
-    } else if (type === 'WRITE') {
-      field.permission = FieldPermissionType.WRITE;
-    } else {
-      field.permission = FieldPermissionType.NONE;
-    }
-  });
 }
 
 // 在组件初始化时对表单字段进行处理
@@ -421,56 +410,11 @@ defineExpose({ showCopyTaskNodeConfig }); // 暴露方法给父组件
         name="fields"
         v-if="formType === BpmModelFormType.NORMAL"
       >
-        <div class="p-1">
-          <div class="mb-4 text-base font-bold">字段权限</div>
-
-          <!-- 表头 -->
-          <ElRow class="border border-gray-200 px-4 py-3">
-            <ElCol :span="8" class="font-bold">字段名称</ElCol>
-            <ElCol :span="16" class="!flex">
-              <span
-                class="flex-1 cursor-pointer text-center font-bold"
-                @click="updatePermission('READ')"
-              >
-                只读
-              </span>
-              <span
-                class="flex-1 cursor-pointer text-center font-bold"
-                @click="updatePermission('WRITE')"
-              >
-                可编辑
-              </span>
-              <span
-                class="flex-1 cursor-pointer text-center font-bold"
-                @click="updatePermission('NONE')"
-              >
-                隐藏
-              </span>
-            </ElCol>
-          </ElRow>
-
-          <!-- 表格内容 -->
-          <div v-for="(item, index) in fieldsPermissionConfig" :key="index">
-            <ElRow class="border border-t-0 border-gray-200 px-4 py-2">
-              <ElCol :span="8" class="flex items-center truncate">
-                {{ item.title }}
-              </ElCol>
-              <ElCol :span="16">
-                <ElRadioGroup v-model="item.permission" class="flex w-full">
-                  <div class="flex flex-1 justify-center">
-                    <ElRadio :value="FieldPermissionType.READ" />
-                  </div>
-                  <div class="flex flex-1 justify-center">
-                    <ElRadio :value="FieldPermissionType.WRITE" disabled />
-                  </div>
-                  <div class="flex flex-1 justify-center">
-                    <ElRadio :value="FieldPermissionType.NONE" />
-                  </div>
-                </ElRadioGroup>
-              </ElCol>
-            </ElRow>
-          </div>
-        </div>
+        <FieldsPermissionSetting
+          v-model="fieldsPermissionConfig"
+          title="字段权限"
+          :writable="false"
+        />
       </ElTabPane>
     </ElTabs>
   </Drawer>

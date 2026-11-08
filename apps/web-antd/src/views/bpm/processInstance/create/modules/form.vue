@@ -25,6 +25,11 @@ import {
 import { decodeFields, setConfAndFields2 } from '#/components/form-create';
 import { useFormCreate } from '#/plugins/form-create';
 import { router } from '#/router';
+import {
+  applySubFormsPermission,
+  hasSubForm,
+  isSubFieldPermissionField,
+} from '#/views/bpm/components/simple-process-design/helpers';
 import ProcessInstanceBpmnViewer from '#/views/bpm/processInstance/detail/modules/bpm-viewer.vue';
 import ProcessInstanceSimpleViewer from '#/views/bpm/processInstance/detail/modules/simple-bpm-viewer.vue';
 import ProcessInstanceTimeline from '#/views/bpm/processInstance/detail/modules/time-line.vue';
@@ -66,6 +71,7 @@ const detailForm = ref<ProcessFormData>({
   value: {},
 });
 const fApi = ref<any>();
+let subFormsPermission: string | undefined; // 已写入表单规则的字段权限（子表单的子字段权限）
 
 const startUserSelectTasks = ref<UserTask[]>([]);
 const startUserSelectAssignees = ref<Record<string, number[]>>({});
@@ -138,6 +144,7 @@ async function initProcessInfo(row: any, formVariables?: any) {
     }
 
     setConfAndFields2(detailForm, row.formConf, row.formFields, formVariables);
+    subFormsPermission = undefined;
 
     // 在配置中禁用 form-create 自带的提交和重置按钮
     detailForm.value.option = {
@@ -227,10 +234,28 @@ async function getApprovalDetail(row: {
   // 设置表单字段权限
   const formFieldsPermission = data.formFieldsPermission;
   if (formFieldsPermission) {
-    Object.entries(formFieldsPermission).forEach(([field, permission]) => {
-      setFieldPermission(field, permission as string);
-    });
+    await setSubFormsPermission(formFieldsPermission);
+    Object.entries(formFieldsPermission)
+      .filter(([field]) => !isSubFieldPermissionField(field)) // 子表单的子字段权限，已写入规则
+      .forEach(([field, permission]) => {
+        setFieldPermission(field, permission as string);
+      });
   }
+}
+
+/** 设置子表单的子字段权限：需要写入规则后重新渲染表单，所以仅在权限变化时设置 */
+async function setSubFormsPermission(
+  formFieldsPermission: Record<string, string>,
+) {
+  const permission = JSON.stringify(formFieldsPermission);
+  if (permission === subFormsPermission || !hasSubForm(detailForm.value.rule)) {
+    return;
+  }
+  subFormsPermission = permission;
+  const rule = decodeFields(props.selectProcessDefinition.formFields);
+  applySubFormsPermission(rule, formFieldsPermission);
+  detailForm.value.rule = rule;
+  await nextTick();
 }
 
 /** 收集布局和条件规则中的字段，不额外挂载临时表单 */
