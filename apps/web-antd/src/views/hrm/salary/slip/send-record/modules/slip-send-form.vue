@@ -399,6 +399,7 @@ async function handleDeleteTemplate(id?: number) {
             <Switch
               v-model:checked="sendTemplate.hideEmpty"
               checked-children="隐藏金额为空的工资项"
+              class="justify-self-start"
               un-checked-children="保留全部工资项"
             />
           </div>

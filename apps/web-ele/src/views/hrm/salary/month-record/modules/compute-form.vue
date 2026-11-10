@@ -141,12 +141,14 @@ async function downloadTemplate(
         <ElSwitch
           v-model="syncInsuranceData"
           active-text="从社保表同步"
+          class="justify-self-start"
           inactive-text="本次不带入"
         />
         <span class="text-right text-muted-foreground">同步考勤</span>
         <ElSwitch
           v-model="syncAttendanceData"
           active-text="从考勤统计同步"
+          class="justify-self-start"
           inactive-text="使用导入文件"
         />
         <span class="text-right text-muted-foreground">考勤数据</span>

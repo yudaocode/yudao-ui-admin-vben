@@ -138,12 +138,14 @@ async function downloadTemplate(
           <Switch
             v-model:checked="syncInsuranceData"
             checked-children="从社保表同步"
+            class="justify-self-start"
             un-checked-children="本次不带入"
           />
           <span class="text-right text-muted-foreground">同步考勤</span>
           <Switch
             v-model:checked="syncAttendanceData"
             checked-children="从考勤统计同步"
+            class="justify-self-start"
             un-checked-children="使用导入文件"
           />
           <span class="text-right text-muted-foreground">考勤数据</span>

@@ -402,6 +402,7 @@ async function handleDeleteTemplate(id?: number) {
           <ElSwitch
             v-model="sendTemplate.hideEmpty"
             active-text="隐藏金额为空的工资项"
+            class="justify-self-start"
             inactive-text="保留全部工资项"
           />
         </div>
