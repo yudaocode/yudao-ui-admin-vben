@@ -9,7 +9,7 @@ import { $t } from '@vben/locales';
 import { handleTree } from '@vben/utils';
 
 import { z } from '#/adapter/form';
-import { getDeptList } from '#/api/system/dept';
+import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { getSimpleRoleList } from '#/api/system/role';
 import { getRangePickerDefaultProps } from '#/utils';
@@ -63,7 +63,7 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'ApiTreeSelect',
       componentProps: {
         api: async () => {
-          const data = await getDeptList();
+          const data = await getSimpleDeptList();
           return handleTree(data);
         },
         labelField: 'name',

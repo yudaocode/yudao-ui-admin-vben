@@ -8,28 +8,45 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
+import { getSimpleDeptList } from '#/api/system/dept';
 import { getSimplePostList } from '#/api/system/post';
 import { createUser, getUser, updateUser } from '#/api/system/user';
 import { $t } from '#/locales';
 
+import {
+  isSelectableId,
+  pruneSelectableIds,
+  selectableIdSet,
+} from '../../keep-selectable-ids';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<SystemUserApi.User>();
 
-/** 岗位下拉只含启用岗位；用户身上已删除或停用的岗位若原样提交，后端会回「当前岗位不存在」。 */
-async function dropMissingPosts(user: SystemUserApi.User) {
-  const posts = await getSimplePostList();
-  const validIds = new Set(
-    posts.flatMap((post) => (post.id == null ? [] : [Number(post.id)])),
-  );
-  const postIds = Array.isArray(user.postIds) ? user.postIds : [];
-  const kept = postIds.filter((id) => validIds.has(Number(id)));
-  if (kept.length === postIds.length) {
-    return;
+/** 部门和岗位的选项都只含启用项；已删除或停用的值原样提交会被后端拒绝。 */
+async function dropMissingRelations(user: SystemUserApi.User) {
+  const [posts, depts] = await Promise.all([
+    getSimplePostList(),
+    getSimpleDeptList(),
+  ]);
+  const removed: string[] = [];
+  const postsResult = pruneSelectableIds(user.postIds, selectableIdSet(posts));
+  if (postsResult.changed) {
+    user.postIds = postsResult.kept;
+    removed.push('岗位');
   }
-  user.postIds = kept;
-  message.warning('已去掉不存在或已停用的岗位，请确认后保存');
+  if (
+    user.deptId != null &&
+    !isSelectableId(user.deptId, selectableIdSet(depts))
+  ) {
+    delete (user as { deptId?: number }).deptId;
+    removed.push('部门');
+  }
+  if (removed.length > 0) {
+    message.warning(
+      `已去掉不存在或已停用的${removed.join('、')}，请确认后保存`,
+    );
+  }
 }
 
 const getTitle = computed(() => {
@@ -86,7 +103,7 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       const user = await getUser(data.id);
-      await dropMissingPosts(user);
+      await dropMissingRelations(user);
       formData.value = user;
       // 设置到 values
       await formApi.setValues(user);
