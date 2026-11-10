@@ -22,6 +22,7 @@ export const AiModelTypeEnum = {
   VIDEO: 4, // 视频
   EMBEDDING: 5, // 向量
   RERANK: 6, // 重排
+  MUSIC: 7, // 音乐
 };
 
 /** AI 聊天消息类型的枚举 */
@@ -192,13 +193,37 @@ export const AiImageStatusEnum = {
   FAIL: 30, // 已失败
 };
 
+// DONE @AI：看看，是不是一些类，要类似 vben5 里，或者 vue3 里，调整下位置噢；fms、hrm 等等，都可以参考呀。（原 views/ai/utils/music.ts 拆分：枚举、预置风格对齐 vue3 constants.ts 回到本文件；格式化函数对齐 fms、hrm 的 utils/format.ts，放到各应用 views/ai/utils/format.ts）
+// DONE @AI：是不是要抽到枚举类里噢？（AI_MUSIC_MODEL_TYPE 改为 AiModelTypeEnum.MUSIC）
 /**
  * AI 音乐生成状态的枚举
  */
 export const AiMusicStatusEnum = {
-  IN_PROGRESS: 10, // 进行中
-  SUCCESS: 20, // 已完成
-  FAIL: 30, // 已失败
+  PENDING: 10, // 待处理
+  IN_PROGRESS: 20, // 生成中
+  SAVING: 30, // 转存中
+  SUCCESS: 40, // 已完成
+  FAIL: 50, // 已失败
+};
+
+/** AI 音乐是否未结束：待处理、生成中、转存中 */
+export function isAiMusicRunning(status?: number) {
+  return (
+    status === AiMusicStatusEnum.PENDING ||
+    status === AiMusicStatusEnum.IN_PROGRESS ||
+    status === AiMusicStatusEnum.SAVING
+  );
+}
+
+/**
+ * AI 音乐生成模式的枚举
+ */
+export const AiMusicGenerateModeEnum = {
+  INSPIRATION: 1, // 灵感
+  CUSTOM: 2, // 自定义
+  EXTEND: 3, // 续写
+  CONCAT: 4, // 拼接
+  UPLOAD: 5, // 上传
 };
 
 /**
@@ -505,6 +530,28 @@ export const Dall3SizeList: ImageSize[] = [
     height: '1024',
     style: 'width: 50px; height: 30px;background-color: #dcdcdc;',
   },
+];
+
+// ========== 【音乐 UI】相关的枚举 ==========
+
+/** 预置音乐风格：中文显示，英文写入 */
+export const MusicPresetTags = [
+  { label: '女声', value: 'female vocals' },
+  { label: '男声', value: 'male vocals' },
+  { label: '流行', value: 'pop' },
+  { label: '摇滚', value: 'rock' },
+  { label: '硬摇滚', value: 'hard rock' },
+  { label: '电音', value: 'electronic' },
+  { label: '金属', value: 'metal' },
+  { label: '重金属', value: 'heavy metal' },
+  { label: '节拍', value: 'beat' },
+  { label: '弱拍', value: 'upbeat' },
+  { label: '合成器', value: 'synth' },
+  { label: '吉他', value: 'guitar' },
+  { label: '钢琴', value: 'piano' },
+  { label: '小提琴', value: 'violin' },
+  { label: '贝斯', value: 'bass' },
+  { label: '嘻哈', value: 'hip hop' },
 ];
 
 // ========== 【写作 UI】相关的枚举 ==========

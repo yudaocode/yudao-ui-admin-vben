@@ -7,6 +7,8 @@ export namespace AiModelModelApi {
     id: number; // 编号
     keyId: number; // API 秘钥编号
     name: string; // 模型名字
+    description?: string; // 模型简介
+    iconUrl?: string; // 模型图标地址
     model: string; // 模型标识
     platform: string; // 模型平台
     type: number; // 模型类型
@@ -41,10 +43,11 @@ export function getModelPage(params: PageParam) {
 }
 
 /** 获得模型列表 */
-export function getModelSimpleList(type?: number) {
+export function getModelSimpleList(type?: number, platform?: string) {
   return requestClient.get<AiModelModelApi.Model[]>('/ai/model/simple-list', {
     params: {
       type,
+      platform,
     },
   });
 }
