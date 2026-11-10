@@ -91,6 +91,21 @@ export function useFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      component: 'Input',
+      fieldName: 'description',
+      label: '模型简介',
+      componentProps: {
+        placeholder: '选填，展示在模型选择框中，例如：通用推荐',
+        maxlength: 255,
+        showWordLimit: true,
+      },
+    },
+    {
+      component: 'ImageUpload',
+      fieldName: 'iconUrl',
+      label: '模型图标',
+    },
+    {
       fieldName: 'sort',
       label: '模型排序',
       component: 'InputNumber',
@@ -252,6 +267,12 @@ export function useGridColumns(): VxeTableGridOptions['columns'] {
         props: { type: DICT_TYPE.AI_MODEL_TYPE },
       },
       minWidth: 100,
+    },
+    {
+      field: 'iconUrl',
+      title: '图标',
+      width: 70,
+      slots: { default: 'iconUrl' },
     },
     {
       field: 'name',

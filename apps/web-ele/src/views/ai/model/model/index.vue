@@ -3,8 +3,9 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiModelModelApi } from '#/api/ai/model/model';
 
 import { DocAlert, Page, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon } from '@vben/icons';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElAvatar, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteModel, getModelPage } from '#/api/ai/model/model';
@@ -98,6 +99,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
             },
           ]"
         />
+      </template>
+      <template #iconUrl="{ row }">
+        <ElAvatar :size="28" shape="square" :src="row.iconUrl || undefined">
+          <IconifyIcon icon="ep:cpu" />
+        </ElAvatar>
       </template>
       <template #actions="{ row }">
         <TableAction
