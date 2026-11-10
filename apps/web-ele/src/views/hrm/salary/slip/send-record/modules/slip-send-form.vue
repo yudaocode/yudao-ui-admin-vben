@@ -183,10 +183,6 @@ const [Modal, modalApi] = useVbenModal({
     employeeLoaded.value = false;
     employeeTotal.value = 0;
     selectedEmployeeIdSet.value = new Set();
-    await employeeGridApi.grid.clearCheckboxRow();
-    await employeeGridApi.grid.clearCheckboxReserve();
-    await searchFormApi.reset();
-    await searchFormApi.setValues({ sent: false });
     await loadTemplates();
   },
   title: '发送工资条',
