@@ -132,7 +132,7 @@ async function downloadTemplate(
 <template>
   <Modal v-loading="formLoading" class="w-[760px]">
     <div class="space-y-4">
-      <div class="grid grid-cols-[112px_1fr] items-center gap-y-4">
+      <div class="grid grid-cols-[112px_1fr] items-center gap-x-3 gap-y-4">
         <span class="text-right text-muted-foreground">工资表</span>
         <span>{{ currentRecord?.title || '-' }}</span>
         <span class="text-right text-muted-foreground">计薪人员</span>

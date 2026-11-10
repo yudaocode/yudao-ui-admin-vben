@@ -344,7 +344,9 @@ async function handleDeleteTemplate(id?: number) {
 
     <Spin :spinning="templateLoading">
       <div v-if="currentStep === 0">
-        <div class="mb-4 grid grid-cols-[100px_1fr] items-center gap-y-4">
+        <div
+          class="mb-4 grid grid-cols-[100px_1fr] items-center gap-x-3 gap-y-4"
+        >
           <span class="text-right text-muted-foreground">工资条模板</span>
           <div class="flex flex-wrap items-center gap-3">
             <Select
@@ -394,7 +396,7 @@ async function handleDeleteTemplate(id?: number) {
           description="暂无工资条模板，请先新增模板"
         />
         <template v-else>
-          <div class="mb-4 grid grid-cols-[100px_1fr] items-center">
+          <div class="mb-4 grid grid-cols-[100px_1fr] items-center gap-x-3">
             <span class="text-right text-muted-foreground">隐藏空项</span>
             <Switch
               v-model:checked="sendTemplate.hideEmpty"
