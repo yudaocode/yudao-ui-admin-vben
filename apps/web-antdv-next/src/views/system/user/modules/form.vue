@@ -8,6 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
+import { getSimplePostList } from '#/api/system/post';
 import { createUser, getUser, updateUser } from '#/api/system/user';
 import { $t } from '#/locales';
 
@@ -15,6 +16,22 @@ import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<SystemUserApi.User>();
+
+/** 岗位下拉只含启用岗位；用户身上已删除或停用的岗位若原样提交，后端会回「当前岗位不存在」。 */
+async function dropMissingPosts(user: SystemUserApi.User) {
+  const posts = await getSimplePostList();
+  const validIds = new Set(
+    posts.flatMap((post) => (post.id == null ? [] : [Number(post.id)])),
+  );
+  const postIds = Array.isArray(user.postIds) ? user.postIds : [];
+  const kept = postIds.filter((id) => validIds.has(Number(id)));
+  if (kept.length === postIds.length) {
+    return;
+  }
+  user.postIds = kept;
+  message.warning('已去掉不存在或已停用的岗位，请确认后保存');
+}
+
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['用户'])
@@ -68,9 +85,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getUser(data.id);
+      const user = await getUser(data.id);
+      await dropMissingPosts(user);
+      formData.value = user;
       // 设置到 values
-      await formApi.setValues(formData.value);
+      await formApi.setValues(user);
     } finally {
       modalApi.unlock();
     }
