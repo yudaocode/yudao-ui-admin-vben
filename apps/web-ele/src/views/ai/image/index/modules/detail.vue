@@ -1,207 +1,381 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { AiImageApi } from '#/api/ai/image';
 
-import { ref, toRefs, watch } from 'vue';
+import { computed, ref } from 'vue';
 
-import {
-  AiPlatformEnum,
-  Dall3StyleList,
-  StableDiffusionClipGuidancePresets,
-  StableDiffusionSamplers,
-  StableDiffusionStylePresets,
-} from '@vben/constants';
+import { useVbenModal } from '@vben/common-ui';
+import { AiImageModeEnum, AiImageStatusEnum, DICT_TYPE } from '@vben/constants';
 import { formatDateTime } from '@vben/utils';
 
-import { ElImage } from 'element-plus';
+import {
+  ElAlert,
+  ElButton,
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElImage,
+  ElTag,
+} from 'element-plus';
 
-import { getImageMy } from '#/api/ai/image';
+import { getImage, getImageMy, getImagePublic } from '#/api/ai/image';
+import { DictTag } from '#/components/dict-tag';
+import {
+  AiImageInputRoleLabels,
+  AiImagePlatformEnum,
+} from '#/views/ai/image/constants';
 
-const props = defineProps({
-  id: {
-    type: Number,
-    required: true,
-  },
+/** AI 绘图：作品详情（我的作品：主人视角；公开画廊：公开视角；作品管理：管理员视角） */
+defineOptions({ name: 'AiImageDetail' });
+
+const loading = ref(false); // 弹窗的加载中
+const scope = ref('mine'); // 详情的来源：mine - 我的作品；public - 公开画廊；admin - 作品管理
+const detail = ref<AiImageApi.Image>(); // 详情
+let requestId = 0; // 请求序号：只采用最后一次打开的结果
+
+const getTitle = computed(() =>
+  scope.value === 'public' ? '作品详情' : `作品详情 #${detail.value?.id ?? ''}`,
+);
+
+const inputImages = computed(() => detail.value?.inputImages || []);
+const inputImageUrls = computed(() =>
+  inputImages.value.map((item) => item.url),
+); // 输入图片的预览列表
+
+/** 尺寸：MJ 记录的宽高为比例；宽高为 0 表示未知 */
+const sizeText = computed(() => {
+  const image = detail.value;
+  if (!image) {
+    return '-';
+  }
+  if (image.mode !== AiImageModeEnum.DRAW) {
+    return (
+      image.midjourneyOptions?.aspectRatio ||
+      (image.width && image.height ? `${image.width}:${image.height}` : '-')
+    );
+  }
+  if (image.seedreamOptions) {
+    return (
+      image.seedreamOptions.resultSize || image.seedreamOptions.size || '-'
+    );
+  }
+  return image.width && image.height ? `${image.width}x${image.height}` : '-';
 });
 
-const detail = ref<AiImageApi.Image>({} as AiImageApi.Image); // 图片详细信息
+/** 参数：三类 Options 中有值的字段 */
+const PARAM_LABELS: Record<string, string> = {
+  // 通用模型
+  quality: '画质',
+  aspectRatio: '比例',
+  seed: '随机种子',
+  steps: '推理步数',
+  cfgScale: '引导系数',
+  sampler: '采样方法',
+  stylePreset: '风格预设',
+  clipGuidancePreset: 'CLIP 引导',
+  style: '风格',
+  // Midjourney
+  version: '版本',
+  stylize: '风格化 --s',
+  chaos: '创意度 --c',
+  tile: '平铺 --tile',
+  raw: 'RAW --raw',
+  hd: 'HD --hd',
+  imageWeight: '图片权重 --iw',
+  characterWeight: '角色权重 --cw',
+  styleWeight: '风格权重 --sw',
+  styleVersion: '风格版本 --sv',
+  dimensions: '融图尺寸',
+  actionLabel: '按钮动作',
+  providerStatus: '中转状态',
+  modalProtocol: '局部重绘协议',
+  // Seedream
+  size: '尺寸档位',
+  optimizePromptMode: '提示词优化',
+  watermark: '水印',
+  resultSize: '结果尺寸',
+  errorCode: '错误码',
+};
+const HIDDEN_PARAMS = new Set([
+  'buttons',
+  'customId',
+  'extra',
+  'finalPrompt',
+  'legacy',
+  'usage',
+]);
+const params = computed(() => {
+  const image = detail.value;
+  if (!image) {
+    return [];
+  }
+  const result: { label: string; value: string }[] = [];
+  const append = (options?: Record<string, any>) => {
+    Object.entries(options || {}).forEach(([key, value]) => {
+      if (
+        value === null ||
+        value === undefined ||
+        value === '' ||
+        HIDDEN_PARAMS.has(key)
+      ) {
+        return;
+      }
+      if (
+        scope.value === 'public' &&
+        (key === 'providerStatus' || key === 'errorCode')
+      ) {
+        return;
+      }
+      result.push({
+        label: PARAM_LABELS[key] || key,
+        value:
+          typeof value === 'object' ? JSON.stringify(value) : String(value),
+      });
+    });
+  };
+  append(image.options);
+  append(image.midjourneyOptions);
+  append(image.seedreamOptions);
+  return result;
+});
 
-/** 获取图片详情  */
-async function getImageDetail(id: number) {
-  detail.value = await getImageMy(id);
+/** 加载详情：按来源调用对应的接口 */
+async function loadDetail(id?: number) {
+  if (!id) {
+    return;
+  }
+  const currentRequestId = ++requestId;
+  detail.value = undefined;
+  loading.value = true;
+  try {
+    let result: AiImageApi.Image;
+    if (scope.value === 'public') {
+      result = await getImagePublic(id);
+    } else if (scope.value === 'admin') {
+      result = await getImage(id);
+    } else {
+      result = await getImageMy(id);
+    }
+    if (currentRequestId === requestId) {
+      detail.value = result;
+    }
+  } finally {
+    if (currentRequestId === requestId) {
+      loading.value = false;
+    }
+  }
 }
 
-const { id } = toRefs(props);
-
-watch(
-  id,
-  async (newVal) => {
-    if (newVal) {
-      await getImageDetail(newVal);
+const [Modal, modalApi] = useVbenModal({
+  footer: false,
+  async onOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      detail.value = undefined;
+      return;
     }
+    const data = modalApi.getData() as { id: number; scope?: string };
+    if (!data?.id) {
+      return;
+    }
+    scope.value = data.scope || 'mine';
+    await loadDetail(data.id);
   },
-  { immediate: true },
-);
+});
 </script>
 
 <template>
-  <div class="mb-5 w-full overflow-hidden break-words">
-    <div class="mt-2">
-      <ElImage class="rounded-lg" :src="detail?.picUrl" />
+  <Modal :title="getTitle" class="w-[960px]">
+    <div v-loading="loading" class="flex min-h-[320px] gap-5">
+      <!-- 左：图片 -->
+      <div class="w-[360px] flex-shrink-0">
+        <div
+          class="flex h-[360px] items-center justify-center overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800"
+        >
+          <ElImage
+            v-if="detail?.picUrl && detail.status === AiImageStatusEnum.SUCCESS"
+            :src="detail.picUrl"
+            :preview-src-list="[detail.picUrl]"
+            preview-teleported
+            fit="contain"
+            class="size-full"
+          />
+          <span v-else class="text-xs text-gray-500">
+            {{
+              detail?.status === AiImageStatusEnum.IN_PROGRESS
+                ? '生成中'
+                : '暂无图片'
+            }}
+          </span>
+        </div>
+        <!-- 输入图片：按角色 -->
+        <div v-if="inputImages.length > 0" class="mt-3">
+          <div class="mb-1.5 text-[13px] font-bold">输入图片</div>
+          <div class="flex flex-wrap gap-2">
+            <div
+              v-for="(item, index) in inputImages"
+              :key="index"
+              class="w-20 text-center"
+            >
+              <ElImage
+                :src="item.url"
+                :preview-src-list="inputImageUrls"
+                :initial-index="index"
+                preview-teleported
+                fit="cover"
+                class="size-20 rounded-md"
+              />
+              <div class="text-xs text-gray-500">
+                {{ AiImageInputRoleLabels[item.role] || item.role }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右：信息 -->
+      <div v-if="detail" class="min-w-0 flex-1">
+        <ElDescriptions :column="2" size="small" border>
+          <ElDescriptionsItem label="类型">
+            <ElTag
+              v-if="detail.platform === AiImagePlatformEnum.DOU_BAO"
+              type="primary"
+            >
+              Seedream
+            </ElTag>
+            <DictTag
+              v-else
+              :type="DICT_TYPE.AI_IMAGE_MODE"
+              :value="detail.mode"
+            />
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="状态">
+            <DictTag :type="DICT_TYPE.AI_IMAGE_STATUS" :value="detail.status" />
+            <span v-if="detail.status === AiImageStatusEnum.IN_PROGRESS">
+              {{ detail.progress || 0 }}%
+            </span>
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="平台">
+            <DictTag :type="DICT_TYPE.AI_PLATFORM" :value="detail.platform" />
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="模型">
+            {{ detail.model }}
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="尺寸">{{ sizeText }}</ElDescriptionsItem>
+          <ElDescriptionsItem label="公开">
+            {{ detail.publicStatus ? '已公开' : '未公开' }}
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="提交时间">
+            {{ formatDateTime(detail.createTime) }}
+          </ElDescriptionsItem>
+          <ElDescriptionsItem label="完成时间">
+            {{ detail.finishTime ? formatDateTime(detail.finishTime) : '-' }}
+          </ElDescriptionsItem>
+          <template v-if="scope === 'admin'">
+            <ElDescriptionsItem label="用户编号">
+              {{ detail.userId }}
+            </ElDescriptionsItem>
+            <ElDescriptionsItem label="密钥编号">
+              {{ detail.apiKeyId ?? '-' }}
+            </ElDescriptionsItem>
+          </template>
+          <ElDescriptionsItem
+            v-if="scope !== 'public'"
+            label="上游任务号"
+            :span="2"
+          >
+            <span class="break-all">{{ detail.taskId || '-' }}</span>
+          </ElDescriptionsItem>
+        </ElDescriptions>
+
+        <!-- 提示词：三段 -->
+        <div class="mt-4 text-[13px] font-bold">提示词</div>
+        <ElDescriptions :column="1" size="small" border class="mt-1.5">
+          <ElDescriptionsItem label="画面描述">
+            <div class="whitespace-pre-wrap break-all">
+              {{ detail.prompt || '-' }}
+            </div>
+          </ElDescriptionsItem>
+          <ElDescriptionsItem v-if="detail.negativePrompt" label="不希望出现">
+            <div class="whitespace-pre-wrap break-all">
+              {{ detail.negativePrompt }}
+            </div>
+          </ElDescriptionsItem>
+          <ElDescriptionsItem
+            v-if="detail.midjourneyOptions?.finalPrompt"
+            label="最终提示词"
+          >
+            <div class="whitespace-pre-wrap break-all">
+              {{ detail.midjourneyOptions.finalPrompt }}
+            </div>
+          </ElDescriptionsItem>
+        </ElDescriptions>
+
+        <!-- 参数 -->
+        <template v-if="params.length > 0">
+          <div class="mt-4 text-[13px] font-bold">参数</div>
+          <ElDescriptions :column="2" size="small" border class="mt-1.5">
+            <ElDescriptionsItem
+              v-for="item in params"
+              :key="item.label"
+              :label="item.label"
+            >
+              <span class="break-all">{{ item.value }}</span>
+            </ElDescriptionsItem>
+          </ElDescriptions>
+        </template>
+
+        <!-- 失败原因：公开视角不展示 -->
+        <ElAlert
+          v-if="scope !== 'public' && detail.errorMessage"
+          :title="detail.errorMessage"
+          type="error"
+          :closable="false"
+          class="mt-4"
+        />
+
+        <!-- 来源、派生 -->
+        <template
+          v-if="
+            scope !== 'public' && (detail.parentId || detail.children?.length)
+          "
+        >
+          <div class="mt-4 text-[13px] font-bold">来源与派生</div>
+          <div class="mt-1.5 flex flex-col gap-1.5 text-[13px]">
+            <div v-if="detail.parentId">
+              来源作品：
+              <ElButton
+                type="primary"
+                link
+                size="small"
+                @click="loadDetail(detail.parentId)"
+              >
+                #{{ detail.parentId }}
+              </ElButton>
+            </div>
+            <div
+              v-for="child in detail.children"
+              :key="child.id"
+              class="flex items-center gap-2"
+            >
+              <span>派生作品：</span>
+              <ElButton
+                type="primary"
+                link
+                size="small"
+                @click="loadDetail(child.id)"
+              >
+                #{{ child.id }}
+              </ElButton>
+              <DictTag :type="DICT_TYPE.AI_IMAGE_MODE" :value="child.mode" />
+              <span class="text-gray-500">
+                {{ child.midjourneyOptions?.actionLabel }}
+              </span>
+              <DictTag
+                :type="DICT_TYPE.AI_IMAGE_STATUS"
+                :value="child.status"
+              />
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
-  </div>
-
-  <!-- 时间 -->
-  <div class="mb-5 w-full overflow-hidden break-words">
-    <div class="text-lg font-bold">时间</div>
-    <div class="mt-2">
-      <div>提交时间：{{ formatDateTime(detail.createTime) }}</div>
-      <div>生成时间：{{ formatDateTime(detail.finishTime) }}</div>
-    </div>
-  </div>
-
-  <!-- 模型 -->
-  <div class="mb-5 w-full overflow-hidden break-words">
-    <div class="text-lg font-bold">模型</div>
-    <div class="mt-2">
-      {{ detail.model }}({{ detail.height }}x{{ detail.width }})
-    </div>
-  </div>
-
-  <!-- 提示词 -->
-  <div class="mb-5 w-full overflow-hidden break-words">
-    <div class="text-lg font-bold">提示词</div>
-    <div class="mt-2">
-      {{ detail.prompt }}
-    </div>
-  </div>
-
-  <!-- 图片地址 -->
-  <div class="mb-5 w-full overflow-hidden break-words">
-    <div class="text-lg font-bold">图片地址</div>
-    <div class="mt-2">
-      {{ detail.picUrl }}
-    </div>
-  </div>
-
-  <!-- StableDiffusion 专属 -->
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
-      detail?.options?.sampler
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">采样方法</div>
-    <div class="mt-2">
-      {{
-        StableDiffusionSamplers.find(
-          (item) => item.key === detail?.options?.sampler,
-        )?.name
-      }}
-    </div>
-  </div>
-
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
-      detail?.options?.clipGuidancePreset
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">CLIP</div>
-    <div class="mt-2">
-      {{
-        StableDiffusionClipGuidancePresets.find(
-          (item) => item.key === detail?.options?.clipGuidancePreset,
-        )?.name
-      }}
-    </div>
-  </div>
-
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
-      detail?.options?.stylePreset
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">风格</div>
-    <div class="mt-2">
-      {{
-        StableDiffusionStylePresets.find(
-          (item) => item.key === detail?.options?.stylePreset,
-        )?.name
-      }}
-    </div>
-  </div>
-
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
-      detail?.options?.steps
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">迭代步数</div>
-    <div class="mt-2">{{ detail?.options?.steps }}</div>
-  </div>
-
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
-      detail?.options?.scale
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">引导系数</div>
-    <div class="mt-2">{{ detail?.options?.scale }}</div>
-  </div>
-
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.STABLE_DIFFUSION &&
-      detail?.options?.seed
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">随机因子</div>
-    <div class="mt-2">{{ detail?.options?.seed }}</div>
-  </div>
-
-  <!-- Dall3 专属 -->
-  <div
-    v-if="detail.platform === AiPlatformEnum.OPENAI && detail?.options?.style"
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">风格选择</div>
-    <div class="mt-2">
-      {{
-        Dall3StyleList.find((item) => item.key === detail?.options?.style)?.name
-      }}
-    </div>
-  </div>
-
-  <!-- Midjourney 专属 -->
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.MIDJOURNEY && detail?.options?.version
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">模型版本</div>
-    <div class="mt-2">{{ detail?.options?.version }}</div>
-  </div>
-
-  <div
-    v-if="
-      detail.platform === AiPlatformEnum.MIDJOURNEY &&
-      detail?.options?.referImageUrl
-    "
-    class="mb-5 w-full overflow-hidden break-words"
-  >
-    <div class="text-lg font-bold">参考图</div>
-    <div class="mt-2">
-      <ElImage :src="detail.options.referImageUrl" />
-    </div>
-  </div>
+  </Modal>
 </template>

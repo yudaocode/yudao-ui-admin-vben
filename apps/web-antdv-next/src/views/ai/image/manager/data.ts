@@ -42,6 +42,25 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
     },
     {
+      fieldName: 'mode',
+      label: '生成方式',
+      component: 'Select',
+      componentProps: {
+        placeholder: '请选择生成方式',
+        allowClear: true,
+        options: getDictOptions(DICT_TYPE.AI_IMAGE_MODE, 'number'),
+      },
+    },
+    {
+      fieldName: 'prompt',
+      label: '提示词',
+      component: 'Input',
+      componentProps: {
+        placeholder: '请输入提示词',
+        allowClear: true,
+      },
+    },
+    {
       fieldName: 'status',
       label: '绘画状态',
       component: 'Select',
@@ -104,6 +123,15 @@ export function useGridColumns(
         userList.find((user) => user.id === cellValue)?.nickname || '-',
     },
     {
+      field: 'mode',
+      title: '生成方式',
+      minWidth: 120,
+      cellRender: {
+        name: 'CellDict',
+        props: { type: DICT_TYPE.AI_IMAGE_MODE },
+      },
+    },
+    {
       field: 'platform',
       title: '平台',
       minWidth: 120,
@@ -125,6 +153,18 @@ export function useGridColumns(
         name: 'CellDict',
         props: { type: DICT_TYPE.AI_IMAGE_STATUS },
       },
+    },
+    {
+      field: 'progress',
+      title: '进度',
+      minWidth: 80,
+      formatter: ({ cellValue }) => `${cellValue ?? 0}%`,
+    },
+    {
+      field: 'parentId',
+      title: '来源',
+      minWidth: 100,
+      slots: { default: 'parentId' },
     },
     {
       minWidth: 100,
@@ -154,16 +194,6 @@ export function useGridColumns(
       formatter: 'formatDateTime',
     },
     {
-      field: 'width',
-      title: '宽度',
-      minWidth: 180,
-    },
-    {
-      field: 'height',
-      title: '高度',
-      minWidth: 180,
-    },
-    {
       field: 'errorMessage',
       title: '错误信息',
       minWidth: 180,
@@ -175,7 +205,7 @@ export function useGridColumns(
     },
     {
       title: '操作',
-      width: 130,
+      width: 160,
       fixed: 'right',
       slots: { default: 'actions' },
     },

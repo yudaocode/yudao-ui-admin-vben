@@ -2,19 +2,33 @@
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { AiImageApi } from '#/api/ai/image';
 
-import { confirm, DocAlert, Page } from '@vben/common-ui';
+import { confirm, DocAlert, Page, useVbenModal } from '@vben/common-ui';
 
-import { ElLoading, ElMessage } from 'element-plus';
+import { ElButton, ElLoading, ElMessage } from 'element-plus';
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteImage, getImagePage, updateImage } from '#/api/ai/image';
 import { $t } from '#/locales';
 
+import Detail from '../index/modules/detail.vue';
 import { useGridColumns, useGridFormSchema } from './data';
+
+/** AI 绘图：作品管理 */
+defineOptions({ name: 'AiImageManager' });
+
+const [DetailModal, detailModalApi] = useVbenModal({
+  connectedComponent: Detail,
+  destroyOnClose: true,
+});
 
 /** 刷新表格 */
 function handleRefresh() {
   gridApi.query();
+}
+
+/** 查看详情：管理员视角 */
+function handleDetail(id: number) {
+  detailModalApi.setData({ id, scope: 'admin' }).open();
 }
 
 /** 删除图片 */
@@ -23,7 +37,7 @@ async function handleDelete(row: AiImageApi.Image) {
     text: $t('ui.actionMessage.deleting', [row.id]),
   });
   try {
-    await deleteImage(row.id!);
+    await deleteImage(row.id);
     ElMessage.success($t('ui.actionMessage.deleteSuccess', [row.id]));
     handleRefresh();
   } finally {
@@ -88,10 +102,31 @@ const [Grid, gridApi] = useVbenVxeGrid({
     <template #doc>
       <DocAlert title="AI 绘图创作" url="https://doc.iocoder.cn/ai/image/" />
     </template>
+    <DetailModal />
     <Grid table-title="绘画管理列表">
+      <template #parentId="{ row }">
+        <ElButton
+          v-if="row.parentId"
+          type="primary"
+          link
+          size="small"
+          @click="handleDetail(row.parentId)"
+        >
+          #{{ row.parentId }}
+        </ElButton>
+        <span v-else>-</span>
+      </template>
       <template #actions="{ row }">
         <TableAction
           :actions="[
+            {
+              label: $t('common.detail'),
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.VIEW,
+              auth: ['ai:image:query'],
+              onClick: handleDetail.bind(null, row.id),
+            },
             {
               label: $t('common.delete'),
               type: 'danger',
