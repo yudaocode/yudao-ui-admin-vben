@@ -160,6 +160,7 @@ const AI_DICT = {
   AI_MODEL_TYPE: 'ai_model_type', // AI 模型类型
   AI_MUSIC_STATUS: 'ai_music_status', // AI 音乐状态
   AI_PLATFORM: 'ai_platform', // AI 平台
+  AI_PPT_STATUS: 'ai_ppt_status', // AI PPT 状态
   AI_WRITE_FORMAT: 'ai_write_format', // AI 写作格式
   AI_WRITE_LANGUAGE: 'ai_write_language', // AI 写作语言
   AI_WRITE_LENGTH: 'ai_write_length', // AI 写作长度

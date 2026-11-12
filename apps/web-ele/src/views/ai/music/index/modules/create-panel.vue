@@ -45,6 +45,7 @@ import {
   generateMusic,
   uploadMusic,
 } from '#/api/ai/music';
+import { useUpload } from '#/components/upload/use-upload';
 import { formatMusicDuration, getMusicTitle } from '#/views/ai/utils/format';
 
 /** AI 音乐：创作面板（灵感、自定义、续写、上传） */
@@ -267,9 +268,10 @@ defineExpose({ setExtendSource });
 
 // ========== 上传 ==========
 
-/** 上传音频：由后端存到文件服务，再提交上传任务 */
+/** 上传音频：先上传到文件服务，再提交上传任务 */
 const uploading = ref(false);
 const MAX_UPLOAD_MB = 50;
+const { httpRequest: uploadFile } = useUpload('ai/music');
 
 function beforeUpload(file: UploadRawFile) {
   if (!formData.modelId) {
@@ -289,11 +291,13 @@ function beforeUpload(file: UploadRawFile) {
   return true;
 }
 
-function httpRequest(options: UploadRequestOptions) {
+async function httpRequest(options: UploadRequestOptions) {
+  // 前端直传时返回 { url }，后端上传时直接返回地址
+  const res: any = await uploadFile(options.file);
   const name = options.file.name.replace(/\.[^.]+$/, '');
   return uploadMusic({
     modelId: formData.modelId!,
-    file: options.file,
+    fileUrl: res?.url || res,
     title: name ? name.slice(0, 100) : undefined,
   });
 }

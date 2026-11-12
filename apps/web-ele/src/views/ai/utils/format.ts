@@ -1,3 +1,5 @@
+import { AiPptLanguageEnum } from '@vben/constants';
+
 /** 格式化 Token 数：null 表示未取得，真实 0 显示 0 */
 export function formatTokenCount(value?: null | number) {
   return value === null || value === undefined
@@ -19,4 +21,9 @@ export function formatMusicDuration(seconds?: null | number): string {
 /** 音乐名称为空时的展示文案 */
 export function getMusicTitle(title?: null | string): string {
   return title || '未命名歌曲';
+}
+
+/** 格式化 PPT 语言 */
+export function formatPptLanguage(language?: string): string {
+  return language === AiPptLanguageEnum.EN ? 'English' : '中文';
 }

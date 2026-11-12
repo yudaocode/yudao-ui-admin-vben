@@ -59,7 +59,7 @@ export namespace AiMusicApi {
   /** AI 音乐上传 */
   export interface UploadReq {
     modelId: number; // 模型编号
-    file: File; // 音频文件，只支持 mp3、wav
+    fileUrl: string; // 音频文件地址，只支持 mp3、wav
     title?: string; // 歌曲名称
   }
 
@@ -103,11 +103,7 @@ export function concatMusic(id: number) {
 
 /** 上传音乐 */
 export function uploadMusic(data: AiMusicApi.UploadReq) {
-  return requestClient.upload<number>('/ai/music/upload', {
-    modelId: data.modelId,
-    file: data.file,
-    title: data.title || undefined,
-  });
+  return requestClient.post<number>('/ai/music/upload', data);
 }
 
 /** 生成歌词 */
