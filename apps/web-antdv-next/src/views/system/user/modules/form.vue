@@ -8,13 +8,47 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
+import { getSimpleDeptList } from '#/api/system/dept';
+import { getSimplePostList } from '#/api/system/post';
 import { createUser, getUser, updateUser } from '#/api/system/user';
 import { $t } from '#/locales';
 
+import {
+  isSelectableId,
+  pruneSelectableIds,
+  selectableIdSet,
+} from '../../keep-selectable-ids';
 import { useFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
 const formData = ref<SystemUserApi.User>();
+
+/** 部门和岗位的选项都只含启用项；已删除或停用的值原样提交会被后端拒绝。 */
+async function dropMissingRelations(user: SystemUserApi.User) {
+  const [posts, depts] = await Promise.all([
+    getSimplePostList(),
+    getSimpleDeptList(),
+  ]);
+  const removed: string[] = [];
+  const postsResult = pruneSelectableIds(user.postIds, selectableIdSet(posts));
+  if (postsResult.changed) {
+    user.postIds = postsResult.kept;
+    removed.push('岗位');
+  }
+  if (
+    user.deptId != null &&
+    !isSelectableId(user.deptId, selectableIdSet(depts))
+  ) {
+    delete (user as { deptId?: number }).deptId;
+    removed.push('部门');
+  }
+  if (removed.length > 0) {
+    message.warning(
+      `已去掉不存在或已停用的${removed.join('、')}，请确认后保存`,
+    );
+  }
+}
+
 const getTitle = computed(() => {
   return formData.value?.id
     ? $t('ui.actionTitle.edit', ['用户'])
@@ -68,9 +102,11 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      formData.value = await getUser(data.id);
+      const user = await getUser(data.id);
+      await dropMissingRelations(user);
+      formData.value = user;
       // 设置到 values
-      await formApi.setValues(formData.value);
+      await formApi.setValues(user);
     } finally {
       modalApi.unlock();
     }

@@ -7,8 +7,10 @@ import { message } from 'antdv-next';
 
 import { useVbenForm } from '#/adapter/form';
 import { assignUserRole, getUserRoleList } from '#/api/system/permission';
+import { getSimpleRoleList } from '#/api/system/role';
 import { $t } from '#/locales';
 
+import { pruneSelectableIds, selectableIdSet } from '../../keep-selectable-ids';
 import { useAssignRoleFormSchema } from '../data';
 
 const emit = defineEmits(['success']);
@@ -58,11 +60,20 @@ const [Modal, modalApi] = useVbenModal({
     }
     modalApi.lock();
     try {
-      const roleIds = await getUserRoleList(data.id);
-      // 设置到 values
+      const [roleIds, roles] = await Promise.all([
+        getUserRoleList(data.id),
+        getSimpleRoleList(),
+      ]);
+      const pruned = pruneSelectableIds(
+        Array.isArray(roleIds) ? roleIds : [],
+        selectableIdSet(roles),
+      );
+      if (pruned.changed) {
+        message.warning('已去掉不存在或已停用的角色，请确认后保存');
+      }
       await formApi.setValues({
         ...data,
-        roleIds,
+        roleIds: pruned.kept,
       });
     } finally {
       modalApi.unlock();
