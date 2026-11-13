@@ -192,7 +192,7 @@ onMounted(() => {
         }"
       >
         <div class="mb-4">
-          <div class="text-base font-bold">AI 绘图</div>
+          <div class="text-base font-bold">AI 图片生成</div>
           <div class="mt-1 text-xs text-gray-500">
             选择模型后，表单按模型能力显示可用的参数
           </div>

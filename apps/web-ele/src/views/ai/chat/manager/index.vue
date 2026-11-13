@@ -14,7 +14,7 @@ const activeTabName = ref('conversation');
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="AI 对话聊天" url="https://doc.iocoder.cn/ai/chat/" />
+      <DocAlert title="AI 对话" url="https://doc.iocoder.cn/ai/chat/" />
     </template>
 
     <ElTabs v-model:model-value="activeTabName">

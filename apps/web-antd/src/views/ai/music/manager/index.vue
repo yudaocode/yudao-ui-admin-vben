@@ -145,7 +145,7 @@ onDeactivated(stopPlay);
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="AI 音乐创作" url="https://doc.iocoder.cn/ai/music/" />
+      <DocAlert title="AI 音乐生成" url="https://doc.iocoder.cn/ai/music/" />
     </template>
     <DetailModal />
     <Grid table-title="音乐管理列表">

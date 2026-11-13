@@ -101,7 +101,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
 <template>
   <Page auto-content-height>
     <template #doc>
-      <DocAlert title="AI 绘图创作" url="https://doc.iocoder.cn/ai/image/" />
+      <DocAlert title="AI 图片生成" url="https://doc.iocoder.cn/ai/image/" />
     </template>
     <DetailModal />
     <Grid table-title="绘画管理列表">
