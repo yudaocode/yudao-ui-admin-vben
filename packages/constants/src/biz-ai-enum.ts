@@ -2,17 +2,17 @@
  * AI 平台的枚举
  */
 export const AiPlatformEnum = {
-  TONG_YI: 'TongYi', // 阿里
-  YI_YAN: 'YiYan', // 百度
-  DEEP_SEEK: 'DeepSeek', // DeepSeek
-  ZHI_PU: 'ZhiPu', // 智谱 AI
-  XING_HUO: 'XingHuo', // 讯飞
-  SiliconFlow: 'SiliconFlow', // 硅基流动
-  OPENAI: 'OpenAI',
-  Ollama: 'Ollama',
-  STABLE_DIFFUSION: 'StableDiffusion', // Stability AI
-  MIDJOURNEY: 'Midjourney', // Midjourney
-  SUNO: 'Suno', // Suno AI
+  ALIBABA: 'ALIBABA', // 阿里
+  BAIDU: 'BAIDU', // 百度
+  DEEPSEEK: 'DEEPSEEK', // DeepSeek
+  ZHIPU: 'ZHIPU', // 智谱 AI
+  IFLYTEK: 'IFLYTEK', // 讯飞
+  SILICONFLOW: 'SILICONFLOW', // 硅基流动
+  OPENAI: 'OPENAI',
+  OLLAMA: 'OLLAMA',
+  STABILITYAI: 'STABILITYAI', // Stability AI
+  MIDJOURNEY: 'MIDJOURNEY', // Midjourney
+  SUNO: 'SUNO', // Suno AI
 };
 
 export const AiModelTypeEnum = {
@@ -274,8 +274,8 @@ export enum AiPptExportFormatEnum {
  */
 export const AiPptImagePlatforms: string[] = [
   AiPlatformEnum.OPENAI,
-  AiPlatformEnum.SiliconFlow,
-  AiPlatformEnum.TONG_YI,
+  AiPlatformEnum.SILICONFLOW,
+  AiPlatformEnum.ALIBABA,
 ];
 
 /**

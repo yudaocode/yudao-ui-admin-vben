@@ -211,7 +211,7 @@ async function handleAction(button: AiImageApi.ImageMidjourneyButton) {
       <!-- 类型、公开标记：Seedream 与通用模型同为 AI 生图，按平台区分 -->
       <div class="absolute left-2 top-2 flex gap-1">
         <ElTag
-          v-if="image.platform === AiImagePlatformEnum.DOU_BAO"
+          v-if="image.platform === AiImagePlatformEnum.BYTEDANCE"
           type="primary"
           size="small"
         >

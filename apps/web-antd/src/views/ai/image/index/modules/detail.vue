@@ -236,7 +236,7 @@ const [Modal, modalApi] = useVbenModal({
           <Descriptions :column="2" size="small" bordered>
             <DescriptionsItem label="类型">
               <Tag
-                v-if="detail.platform === AiImagePlatformEnum.DOU_BAO"
+                v-if="detail.platform === AiImagePlatformEnum.BYTEDANCE"
                 color="blue"
               >
                 Seedream

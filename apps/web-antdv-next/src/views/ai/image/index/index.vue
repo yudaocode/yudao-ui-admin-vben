@@ -59,14 +59,14 @@ const modelGroups = computed(() => {
       label: '通用模型',
       models: models.value.filter(
         (item) =>
-          item.model.platform !== AiImagePlatformEnum.DOU_BAO &&
+          item.model.platform !== AiImagePlatformEnum.BYTEDANCE &&
           item.model.platform !== AiImagePlatformEnum.MIDJOURNEY,
       ),
     },
     {
       label: 'Seedream',
       models: models.value.filter(
-        (item) => item.model.platform === AiImagePlatformEnum.DOU_BAO,
+        (item) => item.model.platform === AiImagePlatformEnum.BYTEDANCE,
       ),
     },
     {
