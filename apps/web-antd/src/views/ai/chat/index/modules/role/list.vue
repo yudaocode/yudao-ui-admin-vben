@@ -2,12 +2,15 @@
 import type { PropType } from 'vue';
 
 import type { AiModelChatRoleApi } from '#/api/ai/model/chatRole';
+import type { AiSkillApi } from '#/api/ai/skill';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Avatar, Button, Card, Dropdown, Menu } from 'ant-design-vue';
+import { Avatar, Button, Card, Dropdown, Menu, Tooltip } from 'ant-design-vue';
+
+import { getSkillSimpleList } from '#/api/ai/skill';
 
 const props = defineProps({
   loading: {
@@ -28,6 +31,12 @@ const props = defineProps({
 const emits = defineEmits(['onDelete', 'onEdit', 'onUse', 'onPage']);
 
 const tabsRef = ref<any>();
+const skillList = ref<AiSkillApi.Skill[]>([]); // 技能列表：只包含启用的技能
+
+/** 获得角色引用的技能 */
+function getRoleSkills(role: AiModelChatRoleApi.ChatRole) {
+  return skillList.value.filter((skill) => role.skillIds?.includes(skill.id!));
+}
 
 /** 操作：编辑、删除 */
 async function handleMoreClick(data: any) {
@@ -54,15 +63,20 @@ async function handleTabsScroll() {
     }
   }
 }
+
+/** 初始化 */
+onMounted(async () => {
+  skillList.value = await getSkillSimpleList();
+});
 </script>
 
 <template>
   <div
-    class="relative flex h-full flex-wrap content-start items-start overflow-auto pb-36"
+    class="relative grid h-full grid-cols-1 content-start items-start gap-3 overflow-auto pb-36 pr-3 lg:grid-cols-2"
     ref="tabsRef"
     @scroll="handleTabsScroll"
   >
-    <div class="mb-3 mr-3 inline-block" v-for="role in roleList" :key="role.id">
+    <div class="min-w-0" v-for="role in roleList" :key="role.id">
       <Card
         class="relative rounded-lg"
         :body-style="{
@@ -70,8 +84,6 @@ async function handleTabsScroll() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-start',
-          width: '240px',
-          maxWidth: '240px',
           padding: '15px',
         }"
       >
@@ -82,19 +94,37 @@ async function handleTabsScroll() {
               :src="role.avatar"
               class="h-8 w-8 flex-shrink-0 overflow-hidden"
             />
-            <div class="ml-2 truncate text-base font-medium">
+            <div class="ml-2 truncate text-base font-medium" :title="role.name">
               {{ role.name }}
             </div>
           </div>
         </div>
         <!-- 描述信息 -->
         <div
-          class="mt-2 line-clamp-2 h-10 overflow-hidden text-sm text-gray-600"
+          class="mt-2 line-clamp-2 h-10 overflow-hidden break-all text-sm text-gray-600"
+          :title="role.description"
         >
           {{ role.description }}
         </div>
+        <!-- 引用的技能 -->
+        <div
+          v-if="getRoleSkills(role).length"
+          class="mt-2 flex flex-wrap gap-1"
+        >
+          <Tooltip
+            v-for="skill in getRoleSkills(role)"
+            :key="skill.id"
+            :title="`${skill.name}：${skill.description}`"
+          >
+            <span
+              class="max-w-full truncate rounded bg-gray-100 px-1.5 text-xs leading-5 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+            >
+              {{ skill.name }}
+            </span>
+          </Tooltip>
+        </div>
         <!-- 底部操作按钮 -->
-        <div class="flex items-center justify-end gap-2">
+        <div class="mt-2 flex items-center justify-end gap-2">
           <Dropdown v-if="showMore">
             <Button size="small">
               <IconifyIcon icon="lucide:ellipsis" />

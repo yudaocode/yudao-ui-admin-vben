@@ -8,6 +8,7 @@ import { z } from '#/adapter/form';
 import { getSimpleKnowledgeList } from '#/api/ai/knowledge/knowledge';
 import { getModelSimpleList } from '#/api/ai/model/model';
 import { getToolSimpleList } from '#/api/ai/model/tool';
+import { getSkillSimpleList } from '#/api/ai/skill';
 
 /** 新增/修改的表单 */
 export function useFormSchema(): VbenFormSchema[] {
@@ -93,6 +94,19 @@ export function useFormSchema(): VbenFormSchema[] {
         placeholder: '请输入角色设定',
       },
       rules: 'required',
+    },
+    {
+      fieldName: 'skillIds',
+      label: '引用技能',
+      component: 'ApiSelect',
+      componentProps: {
+        placeholder: '请选择技能',
+        api: getSkillSimpleList,
+        mode: 'multiple',
+        labelField: 'name',
+        valueField: 'id',
+        allowClear: true,
+      },
     },
     {
       fieldName: 'knowledgeIds',

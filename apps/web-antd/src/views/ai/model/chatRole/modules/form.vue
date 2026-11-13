@@ -16,6 +16,7 @@ import {
   updateChatRole,
   updateMy,
 } from '#/api/ai/model/chatRole';
+import { getSkillSimpleList } from '#/api/ai/skill';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -79,6 +80,11 @@ const [Modal, modalApi] = useVbenModal({
     modalApi.lock();
     try {
       formData.value = await (isMyRole.value ? getMy : getChatRole)(data.id);
+      // 过滤已禁用的技能：精简列表只包含启用的技能
+      const skillList = await getSkillSimpleList();
+      formData.value.skillIds = (formData.value.skillIds || []).filter(
+        (skillId) => skillList.some((skill) => skill.id === skillId),
+      );
       // 设置到 values
       await formApi.setValues({ ...data, ...formData.value });
     } finally {

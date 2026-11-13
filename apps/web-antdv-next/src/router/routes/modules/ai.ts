@@ -94,6 +94,18 @@ const routes: RouteRecordRaw[] = [
           activePath: '/ai/workflow',
         },
       },
+      {
+        path: 'console/skill/file/:skillId',
+        component: () => import('#/views/ai/skill/file/index.vue'),
+        name: 'AiSkillFile',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '技能文件',
+          activePath: '/ai/console/skill',
+        },
+      },
     ],
   },
 ];

@@ -17,6 +17,7 @@ export namespace AiModelChatRoleApi {
     status: number; // 状态
     knowledgeIds?: number[]; // 引用的知识库 ID 列表
     toolIds?: number[]; // 引用的工具 ID 列表
+    skillIds?: number[]; // 引用的技能 ID 列表
   }
 
   // AI 聊天角色 分页请求
