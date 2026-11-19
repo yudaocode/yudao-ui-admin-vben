@@ -23,6 +23,8 @@ export const AiModelTypeEnum = {
   EMBEDDING: 5, // 向量
   RERANK: 6, // 重排
   MUSIC: 7, // 音乐
+  OCR: 8, // 文字识别
+  ASR: 9, // 语音识别
 };
 
 /** AI 聊天消息类型的枚举 */
@@ -282,6 +284,22 @@ export const AiPptImagePlatforms: string[] = [
  * AI PPT 材料支持的格式，与后端一致
  */
 export const AiPptFileTypes = ['pdf', 'doc', 'docx', 'txt', 'md', 'markdown'];
+
+/**
+ * AI 文字识别状态的枚举，与后端 AiOcrStatusEnum 一致
+ */
+export const AiOcrStatusEnum = {
+  SUCCESS: 20, // 识别成功
+  FAIL: 30, // 识别失败
+};
+
+/**
+ * AI 语音识别状态的枚举，与后端 AiAsrStatusEnum 一致
+ */
+export const AiAsrStatusEnum = {
+  SUCCESS: 20, // 识别成功
+  FAIL: 30, // 识别失败
+};
 
 /**
  * AI 写作类型的枚举
