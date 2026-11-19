@@ -28,6 +28,7 @@
   "dependencies": {
     "@form-create/ant-design-vue": "catalog:",
     "@form-create/antd-designer": "catalog:",
+    "@mediapipe/tasks-vision": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
@@ -44,6 +45,9 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@videojs-player/vue": "catalog:",
+    "@vue-flow/background": "catalog:",
+    "@vue-flow/core": "catalog:",
+    "@vue-flow/minimap": "catalog:",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
     "ant-design-vue": "catalog:",
@@ -59,9 +63,11 @@
     "fast-xml-parser": "catalog:",
     "highlight.js": "catalog:",
     "livekit-client": "catalog:",
+    "mediabunny": "catalog:",
     "pinia": "catalog:",
     "sortablejs": "catalog:",
     "steady-xml": "catalog:",
+    "three": "catalog:",
     "tinymce": "catalog:",
     "tyme4ts": "catalog:",
     "video.js": "catalog:",
@@ -73,6 +79,7 @@
     "vuedraggable": "catalog:"
   },
   "devDependencies": {
-    "@types/sortablejs": "catalog:"
+    "@types/sortablejs": "catalog:",
+    "@types/three": "catalog:"
   }
 }

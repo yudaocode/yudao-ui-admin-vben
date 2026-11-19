@@ -13,6 +13,10 @@ export const AiPlatformEnum = {
   STABILITYAI: 'STABILITYAI', // Stability AI
   MIDJOURNEY: 'MIDJOURNEY', // Midjourney
   SUNO: 'SUNO', // Suno AI
+  BYTEDANCE: 'BYTEDANCE', // 字节
+  MINIMAX: 'MINIMAX', // MiniMax
+  KLING: 'KLING', // 可灵
+  GEMINI: 'GEMINI', // 谷歌 Gemini（视频生成为 Vertex AI Veo）
 };
 
 export const AiModelTypeEnum = {
@@ -227,6 +231,139 @@ export const AiMusicGenerateModeEnum = {
   EXTEND: 3, // 续写
   CONCAT: 4, // 拼接
   UPLOAD: 5, // 上传
+};
+
+/**
+ * AI 视频状态的枚举（与后端 AiVideoStatusEnum 一致）
+ */
+export const AiVideoStatusEnum = {
+  PENDING: 10, // 待处理
+  IN_PROGRESS: 20, // 生成中
+  SAVING: 30, // 转存中
+  SUCCESS: 40, // 已完成
+  FAIL: 50, // 已失败
+};
+
+/** AI 视频是否未结束：待处理、生成中、转存中 */
+export function isAiVideoRunning(status?: number) {
+  return (
+    status === AiVideoStatusEnum.PENDING ||
+    status === AiVideoStatusEnum.IN_PROGRESS ||
+    status === AiVideoStatusEnum.SAVING
+  );
+}
+
+/**
+ * AI 视频创作类型的枚举（与后端 AiVideoTypeEnum 一致）
+ */
+export const AiVideoTypeEnum = {
+  GENERATE: 1, // 视频生成
+  AVATAR: 2, // 数字人口播
+  MOTION: 3, // 动作模仿
+};
+
+/**
+ * AI 视频生成方式的枚举（与后端 AiVideoModeEnum 一致）
+ */
+export const AiVideoModeEnum = {
+  TEXT: 'text', // 文生视频
+  IMAGE: 'image', // 图生视频
+  FIRST_LAST: 'first_last', // 首尾帧
+  REFERENCE: 'reference', // 参考生视频
+};
+
+/** AI 视频生成方式的选项：创作面板使用的短名称 */
+export const AI_VIDEO_MODE_OPTIONS = [
+  { label: '文生', value: AiVideoModeEnum.TEXT },
+  { label: '图生', value: AiVideoModeEnum.IMAGE },
+  { label: '首尾帧', value: AiVideoModeEnum.FIRST_LAST },
+  { label: '参考', value: AiVideoModeEnum.REFERENCE },
+];
+
+/** AI 视频生成模式（quality）的选项：可灵旧版接口 */
+export const AI_VIDEO_QUALITY_OPTIONS = [
+  { label: '标准', value: 'std' },
+  { label: '高品质', value: 'pro' },
+];
+
+/** AI 视频提示词扩写（promptExpansionMode）的选项：MiniMax H3 */
+export const AI_VIDEO_PROMPT_EXPANSION_MODE_OPTIONS = [
+  { label: '关闭', value: 'disabled' },
+  { label: '均衡', value: 'balanced' },
+  { label: '质量', value: 'quality' },
+];
+
+/** AI 视频镜头类型（shotType）的选项：通义万相 */
+export const AI_VIDEO_SHOT_TYPE_OPTIONS = [
+  { label: '单镜头', value: 'single' },
+  { label: '多镜头', value: 'multi' },
+];
+
+/**
+ * AI 短剧生成状态的枚举：角色形象、场景、视觉资产、镜头视频、成片共用；为空表示未生成
+ */
+export const AiDramaStatusEnum = {
+  PENDING: 10, // 待处理
+  IN_PROGRESS: 20, // 生成中
+  SAVING: 30, // 转存中
+  SUCCESS: 40, // 已完成
+  FAIL: 50, // 已失败
+};
+
+/** AI 短剧是否生成中：待处理、生成中、转存中 */
+export function isAiDramaRunning(status?: number) {
+  return (
+    status === AiDramaStatusEnum.PENDING ||
+    status === AiDramaStatusEnum.IN_PROGRESS ||
+    status === AiDramaStatusEnum.SAVING
+  );
+}
+
+/**
+ * AI 短剧工作台步骤的枚举：只在前端使用，不保存到项目
+ */
+export const AiDramaStepEnum = {
+  IDEA: 1, // 故事想法
+  SCRIPT: 2, // 剧本审阅
+  ASSET: 3, // 资产配置
+  STORYBOARD: 4, // 分镜与成片
+};
+
+/**
+ * AI 短剧项目状态的枚举
+ */
+export const AiDramaProjectStatusEnum = {
+  DRAFT: 10, // 草稿
+  SCRIPT_CHANGED: 20, // 剧本已修改：需要重新分析资产、拆分分镜
+  STORYBOARD_READY: 30, // 分镜已就绪
+};
+
+/**
+ * AI 短剧画风的枚举
+ */
+export const AiDramaStyleEnum = {
+  SCRIPT_TONE: 1, // 随剧本基调
+};
+
+/**
+ * AI 短剧音频类型的枚举
+ */
+export const AiDramaAudioTypeEnum = {
+  SAMPLE: 1, // 角色样音
+  NARRATION: 2, // 旁白
+  DIALOGUE: 3, // 对白
+  BGM: 4, // 配乐
+  REFERENCE: 5, // 参考音频
+};
+
+/**
+ * AI 短剧视觉资产类型的枚举
+ */
+export const AiDramaVisualAssetKindEnum = {
+  PROP: 1, // 道具
+  SHOT_FRAME: 2, // 关键帧
+  ARCHIVED_PROP: 3, // 道具的历史版本
+  ARCHIVED_SHOT_FRAME: 4, // 关键帧的历史版本
 };
 
 /**

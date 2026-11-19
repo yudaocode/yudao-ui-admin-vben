@@ -106,6 +106,30 @@ const routes: RouteRecordRaw[] = [
           activePath: '/ai/console/skill',
         },
       },
+      {
+        path: 'drama/project/create',
+        component: () => import('#/views/ai/drama/project/form/index.vue'),
+        name: 'AiDramaProjectCreate',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '新建短剧',
+          activePath: '/ai/drama',
+        },
+      },
+      {
+        path: 'drama/project/:id',
+        component: () => import('#/views/ai/drama/project/form/index.vue'),
+        name: 'AiDramaProject',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          title: '短剧项目',
+          activePath: '/ai/drama',
+        },
+      },
     ],
   },
 ];
