@@ -6,6 +6,8 @@ export namespace AiOcrApi {
   /** AI 文字识别记录 */
   export interface Ocr {
     id: number; // 编号
+    userId?: number; // 用户编号，仅管理端有值
+    userNickname?: string; // 用户昵称，仅管理端有值
     modelId: number; // 模型编号
     modelName?: string; // 模型名字
     platform: string; // 平台
@@ -65,4 +67,23 @@ export function getOcrMy(id: number) {
 /** 删除【我的】识别记录 */
 export function deleteOcrMy(id: number) {
   return requestClient.delete<boolean>(`/ai/ocr/delete-my?id=${id}`);
+}
+
+// ================ 文字识别管理 ================
+
+/** 获得识别记录分页 */
+export function getOcrPage(params: PageParam) {
+  return requestClient.get<PageResult<AiOcrApi.Ocr>>('/ai/ocr/page', {
+    params,
+  });
+}
+
+/** 获得识别记录：不存在时返回空 */
+export function getOcr(id: number) {
+  return requestClient.get<AiOcrApi.Ocr | null>(`/ai/ocr/get?id=${id}`);
+}
+
+/** 删除识别记录 */
+export function deleteOcr(id: number) {
+  return requestClient.delete<boolean>(`/ai/ocr/delete?id=${id}`);
 }
