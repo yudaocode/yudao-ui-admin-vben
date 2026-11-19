@@ -14,13 +14,18 @@ import {
 
 import { ACTION_ICON, TableAction, useVbenVxeGrid } from '#/adapter/vxe-table';
 import { HrmPerformanceQuotaScoreType } from '#/views/hrm/utils/constants';
+import { isCompletionRateQuota } from '#/views/hrm/utils/performance';
 
 import { useQuotaGridColumns } from '../data';
 
 defineOptions({ name: 'HrmPerformanceAssessmentQuotaGrid' });
-const props = withDefaults(defineProps<{ disabled?: boolean }>(), {
-  disabled: false,
-});
+const props = withDefaults(
+  defineProps<{ disabled?: boolean; targetValueReadonly?: boolean }>(),
+  {
+    disabled: false,
+    targetValueReadonly: false,
+  },
+);
 const modelValue = defineModel<
   HrmPerformanceAssessmentTemplateApi.AssessmentQuota[]
 >({ default: () => [] });
@@ -53,6 +58,7 @@ function addQuota() {
       standard: '',
       weight: undefined,
       scoreType: HrmPerformanceQuotaScoreType.DIRECT_INPUT,
+      targetValue: '',
     },
   ];
 }
@@ -120,7 +126,25 @@ function removeQuota(row: HrmPerformanceAssessmentTemplateApi.AssessmentQuota) {
             label="直接输入"
             :value="HrmPerformanceQuotaScoreType.DIRECT_INPUT"
           />
+          <ElOption
+            label="完成率"
+            :value="HrmPerformanceQuotaScoreType.COMPLETION_RATE"
+          />
         </ElSelect>
+      </template>
+      <template #targetValue="{ row }">
+        <span v-if="props.targetValueReadonly">{{
+          row.targetValue || '-'
+        }}</span>
+        <ElInput
+          v-else
+          v-model="row.targetValue"
+          :disabled="props.disabled"
+          :maxlength="200"
+          :placeholder="
+            isCompletionRateQuota(row.scoreType) ? '大于 0 的数字' : '选填'
+          "
+        />
       </template>
       <template #actions="{ row }">
         <TableAction

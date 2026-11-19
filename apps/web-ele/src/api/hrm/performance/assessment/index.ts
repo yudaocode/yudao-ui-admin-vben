@@ -42,6 +42,7 @@ export namespace HrmPerformanceAssessmentApi {
     deadlineTime?: Date; // 截止时间
     canHandle?: boolean; // 是否可处理
     canScore?: boolean; // 是否可评分
+    actualValueEditable?: boolean; // 是否可录入完成率指标实际值
     quotaScoreList?: PerformanceAssessmentQuotaScore[]; // 指标评分列表
   }
 

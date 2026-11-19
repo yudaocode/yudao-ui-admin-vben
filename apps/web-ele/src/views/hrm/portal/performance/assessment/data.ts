@@ -12,6 +12,7 @@ import {
   formatHrmDateTime,
   formatHrmScore,
 } from '#/views/hrm/utils/format';
+import { isCompletionRateQuota } from '#/views/hrm/utils/performance';
 
 type PortalAssessment =
   HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment;
@@ -102,6 +103,26 @@ export function useQuotaGridColumns(): VxeTableGridOptions['columns'] {
       width: 80,
       align: 'center',
       formatter: ({ cellValue }) => `${Number(cellValue || 0)}%`,
+    },
+    {
+      field: 'scoreType',
+      title: '评分方式',
+      width: 100,
+      align: 'center',
+      formatter: ({ cellValue }) =>
+        isCompletionRateQuota(cellValue) ? '完成率' : '直接输入',
+    },
+    {
+      field: 'targetValue',
+      title: '目标值',
+      minWidth: 110,
+      formatter: ({ cellValue }) => cellValue || '-',
+    },
+    {
+      field: 'actualValue',
+      title: '实际值',
+      minWidth: 110,
+      formatter: ({ cellValue }) => cellValue || '-',
     },
     {
       field: 'finalScore',
@@ -234,6 +255,20 @@ export function useTargetConfirmGridColumns(): VxeTableGridOptions<PortalQuota>[
       align: 'center',
       slots: { default: 'weight' },
     },
+    {
+      field: 'scoreType',
+      title: '评分方式',
+      width: 100,
+      align: 'center',
+      formatter: ({ cellValue }) =>
+        isCompletionRateQuota(cellValue) ? '完成率' : '直接输入',
+    },
+    {
+      field: 'targetValue',
+      title: '目标值',
+      minWidth: 110,
+      formatter: ({ cellValue }) => cellValue || '-',
+    },
   ];
 }
 
@@ -362,6 +397,18 @@ export function useQuotaEditGridColumns(): VxeTableGridOptions<HrmPerformanceAss
       title: '指标权重',
       width: 130,
       slots: { default: 'weight' },
+    },
+    {
+      field: 'scoreType',
+      title: '评分方式',
+      width: 130,
+      slots: { default: 'scoreType' },
+    },
+    {
+      field: 'targetValue',
+      title: '目标值',
+      minWidth: 140,
+      slots: { default: 'targetValue' },
     },
     {
       title: '操作',

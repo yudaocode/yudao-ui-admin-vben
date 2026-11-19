@@ -10,6 +10,7 @@ export namespace HrmPerformanceAssessmentTemplateApi {
     standard?: string; // 标准值
     weight?: number; // 指标权重
     scoreType?: number; // 分数类型
+    targetValue?: string; // 默认目标值
   }
 
   /** AssessmentDimension */

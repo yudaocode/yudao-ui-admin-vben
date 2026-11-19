@@ -122,6 +122,7 @@ export namespace HrmPortalPerformanceAssessmentApi {
     stageResultLevel?: string; // 阶段结果等级
     cumulativeScore?: number; // 当前累计得分
     cumulativeResultLevel?: string; // 当前累计结果等级；全部评分阶段完成时返回
+    quotaScores?: HrmPerformanceAssessmentApi.PerformanceAssessmentQuotaScore[]; // 本阶段指标得分，完成率指标由后端计算
   }
 
   /** 驳回请求 */

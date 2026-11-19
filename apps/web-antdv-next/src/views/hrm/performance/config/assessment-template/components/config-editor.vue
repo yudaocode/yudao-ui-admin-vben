@@ -39,11 +39,13 @@ const props = withDefaults(
     disabled?: boolean;
     propPrefix?: string;
     showDimensions?: boolean;
+    targetValueReadonly?: boolean; // 默认目标值是否只读：计划中以考核模板为准
   }>(),
   {
     disabled: false,
     propPrefix: '',
     showDimensions: true,
+    targetValueReadonly: false,
   },
 );
 
@@ -159,6 +161,12 @@ defineExpose({ validate });
     show-icon
     type="info"
   />
+  <Alert
+    :style="{ marginBottom: '16px' }"
+    :title="`完成率指标得分 = min(实际值 ÷ 目标值, 1) × 评分上限，由系统计算；目标值、实际值须为纯数字。系统制定指标或不可编辑维度的完成率指标必须配置默认目标值。${props.targetValueReadonly ? '计划中的默认目标值仅供查看，如需修改请调整考核模板。' : ''}`"
+    show-icon
+    type="info"
+  />
 
   <slot name="after-score-config"></slot>
 
@@ -246,7 +254,11 @@ defineExpose({ validate });
             </span>
           </span>
         </div>
-        <QuotaGrid v-model="dimension.quotas" :disabled="props.disabled" />
+        <QuotaGrid
+          v-model="dimension.quotas"
+          :disabled="props.disabled"
+          :target-value-readonly="props.targetValueReadonly"
+        />
       </div>
     </div>
     <DimensionModal @confirm="handleDimensionConfirm" />

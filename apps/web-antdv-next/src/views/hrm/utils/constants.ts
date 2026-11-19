@@ -886,7 +886,8 @@ export const HrmPerformanceQuotaType = {
 } as const;
 
 export const HrmPerformanceQuotaScoreType = {
-  DIRECT_INPUT: 1,
+  DIRECT_INPUT: 1, // 直接输入
+  COMPLETION_RATE: 2, // 完成率
 } as const;
 
 /** 员工绩效考核阶段状态 */

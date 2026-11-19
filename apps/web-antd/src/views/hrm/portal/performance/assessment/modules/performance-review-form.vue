@@ -30,8 +30,16 @@ import {
   HrmPerformanceAssessmentStageStatus,
   HrmPerformanceRaterType,
 } from '#/views/hrm/utils/constants';
+import {
+  isCompletionRateQuota,
+  isValidActualValue,
+} from '#/views/hrm/utils/performance';
 
 import { useReviewEditGridColumns } from '../data';
+
+type PortalQuota = NonNullable<
+  HrmPortalPerformanceAssessmentApi.PortalPerformanceAssessment['quotas']
+>[number];
 
 defineOptions({ name: 'HrmPortalPerformanceReviewForm' });
 
@@ -47,46 +55,117 @@ const stageComment = ref('');
 const scorePreview = ref<HrmPortalPerformanceAssessmentApi.ScorePreview>();
 
 const currentStage = computed(() => detail.value.currentReviewStage);
+const actualValueEditable = computed(
+  () => currentStage.value?.actualValueEditable === true,
+); // 当前阶段是否录入完成率实际值
+const hasCompletionRateQuota = computed(() =>
+  (detail.value.quotas || []).some((quota) =>
+    isCompletionRateQuota(quota.scoreType),
+  ),
+); // 是否包含完成率指标
+const quotaPreviewScoreMap = computed(
+  () =>
+    new Map(
+      (scorePreview.value?.quotaScores || []).map((score) => [
+        score.assessmentQuotaId,
+        score.score,
+      ]),
+    ),
+); // 后端试算的指标得分
 const canReject = computed(
   () =>
     currentStage.value?.rejectAuthority === true &&
     !!detail.value.reviewStages?.some(
       (stage) =>
         stage.status === HrmPerformanceAssessmentStageStatus.PROCESSED &&
-        (stage.sort || 0) < (currentStage.value?.sort || 0),
+        // 与后端一致按 sort、编号排序：sort 相同时编号更小的阶段在前
+        ((stage.sort || 0) < (currentStage.value?.sort || 0) ||
+          ((stage.sort || 0) === (currentStage.value?.sort || 0) &&
+            (stage.id || 0) < (currentStage.value?.id || 0))),
     ),
 );
 
-onBeforeUnmount(() =>
-  document.body.classList.remove('hrm-performance-review-open'),
-);
+let cancelPreview: (() => void) | undefined; // 取消进行中的试算回调
+
+/** 作废当前试算：取消进行中的试算回调，并清空已展示的结果 */
+function invalidatePreview() {
+  cancelPreview?.();
+  cancelPreview = undefined;
+  scorePreview.value = undefined;
+}
+
+onBeforeUnmount(() => {
+  document.body.classList.remove('hrm-performance-review-open');
+  invalidatePreview();
+});
+
+/** 判断指标是否已填写完整：手工指标需评分，录入阶段的完成率指标需合法实际值 */
+function isQuotaFilled(quota: PortalQuota) {
+  if (isCompletionRateQuota(quota.scoreType)) {
+    return !actualValueEditable.value || isValidActualValue(quota.actualValue);
+  }
+  return quota.finalScore !== undefined && quota.finalScore !== null;
+}
+
+/** 构建试算输入快照：手工指标取评分，完成率指标取实际值 */
+function buildPreviewKey() {
+  return JSON.stringify([
+    detail.value.id,
+    currentStage.value?.id,
+    (detail.value.quotas || []).map((quota) => [
+      quota.id,
+      isCompletionRateQuota(quota.scoreType)
+        ? quota.actualValue
+        : quota.finalScore,
+    ]),
+  ]);
+}
 
 /** 预览绩效分数 */
 async function previewScore() {
+  invalidatePreview();
+  // 抽屉已关闭或正在提交时，不再发起排队中的试算
+  if (!drawerApi.store.state.isOpen || submitting.value) {
+    return;
+  }
   const stage = currentStage.value;
   const quotaList = detail.value.quotas || [];
   if (
     !detail.value.id ||
     !stage?.id ||
     quotaList.length === 0 ||
-    quotaList.some(
-      (quota) => quota.finalScore === undefined || quota.finalScore === null,
-    )
+    !quotaList.every((quota) => isQuotaFilled(quota))
   ) {
-    scorePreview.value = undefined;
     return;
   }
+  // 本次试算被新的输入、关闭或重新打开取代后，丢弃其结果
+  let cancelled = false;
+  cancelPreview = () => {
+    cancelled = true;
+  };
+  const previewKey = buildPreviewKey();
   try {
-    scorePreview.value = await previewPerformanceAssessmentScore({
+    const result = await previewPerformanceAssessmentScore({
       assessmentId: detail.value.id,
       reviewStageId: stage.id,
       quotas: quotaList,
     });
+    if (!cancelled && previewKey === buildPreviewKey()) {
+      scorePreview.value = result;
+    }
   } catch {
-    scorePreview.value = undefined;
+    if (!cancelled && previewKey === buildPreviewKey()) {
+      scorePreview.value = undefined;
+    }
   }
 }
-const schedulePreview = useDebounceFn(previewScore, 250);
+const debouncePreview = useDebounceFn(previewScore, 250);
+
+/** 评分输入变化：立即作废当前试算，再防抖重新试算 */
+function schedulePreview() {
+  invalidatePreview();
+  debouncePreview();
+}
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -106,7 +185,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
 const [Drawer, drawerApi] = useVbenDrawer({
   async onOpenChange(isOpen) {
     document.body.classList.toggle('hrm-performance-review-open', isOpen);
-    if (!isOpen) return;
+    if (!isOpen) {
+      invalidatePreview();
+      return;
+    }
     const { assessmentId, stageId } = drawerApi.getData() as {
       assessmentId?: number;
       stageId?: number;
@@ -116,7 +198,8 @@ const [Drawer, drawerApi] = useVbenDrawer({
       return;
     }
     stageComment.value = '';
-    scorePreview.value = undefined;
+    invalidatePreview();
+    detail.value = {}; // 清空上次打开的数据，使其未返回的试算结果失效
     drawerApi.lock();
     try {
       detail.value = await getPerformanceAssessment(assessmentId, stageId);
@@ -180,11 +263,13 @@ async function submitReview() {
   const quotaList = detail.value.quotas || [];
   if (
     quotaList.length === 0 ||
-    quotaList.some(
-      (quota) => quota.finalScore === undefined || quota.finalScore === null,
-    )
+    !quotaList.every((quota) => isQuotaFilled(quota))
   ) {
-    message.error('请完成全部指标评分');
+    message.error(
+      hasCompletionRateQuota.value && actualValueEditable.value
+        ? '请完成全部指标评分，并填写完成率指标的实际值（不小于 0 的数字）'
+        : '请完成全部指标评分',
+    );
     return;
   }
   if (stage.requiredSetting && !stageComment.value.trim()) {
@@ -301,17 +386,49 @@ async function submitReview() {
         show-icon
         type="info"
       />
+      <Alert
+        v-if="hasCompletionRateQuota"
+        class="mb-3"
+        :message="
+          actualValueEditable
+            ? '完成率指标请在本阶段录入实际值（纯数字），提交后后续阶段只读；得分 = min(实际值 ÷ 目标值, 1) × 评分上限，由系统计算。'
+            : '完成率指标的实际值由首个评分阶段录入，当前只读；得分由系统按目标值和实际值计算。'
+        "
+        show-icon
+        :type="actualValueEditable ? 'warning' : 'info'"
+      />
 
       <Grid class="w-full">
         <template #actualValue="{ row }">
+          <span
+            v-if="isCompletionRateQuota(row.scoreType) && !actualValueEditable"
+          >
+            {{ row.actualValue || '-' }}
+          </span>
           <Input
+            v-else-if="isCompletionRateQuota(row.scoreType)"
+            v-model:value="row.actualValue"
+            :maxlength="1000"
+            placeholder="不小于 0 的数字"
+            @change="schedulePreview"
+          />
+          <Input
+            v-else
             v-model:value="row.actualValue"
             :maxlength="1000"
             placeholder="实际完成情况"
           />
         </template>
         <template #finalScore="{ row }">
+          <div
+            v-if="isCompletionRateQuota(row.scoreType)"
+            class="flex flex-col"
+          >
+            <span>{{ quotaPreviewScoreMap.get(row.id) ?? '-' }}</span>
+            <span class="text-muted-foreground text-xs">完成率计算</span>
+          </div>
           <InputNumber
+            v-else
             v-model:value="row.finalScore"
             class="w-full"
             :controls="false"

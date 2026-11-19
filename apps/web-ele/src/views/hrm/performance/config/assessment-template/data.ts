@@ -181,6 +181,12 @@ export function useQuotaGridColumns(): VxeTableGridOptions<HrmPerformanceAssessm
       slots: { default: 'scoreType' },
     },
     {
+      field: 'targetValue',
+      title: '默认目标值',
+      minWidth: 140,
+      slots: { default: 'targetValue' },
+    },
+    {
       title: '操作',
       width: 80,
       align: 'center',

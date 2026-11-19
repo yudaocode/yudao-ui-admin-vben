@@ -60,6 +60,7 @@ defineExpose({ validate });
         v-model="assessmentConfig"
         :disabled="props.disabled"
         :show-dimensions="Boolean(model.assessmentTemplateId)"
+        target-value-readonly
       >
         <template #after-score-config>
           <Form.Item class="mt-4" label="考核指标模板" required>

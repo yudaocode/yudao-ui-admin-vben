@@ -15,7 +15,14 @@ import {
   getPerformanceAssessment,
 } from '#/api/hrm/portal/performance/assessment';
 import { DictTag } from '#/components/dict-tag';
-import { HrmPerformanceStageType } from '#/views/hrm/utils/constants';
+import {
+  HrmPerformanceQuotaScoreType,
+  HrmPerformanceStageType,
+} from '#/views/hrm/utils/constants';
+import {
+  isCompletionRateQuota,
+  isValidTargetValue,
+} from '#/views/hrm/utils/performance';
 
 import PerformanceQuotaGrid from './performance-quota-grid.vue';
 
@@ -115,7 +122,8 @@ function addQuota(group: DimensionGroup) {
     description: '',
     standard: '',
     weight: remainingWeight || undefined,
-    scoreType: 1,
+    scoreType: HrmPerformanceQuotaScoreType.DIRECT_INPUT,
+    targetValue: '',
   });
 }
 
@@ -145,6 +153,17 @@ function validateQuota() {
       )
     ) {
       message.error(`请完整填写${group.name}的新增指标`);
+      return false;
+    }
+    const invalidTargetQuota = group.quotas.find(
+      (quota) =>
+        isCompletionRateQuota(quota.scoreType) &&
+        !isValidTargetValue(quota.targetValue),
+    );
+    if (invalidTargetQuota) {
+      message.error(
+        `完成率指标（${invalidTargetQuota.name || '未命名'}）的目标值必须是大于 0 的数字`,
+      );
       return false;
     }
     const names = group.quotas
@@ -236,6 +255,13 @@ async function submitQuota() {
         type="warning"
       />
 
+      <Alert
+        class="mb-4"
+        message="可编辑维度的预置指标仅可补充目标值，不可编辑维度沿用考核模板的目标值；完成率指标的目标值须为大于 0 的数字，实际值在首个评分阶段录入。"
+        show-icon
+        type="info"
+      />
+
       <section v-for="group in dimensionGroups" :key="group.key" class="mb-5">
         <div class="mb-2 flex min-h-[42px] items-center justify-between gap-3">
           <div class="font-semibold">
@@ -267,6 +293,7 @@ async function submitQuota() {
         </div>
 
         <PerformanceQuotaGrid
+          :allow-edit="group.allowEdit"
           :disabled="detail.stageType !== HrmPerformanceStageType.FILL_QUOTA"
           :rows="group.quotas"
           @remove="removeQuota"

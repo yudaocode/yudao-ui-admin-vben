@@ -1,6 +1,7 @@
 import type { HrmPerformanceAssessmentTemplateApi } from '#/api/hrm/performance/config/assessment-template';
 
 import {
+  HrmPerformanceQuotaScoreType,
   HrmPerformanceScoreCalculation,
   HrmPerformanceUpperLimitType,
 } from '#/views/hrm/utils/constants';
@@ -65,6 +66,13 @@ export function validateAssessmentConfig(config?: AssessmentConfigVO) {
       }
       if (quota.scoreType === undefined || quota.scoreType === null) {
         return `指标（${quotaName}）评分方式不能为空`;
+      }
+      if (
+        isCompletionRateQuota(quota.scoreType) &&
+        quota.targetValue?.trim() &&
+        !isValidTargetValue(quota.targetValue)
+      ) {
+        return `完成率指标（${quotaName}）的默认目标值必须是大于 0 的数字`;
       }
       quotaTotalWeight += quota.weight as number;
     }
@@ -133,6 +141,26 @@ export function isValidPerformanceCoefficient(coefficient: number) {
 /** 判断两个数值是否相等 */
 export function isSameNumber(left: number, right: number) {
   return Math.abs(left - right) < 0.000001;
+}
+
+/** 判断指标是否按完成率计分 */
+export function isCompletionRateQuota(scoreType?: number) {
+  return scoreType === HrmPerformanceQuotaScoreType.COMPLETION_RATE;
+}
+
+/** 判断完成率目标值是否合法：大于 0 的纯数字；仅用于前端提示，最终以后端校验为准 */
+export function isValidTargetValue(value?: string) {
+  return isPlainNumber(value) && Number(value?.trim()) > 0;
+}
+
+/** 判断完成率实际值是否合法：不小于 0 的纯数字；仅用于前端提示，最终以后端校验为准 */
+export function isValidActualValue(value?: string) {
+  return isPlainNumber(value);
+}
+
+/** 判断是否为纯数字文本，不含正负号、千分位、百分号和科学计数法 */
+function isPlainNumber(value?: string) {
+  return /^\d+(?:\.\d+)?$/.test(value?.trim() || '');
 }
 
 function isValidWeight(weight?: number) {
