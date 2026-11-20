@@ -179,10 +179,6 @@ const [Modal, modalApi] = useVbenModal({
     employeeLoaded.value = false;
     employeeTotal.value = 0;
     selectedEmployeeIdSet.value = new Set();
-    await employeeGridApi.grid.clearCheckboxRow();
-    await employeeGridApi.grid.clearCheckboxReserve();
-    await searchFormApi.reset();
-    await searchFormApi.setValues({ sent: false });
     await loadTemplates();
   },
   title: '发送工资条',
@@ -343,7 +339,7 @@ async function handleDeleteTemplate(id?: number) {
     </Steps>
 
     <Spin :spinning="templateLoading">
-      <div v-if="currentStep === 0">
+      <div v-show="currentStep === 0">
         <div class="mb-4 grid grid-cols-[100px_1fr] items-center gap-y-4">
           <span class="text-right text-muted-foreground">工资条模板</span>
           <div class="flex flex-wrap items-center gap-3">
@@ -422,7 +418,7 @@ async function handleDeleteTemplate(id?: number) {
     </Spin>
 
     <Spin :spinning="sendLoading">
-      <div v-if="currentStep === 1">
+      <div v-show="currentStep === 1">
         <SearchForm class="mb-4" />
         <div class="mb-4 flex gap-2">
           <Button @click="handleQuery">搜索</Button>
