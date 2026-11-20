@@ -45,7 +45,6 @@ const emit = defineEmits<{
   delete: [image: AiImageApi.Image];
   detail: [image: AiImageApi.Image];
   inpaint: [image: AiImageApi.Image];
-  public: [image: AiImageApi.Image];
   regenerate: [image: AiImageApi.Image];
 }>();
 
@@ -115,12 +114,8 @@ async function handleDownload() {
   });
 }
 
-/** 「更多」下拉：公开、删除，或 Midjourney 按钮 */
+/** 「更多」下拉：删除，或 Midjourney 按钮 */
 function handleCommand(command: number | string) {
-  if (command === 'public') {
-    emit('public', props.image);
-    return;
-  }
   if (command === 'delete') {
     emit('delete', props.image);
     return;
@@ -268,7 +263,7 @@ async function handleAction(button: AiImageApi.ImageMidjourneyButton) {
         </div>
       </div>
 
-      <!-- 操作：常用的单行展示；公开、Midjourney 其它动作、删除收进「更多」 -->
+      <!-- 操作：常用的单行展示；Midjourney 其它动作、删除收进「更多」 -->
       <div class="mt-auto flex items-center gap-3 whitespace-nowrap">
         <ElButton
           type="primary"
@@ -325,19 +320,9 @@ async function handleAction(button: AiImageApi.ImageMidjourneyButton) {
                   {{ getButtonText(button) }}
                 </ElDropdownItem>
                 <ElDropdownItem
-                  v-if="image.status === AiImageStatusEnum.SUCCESS"
-                  command="public"
-                  :divided="otherButtons.length > 0"
-                >
-                  {{ image.publicStatus ? '取消公开' : '公开' }}
-                </ElDropdownItem>
-                <ElDropdownItem
                   v-if="image.status !== AiImageStatusEnum.IN_PROGRESS"
                   command="delete"
-                  :divided="
-                    otherButtons.length > 0 ||
-                    image.status === AiImageStatusEnum.SUCCESS
-                  "
+                  :divided="otherButtons.length > 0"
                 >
                   <span class="text-red-500">删除</span>
                 </ElDropdownItem>

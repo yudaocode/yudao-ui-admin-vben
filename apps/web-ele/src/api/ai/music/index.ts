@@ -74,7 +74,6 @@ export namespace AiMusicApi {
     id: number; // 编号
     title?: string; // 音乐名称
     coverUrl?: string; // 封面地址
-    publicStatus?: boolean; // 是否公开
   }
 
   /** 修改音乐（管理端） */
@@ -135,7 +134,7 @@ export function getMusicDetail(id: number) {
   return requestClient.get<AiMusicApi.Music>(`/ai/music/get-detail?id=${id}`);
 }
 
-/** 修改【我的】音乐：名称、封面、是否公开 */
+/** 修改【我的】音乐：名称、封面 */
 export function updateMyMusic(data: AiMusicApi.UpdateMyReq) {
   return requestClient.put('/ai/music/update-my', data);
 }
@@ -150,7 +149,7 @@ export function playMusic(id: number) {
   return requestClient.post(`/ai/music/play?id=${id}`);
 }
 
-// ========== 音乐管理 ==========
+// ========== 音乐生成管理 ==========
 
 /** 查询音乐分页 */
 export function getMusicPage(params: PageParam) {

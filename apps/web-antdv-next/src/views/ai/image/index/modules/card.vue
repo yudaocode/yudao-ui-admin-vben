@@ -38,7 +38,6 @@ const emit = defineEmits<{
   delete: [image: AiImageApi.Image];
   detail: [image: AiImageApi.Image];
   inpaint: [image: AiImageApi.Image];
-  public: [image: AiImageApi.Image];
   regenerate: [image: AiImageApi.Image];
 }>();
 
@@ -108,20 +107,11 @@ async function handleDownload() {
   });
 }
 
-/** 「更多」下拉的菜单项：Midjourney 其它按钮、公开、删除 */
+/** 「更多」下拉的菜单项：Midjourney 其它按钮、删除 */
 const menuItems = computed(() => {
   const items: NonNullable<MenuProps['items']> = otherButtons.value.map(
     (button) => ({ key: button.customId, label: getButtonText(button) }),
   );
-  if (props.image.status === AiImageStatusEnum.SUCCESS) {
-    if (items.length > 0) {
-      items.push({ type: 'divider' });
-    }
-    items.push({
-      key: 'public',
-      label: props.image.publicStatus ? '取消公开' : '公开',
-    });
-  }
   if (props.image.status !== AiImageStatusEnum.IN_PROGRESS) {
     if (items.length > 0) {
       items.push({ type: 'divider' });
@@ -131,12 +121,8 @@ const menuItems = computed(() => {
   return items;
 });
 
-/** 「更多」下拉：公开、删除，或 Midjourney 按钮 */
+/** 「更多」下拉：删除，或 Midjourney 按钮 */
 function handleMenuClick({ key }: { key: number | string }) {
-  if (key === 'public') {
-    emit('public', props.image);
-    return;
-  }
   if (key === 'delete') {
     emit('delete', props.image);
     return;
@@ -283,7 +269,7 @@ async function handleAction(button: AiImageApi.ImageMidjourneyButton) {
         </div>
       </div>
 
-      <!-- 操作：常用的单行展示；公开、Midjourney 其它动作、删除收进「更多」 -->
+      <!-- 操作：常用的单行展示；Midjourney 其它动作、删除收进「更多」 -->
       <div class="mt-auto flex items-center gap-3 whitespace-nowrap">
         <Button
           type="link"

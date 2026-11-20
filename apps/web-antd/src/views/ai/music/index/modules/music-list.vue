@@ -10,7 +10,7 @@ import {
 import { IconifyIcon } from '@vben/icons';
 import { formatDate } from '@vben/utils';
 
-import { Button, Empty, Progress, Spin, Switch, Tag } from 'ant-design-vue';
+import { Button, Empty, Progress, Spin, Tag } from 'ant-design-vue';
 
 import { DictTag } from '#/components/dict-tag';
 import { formatMusicDuration, getMusicTitle } from '#/views/ai/utils/format';
@@ -41,7 +41,6 @@ const emit = defineEmits<{
   edit: [item: AiMusicApi.Music];
   extend: [item: AiMusicApi.Music];
   play: [item: AiMusicApi.Music];
-  public: [item: AiMusicApi.Music, value: boolean];
 }>();
 
 /** 是否可播放：已完成且有音频 */
@@ -341,15 +340,6 @@ function handleCoverClick(item: AiMusicApi.Music) {
                   </template>
                   编辑
                 </Button>
-                <span class="inline-flex items-center text-xs">
-                  公开
-                  <Switch
-                    :checked="item.publicStatus"
-                    size="small"
-                    class="ml-1"
-                    @change="(value) => emit('public', item, value as boolean)"
-                  />
-                </span>
               </template>
               <Button
                 type="link"

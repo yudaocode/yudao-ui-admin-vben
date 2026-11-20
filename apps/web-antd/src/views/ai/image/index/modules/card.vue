@@ -46,7 +46,6 @@ const emit = defineEmits<{
   delete: [image: AiImageApi.Image];
   detail: [image: AiImageApi.Image];
   inpaint: [image: AiImageApi.Image];
-  public: [image: AiImageApi.Image];
   regenerate: [image: AiImageApi.Image];
 }>();
 
@@ -116,12 +115,8 @@ async function handleDownload() {
   });
 }
 
-/** 「更多」下拉：公开、删除，或 Midjourney 按钮 */
+/** 「更多」下拉：删除，或 Midjourney 按钮 */
 function handleMenuClick({ key }: { key: number | string }) {
-  if (key === 'public') {
-    emit('public', props.image);
-    return;
-  }
   if (key === 'delete') {
     emit('delete', props.image);
     return;
@@ -268,7 +263,7 @@ async function handleAction(button: AiImageApi.ImageMidjourneyButton) {
         </div>
       </div>
 
-      <!-- 操作：常用的单行展示；公开、Midjourney 其它动作、删除收进「更多」 -->
+      <!-- 操作：常用的单行展示；Midjourney 其它动作、删除收进「更多」 -->
       <div class="mt-auto flex items-center gap-3 whitespace-nowrap">
         <Button
           type="link"
@@ -316,19 +311,8 @@ async function handleAction(button: AiImageApi.ImageMidjourneyButton) {
                 <MenuItem v-for="button in otherButtons" :key="button.customId">
                   {{ getButtonText(button) }}
                 </MenuItem>
-                <template v-if="image.status === AiImageStatusEnum.SUCCESS">
-                  <MenuDivider v-if="otherButtons.length > 0" />
-                  <MenuItem key="public">
-                    {{ image.publicStatus ? '取消公开' : '公开' }}
-                  </MenuItem>
-                </template>
                 <template v-if="image.status !== AiImageStatusEnum.IN_PROGRESS">
-                  <MenuDivider
-                    v-if="
-                      otherButtons.length > 0 ||
-                      image.status === AiImageStatusEnum.SUCCESS
-                    "
-                  />
+                  <MenuDivider v-if="otherButtons.length > 0" />
                   <MenuItem key="delete" danger>删除</MenuItem>
                 </template>
               </Menu>

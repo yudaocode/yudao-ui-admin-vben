@@ -23,7 +23,6 @@ import {
   deleteMusicMy,
   getMusicMyPage,
   getMusicPublicPage,
-  updateMyMusic,
 } from '#/api/ai/music';
 import { $t } from '#/locales';
 import { getMusicTitle } from '#/views/ai/utils/format';
@@ -203,13 +202,6 @@ async function handleDelete(item: AiMusicApi.Music) {
   await getMyList();
 }
 
-/** 公开 / 取消公开 */
-async function handlePublic(item: AiMusicApi.Music, value: boolean) {
-  await updateMyMusic({ id: item.id, publicStatus: value });
-  item.publicStatus = value;
-  message.success(value ? '已公开到音乐广场' : '已取消公开');
-}
-
 // ========== 轮询 ==========
 
 let pollTimer: ReturnType<typeof setInterval> | undefined;
@@ -321,7 +313,6 @@ onBeforeUnmount(stopPolling);
               @concat="handleConcat"
               @edit="openEdit"
               @delete="handleDelete"
-              @public="handlePublic"
             />
             <MusicList
               v-else

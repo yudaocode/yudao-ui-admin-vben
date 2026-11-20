@@ -81,7 +81,7 @@ onMounted(async () => {
     <template #doc>
       <DocAlert title="AI 写作翻译" url="https://doc.iocoder.cn/ai/write/" />
     </template>
-    <Grid table-title="写作管理列表">
+    <Grid table-title="写作翻译管理列表">
       <template #actions="{ row }">
         <TableAction
           :actions="[

@@ -104,7 +104,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       <DocAlert title="AI 图片生成" url="https://doc.iocoder.cn/ai/image/" />
     </template>
     <DetailModal />
-    <Grid table-title="绘画管理列表">
+    <Grid table-title="图片生成管理列表">
       <template #parentId="{ row }">
         <Button
           v-if="row.parentId"

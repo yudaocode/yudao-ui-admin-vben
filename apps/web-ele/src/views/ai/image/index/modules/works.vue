@@ -30,7 +30,6 @@ import {
   deleteImageMy,
   getImagePageMy,
   getImagePagePublic,
-  updateImagePublicMy,
 } from '#/api/ai/image';
 import { $t } from '#/locales';
 
@@ -112,23 +111,6 @@ function refreshMine() {
 /** 详情 */
 function handleDetail(image: AiImageApi.Image) {
   detailModalApi.setData({ id: image.id, scope: activeTab.value }).open();
-}
-
-/** 公开、取消公开 */
-async function handlePublic(image: AiImageApi.Image) {
-  const publicStatus = !image.publicStatus;
-  try {
-    await confirm(
-      publicStatus
-        ? '确认公开该作品？公开后同租户的用户可在公开画廊看到'
-        : '确认取消公开？取消后公开画廊不再展示',
-    );
-  } catch {
-    return;
-  }
-  await updateImagePublicMy(image.id, publicStatus);
-  ElMessage.success(publicStatus ? '已公开' : '已取消公开');
-  await getList(true);
 }
 
 /** 删除 */
@@ -243,7 +225,6 @@ onBeforeUnmount(stopPolling);
             :image="item"
             :scope="activeTab"
             @detail="handleDetail"
-            @public="handlePublic"
             @regenerate="(image) => emit('regenerate', image)"
             @delete="handleDelete"
             @inpaint="handleInpaint"

@@ -148,7 +148,7 @@ onDeactivated(stopPlay);
       <DocAlert title="AI 音乐生成" url="https://doc.iocoder.cn/ai/music/" />
     </template>
     <DetailModal />
-    <Grid table-title="音乐管理列表">
+    <Grid table-title="音乐生成管理列表">
       <template #music="{ row }">
         <div class="flex items-center gap-2">
           <div

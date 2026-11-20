@@ -215,11 +215,6 @@ export function deleteImageMy(id: number) {
   return requestClient.delete(`/ai/image/delete-my?id=${id}`);
 }
 
-/** 公开 / 取消公开【我的】绘画记录 */
-export function updateImagePublicMy(id: number, publicStatus: boolean) {
-  return requestClient.put(`/ai/image/update-public-my`, { id, publicStatus });
-}
-
 /** ================ midjourney 专属 ================ */
 
 /** 【Midjourney】文生图、图生图、一致性 */
@@ -251,7 +246,7 @@ export function midjourneyModal(data: AiImageApi.ImageMidjourneyModalReqVO) {
   return requestClient.post<number>(`/ai/image/midjourney/modal`, data);
 }
 
-/** ================ 绘图管理 ================ */
+/** ================ 图片生成管理 ================ */
 
 /** 查询绘画分页 */
 export function getImagePage(params: PageParam) {

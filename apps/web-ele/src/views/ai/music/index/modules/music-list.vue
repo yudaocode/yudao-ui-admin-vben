@@ -16,7 +16,6 @@ import {
   ElImage,
   ElLink,
   ElProgress,
-  ElSwitch,
   ElTag,
 } from 'element-plus';
 
@@ -49,7 +48,6 @@ const emit = defineEmits<{
   edit: [item: AiMusicApi.Music];
   extend: [item: AiMusicApi.Music];
   play: [item: AiMusicApi.Music];
-  public: [item: AiMusicApi.Music, value: boolean];
 }>();
 
 /** 是否可播放：已完成且有音频 */
@@ -306,17 +304,6 @@ function getDescription(item: AiMusicApi.Music) {
               <ElButton link type="primary" @click="emit('edit', item)">
                 <IconifyIcon icon="ep:edit" class="mr-0.5" /> 编辑
               </ElButton>
-              <span
-                class="inline-flex items-center text-xs text-[var(--el-text-color-regular)]"
-              >
-                公开
-                <ElSwitch
-                  :model-value="item.publicStatus"
-                  size="small"
-                  class="ml-1"
-                  @change="(value) => emit('public', item, value as boolean)"
-                />
-              </span>
             </template>
             <ElButton
               link
