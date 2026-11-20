@@ -37,6 +37,11 @@ import TemplateForm from '../../template/modules/template-form.vue';
 import TemplateOptionEditor from '../../template/modules/template-option-editor.vue';
 import { useSendEmployeeGridColumns } from '../data';
 
+type EmployeeQueryParams = Pick<
+  HrmSalarySlipSendRecordApi.SendReq,
+  'deptId' | 'search' | 'sent'
+>;
+
 defineOptions({ name: 'HrmSalarySlipSendForm' });
 
 const emit = defineEmits(['success']);
@@ -46,6 +51,12 @@ const sendLoading = ref(false);
 const templateLoading = ref(false);
 const employeeLoaded = ref(false);
 const employeeTotal = ref(0);
+/** 最近一次成功查询的条件，翻页沿用；仅实际执行并成功的查询才更新 */
+let employeeQueryParams: EmployeeQueryParams = {};
+/** 当前列表最近一次成功查询的条件，全部发放按它提交，避免与列表范围不一致 */
+const employeeQueryApplied = ref<EmployeeQueryParams>();
+/** 筛选表单的当前条件，含尚未搜索的修改 */
+const employeeQueryDraft = ref<EmployeeQueryParams>({});
 const monthRecordId = ref<number>();
 const selectedEmployeeIdSet = ref<Set<number>>(new Set());
 const templateList = ref<HrmSalarySlipTemplateApi.SalarySlipTemplate[]>([]);
@@ -59,6 +70,18 @@ const [TemplateFormModal, templateFormModalApi] = useVbenModal({
 });
 
 const selectedEmployeeIds = computed(() => [...selectedEmployeeIdSet.value]);
+/** 筛选条件已搜索且查询成功时，才允许全部发放 */
+const canSendAll = computed(() => {
+  const applied = employeeQueryApplied.value;
+  const draft = employeeQueryDraft.value;
+  return (
+    !!applied &&
+    employeeTotal.value > 0 &&
+    applied.deptId === draft.deptId &&
+    applied.search === draft.search &&
+    applied.sent === draft.sent
+  );
+});
 const selectedTemplate = computed(() =>
   templateList.value.find(
     (template) => template.id === selectedTemplateId.value,
@@ -77,7 +100,7 @@ const [SearchForm, searchFormApi] = useVbenForm({
       component: 'Input',
       componentProps: {
         clearable: true,
-        class: 'w-[220px]',
+        class: 'w-[220px] max-w-full',
         placeholder: '请输入员工姓名',
       },
     },
@@ -88,7 +111,7 @@ const [SearchForm, searchFormApi] = useVbenForm({
       componentProps: {
         api: async () => handleTree(await getSimpleDeptList()),
         checkStrictly: true,
-        class: 'w-[220px]',
+        class: 'w-[220px] max-w-full',
         clearable: true,
         defaultExpandAll: true,
         labelField: 'name',
@@ -104,7 +127,7 @@ const [SearchForm, searchFormApi] = useVbenForm({
       defaultValue: false,
       componentProps: {
         clearable: true,
-        class: 'w-[150px]',
+        class: 'w-[150px] max-w-full',
         options: [
           { label: '未发送', value: false },
           { label: '已发送', value: true },
@@ -113,8 +136,17 @@ const [SearchForm, searchFormApi] = useVbenForm({
       },
     },
   ],
+  handleValuesChange(_values, _fieldsChanged, getFormattedValues) {
+    employeeQueryDraft.value = toEmployeeQueryParams(getFormattedValues());
+  },
   showDefaultActions: false,
 });
+
+function toEmployeeQueryParams(
+  values: Record<string, any>,
+): EmployeeQueryParams {
+  return { deptId: values.deptId, search: values.search, sent: values.sent };
+}
 
 function handleSelectionChange() {
   const records = [
@@ -135,19 +167,28 @@ const [EmployeeGrid, employeeGridApi] = useVbenVxeGrid({
     proxyConfig: {
       autoLoad: false,
       ajax: {
-        query: async ({ page }) => {
+        query: async (
+          { page },
+          { employeeQuery }: { employeeQuery?: EmployeeQueryParams },
+        ) => {
           if (!monthRecordId.value) return { list: [], total: 0 };
-          const formValues = await searchFormApi.getValues();
+          const queryParams = employeeQuery ?? employeeQueryParams;
+          employeeQueryApplied.value = undefined;
           const data = await getSalarySlipSendEmployeePage({
-            deptId: formValues.deptId,
+            ...queryParams,
             monthRecordId: monthRecordId.value,
-            pageNo: page.currentPage,
+            pageNo: employeeQuery ? 1 : page.currentPage,
             pageSize: page.pageSize,
-            search: formValues.search,
-            sent: formValues.sent,
           });
+          if (employeeQuery) {
+            // 查询成功后同步分页器
+            const pager = employeeGridApi.grid.getProxyInfo()?.pager;
+            if (pager) pager.currentPage = 1;
+          }
           employeeLoaded.value = true;
           employeeTotal.value = data.total;
+          employeeQueryParams = queryParams;
+          employeeQueryApplied.value = queryParams;
           return data;
         },
       },
@@ -183,10 +224,6 @@ const [Modal, modalApi] = useVbenModal({
     employeeLoaded.value = false;
     employeeTotal.value = 0;
     selectedEmployeeIdSet.value = new Set();
-    await employeeGridApi.grid.clearCheckboxRow();
-    await employeeGridApi.grid.clearCheckboxReserve();
-    await searchFormApi.reset();
-    await searchFormApi.setValues({ sent: false });
     await loadTemplates();
   },
   title: '发送工资条',
@@ -241,7 +278,11 @@ async function handleNextStep() {
 }
 
 async function loadEmployees() {
-  if (monthRecordId.value) await employeeGridApi.query();
+  if (!monthRecordId.value) return;
+  const employeeQuery = toEmployeeQueryParams(await searchFormApi.getValues());
+  employeeQueryDraft.value = { ...employeeQuery };
+  // 查询中 VXE 会跳过本次请求，条件随参数传入，避免未执行的筛选接管翻页
+  await employeeGridApi.query({ employeeQuery });
 }
 
 async function handleQuery() {
@@ -255,9 +296,11 @@ async function resetQuery() {
 }
 
 async function submitForm(all: boolean) {
+  const allQuery = all ? employeeQueryApplied.value : undefined;
   if (
     !monthRecordId.value ||
     !sendTemplate.value ||
+    (all && !canSendAll.value) ||
     (!all && selectedEmployeeIds.value.length === 0)
   ) {
     ElMessage.warning('请选择发放员工');
@@ -265,16 +308,15 @@ async function submitForm(all: boolean) {
   }
   sendLoading.value = true;
   try {
-    const formValues = await searchFormApi.getValues();
     await sendSalarySlip({
       all,
-      deptId: all ? formValues.deptId : undefined,
+      deptId: allQuery?.deptId,
       employeeIds: all ? undefined : selectedEmployeeIds.value,
       hideEmpty: Boolean(sendTemplate.value.hideEmpty),
       monthRecordId: monthRecordId.value,
       options: templateEditorRef.value?.getNormalizedOptions() || [],
-      search: all ? formValues.search : undefined,
-      sent: all ? formValues.sent : undefined,
+      search: allQuery?.search,
+      sent: allQuery?.sent,
     });
     ElMessage.success('发放成功');
     await modalApi.close();
@@ -345,14 +387,16 @@ async function handleDeleteTemplate(id?: number) {
       <ElStep title="选择发放员工" />
     </ElSteps>
 
-    <div v-if="currentStep === 0" v-loading="templateLoading">
-      <div class="mb-4 grid grid-cols-[100px_1fr] items-center gap-y-4">
-        <span class="text-right text-muted-foreground">工资条模板</span>
+    <div v-show="currentStep === 0" v-loading="templateLoading">
+      <div
+        class="mb-4 grid grid-cols-1 items-center gap-x-3 gap-y-2 sm:grid-cols-[100px_minmax(0,1fr)] sm:gap-y-4"
+      >
+        <span class="text-muted-foreground sm:text-right">工资条模板</span>
         <div class="flex flex-wrap items-center gap-3">
           <ElSelect
             v-model="selectedTemplateId"
             clearable
-            class="min-w-[240px] flex-1"
+            class="min-w-[min(240px,100%)] flex-1"
             filterable
             placeholder="请选择工资条模板"
             @change="handleTemplateChange"
@@ -397,11 +441,14 @@ async function handleDeleteTemplate(id?: number) {
         description="暂无工资条模板，请先新增模板"
       />
       <template v-else>
-        <div class="mb-4 grid grid-cols-[100px_1fr] items-center">
-          <span class="text-right text-muted-foreground">隐藏空项</span>
+        <div
+          class="mb-4 grid grid-cols-1 items-center gap-x-3 gap-y-2 sm:grid-cols-[100px_minmax(0,1fr)]"
+        >
+          <span class="text-muted-foreground sm:text-right">隐藏空项</span>
           <ElSwitch
             v-model="sendTemplate.hideEmpty"
             active-text="隐藏金额为空的工资项"
+            class="justify-self-start"
             inactive-text="保留全部工资项"
           />
         </div>
@@ -423,7 +470,7 @@ async function handleDeleteTemplate(id?: number) {
       </template>
     </div>
 
-    <div v-else v-loading="sendLoading">
+    <div v-show="currentStep === 1" v-loading="sendLoading">
       <SearchForm class="mb-4" />
       <div class="mb-4 flex gap-2">
         <ElButton @click="handleQuery">搜索</ElButton>
@@ -432,7 +479,9 @@ async function handleDeleteTemplate(id?: number) {
       <EmployeeGrid class="w-full" />
     </div>
 
-    <div class="mt-6 flex items-center justify-end gap-3 border-t pt-4">
+    <div
+      class="mt-6 flex flex-wrap items-center justify-end gap-3 border-t pt-4"
+    >
       <template v-if="currentStep === 0">
         <ElButton type="primary" @click="handleNextStep">下一步</ElButton>
       </template>
@@ -449,7 +498,7 @@ async function handleDeleteTemplate(id?: number) {
           发放已选员工
         </ElButton>
         <ElButton
-          :disabled="!employeeTotal"
+          :disabled="!canSendAll"
           :loading="sendLoading"
           type="primary"
           @click="submitForm(true)"
