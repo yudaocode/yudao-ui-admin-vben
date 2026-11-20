@@ -18,6 +18,11 @@ import { VitePWA } from 'vite-plugin-pwa';
 import viteVueDevTools from 'vite-plugin-vue-devtools';
 
 import { viteArchiverPlugin } from './archiver';
+import {
+  injectCssLayerOrder,
+  THIRD_PARTY_CSS_LAYER_RULES,
+  viteCssLayerPlugin,
+} from './css-layer';
 import { viteDayjsPlugin } from './dayjs';
 import { viteExtraAppConfigPlugin } from './extra-app-config';
 import { viteFormFieldSlotMigrationWarningPlugin } from './form-field-slot-migration-warning';
@@ -128,12 +133,23 @@ async function loadApplicationPlugins(
   return await loadConditionPlugins([
     ...commonPlugins,
     {
+      // 第三方库样式统一包层（vxe-table / vxe-pc-ui / tippy.js /
+      // vue-json-pretty → vxe / lib 层），使 Tailwind 工具类与 vben 自有
+      // 组件样式可以覆盖；层序见 css-layer.ts 与 theme.css。
+      condition: true,
+      plugins: () => viteCssLayerPlugin(THIRD_PARTY_CSS_LAYER_RULES),
+    },
+    {
       condition: i18n,
       plugins: async () => {
         return [
           viteVueI18nPlugin({
             compositionOnly: true,
             fullInstall: true,
+            include: [
+              '**/src/locales/langs/**/*.json',
+              '**/packages/locales/src/langs/**/*.json',
+            ],
             runtimeOnly: true,
           }),
         ];
@@ -151,9 +167,7 @@ async function loadApplicationPlugins(
     },
     {
       condition: vxeTableLazyImport,
-      plugins: async () => {
-        return [await viteVxeTableImportsPlugin()];
-      },
+      plugins: () => [viteVxeTableImportsPlugin()],
     },
     {
       condition: nitroMock,
@@ -253,13 +267,14 @@ async function loadLibraryPlugins(
   ]);
 }
 
-export { viteCssLayerPlugin } from './css-layer';
-
 export {
+  injectCssLayerOrder,
   loadApplicationPlugins,
   loadLibraryPlugins,
+  THIRD_PARTY_CSS_LAYER_RULES,
   viteArchiverPlugin,
   viteCompressPlugin,
+  viteCssLayerPlugin,
   viteDayjsPlugin,
   viteDtsPlugin,
   viteHtmlPlugin,

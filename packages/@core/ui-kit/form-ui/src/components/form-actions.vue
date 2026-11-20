@@ -16,7 +16,7 @@ const collapsed = defineModel({ default: false });
 
 const resetButtonOptions = computed(() => {
   return {
-    content: `${$t.value('reset')}`,
+    content: `${$t.value('common.reset')}`,
     show: true,
     ...unref(rootProps).resetButtonOptions,
   };
@@ -24,7 +24,7 @@ const resetButtonOptions = computed(() => {
 
 const submitButtonOptions = computed(() => {
   return {
-    content: `${$t.value('submit')}`,
+    content: `${$t.value('common.submit')}`,
     show: true,
     ...unref(rootProps).submitButtonOptions,
   };
@@ -74,7 +74,7 @@ const actionWrapperClass = computed(() => {
     'flex',
     'items-center',
     'gap-3',
-    props.compact ? 'pb-2' : 'pb-4',
+    props.compact ? 'pb-[var(--vben-form-compact-padding,0.5rem)]' : 'pb-4',
     props.layout === 'vertical' ? 'self-end' : 'self-center',
     props.layout === 'inline' ? '' : 'w-full',
     props.actionWrapperClass,
@@ -169,7 +169,7 @@ defineExpose({
       v-if="rootProps.showCollapseButton"
       v-model:model-value="collapsed"
     >
-      <span>{{ collapsed ? $t('expand') : $t('collapse') }}</span>
+      <span>{{ collapsed ? $t('common.expand') : $t('common.collapse') }}</span>
     </VbenExpandableArrow>
 
     <!-- 展开按钮后 -->

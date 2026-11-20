@@ -12,7 +12,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "stub": "node ./scripts/build.mjs"
+    "stub": "node ./scripts/build.mjs",
+    "typecheck": "vue-tsc --noEmit"
   },
   "files": [
     "dist"
@@ -34,7 +35,6 @@
     "consola": "catalog:",
     "dayjs": "catalog:",
     "execa": "catalog:",
-    "find-up": "catalog:",
     "ora": "catalog:",
     "pkg-types": "catalog:",
     "rimraf": "catalog:"

@@ -20,7 +20,7 @@
     "build:analyze": "pnpm vite build --mode analyze",
     "dev": "pnpm vite --mode development",
     "preview": "vite preview",
-    "typecheck": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vue-tsc --noEmit --skipLibCheck"
+    "typecheck": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vue-tsc --noEmit"
   },
   "imports": {
     "#/*": "./src/*"
@@ -30,6 +30,7 @@
     "@form-create/antdv-next": "catalog:",
     "@mediapipe/tasks-vision": "catalog:",
     "@tinymce/tinymce-vue": "catalog:",
+    "@vben-core/typings": "workspace:*",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -53,14 +54,11 @@
     "antdv-next": "catalog:",
     "benz-amr-recorder": "catalog:",
     "bpmn-js": "catalog:",
-    "bpmn-js-properties-panel": "catalog:",
     "bpmn-js-token-simulation": "catalog:",
-    "camunda-bpmn-moddle": "catalog:",
     "cropperjs": "catalog:",
     "dayjs": "catalog:",
     "dhtmlx-gantt": "catalog:",
     "diagram-js": "catalog:",
-    "fast-xml-parser": "catalog:",
     "highlight.js": "catalog:",
     "livekit-client": "catalog:",
     "mediabunny": "catalog:",
