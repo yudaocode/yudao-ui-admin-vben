@@ -349,7 +349,7 @@ onBeforeUnmount(() => {
         </ElDescriptionsItem>
       </ElDescriptions>
     </ElCard>
-    <ElCard title="选择支付宝支付" class="mt-4">
+    <ElCard header="选择支付宝支付" class="mt-4">
       <div class="flex">
         <div
           class="mr-4 w-40 cursor-pointer items-center border-2 border-gray-200 pb-1 pt-4 text-center hover:border-blue-500"
@@ -364,7 +364,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </ElCard>
-    <ElCard title="选择微信支付" class="mt-4">
+    <ElCard header="选择微信支付" class="mt-4">
       <div class="flex">
         <div
           class="mr-4 w-40 cursor-pointer items-center border-2 border-gray-200 pb-1 pt-4 text-center hover:border-blue-500"
@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </ElCard>
-    <ElCard title="选择其它支付" class="mt-4">
+    <ElCard header="选择其它支付" class="mt-4">
       <div class="flex">
         <div
           class="mr-4 w-40 cursor-pointer items-center border-2 border-gray-200 pb-1 pt-4 text-center hover:border-blue-500"

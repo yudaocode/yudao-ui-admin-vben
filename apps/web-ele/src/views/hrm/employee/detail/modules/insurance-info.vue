@@ -41,25 +41,23 @@ onMounted(load);
 </script>
 
 <template>
-  <ElCard
-    v-loading="loading"
-    header="社保资料"
-    :style="{ marginBottom: '15px' }"
-    shadow="never"
-  >
-    <template #extra>
-      <TableAction
-        :actions="[
-          {
-            label: '编辑',
-            type: 'primary',
-            link: true,
-            icon: ACTION_ICON.EDIT,
-            auth: ['hrm:insurance:employee-info:update'],
-            onClick: openForm,
-          },
-        ]"
-      />
+  <ElCard v-loading="loading" :style="{ marginBottom: '15px' }" shadow="never">
+    <template #header>
+      <div class="flex items-center justify-between">
+        <span>社保资料</span>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['hrm:insurance:employee-info:update'],
+              onClick: openForm,
+            },
+          ]"
+        />
+      </div>
     </template>
     <ElDescriptions border :column="3" size="small">
       <ElDescriptionsItem label="社保编号">

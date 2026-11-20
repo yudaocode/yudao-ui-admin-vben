@@ -54,37 +54,35 @@ onMounted(load);
 </script>
 
 <template>
-  <ElCard
-    v-loading="loading"
-    header="工资卡信息"
-    :style="{ marginBottom: '15px' }"
-    shadow="never"
-  >
-    <template #extra>
-      <TableAction
-        :actions="[
-          {
-            label: '编辑',
-            type: 'primary',
-            link: true,
-            icon: ACTION_ICON.EDIT,
-            auth: ['hrm:employee:update'],
-            onClick: openForm,
-          },
-          {
-            label: '删除',
-            type: 'danger',
-            link: true,
-            icon: ACTION_ICON.DELETE,
-            auth: ['hrm:employee:update'],
-            ifShow: !!salaryCard?.id,
-            popConfirm: {
-              title: '确定删除当前员工的工资卡信息吗？',
-              confirm: handleDelete,
+  <ElCard v-loading="loading" :style="{ marginBottom: '15px' }" shadow="never">
+    <template #header>
+      <div class="flex items-center justify-between">
+        <span>工资卡信息</span>
+        <TableAction
+          :actions="[
+            {
+              label: '编辑',
+              type: 'primary',
+              link: true,
+              icon: ACTION_ICON.EDIT,
+              auth: ['hrm:employee:update'],
+              onClick: openForm,
             },
-          },
-        ]"
-      />
+            {
+              label: '删除',
+              type: 'danger',
+              link: true,
+              icon: ACTION_ICON.DELETE,
+              auth: ['hrm:employee:update'],
+              ifShow: !!salaryCard?.id,
+              popConfirm: {
+                title: '确定删除当前员工的工资卡信息吗？',
+                confirm: handleDelete,
+              },
+            },
+          ]"
+        />
+      </div>
     </template>
     <ElDescriptions border :column="3" size="small">
       <ElDescriptionsItem label="银行卡号">

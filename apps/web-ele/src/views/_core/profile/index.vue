@@ -43,7 +43,7 @@ onMounted(loadProfile);
   <Page auto-content-height>
     <div class="flex">
       <!-- 左侧 个人信息 -->
-      <ElCard class="w-2/5" title="个人信息">
+      <ElCard class="w-2/5" header="个人信息">
         <ProfileUser :profile="profile" @success="refreshProfile" />
       </ElCard>
 
