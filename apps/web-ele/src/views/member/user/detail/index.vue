@@ -89,7 +89,7 @@ onMounted(async () => {
       </AccountInfo>
     </div>
     <div class="mt-4">
-      <ElCard title="账户明细">
+      <ElCard header="账户明细">
         <ElTabs v-model="activeName">
           <ElTabPane label="积分" name="PointList">
             <PointList class="h-full" :user-id="userId" />

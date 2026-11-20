@@ -902,7 +902,7 @@ defineExpose({ loadTodoTask });
             label-width="100px"
           >
             <ElCard v-if="runningTask?.formId > 0" class="!-mt-2.5 mb-3.5">
-              <template #title>
+              <template #header>
                 <span class="el-icon-picture-outline">
                   填写表单【{{ runningTask?.formName }}】
                 </span>

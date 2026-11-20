@@ -95,7 +95,7 @@ onActivated(async () => {
       url="https://doc.iocoder.cn/hrm/salary/payroll/"
     />
     <div v-loading="loading">
-      <ElCard class="mb-4" title="我的工资条">
+      <ElCard class="mb-4" header="我的工资条">
         <FilterForm />
       </ElCard>
 

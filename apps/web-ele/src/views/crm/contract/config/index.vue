@@ -60,7 +60,7 @@ onMounted(() => {
 
 <template>
   <Page auto-content-height>
-    <ElCard title="合同配置设置">
+    <ElCard header="合同配置设置">
       <Form class="w-1/4" />
     </ElCard>
   </Page>

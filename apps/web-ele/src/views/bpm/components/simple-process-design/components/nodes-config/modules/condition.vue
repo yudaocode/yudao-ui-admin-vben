@@ -195,10 +195,10 @@ defineExpose({ validate });
               "
             />
           </div>
-          <template #extra>
+          <template #header>
             <div class="flex items-center justify-between">
               <div>条件组</div>
-              <div class="flex">
+              <div class="flex items-center">
                 <div class="mr-4">规则关系</div>
                 <ElSwitch
                   v-model="equation.and"
