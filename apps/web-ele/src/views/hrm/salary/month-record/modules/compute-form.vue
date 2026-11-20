@@ -132,26 +132,28 @@ async function downloadTemplate(
 <template>
   <Modal v-loading="formLoading" class="w-[760px]">
     <div class="space-y-4">
-      <div class="grid grid-cols-[112px_1fr] items-center gap-x-3 gap-y-4">
-        <span class="text-right text-muted-foreground">工资表</span>
+      <div
+        class="grid grid-cols-1 items-center gap-x-3 gap-y-2 sm:grid-cols-[112px_minmax(0,1fr)] sm:gap-y-4"
+      >
+        <span class="text-muted-foreground sm:text-right">工资表</span>
         <span>{{ currentRecord?.title || '-' }}</span>
-        <span class="text-right text-muted-foreground">计薪人员</span>
+        <span class="text-muted-foreground sm:text-right">计薪人员</span>
         <span>{{ payrollEmployeeCount }} 人</span>
-        <span class="text-right text-muted-foreground">社保数据</span>
+        <span class="text-muted-foreground sm:text-right">社保数据</span>
         <ElSwitch
           v-model="syncInsuranceData"
           active-text="从社保表同步"
           class="justify-self-start"
           inactive-text="本次不带入"
         />
-        <span class="text-right text-muted-foreground">同步考勤</span>
+        <span class="text-muted-foreground sm:text-right">同步考勤</span>
         <ElSwitch
           v-model="syncAttendanceData"
           active-text="从考勤统计同步"
           class="justify-self-start"
           inactive-text="使用导入文件"
         />
-        <span class="text-right text-muted-foreground">考勤数据</span>
+        <span class="text-muted-foreground sm:text-right">考勤数据</span>
         <div class="flex flex-wrap items-start gap-2">
           <ElUpload
             v-model:file-list="attendanceFiles"
@@ -164,7 +166,7 @@ async function downloadTemplate(
           </ElUpload>
           <ElButton @click="downloadTemplate('attendance')">下载模板</ElButton>
         </div>
-        <span class="text-right text-muted-foreground">上月个税累计</span>
+        <span class="text-muted-foreground sm:text-right">上月个税累计</span>
         <div class="flex flex-wrap items-start gap-2">
           <ElUpload
             v-model:file-list="cumulativeTaxFiles"
@@ -178,7 +180,7 @@ async function downloadTemplate(
             下载模板
           </ElButton>
         </div>
-        <span class="text-right text-muted-foreground">专项附加扣除</span>
+        <span class="text-muted-foreground sm:text-right">专项附加扣除</span>
         <div class="flex flex-wrap items-start gap-2">
           <ElUpload
             v-model:file-list="additionalDeductionFiles"
