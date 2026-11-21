@@ -15,7 +15,7 @@ import { Button, Card, Col, message, Row, Space } from 'ant-design-vue';
 import dayjs from 'dayjs';
 
 import { getProcessDefinition } from '#/api/bpm/definition';
-import { createLeave, getLeave } from '#/api/bpm/oa/leave';
+import { createLeave, getLeave, updateLeave } from '#/api/bpm/oa/leave';
 import { getApprovalDetail as getApprovalDetailApi } from '#/api/bpm/processInstance';
 import { $t } from '#/locales';
 import { router } from '#/router';
@@ -25,8 +25,10 @@ import { useFormSchema } from './data';
 
 const { closeCurrentTab } = useTabs();
 const { query } = useRoute();
+const isUpdate = query.type === 'update' && !!query.id;
 
 const formLoading = ref(false); // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
+const originalData = ref<Record<string, unknown>>({});
 const processTimeLineLoading = ref(false); // 审批流的加载中
 
 type LeaveCreateData = BpmOALeaveApi.Leave & {
@@ -42,9 +44,13 @@ const processDefinitionId = ref('');
 
 const formData = ref<BpmOALeaveApi.Leave>();
 const getTitle = computed(() => {
-  return formData.value?.id
-    ? '重新发起请假'
-    : $t('ui.actionTitle.create', ['请假']);
+  if (isUpdate) {
+    return '编辑请假';
+  }
+  if (formData.value?.id) {
+    return '重新发起请假';
+  }
+  return $t('ui.actionTitle.create', ['请假']);
 });
 
 const [Form, formApi] = useVbenForm({
@@ -59,6 +65,7 @@ const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
   handleValuesChange(_values, fieldsChanged) {
     if (
+      !isUpdate &&
       processDefinitionId.value &&
       fieldsChanged.some((field) =>
         ['endTime', 'startTime', 'type'].includes(field),
@@ -81,6 +88,11 @@ async function onSubmit() {
   if (!valid) {
     return;
   }
+  if (isUpdate) {
+    await onUpdate();
+    return;
+  }
+
   // 1.2 审批相关：校验指定审批人
   if (startUserSelectTasks.value?.length > 0) {
     for (const userTask of startUserSelectTasks.value) {
@@ -112,6 +124,28 @@ async function onSubmit() {
     await router.push({
       name: 'BpmOALeave',
     });
+  } finally {
+    formLoading.value = false;
+  }
+}
+
+/** 编辑模式只提交业务编号和发生变化的业务字段 */
+async function onUpdate() {
+  const values = await formApi.getValues();
+  const data: BpmOALeaveApi.LeaveUpdate = { id: Number(query.id) };
+  for (const field of ['type', 'reason', 'startTime', 'endTime'] as const) {
+    if (values[field] !== originalData.value[field]) {
+      data[field] = ['endTime', 'startTime'].includes(field)
+        ? Number(values[field])
+        : values[field];
+    }
+  }
+  try {
+    formLoading.value = true;
+    await updateLeave(data);
+    message.success('保存成功');
+    await closeCurrentTab();
+    await router.push({ name: 'OALeaveDetail', query: { id: String(query.id) } });
   } finally {
     formLoading.value = false;
   }
@@ -198,12 +232,14 @@ async function getDetail(id: number) {
       startTime: data.startTime,
       endTime: data.endTime,
     } as BpmOALeaveApi.Leave;
-    await formApi.setValues({
+    const values = {
       type: data.type,
       reason: data.reason,
       startTime: data.startTime,
       endTime: data.endTime,
-    });
+    };
+    originalData.value = { ...values };
+    await formApi.setValues(values);
   } finally {
     formLoading.value = false;
   }
@@ -211,6 +247,11 @@ async function getDetail(id: number) {
 
 /** 初始化 */
 onMounted(async () => {
+  if (isUpdate) {
+    await getDetail(Number(query.id));
+    return;
+  }
+
   const processDefinitionDetail: any = await getProcessDefinition(
     undefined,
     processDefineKey,
@@ -234,7 +275,7 @@ onMounted(async () => {
 <template>
   <Page>
     <Row :gutter="16">
-      <Col :span="16">
+      <Col :span="isUpdate ? 24 : 16">
         <Card :title="getTitle" class="w-full" v-loading="formLoading">
           <template #extra>
             <Button type="default" @click="onBack">
@@ -247,13 +288,13 @@ onMounted(async () => {
           <template #actions>
             <Space warp :size="12" class="w-full px-6">
               <Button type="primary" @click="onSubmit" :loading="formLoading">
-                提交
+                {{ isUpdate ? '保存' : '提交' }}
               </Button>
             </Space>
           </template>
         </Card>
       </Col>
-      <Col :span="8">
+      <Col v-if="!isUpdate" :span="8">
         <Card title="流程" class="w-full" v-loading="processTimeLineLoading">
           <ProcessInstanceTimeline
             :activity-nodes="activityNodes"

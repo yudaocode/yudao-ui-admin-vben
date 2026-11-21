@@ -7,10 +7,11 @@ import { useRoute } from 'vue-router';
 import { ContentWrap } from '@vben/common-ui';
 import { parseId } from '@vben/utils';
 
-import { Spin } from 'antdv-next';
+import { Button, Spin } from 'antdv-next';
 
 import { getLeave } from '#/api/bpm/oa/leave';
 import { useDescription } from '#/components/description';
+import { router } from '#/router';
 
 import { useDetailFormSchema } from './data';
 
@@ -23,6 +24,10 @@ const { query } = useRoute();
 const loading = ref(false);
 const formData = ref<BpmOALeaveApi.Leave>();
 const queryId = computed(() => query.id as string);
+
+const handleUpdate = () => {
+  router.push({ name: 'OALeaveCreate', query: { id: props.id || queryId.value, type: 'update' } });
+};
 
 const [Descriptions] = useDescription({
   bordered: true,
@@ -51,6 +56,9 @@ onMounted(() => {
 
 <template>
   <ContentWrap class="m-2">
+    <div class="mb-4 flex justify-end">
+      <Button type="primary" @click="handleUpdate">编辑</Button>
+    </div>
     <Spin :spinning="loading" description="加载中...">
       <Descriptions :data="formData" />
     </Spin>

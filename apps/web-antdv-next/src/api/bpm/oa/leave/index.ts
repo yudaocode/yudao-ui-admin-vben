@@ -13,11 +13,24 @@ export namespace BpmOALeaveApi {
     endTime: number;
     createTime: Date;
   }
+
+  export interface LeaveUpdate {
+    id: number;
+    type?: number;
+    startTime?: number;
+    endTime?: number;
+    reason?: string;
+  }
 }
 
 /** 创建请假申请 */
 export async function createLeave(data: BpmOALeaveApi.Leave) {
   return requestClient.post('/bpm/oa/leave/create', data);
+}
+
+/** 更新请假申请，只提交业务编号和修改后的业务字段 */
+export async function updateLeave(data: BpmOALeaveApi.LeaveUpdate) {
+  return requestClient.put('/bpm/oa/leave/update', data);
 }
 
 /** 获得请假申请 */
