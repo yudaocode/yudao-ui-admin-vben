@@ -144,7 +144,7 @@ catalog:
   es-toolkit: ^1.51.0
   eslint: ^10.10.0
   eslint-plugin-better-tailwindcss: ^4.11.0
-  eslint-plugin-command: ^3.5.3
+  eslint-plugin-command: ^4.0.0
   eslint-plugin-jsonc: ^3.4.2
   eslint-plugin-n: ^18.2.2
   eslint-plugin-oxlint: ^1.90.0
